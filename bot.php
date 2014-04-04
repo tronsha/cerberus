@@ -7,11 +7,13 @@ if (version_compare(phpversion(), '5.1', '>=') === true) {
     date_default_timezone_set('Europe/Berlin');
 }
 
-require_once('./library/function.php');
-require_once('./library/db.class.php');
-require_once('./library/ircbot.class.php');
+define('PATH', dirname(__FILE__));
 
-$config = parse_ini_file('./config.ini', true);
+require_once(PATH . '/library/function.php');
+require_once(PATH . '/library/db.class.php');
+require_once(PATH . '/library/ircbot.class.php');
+
+$config = parse_ini_file(PATH . '/config.ini', true);
 
 $x = new ircbot($config);
 $x->connect();
