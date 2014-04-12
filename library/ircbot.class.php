@@ -55,6 +55,13 @@ class IRCBot
         $this->config['info'] = array('name' => 'Cerberus');
         $this->reconnect['channel'] = array();
         $this->config['dbms'] = array('mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite');
+        $this->config['autorejoin'] = false;
+        $this->config['ctcp'] = false;
+        $this->config['logfiledirectory'] = realpath(dirname(__FILE__) . '/..') . '/log/';
+        $this->config['logfile']['error'] = true;
+        $this->config['logfile']['socket'] = false;
+        $this->config['logfile']['sql'] = false;
+        $this->config['dailylogfile'] = true;
 
         if (is_array($config)) {
             if (!empty($config['bot']['nick'])) {
@@ -69,7 +76,6 @@ class IRCBot
             if (isset($config['db'])) {
                 $this->setDB($config['bot']['dbms'], $config['db']);
             }
-
             if (!empty($config['info']['name'])) {
                 $this->config['info']['name'] = $config['info']['name'];
             }
@@ -79,33 +85,27 @@ class IRCBot
             if (!empty($config['info']['version'])) {
                 $this->version['bot'] = $config['info']['version'];
             }
-        }
-
-        $this->config['autorejoin'] = is_array(
-            $config
-        ) && isset($config['bot']['autorejoin']) ? ($config['bot']['autorejoin'] == 1 ? true : false) : false;
-
-        $this->config['ctcp'] = is_array(
-            $config
-        ) && isset($config['bot']['ctcp']) ? ($config['bot']['ctcp'] == 1 ? true : false) : false;
-
-        $this->config['logfile']['error'] = is_array(
-            $config
-        ) && isset($config['log']['error']) ? ($config['log']['error'] == 1 ? true : false) : true;
-        $this->config['logfile']['socket'] = is_array(
-            $config
-        ) && isset($config['log']['socket']) ? ($config['log']['socket'] == 1 ? true : false) : false;
-        $this->config['logfile']['sql'] = is_array(
-            $config
-        ) && isset($config['log']['sql']) ? ($config['log']['sql'] == 1 ? true : false) : false;
-        $this->config['dailylogfile'] = is_array(
-            $config
-        ) && isset($config['log']['dailylogfile']) ? ($config['log']['dailylogfile'] == 1 ? true : false) : true;
-
-        if (is_array($config) && isset($config['log']['directory']) && is_dir($config['log']['directory'])) {
-            $this->config['logfiledirectory'] = $config['log']['directory'];
-        } else {
-            $this->config['logfiledirectory'] = realpath(dirname(__FILE__) . '/..') . '/log/';
+            if (isset($config['bot']['autorejoin'])) {
+                $this->config['autorejoin'] = $config['bot']['autorejoin'] == 1 ? true : false;
+            }
+            if (isset($config['bot']['ctcp'])) {
+                $this->config['ctcp'] = $config['bot']['ctcp'] == 1 ? true : false;
+            }
+            if (isset($config['log']['directory']) && is_dir($config['log']['directory'])) {
+                $this->config['logfiledirectory'] = $config['log']['directory'];
+            }
+            if (isset($config['bot']['error'])) {
+                $this->config['logfile']['error'] = $config['log']['error'] == 1 ? true : false;
+            }
+            if (isset($config['bot']['socket'])) {
+                $this->config['logfile']['socket'] = $config['log']['socket'] == 1 ? true : false;
+            }
+            if (isset($config['bot']['sql'])) {
+                $this->config['logfile']['sql'] = $config['log']['sql'] == 1 ? true : false;
+            }
+            if (isset($config['bot']['dailylogfile'])) {
+                $this->config['dailylogfile'] = $config['log']['dailylogfile'] == 1 ? true : false;
+            }
         }
     }
 
@@ -589,7 +589,7 @@ class IRCBot
     protected function onPrivmsg($nick, $host, $channel, $text)
     {
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
-            if($this->config['ctcp'] === false) {
+            if ($this->config['ctcp'] === false) {
                 return null;
             }
             $send = '';
