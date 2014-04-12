@@ -533,7 +533,7 @@ class IRCBot
                 $this->onTopic($rest, $text);
                 break;
             case 'INVITE':
-                $this->onInvite($host, $rest);
+                $this->onInvite($text, $host, $rest);
                 break;
         }
 
@@ -729,10 +729,12 @@ class IRCBot
         /* TODO */
     }
 
-    protected function onInvite($host, $rest)
+    protected function onInvite($channel, $host, $rest)
     {
         $isadmin = $this->authorizations(trim($host), self::AUTH_ADMIN);
-        list($me, $channel) = explode(' ', $rest);
+        if (empty($channel) === true) {
+            list($me, $channel) = explode(' ', $rest);
+        }
         if ($isadmin) {
             $this->join($channel);
         }
