@@ -561,7 +561,7 @@ class IRCBot
 
     protected function on322($rest, $text)
     {
-        list($dummy, $channel, $anz_user) = expolde(' ', $rest);
+        list($dummy, $channel, $anz_user) = explode(' ', $rest);
         $sql_list = 'INSERT INTO channellist SET '
             . '`channel` = "' . $this->db->escape_string($channel) . '", '
             . '`user`    = "' . $this->db->escape_string($anz_user) . '", '
@@ -619,8 +619,8 @@ class IRCBot
 
     protected function on353($rest, $text)
     {
-        list($me, $dummy, $channel) = expolde(' ', $rest);
-        $user_array = expolde(' ', $text);
+        list($me, $dummy, $channel) = explode(' ', $rest);
+        $user_array = explode(' ', $text);
         foreach ($user_array as $user) {
             preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
             $this->sql_query(
@@ -635,7 +635,7 @@ class IRCBot
 
     protected function on332($rest, $text)
     {
-        list($me, $channel) = expolde(' ', $rest);
+        list($me, $channel) = explode(' ', $rest);
         $this->onTopic($channel, $text);
     }
 
@@ -669,7 +669,7 @@ class IRCBot
 
     protected function onKick($bouncer, $rest)
     {
-        list($channel, $nick) = expolde(' ', $rest);
+        list($channel, $nick) = explode(' ', $rest);
         $this->onPart($nick, $channel);
 
         if ($this->config['autorejoin'] === true && $nick == $this->var['me']) {
@@ -712,7 +712,7 @@ class IRCBot
 
     protected function onMode($mode)
     {
-        $array = expolde(' ', $mode);
+        $array = explode(' ', $mode);
         $channel = $array[0];
         /* TODO */
     }
@@ -720,7 +720,7 @@ class IRCBot
     protected function onInvite($host, $rest)
     {
         $isadmin = $this->authorizations(trim($host), self::AUTH_ADMIN);
-        list($me, $channel) = expolde(' ', $rest);
+        list($me, $channel) = explode(' ', $rest);
         if ($isadmin) {
             $this->join($channel);
         }
