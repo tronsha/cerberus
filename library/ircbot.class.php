@@ -1,7 +1,7 @@
 <?php
 
 /*   Cerberus IRCBot
- *   Copyright (C) 2008 - 2012 Stefan Hüsges
+ *   Copyright (C) 2008 - 2014 Stefan Hüsges
  *
  *   This program is free software; you can redistribute it and/or modify it 
  *   under the terms of the GNU General Public License as published by the Free 
@@ -19,7 +19,6 @@
 
 /**
  * @author Stefan Hüsges <http://www.mpcx.net>
- * @version $Id: $
  */
 
 class IRCBot
@@ -85,6 +84,10 @@ class IRCBot
         $this->config['autorejoin'] = is_array(
             $config
         ) && isset($config['bot']['autorejoin']) ? ($config['bot']['autorejoin'] == 1 ? true : false) : false;
+
+        $this->config['ctcp'] = is_array(
+            $config
+        ) && isset($config['bot']['ctcp']) ? ($config['bot']['ctcp'] == 1 ? true : false) : false;
 
         $this->config['logfile']['error'] = is_array(
             $config
@@ -585,7 +588,10 @@ class IRCBot
 
     protected function onPrivmsg($nick, $host, $channel, $text)
     {
-        if (preg_match("/\x01([A-Z]+)( [0-9]+)?\x01/i", $text, $matches)) {
+        if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
+            if($this->config['ctcp'] === false) {
+                return null;
+            }
             $send = '';
             switch ($matches[1]) {
                 case 'PING':
@@ -598,10 +604,12 @@ class IRCBot
                     $send = 'TIME ' . date('D M d H:i:s Y T');
                     break;
                 case 'FINGER':
-                    $send = 'FINGER ' . $this->config['info']['name'] . ' (' . $this->config['info']['homepage'] . ') Idle ' . round(
+                    $send = 'FINGER ' . $this->config['info']['name'] . (isset($this->config['info']['homepage']) ? ' (' . $this->config['info']['homepage'] . ')' : '') . ' Idle ' . round(
                         getmicrotime() - $this->time['irc_connect']
                     ) . ' seconds';
                     break;
+                default:
+                    return null;
             }
             if (empty($send) === false) {
                 $this->notice($nick, "\x01" . $send . "\x01");
