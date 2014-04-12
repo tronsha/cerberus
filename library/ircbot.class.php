@@ -98,6 +98,12 @@ class IRCBot
         $this->config['dailylogfile'] = is_array(
             $config
         ) && isset($config['log']['dailylogfile']) ? ($config['log']['dailylogfile'] == 1 ? true : false) : true;
+
+        if (is_array($config) && isset($config['log']['directory']) && is_dir($config['log']['directory'])) {
+            $this->config['logfiledirectory'] = $config['log']['directory'];
+        } else {
+            $this->config['logfiledirectory'] = realpath(dirname(__FILE__) . '/..') . '/log/';
+        }
     }
 
     public function __destruct()
@@ -330,12 +336,12 @@ class IRCBot
         return $errstr;
     }
 
-    public function useLog($type)
-    {
-        if (array_key_exists($type, $this->config['logfile'])) {
-            $this->config['logfile'][$type] = true;
-        }
-    }
+//    public function useLog($type)
+//    {
+//        if (array_key_exists($type, $this->config['logfile'])) {
+//            $this->config['logfile'][$type] = true;
+//        }
+//    }
 
     protected function log($text, $type)
     {
@@ -349,7 +355,7 @@ class IRCBot
             $file = $type . '_log.txt';
         }
 
-        $handle = @fopen($file, 'a+');
+        $handle = @fopen($this->config['logfiledirectory'] . $file, 'a+');
         if ($handle !== false) {
             fputs($handle, date("d.m.Y H:i:s", time()) . ' >>>> ' . $text . PHP_EOL);
             fflush($handle);
