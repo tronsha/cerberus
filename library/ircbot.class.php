@@ -500,6 +500,8 @@ class IRCBot
             case '353':
                 $this->on353($rest, $text);
                 break;
+            case '432':
+                $this->on432();
             case '433':
                 $this->on433();
                 break;
@@ -550,7 +552,17 @@ class IRCBot
         $this->sql_query($sql_log);
     }
 
+    protected function on432()
+    {
+        $this->otherNick();
+    }
+
     protected function on433()
+    {
+        $this->otherNick();
+    }
+
+    protected function otherNick()
     {
         if ($this->nowrite === false) {
             return;
