@@ -21,7 +21,7 @@
  * @author Stefan Hüsges <http://www.mpcx.net>
  */
 
-class IRCBot
+class irc
 {
     const AUTH_NONE = 1;
     const AUTH_MEMBER = 2;
@@ -41,6 +41,9 @@ class IRCBot
     protected $version = array();
     protected $config = array();
     protected $reconnect = array();
+    protected $plugins = null;
+    protected $loadedplugin = array();
+    protected $loadedpluginfiles = array();
 
     public function __construct($config = null)
     {
@@ -339,13 +342,6 @@ class IRCBot
         return $errstr;
     }
 
-//    public function useLog($type)
-//    {
-//        if (array_key_exists($type, $this->config['logfile'])) {
-//            $this->config['logfile'][$type] = true;
-//        }
-//    }
-
     protected function log($text, $type)
     {
         if ($this->config['logfile'][$type] !== true) {
@@ -619,6 +615,31 @@ class IRCBot
             if ($isadmin) {
                 $this->quit('Client Quit');
             }
+        } else {
+            $isadmin = $this->authorizations(trim($host), self::AUTH_ADMIN);
+            if ($isadmin) {
+                $splitText = explode(' ', $text);
+                switch ($splitText[0]) {
+                    case '!load':
+                        if (empty($splitText[1]) === false) {
+                            $this->loadPlugin($splitText[1]);
+                        }
+                        break;
+                    case '!unload':
+                        if (empty($splitText[1]) === false) {
+                            $this->unloadPlugin($splitText[1]);
+                        }
+                        break;
+                    default:
+                        if (is_array($this->plugins)) {
+                            $command = array_shift($splitText);
+                            if (array_key_exists($command, $this->plugins)) {
+                                $this->runPlugin($this->plugins[$command], $nick, $channel, implode(' ', $splitText));
+                            }
+                        }
+                        return null;
+                }
+            }
         }
     }
 
@@ -815,5 +836,78 @@ class IRCBot
             }
         }
         return false;
+    }
+
+    protected function loadPlugin($name)
+    {
+        $file = realpath(dirname(__FILE__) . '/..') . '/plugins/' . $name . '.php';
+        if (file_exists($file)) {
+            if ($this->plugins === null) {
+                $this->plugins = array();
+            }
+            $pluginClass = 'plugin' . ucfirst($name);
+            if(in_array($pluginClass, $this->loadedpluginfiles) === false) {
+                include($file);
+                $this->sysinfo('Load File: ' . $file);
+                $this->loadedpluginfiles[] = $pluginClass;
+            }
+            if(array_key_exists($pluginClass, $this->loadedplugin) === false) {
+                $this->sysinfo('Load Plugin: ' . $name);
+                $plugin = new $pluginClass;
+                $this->loadedplugin[$pluginClass] = &$plugin;
+                $commands = $plugin->getCommands();
+                foreach ($commands as $data) {
+                    $command = $data['command'];
+                    if (array_key_exists($command, $this->plugins) === false) {
+                        $this->sysinfo('New Command: ' . $command);
+                        $this->plugins[$command]['class'] = &$plugin;
+                        $this->plugins[$command]['method'] = $data['method'];
+                    } else {
+                        $this->sysinfo('Command "' . $command . '" is already used.');
+                    }
+                }
+            } else {
+                $this->sysinfo('Plugin "' . $name . '" is already loaded.');
+            }
+        }
+    }
+
+    protected function unloadPlugin($name)
+    {
+        $pluginClass = 'plugin' . ucfirst($name);
+        if(array_key_exists($pluginClass, $this->loadedplugin) === true) {
+            $plugin = $this->loadedplugin[$pluginClass];
+            $commands = $plugin->getCommands();
+            foreach ($commands as $data) {
+                $command = $data['command'];
+                if (array_key_exists($command, $this->plugins) === true) {
+                    $this->sysinfo('Command "' . $command . '" removed.');
+                    unset($this->plugins[$command]);
+                }
+            }
+            unset($plugin);
+            unset($this->loadedplugin[$pluginClass]);
+        } else {
+            $this->sysinfo('Plugin "' . $name . '" is not loaded.');
+        }
+    }
+
+    protected function runPlugin($plugindata, $nick, $channel, $text)
+    {
+        $class = $plugindata['class'];
+        $method = $plugindata['method'];
+        if (is_callable(array($class, $method)) === true) {
+            $pluginReturn = $class->$method($text, $nick, $channel);
+            switch($pluginReturn['do']) {
+                case 'notice' :
+                    $this->notice($nick, $pluginReturn['content']);
+                    break;
+                case 'privmsg' :
+                    $this->privmsg($channel, $pluginReturn['content']);
+                    break;
+            }
+        } else {
+
+        }
     }
 }
