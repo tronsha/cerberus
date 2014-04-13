@@ -863,14 +863,13 @@ class irc
             }
             if (array_key_exists($pluginClass, $this->loadedplugin) === false) {
                 $this->sysinfo('Load Plugin: ' . $name);
-                $plugin = new $pluginClass;
-                $this->loadedplugin[$pluginClass] = & $plugin;
-                $commands = $plugin->getCommands();
+                $this->loadedplugin[$pluginClass] =& new $pluginClass;
+                $commands = $this->loadedplugin[$pluginClass]->getCommands();
                 foreach ($commands as $data) {
                     $command = $data['command'];
                     if (array_key_exists($command, $this->plugins) === false) {
                         $this->sysinfo('New Command: ' . $command);
-                        $this->plugins[$command]['class'] = & $plugin;
+                        $this->plugins[$command]['class'] =& $this->loadedplugin[$pluginClass];
                         $this->plugins[$command]['method'] = $data['method'];
                     } else {
                         $this->sysinfo('Command "' . $command . '" is already used.');
@@ -886,28 +885,24 @@ class irc
     {
         $pluginClass = 'plugin' . ucfirst($name);
         if (array_key_exists($pluginClass, $this->loadedplugin) === true) {
-            $plugin = $this->loadedplugin[$pluginClass];
-            $commands = $plugin->getCommands();
+            $commands = $this->loadedplugin[$pluginClass]->getCommands();
             foreach ($commands as $data) {
-                $command = $data['command'];
-                if (array_key_exists($command, $this->plugins) === true) {
-                    $this->sysinfo('Command "' . $command . '" removed.');
-                    unset($this->plugins[$command]);
+                if (array_key_exists($data['command'], $this->plugins) === true) {
+                    $this->sysinfo('Command "' . $data['command'] . '" removed.');
+                    unset($this->plugins[$data['command']]);
                 }
             }
-            unset($plugin);
+            $this->sysinfo('Plugin "' . $name . '" removed.');
             unset($this->loadedplugin[$pluginClass]);
         } else {
             $this->sysinfo('Plugin "' . $name . '" is not loaded.');
         }
     }
 
-    protected function runPlugin($plugindata, $nick, $host, $channel, $text)
+    protected function runPlugin(&$plugindata, $nick, $host, $channel, $text)
     {
-        $class = $plugindata['class'];
-        $method = $plugindata['method'];
-        if (is_callable(array($class, $method)) === true) {
-            $pluginReturn = $class->$method($nick, $host, $channel, $text);
+        if (is_callable(array($plugindata['class'], $plugindata['method'])) === true) {
+            $pluginReturn = $plugindata['class']->$plugindata['method']($nick, $host, $channel, $text);
             if (empty($pluginReturn['userrights']) === false
                 && $this->authorizations(trim($host), $pluginReturn['userrights'])
             ) {
