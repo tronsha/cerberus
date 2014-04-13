@@ -97,16 +97,16 @@ class irc
             if (isset($config['log']['directory']) && is_dir($config['log']['directory'])) {
                 $this->config['logfiledirectory'] = $config['log']['directory'];
             }
-            if (isset($config['bot']['error'])) {
+            if (isset($config['log']['error'])) {
                 $this->config['logfile']['error'] = $config['log']['error'] == 1 ? true : false;
             }
-            if (isset($config['bot']['socket'])) {
+            if (isset($config['log']['socket'])) {
                 $this->config['logfile']['socket'] = $config['log']['socket'] == 1 ? true : false;
             }
-            if (isset($config['bot']['sql'])) {
+            if (isset($config['log']['sql'])) {
                 $this->config['logfile']['sql'] = $config['log']['sql'] == 1 ? true : false;
             }
-            if (isset($config['bot']['dailylogfile'])) {
+            if (isset($config['log']['dailylogfile'])) {
                 $this->config['dailylogfile'] = $config['log']['dailylogfile'] == 1 ? true : false;
             }
         }
@@ -611,34 +611,44 @@ class irc
                 $this->notice($nick, "\x01" . $send . "\x01");
             }
         } elseif ($text == '!die') {
-            $isadmin = $this->authorizations(trim($host), self::AUTH_ADMIN);
-            if ($isadmin) {
+            if ($this->authorizations(trim($host), self::AUTH_ADMIN) === true) {
                 $this->quit('Client Quit');
             }
         } else {
-            $isadmin = $this->authorizations(trim($host), self::AUTH_ADMIN);
-            if ($isadmin) {
-                $splitText = explode(' ', $text);
-                switch ($splitText[0]) {
-                    case '!load':
-                        if (empty($splitText[1]) === false) {
-                            $this->loadPlugin($splitText[1]);
+            $splitText = explode(' ', $text);
+            switch ($splitText[0]) {
+                case '!load':
+                    if ($this->authorizations(
+                        trim($host),
+                        self::AUTH_ADMIN
+                    ) === true && empty($splitText[1]) === false
+                    ) {
+                        $this->loadPlugin($splitText[1]);
+                    }
+                    break;
+                case '!unload':
+                    if ($this->authorizations(
+                        trim($host),
+                        self::AUTH_ADMIN
+                    ) === true && empty($splitText[1]) === false
+                    ) {
+                        $this->unloadPlugin($splitText[1]);
+                    }
+                    break;
+                default:
+                    if (is_array($this->plugins)) {
+                        $command = array_shift($splitText);
+                        if (array_key_exists($command, $this->plugins)) {
+                            $this->runPlugin(
+                                $this->plugins[$command],
+                                $nick,
+                                $host,
+                                $channel,
+                                implode(' ', $splitText)
+                            );
                         }
-                        break;
-                    case '!unload':
-                        if (empty($splitText[1]) === false) {
-                            $this->unloadPlugin($splitText[1]);
-                        }
-                        break;
-                    default:
-                        if (is_array($this->plugins)) {
-                            $command = array_shift($splitText);
-                            if (array_key_exists($command, $this->plugins)) {
-                                $this->runPlugin($this->plugins[$command], $nick, $channel, implode(' ', $splitText));
-                            }
-                        }
-                        return null;
-                }
+                    }
+                    return null;
             }
         }
     }
@@ -846,21 +856,21 @@ class irc
                 $this->plugins = array();
             }
             $pluginClass = 'plugin' . ucfirst($name);
-            if(in_array($pluginClass, $this->loadedpluginfiles) === false) {
+            if (in_array($pluginClass, $this->loadedpluginfiles) === false) {
                 include($file);
                 $this->sysinfo('Load File: ' . $file);
                 $this->loadedpluginfiles[] = $pluginClass;
             }
-            if(array_key_exists($pluginClass, $this->loadedplugin) === false) {
+            if (array_key_exists($pluginClass, $this->loadedplugin) === false) {
                 $this->sysinfo('Load Plugin: ' . $name);
                 $plugin = new $pluginClass;
-                $this->loadedplugin[$pluginClass] = &$plugin;
+                $this->loadedplugin[$pluginClass] = & $plugin;
                 $commands = $plugin->getCommands();
                 foreach ($commands as $data) {
                     $command = $data['command'];
                     if (array_key_exists($command, $this->plugins) === false) {
                         $this->sysinfo('New Command: ' . $command);
-                        $this->plugins[$command]['class'] = &$plugin;
+                        $this->plugins[$command]['class'] = & $plugin;
                         $this->plugins[$command]['method'] = $data['method'];
                     } else {
                         $this->sysinfo('Command "' . $command . '" is already used.');
@@ -875,7 +885,7 @@ class irc
     protected function unloadPlugin($name)
     {
         $pluginClass = 'plugin' . ucfirst($name);
-        if(array_key_exists($pluginClass, $this->loadedplugin) === true) {
+        if (array_key_exists($pluginClass, $this->loadedplugin) === true) {
             $plugin = $this->loadedplugin[$pluginClass];
             $commands = $plugin->getCommands();
             foreach ($commands as $data) {
@@ -892,22 +902,24 @@ class irc
         }
     }
 
-    protected function runPlugin($plugindata, $nick, $channel, $text)
+    protected function runPlugin($plugindata, $nick, $host, $channel, $text)
     {
         $class = $plugindata['class'];
         $method = $plugindata['method'];
         if (is_callable(array($class, $method)) === true) {
-            $pluginReturn = $class->$method($text, $nick, $channel);
-            switch($pluginReturn['do']) {
-                case 'notice' :
-                    $this->notice($nick, $pluginReturn['content']);
-                    break;
-                case 'privmsg' :
-                    $this->privmsg($channel, $pluginReturn['content']);
-                    break;
+            $pluginReturn = $class->$method($nick, $host, $channel, $text);
+            if (empty($pluginReturn['userrights']) === false
+                && $this->authorizations(trim($host), $pluginReturn['userrights'])
+            ) {
+                switch ($pluginReturn['do']) {
+                    case 'notice' :
+                        $this->notice($nick, $pluginReturn['content']);
+                        break;
+                    case 'privmsg' :
+                        $this->privmsg($channel, $pluginReturn['content']);
+                        break;
+                }
             }
-        } else {
-
         }
     }
 }

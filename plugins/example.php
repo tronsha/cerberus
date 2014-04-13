@@ -13,8 +13,8 @@ class pluginExample extends plugin
         );
     }
 
-    public function myecho($text)
+    public function myecho($nick, $host, $channel, $text)
     {
-        return array('do' => 'privmsg', 'content' => $text);
+        return array('do' => 'privmsg', 'content' => $text, 'userrights' => self::AUTH_MEMBER);
     }
 }
