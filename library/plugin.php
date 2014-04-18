@@ -1,11 +1,7 @@
 <?php
 
-class plugin
+class Plugin extends Cerberus
 {
-    const AUTH_NONE = 1;
-    const AUTH_MEMBER = 2;
-    const AUTH_ADMIN = 3;
-
     protected $commands = null;
 
     public function __construct()

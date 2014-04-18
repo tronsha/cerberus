@@ -1,6 +1,6 @@
 <?php
 
-class pluginExample extends plugin
+class PluginExample extends Plugin
 {
     protected function init()
     {

@@ -1,10 +1,10 @@
 <?php
 
-class db
+class Db
 {
-    protected $dbms = NULL;
+    protected $dbms = null;
     protected $config = array();
-    protected $link = NULL;
+    protected $link = null;
 
     public function __construct($dbms, $config)
     {
@@ -24,28 +24,29 @@ class db
         $password = $this->config['password'];
         $dbname = $this->config['dbname'];
 
-        $this->link = mysql_connect($host.":".$port, $username, $password);
+        $this->link = mysql_connect($host . ":" . $port, $username, $password);
         $this->select_db($dbname);
         return $this->link;
-    } 
+    }
 
-    public function select_db($dbname = NULL)
+    public function select_db($dbname = null)
     {
-        if($dbname === NULL)
+        if ($dbname === null) {
             $dbname = $this->config['dbname'];
+        }
 
         return mysql_select_db($dbname, $this->link);
-    }      
+    }
 
     public function close()
-    {     
+    {
         return mysql_close($this->link);
-    } 
+    }
 
     public function query($query)
-    {     
+    {
         return mysql_query($query, $this->link);
-    }   
+    }
 
     public function fetch_array($result)
     {
@@ -60,12 +61,12 @@ class db
     public function fetch_assoc($result)
     {
         return mysql_fetch_assoc($result);
-    }  
+    }
 
-    public function result($result, $row, $field = NULL)
+    public function result($result, $row, $field = null)
     {
-        return ($field === NULL ? mysql_result($result, $row) : mysql_result($result, $row, $field));
-    } 
+        return ($field === null ? mysql_result($result, $row) : mysql_result($result, $row, $field));
+    }
 
     public function insert_id()
     {
@@ -73,7 +74,7 @@ class db
     }
 
     public function ping()
-    {      
+    {
         return mysql_ping($this->link);
     }
 

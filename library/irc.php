@@ -21,12 +21,8 @@
  * @author Stefan Hüsges <http://www.mpcx.net>
  */
 
-class irc
+class Irc extends Cerberus
 {
-    const AUTH_NONE = 1;
-    const AUTH_MEMBER = 2;
-    const AUTH_ADMIN = 3;
-
     protected $server = array();
     protected $bot = array();
     protected $db = array();
@@ -47,7 +43,7 @@ class irc
 
     public function __construct($config = null)
     {
-        $this->time['script_start'] = getmicrotime();
+        $this->time['script_start'] = $this->getmicrotime();
         $this->bot['pid'] = getmypid();
         $this->bot['nick'] = null;
         $this->server['network'] = null;
@@ -60,7 +56,7 @@ class irc
         $this->config['dbms'] = array('mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite');
         $this->config['autorejoin'] = false;
         $this->config['ctcp'] = false;
-        $this->config['logfiledirectory'] = realpath(dirname(__FILE__) . '/..') . '/log/';
+        $this->config['logfiledirectory'] = PATH . '/log/';
         $this->config['logfile']['error'] = true;
         $this->config['logfile']['socket'] = false;
         $this->config['logfile']['sql'] = false;
@@ -122,7 +118,10 @@ class irc
             $this->sql_query('UPDATE `bot` SET `stop` = NOW() WHERE `id` = "' . $this->bot['id'] . '"');
             $this->db->close();
         }
-        printf(PHP_EOL . PHP_EOL . "Execute time: %.5fs" . PHP_EOL, getmicrotime() - $this->time['script_start']);
+        printf(
+            PHP_EOL . PHP_EOL . "Execute time: %.5fs" . PHP_EOL,
+            $this->getmicrotime() - $this->time['script_start']
+        );
     }
 
     public function setNetwork($network)
@@ -160,6 +159,11 @@ class irc
             );
         }
         return $this;
+    }
+
+    protected function sysinfo($text)
+    {
+        echo '**** ' . $text . ' ****' . PHP_EOL;
     }
 
     public function init()
@@ -266,7 +270,7 @@ class irc
                 return false;
             }
         }
-        $this->time['irc_connect'] = getmicrotime();
+        $this->time['irc_connect'] = $this->getmicrotime();
         //stream_set_blocking($this->fp, 0);
         if ($this->server['password'] !== null) {
             $this->write('PASS ' . $this->server['password']);
@@ -318,11 +322,6 @@ class irc
         foreach ($this->reconnect['channel'] as $channel) {
             $this->join($channel);
         }
-    }
-
-    protected function sysinfo($text)
-    {
-        echo '**** ' . $text . ' ****' . PHP_EOL;
     }
 
     protected function sql_query($sql)
@@ -451,11 +450,11 @@ class irc
                     $this->command($input);
                 }
             }
-            if ($this->nowrite === false && floor(getmicrotime() - $this->time['irc_connect']) > 10) {
+            if ($this->nowrite === false && floor($this->getmicrotime() - $this->time['irc_connect']) > 10) {
                 $this->send();
             }
             unset($input);
-            msleep(8);
+            $this->msleep(8);
             if ((time() - $this->lastping) > 600) {
                 break;
             }
@@ -601,7 +600,7 @@ class irc
                     break;
                 case 'FINGER':
                     $send = 'FINGER ' . $this->config['info']['name'] . (isset($this->config['info']['homepage']) ? ' (' . $this->config['info']['homepage'] . ')' : '') . ' Idle ' . round(
-                        getmicrotime() - $this->time['irc_connect']
+                        $this->getmicrotime() - $this->time['irc_connect']
                     ) . ' seconds';
                     break;
                 default:
@@ -850,7 +849,7 @@ class irc
 
     protected function loadPlugin($name)
     {
-        $file = realpath(dirname(__FILE__) . '/..') . '/plugins/' . $name . '.php';
+        $file = PATH . '/plugins/' . $name . '.php';
         if (file_exists($file)) {
             if ($this->plugins === null) {
                 $this->plugins = array();
