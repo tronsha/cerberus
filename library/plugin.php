@@ -2,20 +2,21 @@
 
 class Plugin extends Cerberus
 {
-    protected $commands = null;
+    protected $irc = null;
 
-    public function __construct()
+    public function __construct(&$irc)
     {
+        $this->irc =& $irc;
         $this->init();
     }
 
     protected function init()
     {
-
     }
 
-    public function getCommands()
+    public function onLoad($data)
     {
-        return $this->commands;
+        $this->irc->notice($data['nick'], 'Load: ' . get_called_class());
+        return true;
     }
 }

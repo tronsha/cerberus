@@ -37,9 +37,8 @@ class Irc extends Cerberus
     protected $version = array();
     protected $config = array();
     protected $reconnect = array();
-    protected $plugins = null;
-    protected $loadedplugin = array();
-    protected $loadedpluginfiles = array();
+    protected $loaded = array();
+    protected $pluginevents = array();
 
     public function __construct($config = null)
     {
@@ -53,6 +52,8 @@ class Irc extends Cerberus
         $this->config['db'] = array();
         $this->config['info'] = array('name' => 'Cerberus');
         $this->reconnect['channel'] = array();
+        $this->loaded['files'] = array();
+        $this->loaded['classes'] = array();
         $this->config['dbms'] = array('mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite');
         $this->config['autorejoin'] = false;
         $this->config['ctcp'] = false;
@@ -617,36 +618,22 @@ class Irc extends Cerberus
             $splitText = explode(' ', $text);
             switch ($splitText[0]) {
                 case '!load':
-                    if ($this->authorizations(
-                        trim($host),
-                        self::AUTH_ADMIN
-                    ) === true && empty($splitText[1]) === false
-                    ) {
-                        $this->loadPlugin($splitText[1]);
-                    }
-                    break;
-                case '!unload':
-                    if ($this->authorizations(
-                        trim($host),
-                        self::AUTH_ADMIN
-                    ) === true && empty($splitText[1]) === false
-                    ) {
-                        $this->unloadPlugin($splitText[1]);
+                    if (empty($splitText[1]) === false) {
+                        if ($this->authorizations(trim($host), self::AUTH_ADMIN) === true) {
+                            if (preg_match('/^[a-z]+$/i', $splitText[1]) > 0) {
+                                $this->loadPlugin(
+                                    $splitText[1],
+                                    array('nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text)
+                                );
+                            }
+                        }
                     }
                     break;
                 default:
-                    if (is_array($this->plugins)) {
-                        $command = array_shift($splitText);
-                        if (array_key_exists($command, $this->plugins)) {
-                            $this->runPlugin(
-                                $this->plugins[$command],
-                                $nick,
-                                $host,
-                                $channel,
-                                implode(' ', $splitText)
-                            );
-                        }
-                    }
+                    $this->runPluginEvent(
+                        __FUNCTION__,
+                        array('nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text)
+                    );
                     return null;
             }
         }
@@ -715,6 +702,7 @@ class Irc extends Cerberus
                 ) . '", `channel` = "' . $this->db->escape_string($channel) . '", `bot_id` = "' . $this->bot['id'] . '"'
             );
         }
+        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'channel' => $channel));
     }
 
     protected function onKick($bouncer, $rest)
@@ -778,7 +766,7 @@ class Irc extends Cerberus
         }
     }
 
-    protected function privmsg($to, $text)
+    public function privmsg($to, $text)
     {
         $this->sql_query(
             'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
@@ -787,7 +775,7 @@ class Irc extends Cerberus
         );
     }
 
-    protected function notice($to, $text)
+    public function notice($to, $text)
     {
         $this->sql_query(
             'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
@@ -796,7 +784,7 @@ class Irc extends Cerberus
         );
     }
 
-    protected function quit($text)
+    public function quit($text)
     {
         $this->sql_query(
             'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
@@ -805,7 +793,7 @@ class Irc extends Cerberus
         );
     }
 
-    protected function mode($text = null)
+    public function mode($text = null)
     {
         $this->sql_query(
             'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
@@ -814,7 +802,7 @@ class Irc extends Cerberus
         );
     }
 
-    protected function join($channel)
+    public function join($channel)
     {
         $this->sql_query(
             'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
@@ -835,7 +823,7 @@ class Irc extends Cerberus
         );
     }
 
-    protected function authorizations($host, $level = 0)
+    public function authorizations($host, $level = 0)
     {
         $sql = 'SELECT `host` FROM `user` WHERE `network` = "' . $this->server['network'] . '" AND `authorizations` >= ' . $level . '';
         $query = $this->sql_query($sql);
@@ -847,73 +835,46 @@ class Irc extends Cerberus
         return false;
     }
 
-    protected function loadPlugin($name)
+    protected function loadPlugin($name, $data = null)
     {
+        $name = strtolower($name);
         $file = PATH . '/plugins/' . $name . '.php';
-        if (file_exists($file)) {
-            if ($this->plugins === null) {
-                $this->plugins = array();
-            }
+        if (file_exists($file) === true) {
             $pluginClass = 'plugin' . ucfirst($name);
-            if (in_array($pluginClass, $this->loadedpluginfiles) === false) {
-                include($file);
+            if (in_array($pluginClass, $this->loaded['files']) === false) {
+                include_once($file);
                 $this->sysinfo('Load File: ' . $file);
-                $this->loadedpluginfiles[] = $pluginClass;
+                $this->loaded['files'][] = $pluginClass;
             }
-            if (array_key_exists($pluginClass, $this->loadedplugin) === false) {
-                $this->sysinfo('Load Plugin: ' . $name);
-                $this->loadedplugin[$pluginClass] =& new $pluginClass;
-                $commands = $this->loadedplugin[$pluginClass]->getCommands();
-                foreach ($commands as $data) {
-                    $command = $data['command'];
-                    if (array_key_exists($command, $this->plugins) === false) {
-                        $this->sysinfo('New Command: ' . $command);
-                        $this->plugins[$command]['class'] =& $this->loadedplugin[$pluginClass];
-                        $this->plugins[$command]['method'] = $data['method'];
+            if (class_exists($pluginClass, false) === true) {
+                if (array_key_exists($pluginClass, $this->loaded['classes']) === false) {
+                    $plugin =& new $pluginClass($this);
+                    if (is_subclass_of($pluginClass, 'Plugin') === true) {
+                        $this->sysinfo('Load Plugin: ' . $name);
+                        $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
                     } else {
-                        $this->sysinfo('Command "' . $command . '" is already used.');
+                        $this->sysinfo($name . ' isn\'t a PluginClass.');
                     }
+                } else {
+                    $this->sysinfo('Plugin "' . $name . '" is already loaded.');
                 }
             } else {
-                $this->sysinfo('Plugin "' . $name . '" is already loaded.');
+                $this->sysinfo($name . ' don\'t exists.');
             }
         }
     }
 
-    protected function unloadPlugin($name)
+    protected function runPluginEvent($event, $data)
     {
-        $pluginClass = 'plugin' . ucfirst($name);
-        if (array_key_exists($pluginClass, $this->loadedplugin) === true) {
-            $commands = $this->loadedplugin[$pluginClass]->getCommands();
-            foreach ($commands as $data) {
-                if (array_key_exists($data['command'], $this->plugins) === true) {
-                    $this->sysinfo('Command "' . $data['command'] . '" removed.');
-                    unset($this->plugins[$data['command']]);
-                }
+        if (array_key_exists($event, $this->pluginevents)) {
+            foreach ($this->pluginevents[$event] as $pluginClass) {
+                $pluginClass->$event($data);
             }
-            $this->sysinfo('Plugin "' . $name . '" removed.');
-            unset($this->loadedplugin[$pluginClass]);
-        } else {
-            $this->sysinfo('Plugin "' . $name . '" is not loaded.');
         }
     }
 
-    protected function runPlugin(&$plugindata, $nick, $host, $channel, $text)
+    public function addEvent($event, $objekt)
     {
-        if (is_callable(array($plugindata['class'], $plugindata['method'])) === true) {
-            $pluginReturn = $plugindata['class']->$plugindata['method']($nick, $host, $channel, $text);
-            if (empty($pluginReturn['userrights']) === false
-                && $this->authorizations(trim($host), $pluginReturn['userrights'])
-            ) {
-                switch ($pluginReturn['do']) {
-                    case 'notice' :
-                        $this->notice($nick, $pluginReturn['content']);
-                        break;
-                    case 'privmsg' :
-                        $this->privmsg($channel, $pluginReturn['content']);
-                        break;
-                }
-            }
-        }
+        $this->pluginevents[$event][] =& $objekt;
     }
 }
