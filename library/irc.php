@@ -165,7 +165,7 @@ class Irc extends Cerberus
         return $this;
     }
 
-    protected function sysinfo($text)
+    public function sysinfo($text)
     {
         echo '**** ' . $text . ' ****' . PHP_EOL;
     }
@@ -565,12 +565,12 @@ class Irc extends Cerberus
         $this->sql_query($sql_log);
     }
 
-    protected function on432()
+    protected function on432() # ERR_ERRONEUSNICKNAME
     {
         $this->otherNick();
     }
 
-    protected function on433()
+    protected function on433() # ERR_NICKNAMEINUSE
     {
         $this->otherNick();
     }
@@ -584,7 +584,7 @@ class Irc extends Cerberus
         $this->write('NICK ' . $this->bot['nick']);
     }
 
-    protected function on322($rest, $text)
+    protected function on322($rest, $text) # RPL_LIST
     {
         list($dummy, $channel, $anz_user) = explode(' ', $rest);
         $sql_list = 'INSERT INTO channellist SET '
@@ -596,17 +596,17 @@ class Irc extends Cerberus
         $this->sql_query($sql_list);
     }
 
-    protected function on323()
+    protected function on323() # RPL_LISTEND
     {
         $this->runPluginEvent(__FUNCTION__, array());
     }
 
-    protected function on330($nick, $auth)
+    protected function on330($nick, $auth) # RPL_WHOISACCOUNT
     {
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'auth' => $auth));
     }
 
-    protected function on318()
+    protected function on318() # RPL_ENDOFWHOIS
     {
         $this->runPluginEvent(__FUNCTION__, array());
     }
@@ -681,7 +681,7 @@ class Irc extends Cerberus
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
     }
 
-    protected function on353($rest, $text)
+    protected function on353($rest, $text) # RPL_NAMREPLY
     {
         list($me, $dummy, $channel) = explode(' ', $rest);
         $user_array = explode(' ', $text);
@@ -697,7 +697,7 @@ class Irc extends Cerberus
         }
     }
 
-    protected function on332($rest, $text)
+    protected function on332($rest, $text) # RPL_TOPIC
     {
         list($me, $channel) = explode(' ', $rest);
         $this->onTopic($channel, $text);
@@ -919,14 +919,18 @@ class Irc extends Cerberus
     protected function runPluginEvent($event, $data)
     {
         if (array_key_exists($event, $this->pluginevents)) {
-            foreach ($this->pluginevents[$event] as $pluginClass) {
-                $pluginClass->$event($data);
+            for ($priority = 10; $priority > 0; $priority--) {
+                if (array_key_exists($priority, $this->pluginevents[$event])) {
+                    foreach ($this->pluginevents[$event][$priority] as $pluginClass) {
+                        $pluginClass->$event($data);
+                    }
+                }
             }
         }
     }
 
-    public function addEvent($event, $object)
+    public function addEvent($event, $object, $priority = 5)
     {
-        $this->pluginevents[$event][] = $object;
+        $this->pluginevents[$event][$priority][] = $object;
     }
 }
