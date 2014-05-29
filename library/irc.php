@@ -106,6 +106,9 @@ class Irc extends Cerberus
             if (isset($config['log']['dailylogfile'])) {
                 $this->config['dailylogfile'] = $config['log']['dailylogfile'] == 1 ? true : false;
             }
+            if (isset($config['plugins']['autoload'])) {
+                $this->config['plugins']['autoload'] = explode(',', $config['plugins']['autoload']);
+            }
         }
     }
 
@@ -172,7 +175,6 @@ class Irc extends Cerberus
         if (isset($this->server['network']) === false || $this->db === null) {
             return false;
         }
-
         $this->db_connect();
         $this->sql_query(
             'INSERT INTO `bot` SET `pid` = "' . $this->bot['pid'] . '", `start` = NOW(), `nick` = "' . $this->db->escape_string(
@@ -188,6 +190,9 @@ class Irc extends Cerberus
                 $this->version['sql'] = $this->db->result($this->sql_query('SELECT VERSION()'), 0, 0);
                 $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
             }
+        }
+        if (is_array($this->config['plugins']['autoload']) === true) {
+            $this->autoloadPlugins();
         }
         $this->init = true;
         return true;
@@ -488,11 +493,20 @@ class Irc extends Cerberus
             case '001':
                 $this->nowrite = false;
                 break;
+            case '318':
+                $this->on318();
+                break;
             case '322':
                 $this->on322($rest, $text);
                 break;
+            case '323':
+                $this->on323();
+                break;
             case '324':
                 break; //(Channel-Modes)
+            case '330':
+                $this->on330($nick, $rest);
+                break;
             case '332':
                 $this->on332($rest, $text);
                 break;
@@ -582,6 +596,21 @@ class Irc extends Cerberus
         $this->sql_query($sql_list);
     }
 
+    protected function on323()
+    {
+        $this->runPluginEvent(__FUNCTION__, array());
+    }
+
+    protected function on330($nick, $auth)
+    {
+        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'auth' => $auth));
+    }
+
+    protected function on318()
+    {
+        $this->runPluginEvent(__FUNCTION__, array());
+    }
+
     protected function onPrivmsg($nick, $host, $channel, $text)
     {
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
@@ -610,10 +639,6 @@ class Irc extends Cerberus
             if (empty($send) === false) {
                 $this->notice($nick, "\x01" . $send . "\x01");
             }
-        } elseif ($text == '!die') {
-            if ($this->authorizations(trim($host), self::AUTH_ADMIN) === true) {
-                $this->quit('Client Quit');
-            }
         } else {
             $splitText = explode(' ', $text);
             switch ($splitText[0]) {
@@ -641,6 +666,7 @@ class Irc extends Cerberus
 
     protected function onNotice($nick, $text)
     {
+        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
     }
 
     protected function onNick($nick, $text)
@@ -652,6 +678,7 @@ class Irc extends Cerberus
             $text
         ) . '" WHERE `bot_id` = "' . $this->bot['id'] . '" AND `user` = "' . $this->db->escape_string($nick) . '"';
         $this->sql_query($sql);
+        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
     }
 
     protected function on353($rest, $text)
@@ -708,16 +735,21 @@ class Irc extends Cerberus
     protected function onKick($bouncer, $rest)
     {
         list($channel, $nick) = explode(' ', $rest);
+        $me = $nick == $this->var['me'] ? true : false;
         $this->onPart($nick, $channel);
-
-        if ($this->config['autorejoin'] === true && $nick == $this->var['me']) {
+        if ($this->config['autorejoin'] === true && $me === true) {
             $this->join($channel);
         }
+        $this->runPluginEvent(
+            __FUNCTION__,
+            array('channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer)
+        );
     }
 
     protected function onPart($nick, $channel)
     {
-        if ($nick == $this->var['me']) {
+        $me = $nick == $this->var['me'] ? true : false;
+        if ($me === true) {
             $this->sql_query(
                 'DELETE FROM `channel` WHERE `channel` = "' . $this->db->escape_string(
                     $channel
@@ -737,6 +769,7 @@ class Irc extends Cerberus
                 ) . '" AND `bot_id` = "' . $this->bot['id'] . '"'
             );
         }
+        $this->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'me' => $me, 'nick' => $nick));
     }
 
     protected function onQuit($nick)
@@ -746,6 +779,7 @@ class Irc extends Cerberus
                 $nick
             ) . '" AND `bot_id` = "' . $this->bot['id'] . '"'
         );
+        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick));
     }
 
     protected function onMode($mode)
@@ -764,6 +798,7 @@ class Irc extends Cerberus
         if ($isadmin) {
             $this->join($channel);
         }
+        $this->runPluginEvent(__FUNCTION__, array('channel' => $channel));
     }
 
     public function privmsg($to, $text)
@@ -811,6 +846,15 @@ class Irc extends Cerberus
         );
     }
 
+    public function part($channel)
+    {
+        $this->sql_query(
+            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
+                'PART ' . $channel
+            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
+        );
+    }
+
     protected function channellist()
     {
         $this->sql_query(
@@ -835,9 +879,17 @@ class Irc extends Cerberus
         return false;
     }
 
+    protected function autoloadPlugins()
+    {
+        foreach ($this->config['plugins']['autoload'] as $plugin) {
+            $this->loadPlugin($plugin);
+        }
+    }
+
     protected function loadPlugin($name, $data = null)
     {
         $name = strtolower($name);
+        $name = preg_replace('/[^a-z]/', '', $name);
         $file = PATH . '/plugins/' . $name . '.php';
         if (file_exists($file) === true) {
             $pluginClass = 'plugin' . ucfirst($name);
@@ -848,7 +900,7 @@ class Irc extends Cerberus
             }
             if (class_exists($pluginClass, false) === true) {
                 if (array_key_exists($pluginClass, $this->loaded['classes']) === false) {
-                    $plugin =& new $pluginClass($this);
+                    $plugin = new $pluginClass($this);
                     if (is_subclass_of($pluginClass, 'Plugin') === true) {
                         $this->sysinfo('Load Plugin: ' . $name);
                         $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
@@ -873,8 +925,8 @@ class Irc extends Cerberus
         }
     }
 
-    public function addEvent($event, $objekt)
+    public function addEvent($event, $object)
     {
-        $this->pluginevents[$event][] =& $objekt;
+        $this->pluginevents[$event][] = $object;
     }
 }
