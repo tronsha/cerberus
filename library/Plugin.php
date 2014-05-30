@@ -12,14 +12,21 @@ abstract class Plugin extends Cerberus
     /**
      * @param Irc $irc
      */
-    public function __construct($irc)
+    public function __construct(Irc $irc)
     {
         $this->irc = $irc;
         $this->init();
     }
 
+    /**
+     * abstract method for consructor logic
+     */
     abstract protected function init();
 
+    /**
+     * @param array $data
+     * @return bool
+     */
     public function onLoad($data)
     {
         $this->irc->notice($data['nick'], 'Load: ' . get_called_class());

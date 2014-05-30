@@ -37,12 +37,18 @@ class Cerberus
         $this->config = parse_ini_file($this->getPath() . '/config.ini', true);
     }
 
-    public function createIrc()
+    /**
+     * run me as main method
+     */
+    public function run()
     {
         $irc = new Irc($this->config);
         $irc->connect();
     }
 
+    /**
+     * @return float
+     */
     protected function getMicrotime()
     {
         if (version_compare(phpversion(), '5.0', '<') === true) {
@@ -53,9 +59,12 @@ class Cerberus
         }
     }
 
-    protected function msleep($msec)
+    /**
+     * @param int $milliSeconds
+     */
+    protected function msleep($milliSeconds)
     {
-        usleep($msec * 1000);
+        usleep($milliSeconds * 1000);
     }
 
     /**

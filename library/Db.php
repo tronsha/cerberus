@@ -41,26 +41,45 @@ class Db
         return mysql_select_db($dbname, $this->link);
     }
 
+    /**
+     * @return bool
+     */
     public function close()
     {
         return mysql_close($this->link);
     }
 
+    /**
+     * @param string $query
+     * @return resource
+     */
     public function query($query)
     {
         return mysql_query($query, $this->link);
     }
 
+    /**
+     * @param resource $result
+     * @return array
+     */
     public function fetch_array($result)
     {
         return mysql_fetch_array($result);
     }
 
+    /**
+     * @param resource $result
+     * @return array
+     */
     public function fetch_row($result)
     {
         return mysql_fetch_row($result);
     }
 
+    /**
+     * @param resource $result
+     * @return array
+     */
     public function fetch_assoc($result)
     {
         return mysql_fetch_assoc($result);
@@ -71,21 +90,34 @@ class Db
         return ($field === null ? mysql_result($result, $row) : mysql_result($result, $row, $field));
     }
 
+    /**
+     * @return int
+     */
     public function insert_id()
     {
         return mysql_insert_id($this->link);
     }
 
+    /**
+     * @return bool
+     */
     public function ping()
     {
         return mysql_ping($this->link);
     }
 
+    /**
+     * @return string
+     */
     public function error()
     {
         return mysql_error($this->link);
     }
 
+    /**
+     * @param string $data
+     * @return string
+     */
     public function escape_string($data)
     {
         return mysql_real_escape_string($data, $this->link);

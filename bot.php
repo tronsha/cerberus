@@ -8,4 +8,4 @@ if (version_compare(phpversion(), '5.1', '>=') === true) {
 require_once("vendor/autoload.php");
 
 $cerberus = new \Cerberus\Cerberus();
-$cerberus->createIrc();
+$cerberus->run();

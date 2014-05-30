@@ -28,7 +28,13 @@ class Irc extends Cerberus
     protected $server = array();
     protected $bot = array();
     protected $db = array();
+    /**
+     * @var string
+     */
     protected $dbms;
+    /**
+     * @var resource
+     */
     protected $fp = false;
     protected $init = false;
     protected $run;
@@ -49,8 +55,6 @@ class Irc extends Cerberus
         $this->bot['nick'] = null;
         $this->server['network'] = null;
         $this->server['password'] = null;
-        $this->db = null;
-        $this->dbms = null;
         $this->config['db'] = array();
         $this->config['info'] = array('name' => 'Cerberus');
         $this->reconnect['channel'] = array();
