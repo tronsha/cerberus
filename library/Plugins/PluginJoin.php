@@ -1,6 +1,8 @@
 <?php
 
-class PluginQuit extends Plugin
+namespace Cerberus\Plugins;
+
+class PluginJoin extends Plugin
 {
     protected function init()
     {
@@ -11,7 +13,7 @@ class PluginQuit extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->notice($data['nick'], 'New Command: !die');
+            $this->irc->notice($data['nick'], 'New Command: !join [#channel]');
         }
         return $returnValue;
     }
@@ -20,8 +22,8 @@ class PluginQuit extends Plugin
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '!die') {
-            $this->irc->quit('Client Quit');
+        if ($command == '!join') {
+            $this->irc->join(array_shift($splitText));
         }
     }
 }

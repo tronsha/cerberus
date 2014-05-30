@@ -1,5 +1,7 @@
 <?php
 
+namespace Cerberus;
+
 class Plugin extends Cerberus
 {
     protected $irc = null;

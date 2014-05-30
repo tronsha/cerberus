@@ -21,11 +21,7 @@
  * @author Stefan Hüsges <http://www.mpcx.net>
  */
 
-define('PATH', realpath(dirname(__FILE__) . '/..'));
-
-require_once(PATH . '/library/irc.php');
-require_once(PATH . '/library/db.php');
-require_once(PATH . '/library/plugin.php');
+namespace Cerberus;
 
 class Cerberus
 {
@@ -38,16 +34,16 @@ class Cerberus
     public function __construct()
     {
         set_time_limit(0);
-        $this->config = parse_ini_file(PATH . '/config.ini', true);
+        $this->config = parse_ini_file($this->getPath() . '/config.ini', true);
     }
 
-    public function irc()
+    public function createIrc()
     {
-        $irc = new irc($this->config);
+        $irc = new Irc($this->config);
         $irc->connect();
     }
 
-    protected function getmicrotime()
+    protected function getMicrotime()
     {
         if (version_compare(phpversion(), '5.0', '<') === true) {
             list($usec, $sec) = @explode(" ", @microtime());
@@ -60,5 +56,13 @@ class Cerberus
     protected function msleep($msec)
     {
         usleep($msec * 1000);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getPath()
+    {
+        return realpath(dirname(__FILE__) . '/..');
     }
 }

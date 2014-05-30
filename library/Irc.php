@@ -21,6 +21,8 @@
  * @author Stefan Hüsges <http://www.mpcx.net>
  */
 
+namespace Cerberus;
+
 class Irc extends Cerberus
 {
     protected $server = array();
@@ -42,7 +44,7 @@ class Irc extends Cerberus
 
     public function __construct($config = null)
     {
-        $this->time['script_start'] = $this->getmicrotime();
+        $this->time['script_start'] = $this->getMicrotime();
         $this->bot['pid'] = getmypid();
         $this->bot['nick'] = null;
         $this->server['network'] = null;
@@ -57,7 +59,7 @@ class Irc extends Cerberus
         $this->config['dbms'] = array('mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite');
         $this->config['autorejoin'] = false;
         $this->config['ctcp'] = false;
-        $this->config['logfiledirectory'] = PATH . '/log/';
+        $this->config['logfiledirectory'] = $this->getPath() . '/log/';
         $this->config['logfile']['error'] = true;
         $this->config['logfile']['socket'] = false;
         $this->config['logfile']['sql'] = false;
@@ -124,7 +126,7 @@ class Irc extends Cerberus
         }
         printf(
             PHP_EOL . PHP_EOL . "Execute time: %.5fs" . PHP_EOL,
-            $this->getmicrotime() - $this->time['script_start']
+            $this->getMicrotime() - $this->time['script_start']
         );
     }
 
@@ -144,7 +146,7 @@ class Irc extends Cerberus
     {
         $this->dbms = strtolower($dbms);
         $this->config['db'] = $config;
-        $this->db = new db($this->dbms, $this->config['db']);
+        $this->db = new Db($this->dbms, $this->config['db']);
         return $this;
     }
 
@@ -175,7 +177,7 @@ class Irc extends Cerberus
         if (isset($this->server['network']) === false || $this->db === null) {
             return false;
         }
-        $this->db_connect();
+        $this->dbConnect();
         $this->sql_query(
             'INSERT INTO `bot` SET `pid` = "' . $this->bot['pid'] . '", `start` = NOW(), `nick` = "' . $this->db->escape_string(
                 $this->bot['nick']
@@ -209,7 +211,7 @@ class Irc extends Cerberus
         return ucfirst($nick);
     }
 
-    protected function db_connect()
+    protected function dbConnect()
     {
         $this->db->connect();
         $this->sql_error();
@@ -276,7 +278,7 @@ class Irc extends Cerberus
                 return false;
             }
         }
-        $this->time['irc_connect'] = $this->getmicrotime();
+        $this->time['irc_connect'] = $this->getMicrotime();
         //stream_set_blocking($this->fp, 0);
         if ($this->server['password'] !== null) {
             $this->write('PASS ' . $this->server['password']);
@@ -456,7 +458,7 @@ class Irc extends Cerberus
                     $this->command($input);
                 }
             }
-            if ($this->nowrite === false && floor($this->getmicrotime() - $this->time['irc_connect']) > 10) {
+            if ($this->nowrite === false && floor($this->getMicrotime() - $this->time['irc_connect']) > 10) {
                 $this->send();
             }
             unset($input);
@@ -630,7 +632,7 @@ class Irc extends Cerberus
                     break;
                 case 'FINGER':
                     $send = 'FINGER ' . $this->config['info']['name'] . (isset($this->config['info']['homepage']) ? ' (' . $this->config['info']['homepage'] . ')' : '') . ' Idle ' . round(
-                        $this->getmicrotime() - $this->time['irc_connect']
+                        $this->getMicrotime() - $this->time['irc_connect']
                     ) . ' seconds';
                     break;
                 default:
@@ -890,7 +892,7 @@ class Irc extends Cerberus
     {
         $name = strtolower($name);
         $name = preg_replace('/[^a-z]/', '', $name);
-        $file = PATH . '/plugins/' . $name . '.php';
+        $file = $this->getPath() . '/plugins/' . $name . '.php';
         if (file_exists($file) === true) {
             $pluginClass = 'plugin' . ucfirst($name);
             if (in_array($pluginClass, $this->loaded['files']) === false) {
