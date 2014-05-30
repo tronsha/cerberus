@@ -2,6 +2,8 @@
 
 namespace Cerberus\Plugins;
 
+use Cerberus\Plugin;
+
 class PluginJoin extends Plugin
 {
     protected function init()

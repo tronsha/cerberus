@@ -2,19 +2,23 @@
 
 namespace Cerberus;
 
-class Plugin extends Cerberus
+abstract class Plugin extends Cerberus
 {
-    protected $irc = null;
+    /**
+     * @var Irc
+     */
+    protected $irc;
 
-    public function __construct(&$irc)
+    /**
+     * @param Irc $irc
+     */
+    public function __construct($irc)
     {
-        $this->irc =& $irc;
+        $this->irc = $irc;
         $this->init();
     }
 
-    protected function init()
-    {
-    }
+    abstract protected function init();
 
     public function onLoad($data)
     {
