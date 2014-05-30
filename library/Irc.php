@@ -58,7 +58,6 @@ class Irc extends Cerberus
         $this->config['db'] = array();
         $this->config['info'] = array('name' => 'Cerberus');
         $this->reconnect['channel'] = array();
-        $this->loaded['files'] = array();
         $this->loaded['classes'] = array();
         $this->config['dbms'] = array('mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite');
         $this->config['autorejoin'] = false;
@@ -897,22 +896,19 @@ class Irc extends Cerberus
         $pluginClass = 'Cerberus\\Plugins\\Plugin' . ucfirst($name);
 
         if (class_exists($pluginClass) === true) {
-
-            if (class_exists($pluginClass) === true) {
-                if (array_key_exists($pluginClass, $this->loaded['classes']) === false) {
-                    $plugin = new $pluginClass($this);
-                    if (is_subclass_of($pluginClass, 'Cerberus\\Plugin') === true) {
-                        $this->sysinfo('Load Plugin: ' . $name);
-                        $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
-                    } else {
-                        $this->sysinfo($name . ' isn\'t a PluginClass.');
-                    }
+            if (array_key_exists($pluginClass, $this->loaded['classes']) === false) {
+                $plugin = new $pluginClass($this);
+                if (is_subclass_of($pluginClass, 'Cerberus\\Plugin') === true) {
+                    $this->sysinfo('Load Plugin: ' . $name);
+                    $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
                 } else {
-                    $this->sysinfo('Plugin "' . $name . '" is already loaded.');
+                    $this->sysinfo($name . ' isn\'t a PluginClass.');
                 }
             } else {
-                $this->sysinfo($name . ' don\'t exists.');
+                $this->sysinfo('Plugin "' . $name . '" is already loaded.');
             }
+        } else {
+            $this->sysinfo($name . ' don\'t exists.');
         }
     }
 
