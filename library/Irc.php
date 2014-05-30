@@ -439,7 +439,7 @@ class Irc extends Cerberus
         }
     }
 
-    protected function run()
+    public function run()
     {
         while (!feof($this->fp)) {
             $input = $this->read();
