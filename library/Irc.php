@@ -894,20 +894,14 @@ class Irc extends Cerberus
 
     protected function loadPlugin($name, $data = null)
     {
-        $name = strtolower($name);
-        $name = preg_replace('/[^a-z]/', '', $name);
-        $file = $this->getPath() . '/plugins/' . $name . '.php';
-        if (file_exists($file) === true) {
-            $pluginClass = 'plugin' . ucfirst($name);
-            if (in_array($pluginClass, $this->loaded['files']) === false) {
-                include_once($file);
-                $this->sysinfo('Load File: ' . $file);
-                $this->loaded['files'][] = $pluginClass;
-            }
-            if (class_exists($pluginClass, false) === true) {
+        $pluginClass = 'Cerberus\\Plugins\\Plugin' . ucfirst($name);
+
+        if (class_exists($pluginClass) === true) {
+
+            if (class_exists($pluginClass) === true) {
                 if (array_key_exists($pluginClass, $this->loaded['classes']) === false) {
                     $plugin = new $pluginClass($this);
-                    if (is_subclass_of($pluginClass, 'Plugin') === true) {
+                    if (is_subclass_of($pluginClass, 'Cerberus\\Plugin') === true) {
                         $this->sysinfo('Load Plugin: ' . $name);
                         $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
                     } else {
