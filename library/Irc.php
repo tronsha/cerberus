@@ -140,18 +140,31 @@ class Irc extends Cerberus
         );
     }
 
+    /**
+     * @param $network
+     * @return $this
+     */
     public function setNetwork($network)
     {
         $this->server['network'] = $network;
         return $this;
     }
 
+    /**
+     * @param $password
+     * @return $this
+     */
     public function setPassword($password)
     {
         $this->server['password'] = $password;
         return $this;
     }
 
+    /**
+     * @param $dbms
+     * @param $config
+     * @return $this
+     */
     public function setDB($dbms, $config)
     {
         $this->dbms = strtolower($dbms);
@@ -160,6 +173,10 @@ class Irc extends Cerberus
         return $this;
     }
 
+    /**
+     * @param null $nick
+     * @return $this
+     */
     public function setNick($nick = null)
     {
         if ($nick === null) {
@@ -177,11 +194,17 @@ class Irc extends Cerberus
         return $this;
     }
 
+    /**
+     * @param $text
+     */
     public function sysinfo($text)
     {
         echo '**** ' . $text . ' ****' . PHP_EOL;
     }
 
+    /**
+     * @return bool
+     */
     public function init()
     {
         if (isset($this->server['network']) === false || $this->db === null) {
@@ -210,6 +233,9 @@ class Irc extends Cerberus
         return true;
     }
 
+    /**
+     * @return string
+     */
     public static function randomNick()
     {
         $konsonant = 'bcdfghjklmnpqrstvwxyz';
@@ -221,12 +247,18 @@ class Irc extends Cerberus
         return ucfirst($nick);
     }
 
+    /**
+     *
+     */
     protected function dbConnect()
     {
         $this->db->connect();
         $this->sql_error();
     }
 
+    /**
+     * @param int $i
+     */
     protected function getServer($i = 0)
     {
         $i = (string)$i;
@@ -247,6 +279,9 @@ class Irc extends Cerberus
         );
     }
 
+    /**
+     * @return bool|void
+     */
     public function connect()
     {
         if ($this->init === false) {
@@ -306,6 +341,9 @@ class Irc extends Cerberus
         return $this->run();
     }
 
+    /**
+     *
+     */
     protected function reconnect()
     {
         $this->reconnect['channel'] = array();
@@ -318,6 +356,9 @@ class Irc extends Cerberus
         $this->connect();
     }
 
+    /**
+     *
+     */
     protected function clear()
     {
         $this->sql_query('DELETE FROM `write` WHERE `bot_id` = "' . $this->bot['id'] . '"');
@@ -325,6 +366,9 @@ class Irc extends Cerberus
         $this->sql_query('DELETE FROM `channel_user` WHERE `bot_id` = "' . $this->bot['id'] . '"');
     }
 
+    /**
+     *
+     */
     protected function preform()
     {
         $query = $this->sql_query(
@@ -342,6 +386,10 @@ class Irc extends Cerberus
         }
     }
 
+    /**
+     * @param $sql
+     * @return mixed
+     */
     protected function sql_query($sql)
     {
         $this->log($sql, 'sql');
@@ -350,6 +398,9 @@ class Irc extends Cerberus
         return $res;
     }
 
+    /**
+     * @return mixed
+     */
     protected function sql_error()
     {
         $errstr = $this->db->error();
@@ -359,6 +410,11 @@ class Irc extends Cerberus
         return $errstr;
     }
 
+    /**
+     * @param $text
+     * @param $type
+     * @return null
+     */
     protected function log($text, $type)
     {
         if ($this->config['logfile'][$type] !== true) {
@@ -379,6 +435,9 @@ class Irc extends Cerberus
         }
     }
 
+    /**
+     * @param $text
+     */
     protected function write($text)
     {
         $output = trim($text) . PHP_EOL;
@@ -391,6 +450,9 @@ class Irc extends Cerberus
         }
     }
 
+    /**
+     * @return string
+     */
     protected function read()
     {
         stream_set_timeout($this->fp, 10);
@@ -403,6 +465,9 @@ class Irc extends Cerberus
         return $input;
     }
 
+    /**
+     *
+     */
     protected function send()
     {
         $sql = 'SELECT `id`, `text` FROM `write` WHERE `bot_id` = "' . $this->bot['id'] . '" ORDER BY `id` LIMIT 0, 1';
@@ -445,6 +510,9 @@ class Irc extends Cerberus
         }
     }
 
+    /**
+     * @return bool|void
+     */
     public function run()
     {
         while (!feof($this->fp)) {
@@ -485,6 +553,9 @@ class Irc extends Cerberus
         $this->reconnect();
     }
 
+    /**
+     * @param $input
+     */
     protected function command($input)
     {
         preg_match(
@@ -596,6 +667,9 @@ class Irc extends Cerberus
         $this->otherNick();
     }
 
+    /**
+     *
+     */
     protected function otherNick()
     {
         if ($this->nowrite === false) {
@@ -659,6 +733,13 @@ class Irc extends Cerberus
         $this->runPluginEvent(__FUNCTION__, array());
     }
 
+    /**
+     * @param $nick
+     * @param $host
+     * @param $channel
+     * @param $text
+     * @return null
+     */
     protected function onPrivmsg($nick, $host, $channel, $text)
     {
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
@@ -712,11 +793,19 @@ class Irc extends Cerberus
         }
     }
 
+    /**
+     * @param $nick
+     * @param $text
+     */
     protected function onNotice($nick, $text)
     {
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
     }
 
+    /**
+     * @param $nick
+     * @param $text
+     */
     protected function onNick($nick, $text)
     {
         if ($nick == $this->var['me']) {
@@ -761,6 +850,10 @@ class Irc extends Cerberus
         $this->onTopic($channel, $text);
     }
 
+    /**
+     * @param $channel
+     * @param $topic
+     */
     protected function onTopic($channel, $topic)
     {
         $sql = 'UPDATE `channel` SET `topic` = "' . $this->db->escape_string(
@@ -771,6 +864,10 @@ class Irc extends Cerberus
         $this->sql_query($sql);
     }
 
+    /**
+     * @param $nick
+     * @param $channel
+     */
     protected function onJoin($nick, $channel)
     {
         if ($nick == $this->var['me']) {
@@ -790,6 +887,10 @@ class Irc extends Cerberus
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'channel' => $channel));
     }
 
+    /**
+     * @param $bouncer
+     * @param $rest
+     */
     protected function onKick($bouncer, $rest)
     {
         list($channel, $nick) = explode(' ', $rest);
@@ -804,6 +905,10 @@ class Irc extends Cerberus
         );
     }
 
+    /**
+     * @param $nick
+     * @param $channel
+     */
     protected function onPart($nick, $channel)
     {
         $me = $nick == $this->var['me'] ? true : false;
@@ -830,6 +935,9 @@ class Irc extends Cerberus
         $this->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'me' => $me, 'nick' => $nick));
     }
 
+    /**
+     * @param $nick
+     */
     protected function onQuit($nick)
     {
         $this->sql_query(
@@ -840,6 +948,9 @@ class Irc extends Cerberus
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick));
     }
 
+    /**
+     * @param $mode
+     */
     protected function onMode($mode)
     {
         $array = explode(' ', $mode);
@@ -847,11 +958,20 @@ class Irc extends Cerberus
         /* TODO */
     }
 
+    /**
+     * @param $channel
+     * @param $host
+     * @param $rest
+     */
     protected function onInvite($channel, $host, $rest)
     {
         $this->runPluginEvent(__FUNCTION__, array('channel' => $channel));
     }
 
+    /**
+     * @param $to
+     * @param $text
+     */
     public function privmsg($to, $text)
     {
         $this->sql_query(
@@ -861,6 +981,10 @@ class Irc extends Cerberus
         );
     }
 
+    /**
+     * @param $to
+     * @param $text
+     */
     public function notice($to, $text)
     {
         $this->sql_query(
@@ -870,6 +994,9 @@ class Irc extends Cerberus
         );
     }
 
+    /**
+     * @param $text
+     */
     public function quit($text)
     {
         $this->sql_query(
@@ -879,6 +1006,9 @@ class Irc extends Cerberus
         );
     }
 
+    /**
+     * @param null $text
+     */
     public function mode($text = null)
     {
         $this->sql_query(
@@ -888,6 +1018,9 @@ class Irc extends Cerberus
         );
     }
 
+    /**
+     * @param $channel
+     */
     public function join($channel)
     {
         $this->sql_query(
@@ -897,6 +1030,9 @@ class Irc extends Cerberus
         );
     }
 
+    /**
+     * @param $channel
+     */
     public function part($channel)
     {
         $this->sql_query(
@@ -918,6 +1054,9 @@ class Irc extends Cerberus
         );
     }
 
+    /**
+     *
+     */
     public function channellist()
     {
         $this->sql_query(

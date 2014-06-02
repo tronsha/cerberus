@@ -21,7 +21,7 @@ namespace Cerberus;
 
 /**
  * Class Cerberus
- *  @package Cerberus
+ * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/cerberus/ Project Homepage
  * @link https://github.com/tronsha/Cerberus Project on GitHub
