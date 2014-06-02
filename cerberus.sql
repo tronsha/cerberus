@@ -3580,8 +3580,8 @@ INSERT INTO `server_port` (`id`, `server_id`, `port`) VALUES
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `network` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `authorizations` enum('none','user','admin') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'none',
-  `host` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `authlevel` enum('none','user','admin') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'none',
+  `authname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 

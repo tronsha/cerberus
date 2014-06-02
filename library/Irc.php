@@ -17,11 +17,17 @@
  *   with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @author Stefan Hüsges <http://www.mpcx.net>
- */
-
 namespace Cerberus;
+
+/**
+ * Class Irc
+ * @package Cerberus
+ * @author Stefan Hüsges
+ * @link http://www.mpcx.net/cerberus/ Project Homepage
+ * @link https://github.com/tronsha/Cerberus Project on GitHub
+ * @link http://tools.ietf.org/html/rfc2812 Internet Relay Chat: Client Protocol
+ * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
+ */
 
 class Irc extends Cerberus
 {
@@ -47,6 +53,7 @@ class Irc extends Cerberus
     protected $reconnect = array();
     protected $loaded = array();
     protected $pluginevents = array();
+    protected $auth = null;
 
     public function __construct($config = null)
     {
@@ -498,6 +505,9 @@ class Irc extends Cerberus
             case '001':
                 $this->nowrite = false;
                 break;
+            case '311':
+                $this->on311($rest);
+                break;
             case '318':
                 $this->on318();
                 break;
@@ -510,7 +520,7 @@ class Irc extends Cerberus
             case '324':
                 break; //(Channel-Modes)
             case '330':
-                $this->on330($nick, $rest);
+                $this->on330($rest);
                 break;
             case '332':
                 $this->on332($rest, $text);
@@ -570,12 +580,18 @@ class Irc extends Cerberus
         $this->sql_query($sql_log);
     }
 
-    protected function on432() # ERR_ERRONEUSNICKNAME
+    /**
+     * ERR_ERRONEUSNICKNAME
+     */
+    protected function on432()
     {
         $this->otherNick();
     }
 
-    protected function on433() # ERR_NICKNAMEINUSE
+    /**
+     * ERR_NICKNAMEINUSE
+     */
+    protected function on433()
     {
         $this->otherNick();
     }
@@ -589,7 +605,12 @@ class Irc extends Cerberus
         $this->write('NICK ' . $this->bot['nick']);
     }
 
-    protected function on322($rest, $text) # RPL_LIST
+    /**
+     * RPL_LIST
+     * @param $rest
+     * @param $text
+     */
+    protected function on322($rest, $text)
     {
         list($dummy, $channel, $anz_user) = explode(' ', $rest);
         $sql_list = 'INSERT INTO channellist SET '
@@ -601,17 +622,39 @@ class Irc extends Cerberus
         $this->sql_query($sql_list);
     }
 
-    protected function on323() # RPL_LISTEND
+    /**
+     * RPL_LISTEND
+     */
+    protected function on323()
     {
         $this->runPluginEvent(__FUNCTION__, array());
     }
 
-    protected function on330($nick, $auth) # RPL_WHOISACCOUNT
+    /**
+     * RPL_WHOISUSER
+     * <nick> <user> <host> * :<real name>
+     * @param $rest
+     */
+    protected function on311($rest)
     {
+        list($me, $nick, $user, $host) = explode(' ', $rest);
+        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'host' => $user . '@' . $host));
+    }
+
+    /**
+     * RPL_WHOISACCOUNT
+     * @param $rest
+     */
+    protected function on330($rest)
+    {
+        list($me, $nick, $auth) = explode(' ', $rest);
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'auth' => $auth));
     }
 
-    protected function on318() # RPL_ENDOFWHOIS
+    /**
+     * RPL_ENDOFWHOIS
+     */
+    protected function on318()
     {
         $this->runPluginEvent(__FUNCTION__, array());
     }
@@ -649,7 +692,7 @@ class Irc extends Cerberus
             switch ($splitText[0]) {
                 case '!load':
                     if (empty($splitText[1]) === false) {
-                        if ($this->authorizations(trim($host), self::AUTH_ADMIN) === true) {
+                        if ($this->isAdmin($nick, $host) === true) {
                             if (preg_match('/^[a-z]+$/i', $splitText[1]) > 0) {
                                 $this->loadPlugin(
                                     $splitText[1],
@@ -686,7 +729,12 @@ class Irc extends Cerberus
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
     }
 
-    protected function on353($rest, $text) # RPL_NAMREPLY
+    /**
+     * RPL_NAMREPLY
+     * @param $rest
+     * @param $text
+     */
+    protected function on353($rest, $text)
     {
         list($me, $dummy, $channel) = explode(' ', $rest);
         $user_array = explode(' ', $text);
@@ -702,7 +750,12 @@ class Irc extends Cerberus
         }
     }
 
-    protected function on332($rest, $text) # RPL_TOPIC
+    /**
+     * RPL_TOPIC
+     * @param $rest
+     * @param $text
+     */
+    protected function on332($rest, $text)
     {
         list($me, $channel) = explode(' ', $rest);
         $this->onTopic($channel, $text);
@@ -796,13 +849,6 @@ class Irc extends Cerberus
 
     protected function onInvite($channel, $host, $rest)
     {
-        $isadmin = $this->authorizations(trim($host), self::AUTH_ADMIN);
-        if (empty($channel) === true) {
-            list($me, $channel) = explode(' ', $rest);
-        }
-        if ($isadmin) {
-            $this->join($channel);
-        }
         $this->runPluginEvent(__FUNCTION__, array('channel' => $channel));
     }
 
@@ -860,7 +906,19 @@ class Irc extends Cerberus
         );
     }
 
-    protected function channellist()
+    /**
+     * @param $nick
+     */
+    public function whois($nick)
+    {
+        $this->sql_query(
+            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
+                'WHOIS :' . $nick
+            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
+        );
+    }
+
+    public function channellist()
     {
         $this->sql_query(
             'DELETE FROM `channellist` WHERE `network` = "' . $this->db->escape_string($this->server['network']) . '"'
@@ -872,25 +930,68 @@ class Irc extends Cerberus
         );
     }
 
-    public function authorizations($host, $level = 0)
+    /**
+     * @param Plugins\PluginAuth $object
+     */
+    public function registerAuth(Plugins\PluginAuth $object)
     {
-        $sql = 'SELECT `host` FROM `user` WHERE `network` = "' . $this->server['network'] . '" AND `authorizations` >= ' . $level . '';
+        $this->auth = $object;
+    }
+
+    /**
+     * @param $auth
+     * @return bool
+     */
+    public function getAuthLevel($auth)
+    {
+        $sql = 'SELECT `authlevel` FROM `user` WHERE `network` = "' . $this->server['network'] . '" AND `authname` = "' . strtolower(
+            $auth
+        ) . '"';
         $query = $this->sql_query($sql);
-        while ($user = $this->db->fetch_assoc($query)) {
-            if (preg_match('/' . str_replace('*', '.*?', $user['host']) . '/', $host) == 1) {
-                return true;
+        if ($query !== false) {
+            $row = $this->db->fetch_row($query);
+            if ($row) {
+                return $row[0];
             }
         }
         return false;
     }
 
+    /**
+     * @param $nick
+     * @param $host
+     * @return mixed
+     */
+    public function isAdmin($nick, $host)
+    {
+        return $this->auth->isAdmin($nick, $host);
+    }
+
+    /**
+     * @param $nick
+     * @param $host
+     * @return mixed
+     */
+    public function isMember($nick, $host)
+    {
+        return $this->auth->isMember($nick, $host);
+    }
+
+    /**
+     *
+     */
     protected function autoloadPlugins()
     {
+        $this->loadPlugin('auth');
         foreach ($this->config['plugins']['autoload'] as $plugin) {
             $this->loadPlugin($plugin);
         }
     }
 
+    /**
+     * @param $name
+     * @param null $data
+     */
     protected function loadPlugin($name, $data = null)
     {
         $pluginClass = 'Cerberus\\Plugins\\Plugin' . ucfirst($name);
@@ -912,6 +1013,10 @@ class Irc extends Cerberus
         }
     }
 
+    /**
+     * @param $event
+     * @param $data
+     */
     protected function runPluginEvent($event, $data)
     {
         if (array_key_exists($event, $this->pluginevents)) {
@@ -925,6 +1030,11 @@ class Irc extends Cerberus
         }
     }
 
+    /**
+     * @param $event
+     * @param $object
+     * @param int $priority
+     */
     public function addEvent($event, $object, $priority = 5)
     {
         $this->pluginevents[$event][$priority][] = $object;

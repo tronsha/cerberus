@@ -2,7 +2,6 @@
 
 namespace Cerberus;
 
-
 class Db
 {
     protected $dbms = null;

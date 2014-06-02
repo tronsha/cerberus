@@ -17,11 +17,17 @@
  *   with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @author Stefan Hüsges <http://www.mpcx.net>
- */
-
 namespace Cerberus;
+
+/**
+ * Class Cerberus
+ *  @package Cerberus
+ * @author Stefan Hüsges
+ * @link http://www.mpcx.net/cerberus/ Project Homepage
+ * @link https://github.com/tronsha/Cerberus Project on GitHub
+ * @link http://tools.ietf.org/html/rfc2812 Internet Relay Chat: Client Protocol
+ * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
+ */
 
 class Cerberus
 {
