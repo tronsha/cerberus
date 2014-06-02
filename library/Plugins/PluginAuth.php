@@ -96,6 +96,9 @@ class PluginAuth extends Plugin
         unset($this->auth[$data['nick']]);
     }
 
+    /**
+     * @param $data
+     */
     public function onQuit($data)
     {
         unset($this->auth[$data['nick']]);
