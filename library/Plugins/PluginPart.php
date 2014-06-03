@@ -26,13 +26,17 @@ class PluginPart extends Plugin
 
     /**
      * @param array $data
+     * @return bool|void
      */
     public function onPrivmsg($data)
     {
+        if ($this->irc->isAdmin($data['nick'], $data['host']) === false) {
+            return false;
+        }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!part') {
-            $this->irc->part(array_shift($splitText));
+            return $this->irc->part(array_shift($splitText));
         }
     }
 }

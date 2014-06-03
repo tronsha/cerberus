@@ -26,13 +26,17 @@ class PluginQuit extends Plugin
 
     /**
      * @param array $data
+     * @return bool|void
      */
     public function onPrivmsg($data)
     {
+        if ($this->irc->isAdmin($data['nick'], $data['host']) === false) {
+            return false;
+        }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!die') {
-            $this->irc->quit('Client Quit');
+            return $this->irc->quit('Client Quit');
         }
     }
 }

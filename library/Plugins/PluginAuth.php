@@ -28,7 +28,7 @@ class PluginAuth extends Plugin
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @return bool
      */
     public function onLoad($data)
@@ -39,15 +39,15 @@ class PluginAuth extends Plugin
     }
 
     /**
-     * @param $nick
-     * @param $host
+     * @param string $nick
+     * @param string $host
      * @return bool
      */
     public function isAdmin($nick, $host)
     {
         if (isset($this->auth[$nick]) === true) {
-            if ($this->auth[$nick]['host'] == $host) {
-                if ($this->auth[$nick]['level'] >= self::AUTH_ADMIN) {
+            if (isset($this->auth[$nick]['host']) === true && $this->auth[$nick]['host'] == $host) {
+                if (isset($this->auth[$nick]['level']) === true && $this->auth[$nick]['level'] >= self::AUTH_ADMIN) {
                     return true;
                 }
             }
@@ -56,15 +56,15 @@ class PluginAuth extends Plugin
     }
 
     /**
-     * @param $nick
-     * @param $host
+     * @param string $nick
+     * @param string $host
      * @return bool
      */
     public function isMember($nick, $host)
     {
         if (isset($this->auth[$nick]) === true) {
-            if ($this->auth[$nick]['host'] == $host) {
-                if ($this->auth[$nick]['level'] >= self::AUTH_MEMBER) {
+            if (isset($this->auth[$nick]['host']) === true && $this->auth[$nick]['host'] == $host) {
+                if (isset($this->auth[$nick]['level']) === true && $this->auth[$nick]['level'] >= self::AUTH_MEMBER) {
                     return true;
                 }
             }
@@ -73,22 +73,23 @@ class PluginAuth extends Plugin
     }
 
     /**
-     * @param $data
+     * @param array $data
+     * @return mixed|void
      */
     public function onPrivmsg($data)
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!auth') {
-            $this->irc->whois($data['nick']);
+            return $this->irc->whois($data['nick']);
         }
         if ($command == '!debug') {
-            print_r($this);
+            return print_r($this, true);
         }
     }
 
     /**
-     * @param $data
+     * @param array $data
      */
     public function onNick($data)
     {
@@ -97,7 +98,7 @@ class PluginAuth extends Plugin
     }
 
     /**
-     * @param $data
+     * @param array $data
      */
     public function onQuit($data)
     {
@@ -105,7 +106,7 @@ class PluginAuth extends Plugin
     }
 
     /**
-     * @param $data
+     * @param array $data
      */
     public function on311($data)
     {
@@ -113,7 +114,7 @@ class PluginAuth extends Plugin
     }
 
     /**
-     * @param $data
+     * @param array $data
      */
     public function on330($data)
     {
