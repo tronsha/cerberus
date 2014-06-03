@@ -39,16 +39,26 @@ class PluginCrypt extends Plugin
         $command = array_shift($splitText);
         if ($command == '+OK') {
             $key = empty($this->cryptkey[$data['channel']]) ? '123456' : $this->cryptkey[$data['channel']];
-            $encodedTextBase64 = str_replace('*', '', array_shift($splitText));
-            $encodedText = base64_decode($encodedTextBase64);
-            $iv = substr($encodedText, 0, 8);
-            $encodedText = substr($encodedText, 8);
-            $plaintext = mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv);
-            $data['text'] = trim($plaintext);
-        } elseif (strtolower($command) == '!cryptkey') {
+            $data['text'] = $this->decodeMircryption(array_shift($splitText), $key);
+        } elseif (strtolower($command) == '!cryptkey' && $this->irc->isAdmin($data['nick'], $data['host'])) {
             $channel = array_shift($splitText);
             $key = array_shift($splitText);
             $this->cryptkey[$channel] = $key;
         }
+    }
+
+    /**
+     * @param string $text
+     * @param string $key
+     * @return string
+     */
+    protected function decodeMircryption($text, $key)
+    {
+        $encodedTextBase64 = str_replace('*', '', $text);
+        $encodedText = base64_decode($encodedTextBase64);
+        $iv = substr($encodedText, 0, 8);
+        $encodedText = substr($encodedText, 8);
+        $plaintext = mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv);
+        return trim($plaintext);
     }
 }

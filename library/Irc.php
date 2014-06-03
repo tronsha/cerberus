@@ -19,6 +19,8 @@
 
 namespace Cerberus;
 
+use Cerberus\Plugins\PluginAuth;
+
 /**
  * Class Irc
  * @package Cerberus
@@ -1070,9 +1072,9 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param Plugins\PluginAuth $object
+     * @param PluginAuth $object
      */
-    public function registerAuth(Plugins\PluginAuth $object)
+    public function registerAuth(PluginAuth $object)
     {
         $this->auth = $object;
     }
