@@ -93,7 +93,9 @@ class PluginAuth extends Plugin
      */
     public function onNick($data)
     {
-        $this->auth[$data['text']] = $this->auth[$data['nick']];
+        if (array_key_exists($data['nick'], $this->auth) === true) {
+            $this->auth[$data['text']] = $this->auth[$data['nick']];
+        }
         unset($this->auth[$data['nick']]);
     }
 
