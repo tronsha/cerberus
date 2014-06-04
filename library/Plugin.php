@@ -29,7 +29,9 @@ abstract class Plugin extends Cerberus
      */
     public function onLoad($data)
     {
-        $this->irc->notice($data['nick'], 'Load: ' . get_called_class());
+        if (isset($data) === true) {
+            $this->irc->notice($data['nick'], 'Load: ' . get_called_class());
+        }
         return true;
     }
 }
