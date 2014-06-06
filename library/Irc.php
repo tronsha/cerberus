@@ -756,11 +756,19 @@ class Irc extends Cerberus
     protected function onPrivmsg($nick, $host, $channel, $text)
     {
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
+            /**
+             * @link http://www.irchelp.org/irchelp/rfc/ctcpspec.html
+             */
             if ($this->config['ctcp'] === false) {
                 return null;
             }
             $send = '';
             switch ($matches[1]) {
+                case 'ACTION':
+                    break;
+                case 'CLIENTINFO':
+                    $send = 'CLIENTINFO PING VERSION TIME FINGER SOURCE CLIENTINFO';
+                    break;
                 case 'PING':
                     $send = 'PING' . $matches[2];
                     break;
@@ -774,6 +782,9 @@ class Irc extends Cerberus
                     $send = 'FINGER ' . $this->config['info']['name'] . (isset($this->config['info']['homepage']) ? ' (' . $this->config['info']['homepage'] . ')' : '') . ' Idle ' . round(
                         $this->getMicrotime() - $this->time['irc_connect']
                     ) . ' seconds';
+                    break;
+                case 'SOURCE':
+                    $send = 'SOURCE https://github.com/tronsha/Cerberus';
                     break;
                 default:
                     return null;
