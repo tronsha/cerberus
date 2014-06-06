@@ -601,8 +601,12 @@ class Irc extends Cerberus
             case '353':
                 $this->on353($rest, $text);
                 break;
+            case '431':
+                $this->on431();
+                break;
             case '432':
                 $this->on432();
+                break;
             case '433':
                 $this->on433();
                 break;
@@ -651,6 +655,13 @@ class Irc extends Cerberus
             . '`time`      = NOW(), '
             . '`direction` = "in"';
         $this->sql_query($sql_log);
+    }
+
+    /**
+     * ERR_NONICKNAMEGIVEN
+     */
+    protected function on431()
+    {
     }
 
     /**
