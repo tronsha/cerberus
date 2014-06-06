@@ -36,7 +36,11 @@ class PluginPart extends Plugin
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!part') {
-            return $this->irc->part(array_shift($splitText));
+            $channel = trim(array_shift($splitText));
+            if (empty($channel) === true) {
+                $channel = $data['channel'];
+            }
+            return $this->irc->part($channel);
         }
     }
 }
