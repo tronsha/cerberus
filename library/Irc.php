@@ -64,7 +64,6 @@ class Irc extends Cerberus
         $this->bot['nick'] = null;
         $this->server['network'] = null;
         $this->server['password'] = null;
-        $this->config['db'] = array();
         $this->config['info'] = array('name' => 'Cerberus');
         $this->reconnect['channel'] = array();
         $this->loaded['classes'] = array();
@@ -88,7 +87,7 @@ class Irc extends Cerberus
                 $this->setPassword($config['irc']['password']);
             }
             if (isset($config['db'])) {
-                $this->setDB($config['bot']['dbms'], $config['db']);
+                $this->setDB($config['db']);
             }
             if (!empty($config['info']['name'])) {
                 $this->config['info']['name'] = $config['info']['name'];
@@ -132,9 +131,8 @@ class Irc extends Cerberus
             if ($this->fp !== false) {
                 fclose($this->fp);
             }
-            $this->clear();
-            $this->sql_query('UPDATE `bot` SET `stop` = NOW() WHERE `id` = "' . $this->bot['id'] . '"');
-            $this->db->close();
+            $this->db->cleanupBot();
+            $this->db->shutdownBot();
         }
         printf(
             PHP_EOL . PHP_EOL . "Execute time: %.5fs" . PHP_EOL,
@@ -163,15 +161,39 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $dbms
+     * @link http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#driver
      * @param $config
      * @return $this
      */
-    public function setDB($dbms, $config)
+    public function setDB($config)
     {
-        $this->dbms = strtolower($dbms);
-        $this->config['db'] = $config;
-        $this->db = new Db($this->dbms, $this->config['db']);
+        switch (strtolower($config['driver'])) {
+            case "pdo_mysql" :
+            case "drizzle_pdo_mysql" :
+            case "mysqli" :
+                $this->dbms = "mysql";
+                break;
+            case "pdo_sqlite" :
+                $this->dbms = "sqlite";
+                break;
+            case "pdo_pgsql" :
+                $this->dbms = "pg";
+                break;
+            case "pdo_oci" :
+            case "oci8" :
+                $this->dbms = "oracle";
+                break;
+            case "pdo_sqlsrv" :
+            case "sqlsrv" :
+                $this->dbms = "mssql";
+                break;
+            case "sqlanywhere" :
+                $this->dbms = "sqlanywhere";
+                break;
+            default:
+                return false;
+        }
+        $this->db = new Db($config, $this);
         return $this;
     }
 
@@ -187,13 +209,9 @@ class Irc extends Cerberus
         $this->bot['nick'] = $nick;
         $this->var['me'] = $nick;
         if ($this->init === true) {
-            $this->sql_query(
-                'UPDATE `bot` SET `nick` = "' . $this->db->escape_string(
-                    $this->bot['nick']
-                ) . '" WHERE `id` = "' . $this->bot['id'] . '"'
-            );
+            $this->db->setBotNick($nick);
         }
-        return $this;
+        return $nick;
     }
 
     /**
@@ -213,18 +231,13 @@ class Irc extends Cerberus
             return false;
         }
         $this->dbConnect();
-        $this->sql_query(
-            'INSERT INTO `bot` SET `pid` = "' . $this->bot['pid'] . '", `start` = NOW(), `nick` = "' . $this->db->escape_string(
-                $this->bot['nick']
-            ) . '"'
-        );
-        $this->bot['id'] = $this->db->insert_id();
+        $this->db->createBot($this->bot['pid'], $this->bot['nick']);
         if (isset($this->version['bot']) === false) {
             $this->version['php'] = phpversion();
             $this->version['os'] = php_uname('s') . ' ' . php_uname('r');
             $this->version['bot'] = 'PHP ' . $this->version['php'] . ' - ' . $this->version['os'];
             if ($this->dbms == 'mysql' || $this->dbms == 'pg') {
-                $this->version['sql'] = $this->db->result($this->sql_query('SELECT VERSION()'), 0, 0);
+                $this->version['sql'] = $this->db->getDbVersion();
                 $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
             }
         }
@@ -255,30 +268,6 @@ class Irc extends Cerberus
     protected function dbConnect()
     {
         $this->db->connect();
-        $this->sql_error();
-    }
-
-    /**
-     * @param int $i
-     */
-    protected function getServer($i = 0)
-    {
-        $i = (string)$i;
-        $sql = 'SELECT s.`id` , s.`server` AS host, sp.`port` '
-            . 'FROM `server` s, `server_port` sp, `network` n '
-            . 'WHERE s.`id` = sp.`server_id` '
-            . 'AND n.`id` = s.`network_id` '
-            . 'AND n.`network` = "' . $this->server['network'] . '" '
-            . 'ORDER BY s.`id` , sp.`port` '
-            . 'LIMIT ' . $i . ', 1';
-        $query = $this->sql_query($sql);
-        $this->server['id'] = $this->db->result($query, 0, 'id');
-        $this->server['host'] = $this->db->result($query, 0, 'host');
-        $this->server['ip'] = @gethostbyname($this->server['host']);
-        $this->server['port'] = $this->db->result($query, 0, 'port');
-        $this->sql_query(
-            'UPDATE `bot` SET `server_id` = "' . $this->server['id'] . '" WHERE `id` = "' . $this->bot['id'] . '"'
-        );
     }
 
     /**
@@ -291,14 +280,7 @@ class Irc extends Cerberus
                 return false;
             }
         }
-
-        $sql = 'SELECT count(*) AS number '
-            . 'FROM `server` s, `server_port` sp, `network` n '
-            . 'WHERE s.`id` = sp.`server_id` '
-            . 'AND n.`id` = s.`network_id` '
-            . 'AND n.`network` = "' . $this->server['network'] . '"';
-        $query = $this->sql_query($sql);
-        $n = $this->db->result($query, 0, 'number');
+        $n = $this->db->getServerCount($this->server['network']);
         $i = 0;
         $repeat = true;
         if ($n == 0) {
@@ -306,9 +288,9 @@ class Irc extends Cerberus
             return false;
         }
         while ($repeat) {
-            $this->getServer($i);
+            $this->server = $this->db->getServerData($this->server, $i);
             $this->sysinfo('Try to connect to ' . $this->server['host'] . ':' . $this->server['port']);
-            $this->fp = @fsockopen(@gethostbyname($this->server['host']), $this->server['port'], $errno, $errstr);
+            $this->fp = @fsockopen(($this->server['ip']), $this->server['port'], $errno, $errstr);
             if ($this->fp === false) {
                 $this->log('socket: ' . $errstr, 'error');
                 $this->sysinfo('Connection failed');
@@ -316,8 +298,6 @@ class Irc extends Cerberus
             } else {
                 $this->sysinfo('Connection success');
                 $repeat = false;
-                //$this->sql_query('INSERT INTO `connection` SET `time` = NOW()');
-                //$this->bot['connectionid'] = $this->db->insert_id();
             }
 
             if ($i == $n) {
@@ -338,7 +318,7 @@ class Irc extends Cerberus
         $this->lastping = time();
         $this->nowrite = true;
         $this->run = true;
-        $this->clear();
+        $this->db->cleanupBot();
         $this->preform();
         return $this->run();
     }
@@ -349,11 +329,10 @@ class Irc extends Cerberus
     protected function reconnect()
     {
         $this->reconnect['channel'] = array();
-        $query = $this->sql_query('SELECT `channel` FROM `channel` WHERE `bot_id` = "' . $this->bot['id'] . '"');
-        while ($channel = $this->db->fetch_assoc($query)) {
+        $channels = $this->db->getJoinedChannels();
+        foreach ($channels as $channel) {
             $this->reconnect['channel'][] = $channel['channel'];
         }
-
         fclose($this->fp);
         $this->connect();
     }
@@ -361,27 +340,11 @@ class Irc extends Cerberus
     /**
      *
      */
-    protected function clear()
-    {
-        $this->sql_query('DELETE FROM `write` WHERE `bot_id` = "' . $this->bot['id'] . '"');
-        $this->sql_query('DELETE FROM `channel` WHERE `bot_id` = "' . $this->bot['id'] . '"');
-        $this->sql_query('DELETE FROM `channel_user` WHERE `bot_id` = "' . $this->bot['id'] . '"');
-    }
-
-    /**
-     *
-     */
     protected function preform()
     {
-        $query = $this->sql_query(
-            'SELECT `text` FROM `preform` WHERE `network` = "' . $this->server['network'] . '" ORDER BY `priority` DESC'
-        );
-        while ($copy = $this->db->fetch_assoc($query)) {
-            $this->sql_query(
-                'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
-                    $copy['text']
-                ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-            );
+        $preform = $this->db->getPreform($this->server['network']);
+        foreach ($preform as $command) {
+            $this->db->setWrite($command['text']);
         }
         foreach ($this->reconnect['channel'] as $channel) {
             $this->join($channel);
@@ -389,26 +352,12 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $sql
+     * @param $errstr
      * @return mixed
      */
-    protected function sql_query($sql)
+    public function sqlError($errstr)
     {
-        $this->log($sql, 'sql');
-        $res = $this->db->query($sql);
-        $this->sql_error();
-        return $res;
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function sql_error()
-    {
-        $errstr = $this->db->error();
-        if ($errstr != '') {
-            $this->log('sql: ' . $errstr, 'error');
-        }
+        $this->log('sql: ' . $errstr, 'error');
         return $errstr;
     }
 
@@ -472,9 +421,7 @@ class Irc extends Cerberus
      */
     protected function send()
     {
-        $sql = 'SELECT `id`, `text` FROM `write` WHERE `bot_id` = "' . $this->bot['id'] . '" ORDER BY `id` LIMIT 0, 1';
-        $query = $this->sql_query($sql);
-        $send = $this->db->fetch_assoc($query);
+        $send = $this->db->getWrite();
         if ($send !== false) {
             if ($send['text'] != '') {
                 preg_match_all("/\%([a-z0-9_]*)/i", $send['text'], $array, PREG_PATTERN_ORDER);
@@ -489,26 +436,23 @@ class Irc extends Cerberus
                 }
                 $this->write($send['text']);
             }
-            $sql_delete = 'DELETE FROM `write` WHERE `id` = "' . $send['id'] . '"';
-            $this->sql_query($sql_delete);
+            $this->db->unsetWrite($send['id']);
 
             preg_match("/^([^\ ]+)(?:\ ([^\:].*?))?(?:\ \:(.*?))?(?:\r)?$/i", $send['text'], $matches);
             $command = isset($matches[1]) ? $matches[1] : '';
             $rest = isset($matches[2]) ? $matches[2] : '';
             $text = isset($matches[3]) ? $matches[3] : '';
 
-            $sql_log = 'INSERT INTO log SET '
-                . '`nick`      = "' . $this->db->escape_string($this->bot['nick']) . '", '
-                . '`command`   = "' . $this->db->escape_string($command) . '", '
-                . '`rest`      = "' . $this->db->escape_string($rest) . '", '
-                . '`text`      = "' . $this->db->escape_string($text) . '", '
-                . '`all`       = "' . $this->db->escape_string($send['text']) . '", '
-                . '`network`   = "' . $this->db->escape_string($this->server['network']) . '", '
-                . '`bot_id`    = "' . $this->bot['id'] . '", '
-                //. '`connection_id` = "'.$this->bot['connectionid'].'", '
-                . '`time`      = NOW(), '
-                . '`direction` = "out"';
-            $this->sql_query($sql_log);
+            $this->db->setLog(
+                $this->server['network'],
+                $send['text'],
+                $this->bot['nick'],
+                '',
+                $command,
+                $rest,
+                $text,
+                'out'
+            );
         }
     }
 
@@ -523,7 +467,7 @@ class Irc extends Cerberus
             if (trim($input) != '') {
                 if ($this->db->ping() === false) {
                     $this->db->close();
-                    $this->db_connect();
+                    $this->db->connect();
                 }
                 if ($input{0} != ':') {
                     if (strpos(strtoupper($input), 'PING') !== false) {
@@ -532,7 +476,7 @@ class Irc extends Cerberus
                         $output{1} = 'O';
                         $this->write($output);
                         unset($output);
-                        $this->sql_query('UPDATE `bot` SET `ping` = NOW() WHERE `id` = "' . $this->bot['id'] . '"');
+                        $this->db->setPing();
                     }
                 } else {
                     $this->command($input);
@@ -591,7 +535,8 @@ class Irc extends Cerberus
                 $this->on323();
                 break;
             case '324':
-                break; //(Channel-Modes)
+                $this->on324();
+                break;
             case '330':
                 $this->on330($rest);
                 break;
@@ -641,20 +586,7 @@ class Irc extends Cerberus
                 $this->onInvite($text, $host, $rest);
                 break;
         }
-
-        $sql_log = 'INSERT INTO log SET '
-            . '`nick`      = "' . $this->db->escape_string($nick) . '", '
-            . '`host`      = "' . $this->db->escape_string($host) . '", '
-            . '`command`   = "' . $this->db->escape_string($command) . '", '
-            . '`rest`      = "' . $this->db->escape_string($rest) . '", '
-            . '`text`      = "' . $this->db->escape_string($text_) . '", '
-            . '`all`       = "' . $this->db->escape_string($all) . '", '
-            . '`network`   = "' . $this->db->escape_string($this->server['network']) . '", '
-            . '`bot_id`    = "' . $this->bot['id'] . '", '
-            //. '`connection_id` = "'.$this->bot['connectionid'].'", '
-            . '`time`      = NOW(), '
-            . '`direction` = "in"';
-        $this->sql_query($sql_log);
+        $this->db->setLog($this->server['network'], $all, $nick, $host, $command, $rest, $text, 'in');
     }
 
     /**
@@ -688,8 +620,8 @@ class Irc extends Cerberus
         if ($this->nowrite === false) {
             return;
         }
-        $this->setNick(null);
-        $this->write('NICK ' . $this->bot['nick']);
+        $nick = $this->setNick(null);
+        $this->write('NICK ' . $nick);
     }
 
     /**
@@ -699,14 +631,7 @@ class Irc extends Cerberus
      */
     protected function on322($rest, $text)
     {
-        list($dummy, $channel, $anz_user) = explode(' ', $rest);
-        $sql_list = 'INSERT INTO channellist SET '
-            . '`channel` = "' . $this->db->escape_string($channel) . '", '
-            . '`user`    = "' . $this->db->escape_string($anz_user) . '", '
-            . '`topic`   = "' . $this->db->escape_string($text) . '", '
-            . '`network` = "' . $this->db->escape_string($this->server['network']) . '", '
-            . '`time`    = NOW()';
-        $this->sql_query($sql_list);
+        /* TODO */
     }
 
     /**
@@ -715,6 +640,14 @@ class Irc extends Cerberus
     protected function on323()
     {
         $this->runPluginEvent(__FUNCTION__, array());
+    }
+
+    /**
+     * RPL_CHANNELMODEIS
+     */
+    protected function on324()
+    {
+        /* TODO */
     }
 
     /**
@@ -747,6 +680,7 @@ class Irc extends Cerberus
     }
 
     /**
+     * @link http://www.irchelp.org/irchelp/rfc/ctcpspec.html
      * @param $nick
      * @param $host
      * @param $channel
@@ -756,9 +690,6 @@ class Irc extends Cerberus
     protected function onPrivmsg($nick, $host, $channel, $text)
     {
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
-            /**
-             * @link http://www.irchelp.org/irchelp/rfc/ctcpspec.html
-             */
             if ($this->config['ctcp'] === false) {
                 return null;
             }
@@ -835,10 +766,7 @@ class Irc extends Cerberus
         if ($nick == $this->var['me']) {
             $this->setNick($text);
         }
-        $sql = 'UPDATE `channel_user` SET `user` = "' . $this->db->escape_string(
-            $text
-        ) . '" WHERE `bot_id` = "' . $this->bot['id'] . '" AND `user` = "' . $this->db->escape_string($nick) . '"';
-        $this->sql_query($sql);
+        $this->db->changeNick($nick, $text);
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
     }
 
@@ -853,13 +781,7 @@ class Irc extends Cerberus
         $user_array = explode(' ', $text);
         foreach ($user_array as $user) {
             preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
-            $this->sql_query(
-                'INSERT INTO `channel_user` SET `user` = "' . $this->db->escape_string(
-                    $matches[2]
-                ) . '", `mode` = "' . $this->db->escape_string(
-                    $matches[1]
-                ) . '", `channel` = "' . $this->db->escape_string($channel) . '", `bot_id` = "' . $this->bot['id'] . '"'
-            );
+            $this->db->addUserToChannel($channel, $matches[2], $matches[1]);
         }
     }
 
@@ -880,12 +802,7 @@ class Irc extends Cerberus
      */
     protected function onTopic($channel, $topic)
     {
-        $sql = 'UPDATE `channel` SET `topic` = "' . $this->db->escape_string(
-            $topic
-        ) . '" WHERE `bot_id` = "' . $this->bot['id'] . '" AND `channel` = "' . $this->db->escape_string(
-            $channel
-        ) . '"';
-        $this->sql_query($sql);
+        $this->db->setChannelTopic($channel, $topic);
     }
 
     /**
@@ -895,18 +812,10 @@ class Irc extends Cerberus
     protected function onJoin($nick, $channel)
     {
         if ($nick == $this->var['me']) {
-            $this->sql_query(
-                'INSERT INTO `channel` SET `channel` = "' . $this->db->escape_string(
-                    $channel
-                ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-            );
+            $this->db->addChannel($channel);
             $this->mode($channel);
         } else {
-            $this->sql_query(
-                'INSERT INTO `channel_user` SET `user` = "' . $this->db->escape_string(
-                    $nick
-                ) . '", `channel` = "' . $this->db->escape_string($channel) . '", `bot_id` = "' . $this->bot['id'] . '"'
-            );
+            $this->db->addUserToChannel($channel, $nick);
         }
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'channel' => $channel));
     }
@@ -937,24 +846,9 @@ class Irc extends Cerberus
     {
         $me = $nick == $this->var['me'] ? true : false;
         if ($me === true) {
-            $this->sql_query(
-                'DELETE FROM `channel` WHERE `channel` = "' . $this->db->escape_string(
-                    $channel
-                ) . '" AND `bot_id` = "' . $this->bot['id'] . '"'
-            );
-            $this->sql_query(
-                'DELETE FROM `channel_user` WHERE `channel` = "' . $this->db->escape_string(
-                    $channel
-                ) . '" AND `bot_id` = "' . $this->bot['id'] . '"'
-            );
+            $this->db->removeChannel($channel);
         } else {
-            $this->sql_query(
-                'DELETE FROM `channel_user` WHERE `user` = "' . $this->db->escape_string(
-                    $nick
-                ) . '" AND `channel` = "' . $this->db->escape_string(
-                    $channel
-                ) . '" AND `bot_id` = "' . $this->bot['id'] . '"'
-            );
+            $this->db->removeUserFromChannel($channel, $nick);
         }
         $this->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'me' => $me, 'nick' => $nick));
     }
@@ -964,11 +858,7 @@ class Irc extends Cerberus
      */
     protected function onQuit($nick)
     {
-        $this->sql_query(
-            'DELETE FROM `channel_user` WHERE `user` = "' . $this->db->escape_string(
-                $nick
-            ) . '" AND `bot_id` = "' . $this->bot['id'] . '"'
-        );
+        $this->db->removeUser($nick);
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick));
     }
 
@@ -989,7 +879,7 @@ class Irc extends Cerberus
      */
     protected function onInvite($channel, $host, $rest)
     {
-        $this->runPluginEvent(__FUNCTION__, array('channel' => $channel));
+        /* TODO */
     }
 
     /**
@@ -998,11 +888,7 @@ class Irc extends Cerberus
      */
     public function privmsg($to, $text)
     {
-        $this->sql_query(
-            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
-                'PRIVMSG ' . $to . ' :' . $text
-            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-        );
+        $this->db->setWrite('PRIVMSG ' . $to . ' :' . $text);
     }
 
     /**
@@ -1011,11 +897,7 @@ class Irc extends Cerberus
      */
     public function notice($to, $text)
     {
-        $this->sql_query(
-            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
-                'NOTICE ' . $to . ' :' . $text
-            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-        );
+        $this->db->setWrite('NOTICE ' . $to . ' :' . $text);
     }
 
     /**
@@ -1023,11 +905,7 @@ class Irc extends Cerberus
      */
     public function quit($text)
     {
-        $this->sql_query(
-            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
-                'QUIT :' . $text
-            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-        );
+        $this->db->setWrite('QUIT :' . $text);
     }
 
     /**
@@ -1035,11 +913,7 @@ class Irc extends Cerberus
      */
     public function mode($text = null)
     {
-        $this->sql_query(
-            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
-                'MODE' . ($text === null ? '' : ' ' . $text)
-            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-        );
+        $this->db->setWrite('MODE' . ($text === null ? '' : ' ' . $text));
     }
 
     /**
@@ -1047,11 +921,7 @@ class Irc extends Cerberus
      */
     public function join($channel)
     {
-        $this->sql_query(
-            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
-                'JOIN ' . $channel
-            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-        );
+        $this->db->setWrite('JOIN ' . $channel);
     }
 
     /**
@@ -1059,11 +929,7 @@ class Irc extends Cerberus
      */
     public function part($channel)
     {
-        $this->sql_query(
-            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
-                'PART ' . $channel
-            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-        );
+        $this->db->setWrite('PART ' . $channel);
     }
 
     /**
@@ -1071,11 +937,16 @@ class Irc extends Cerberus
      */
     public function whois($nick)
     {
-        $this->sql_query(
-            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
-                'WHOIS :' . $nick
-            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-        );
+        $this->db->setWrite('WHOIS :' . $nick);
+    }
+
+    /**
+     * @param $nick
+     */
+    public function nick($nick)
+    {
+        $this->setNick($nick);
+        $this->db->setWrite('NICK :' . $nick);
     }
 
     /**
@@ -1083,14 +954,7 @@ class Irc extends Cerberus
      */
     public function channellist()
     {
-        $this->sql_query(
-            'DELETE FROM `channellist` WHERE `network` = "' . $this->db->escape_string($this->server['network']) . '"'
-        );
-        $this->sql_query(
-            'INSERT INTO `write` SET `text` = "' . $this->db->escape_string(
-                'LIST'
-            ) . '", `bot_id` = "' . $this->bot['id'] . '"'
-        );
+        /* TODO */
     }
 
     /**
@@ -1107,17 +971,7 @@ class Irc extends Cerberus
      */
     public function getAuthLevel($auth)
     {
-        $sql = 'SELECT `authlevel` FROM `user` WHERE `network` = "' . $this->server['network'] . '" AND `authname` = "' . strtolower(
-            $auth
-        ) . '"';
-        $query = $this->sql_query($sql);
-        if ($query !== false) {
-            $row = $this->db->fetch_row($query);
-            if ($row) {
-                return $row[0];
-            }
-        }
-        return false;
+        return $this->db->getAuthLevel($this->server['network'], $auth);
     }
 
     /**
