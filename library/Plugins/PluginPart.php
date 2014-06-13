@@ -39,8 +39,13 @@ class PluginPart extends Plugin
             $channel = trim(array_shift($splitText));
             if (empty($channel) === true) {
                 $channel = $data['channel'];
+                $this->irc->part($channel);
+            } else {
+                while ($channel = array_shift($splitText)) {
+                    $this->irc->part($channel);
+                }
             }
-            return $this->irc->part($channel);
+            return true;
         }
     }
 }

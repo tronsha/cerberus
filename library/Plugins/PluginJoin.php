@@ -26,7 +26,7 @@ class PluginJoin extends Plugin
 
     /**
      * @param array $data
-     * @return bool|void
+     * @return bool
      */
     public function onPrivmsg($data)
     {
@@ -36,7 +36,10 @@ class PluginJoin extends Plugin
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!join') {
-            return $this->irc->join(array_shift($splitText));
+            while ($channel = array_shift($splitText)) {
+                $this->irc->join($channel);
+            }
+            return true;
         }
     }
 }
