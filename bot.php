@@ -12,5 +12,7 @@ date_default_timezone_set('Europe/Berlin');
 
 require_once("vendor/autoload.php");
 
-$cerberus = new \Cerberus\Cerberus();
+use \Cerberus\Cerberus;
+
+$cerberus = new Cerberus;
 $cerberus->run();
