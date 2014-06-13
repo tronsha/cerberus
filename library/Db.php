@@ -89,7 +89,7 @@ class Db
     public function cleanupBot()
     {
         try {
-            $sql = 'DELETE FROM `write` WHERE `bot_id` = ' . $this->botId . '';
+            $sql = 'DELETE FROM `send` WHERE `bot_id` = ' . $this->botId . '';
             $this->conn->query($sql);
             $sql = 'DELETE FROM `channel` WHERE `bot_id` = ' . $this->botId . '';
             $this->conn->query($sql);
@@ -104,9 +104,8 @@ class Db
     {
         try {
             $sql = 'SELECT count(*) AS number '
-                . 'FROM `server` s, `server_port` sp, `network` n '
-                . 'WHERE s.`id` = sp.`server_id` '
-                . 'AND n.`id` = s.`network_id` '
+                . 'FROM `server` s, `network` n '
+                . 'WHERE n.`id` = s.`network_id` '
                 . 'AND n.`network` = ' . $this->conn->quote($network) . '';
             $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
@@ -116,17 +115,23 @@ class Db
         }
     }
 
+    /**
+     * @link https://freenode.net/irc_servers.shtml
+     * @link https://www.quakenet.org/servers
+     * @param array $server
+     * @param int $i
+     * @return array
+     */
     public function getServerData($server, $i = 0)
     {
         try {
             $network = $server['network'];
             $i = (string)$i;
-            $sql = 'SELECT s.`id` , s.`server` AS host, sp.`port` '
-                . 'FROM `server` s, `server_port` sp, `network` n '
-                . 'WHERE s.`id` = sp.`server_id` '
-                . 'AND n.`id` = s.`network_id` '
+            $sql = 'SELECT s.`id` , s.`server` AS host, s.`port` '
+                . 'FROM `server` s, `network` n '
+                . 'WHERE n.`id` = s.`network_id` '
                 . 'AND n.`network` = ' . $this->conn->quote($network) . ' '
-                . 'ORDER BY s.`id` , sp.`port` '
+                . 'ORDER BY s.`id` , s.`port` '
                 . 'LIMIT ' . $i . ', 1';
             $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
@@ -168,7 +173,7 @@ class Db
     public function setWrite($text)
     {
         try {
-            $sql = 'INSERT INTO `write` SET `text` = ' . $this->conn->quote($text) . ', `bot_id` = ' . $this->botId . '';
+            $sql = 'INSERT INTO `send` SET `text` = ' . $this->conn->quote($text) . ', `bot_id` = ' . $this->botId . '';
             $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -178,7 +183,7 @@ class Db
     public function getWrite()
     {
         try {
-            $sql = 'SELECT `id`, `text` FROM `write` WHERE `bot_id` = ' . $this->botId . ' ORDER BY `id` LIMIT 0, 1';
+            $sql = 'SELECT `id`, `text` FROM `send` WHERE `bot_id` = ' . $this->botId . ' ORDER BY `id` LIMIT 0, 1';
             $stmt = $this->conn->query($sql);
             return $stmt->fetch();
         } catch (\Exception $e) {
@@ -189,7 +194,7 @@ class Db
     public function unsetWrite($id)
     {
         try {
-            $sql = 'DELETE FROM `write` WHERE `id` = ' . $this->conn->quote($id) . '';
+            $sql = 'DELETE FROM `send` WHERE `id` = ' . $this->conn->quote($id) . '';
             $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -321,7 +326,7 @@ class Db
     public function getAuthLevel($network, $auth)
     {
         try {
-            $sql = 'SELECT `authlevel` FROM `user` WHERE `network` = ' . $this->conn->quote($network) . ' AND `authname` = ' . $this->conn->quote($auth) . '';
+            $sql = 'SELECT `authlevel` FROM `auth` WHERE `network` = ' . $this->conn->quote($network) . ' AND `authname` = ' . $this->conn->quote($auth) . '';
             $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
             return $row['authlevel'];
