@@ -555,6 +555,9 @@ class Irc extends Cerberus
             case '433':
                 $this->on433();
                 break;
+            case '437':
+                $this->on437();
+                break;
             case 'PRIVMSG':
                 $this->onPrivmsg($nick, $host, $rest, $text);
                 break;
@@ -591,6 +594,7 @@ class Irc extends Cerberus
 
     /**
      * ERR_NONICKNAMEGIVEN
+     * :No nickname given
      */
     protected function on431()
     {
@@ -598,6 +602,7 @@ class Irc extends Cerberus
 
     /**
      * ERR_ERRONEUSNICKNAME
+     * <nick> :Erroneous nickname
      */
     protected function on432()
     {
@@ -606,8 +611,18 @@ class Irc extends Cerberus
 
     /**
      * ERR_NICKNAMEINUSE
+     * <nick> :Nickname is already in use
      */
     protected function on433()
+    {
+        $this->otherNick();
+    }
+
+    /**
+     * ERR_UNAVAILRESOURCE
+     * <nick/channel> :Nick/channel is temporarily unavailable
+     */
+    protected function on437()
     {
         $this->otherNick();
     }
@@ -626,6 +641,7 @@ class Irc extends Cerberus
 
     /**
      * RPL_LIST
+     * <channel> <# visible> :<topic>
      * @param $rest
      * @param $text
      */
@@ -636,6 +652,7 @@ class Irc extends Cerberus
 
     /**
      * RPL_LISTEND
+     * :End of LIST
      */
     protected function on323()
     {
@@ -644,6 +661,7 @@ class Irc extends Cerberus
 
     /**
      * RPL_CHANNELMODEIS
+     * <channel> <mode> <mode params>
      */
     protected function on324()
     {
@@ -663,6 +681,7 @@ class Irc extends Cerberus
 
     /**
      * RPL_WHOISACCOUNT
+     * :is logged in as
      * @param $rest
      */
     protected function on330($rest)
@@ -673,6 +692,7 @@ class Irc extends Cerberus
 
     /**
      * RPL_ENDOFWHOIS
+     * <nick> :End of WHOIS list
      */
     protected function on318()
     {
@@ -787,6 +807,7 @@ class Irc extends Cerberus
 
     /**
      * RPL_TOPIC
+     * <channel> :<topic>
      * @param $rest
      * @param $text
      */
