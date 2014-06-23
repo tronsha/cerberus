@@ -10,7 +10,8 @@ if (version_compare(phpversion(), '5.3.2', '<') === true) {
 error_reporting(-1);
 date_default_timezone_set('Europe/Berlin');
 
-require_once("vendor/autoload.php");
+chdir(__DIR__);
+require_once('../vendor/autoload.php');
 
 use \Cerberus\Cerberus;
 

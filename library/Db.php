@@ -23,7 +23,7 @@ class Db
     protected $conn = null;
     protected $botId = null;
 
-    public function __construct($config, Irc $irc)
+    public function __construct($config, Irc $irc = null)
     {
         $this->irc = $irc;
         $this->config = $config;
@@ -46,7 +46,9 @@ class Db
 
     public function error($error)
     {
-        $this->irc->sqlError($error);
+        if($this->irc !== null) {
+            $this->irc->sqlError($error);
+        }
     }
 
     /**
@@ -75,10 +77,10 @@ class Db
         }
     }
 
-    public function shutdownBot()
+    public function shutdownBot($botId = null)
     {
         try {
-            $sql = 'UPDATE `bot` SET `stop` = NOW() WHERE `id` = ' . $this->botId . '';
+            $sql = 'UPDATE `bot` SET `stop` = NOW() WHERE `id` = ' . ($botId === null ? $this->botId : $botId) . '';
             $this->conn->query($sql);
             $this->close();
         } catch (\Exception $e) {
@@ -86,15 +88,27 @@ class Db
         }
     }
 
-    public function cleanupBot()
+    public function cleanupBot($botId = null)
     {
         try {
-            $sql = 'DELETE FROM `send` WHERE `bot_id` = ' . $this->botId . '';
+            $sql = 'DELETE FROM `send` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
             $this->conn->query($sql);
-            $sql = 'DELETE FROM `channel` WHERE `bot_id` = ' . $this->botId . '';
+            $sql = 'DELETE FROM `channel` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
             $this->conn->query($sql);
-            $sql = 'DELETE FROM `channel_user` WHERE `bot_id` = ' . $this->botId . '';
+            $sql = 'DELETE FROM `channel_user` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
             $this->conn->query($sql);
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    public function getActiveBotList()
+    {
+        try {
+            $sql = 'SELECT * FROM bot WHERE stop IS NULL';
+            $stmt = $this->conn->query($sql);
+            $rows = $stmt->fetchAll();
+            return $rows;
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }

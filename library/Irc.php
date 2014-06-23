@@ -215,14 +215,6 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $text
-     */
-    public function sysinfo($text)
-    {
-        echo '**** ' . $text . ' ****' . PHP_EOL;
-    }
-
-    /**
      * @return bool
      */
     public function init()

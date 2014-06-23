@@ -37,6 +37,8 @@ class Cerberus
 
     protected $config;
 
+    protected static $path;
+
     public function __construct()
     {
         set_time_limit(0);
@@ -50,6 +52,14 @@ class Cerberus
     {
         $irc = new Irc($this->config);
         $irc->connect();
+    }
+
+    /**
+     * @param $text
+     */
+    public static function sysinfo($text)
+    {
+        echo '**** ' . $text . ' ****' . PHP_EOL;
     }
 
     /**
@@ -76,8 +86,32 @@ class Cerberus
     /**
      * @return string
      */
-    protected function getPath()
+    public static function getPath()
     {
-        return realpath(dirname(__FILE__) . '/..');
+        if (empty(self::$path) === true) {
+            self::$path = realpath(dirname(__FILE__) . '/..');
+        }
+        return self::$path;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function is_exec_available()
+    {
+        $available = true;
+        if (ini_get('safe_mode')) {
+            $available = false;
+        } else {
+            $disable = ini_get('disable_functions');
+            $blacklist = ini_get('suhosin.executor.func.blacklist');
+            if ($disable . $blacklist) {
+                $array = preg_split('/,\s*/', $disable . ',' . $blacklist);
+                if (in_array('exec', $array)) {
+                    $available = false;
+                }
+            }
+        }
+        return $available;
     }
 }
