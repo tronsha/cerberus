@@ -41,9 +41,9 @@ class PluginPart extends Plugin
                 $channel = $data['channel'];
                 $this->irc->part($channel);
             } else {
-                while ($channel = array_shift($splitText)) {
+                do {
                     $this->irc->part($channel);
-                }
+                } while ($channel = array_shift($splitText));
             }
             return true;
         }
