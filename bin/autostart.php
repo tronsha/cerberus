@@ -45,6 +45,9 @@ if ($config['bot']['autostart']) {
     }
     if ($botCount == 0) {
         Cerberus::sysinfo('start a new bot.');
+        if (is_dir($config['log']['directory']) === false) {
+            mkdir($config['log']['directory']);
+        }
         exec('php -f ' . Cerberus::getPath() . '/bin/bot.php > ' . $config['log']['directory'] . 'log.txt 2>&1 &');
     }
 }
