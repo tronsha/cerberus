@@ -1,4 +1,4 @@
 Cerberus
 ========
 
-This is an ircbot written in php. The bot run from any server with php support.
+Cerberus is an IRC bot written for PHP 5.3
