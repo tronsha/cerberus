@@ -268,7 +268,7 @@ class Db
     public function removeChannel($channel)
     {
         try {
-            $sql = 'DELETE FROM `channel` WHERE `channel` = ' . $this->conn->quote($channel) . ', `bot_id` = ' . $this->botId . '';
+            $sql = 'DELETE FROM `channel` WHERE `channel` = ' . $this->conn->quote($channel) . ' AND `bot_id` = ' . $this->botId . '';
             $this->conn->query($sql);
             $this->removeUserFromChannel($channel);
         } catch (\Exception $e) {
