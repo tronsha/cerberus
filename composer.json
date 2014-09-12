@@ -3,10 +3,7 @@
     "description": "Cerberus IRC Bot",
     "keywords": ["irc"],
     "homepage": "https://github.com/tronsha/cerberus",
-    "license": {
-        "type": "GNU General Public License",
-        "url": "https://github.com/tronsha/cerberus/blob/master/LICENSE"
-    },
+    "license": "GNU General Public License",
     "authors": [
         {
             "name": "Stefan Hüsges",
