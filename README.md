@@ -5,10 +5,13 @@ Cerberus is an IRC bot written for PHP 5.3
 ## Credits
 
 ### Author
-Stefan Hüsges  
+* [Stefan Hüsges](https://github.com/tronsha)
 
 ### Thanks
-[Daniel Basten](https://github.com/axhm3a)
+* [Daniel Basten](https://github.com/axhm3a)
+
+## Libraries
+* [Doctrine Database Abstraction Layer](http://www.doctrine-project.org/projects/dbal.html)
 
 
 ## License
