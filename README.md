@@ -2,6 +2,8 @@
 
 Cerberus is an IRC bot written for PHP
 
+![](http://instacod.es/file/93564)
+
 ## Install
 
 ### Use Composer
