@@ -1,4 +1,5 @@
-#Cerberus
+Cerberus
+========
 
 Cerberus is an IRC bot written for PHP
 
