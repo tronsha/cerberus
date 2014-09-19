@@ -1,6 +1,6 @@
 #Cerberus
 
-Cerberus is an IRC bot written for PHP 5.3
+Cerberus is an IRC bot written for PHP
 
 ## Install
 
@@ -15,14 +15,26 @@ Then, use the `create-project` command to generate a new project:
 
     php composer.phar create-project tronsha/cerberus --stability=dev
 
+## Require
+* [PHP][5] 5.3.2 or newer
+* Database, for example [MySQL][6]
+
 ## Author
-* [Stefan Hüsges](https://github.com/tronsha)
+* [Stefan Hüsges][1]
 
 ## Thanks
-* [Daniel Basten](https://github.com/axhm3a)
+* [Daniel Basten][2]
 
 ## Libraries
-* [Doctrine Database Abstraction Layer](http://www.doctrine-project.org/projects/dbal.html)
+* [Doctrine Database Abstraction Layer][3]
 
 ## License
-[![GNU General Public License](http://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0)
+[![GNU General Public License](http://www.gnu.org/graphics/gplv3-127x51.png)][4]
+
+
+[1]: https://github.com/tronsha
+[2]: https://github.com/axhm3a
+[3]: http://www.doctrine-project.org/projects/dbal.html
+[4]: http://www.gnu.org/licenses/gpl-3.0
+[5]: http://php.net/
+[6]: http://www.mysql.com/
