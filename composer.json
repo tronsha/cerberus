@@ -16,7 +16,8 @@
         }
     ],
     "support": {
-        "irc": "irc://irc.freenode.org/cerberbot"
+        "irc": "irc://irc.freenode.org/cerberbot",
+        "source": "https://github.com/tronsha/cerberus"
     },
     "require": {
         "php": ">=5.3.2",
@@ -24,6 +25,9 @@
     },
     "require-dev": {
         "phpunit/phpunit": "4.1.*"
+    },
+    "suggest": {
+        "ext-mcrypt": "required by crypt plugin"
     },
     "autoload": {
         "psr-4": {
