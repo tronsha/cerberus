@@ -27,7 +27,7 @@ use \Doctrine\DBAL\Version;
  * Class Db
  * @package Cerberus
  * @author Stefan Hüsges
- * @link http://www.mpcx.net/cerberus/ Project Homepage
+ * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @link http://www.doctrine-project.org/projects/dbal.html Database Abstraction Layer
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
