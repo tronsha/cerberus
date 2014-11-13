@@ -25,7 +25,7 @@ use Cerberus\Plugins\PluginAuth;
  * Class Irc
  * @package Cerberus
  * @author Stefan Hüsges
- * @link http://www.mpcx.net/cerberus/ Project Homepage
+ * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @link http://tools.ietf.org/html/rfc2812 Internet Relay Chat: Client Protocol
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
