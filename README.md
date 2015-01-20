@@ -36,7 +36,7 @@ Then, use the `create-project` command to generate a new project:
 * [GitHub][5]
 
 ## Libraries
-* [Doctrine Database Abstraction Layer][4]
+* [Doctrine Database Abstraction Layer][4] 2.5
 
 ## License
 [![GNU General Public License](http://www.gnu.org/graphics/gplv3-127x51.png)][3]
