@@ -22,27 +22,28 @@ Then, use the `create-project` command to generate a new project:
 * [PHP][5] 5.3.2 or newer
 * Database, for example [MySQL][6]
 
+## Libraries
+* [Doctrine Database Abstraction Layer][4] 2.5
+
 ## Creator
 
 **Stefan Hüsges**
 
-* [GitHub][1]
-* [Homepage][2]
+:computer: [Homepage][1]
+
+:octocat: [GitHub][2]
 
 ## Thanks
 
 **Daniel Basten**
 
-* [GitHub][5]
-
-## Libraries
-* [Doctrine Database Abstraction Layer][4] 2.5
+:octocat: [GitHub][5]
 
 ## License
 [![GNU General Public License](http://www.gnu.org/graphics/gplv3-127x51.png)][3]
 
-[1]: https://github.com/tronsha
-[2]: http://www.mpcx.net
+[1]: http://www.mpcx.net
+[2]: https://github.com/tronsha
 [3]: http://www.gnu.org/licenses/gpl-3.0
 [4]: http://www.doctrine-project.org/projects/dbal.html
 [5]: https://github.com/axhm3a
