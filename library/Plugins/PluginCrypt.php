@@ -61,4 +61,14 @@ class PluginCrypt extends Plugin
         $plaintext = mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv);
         return trim($plaintext);
     }
+
+    /**
+     * @param $text
+     * @param $key
+     * @retrun string
+     */
+    protected function encodeMircryption($text, $key)
+    {
+
+    }
 }
