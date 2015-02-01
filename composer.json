@@ -36,5 +36,13 @@
             "Hades\\": "public/library/"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "scripts": {
+        "post-install-cmd": [
+            "Cerberus\\Event::install"
+        ],
+        "post-create-project-cmd" : [
+            "Cerberus\\Event::install"
+        ]
+    }
 }

@@ -69,6 +69,6 @@ class PluginCrypt extends Plugin
      */
     protected function encodeMircryption($text, $key)
     {
-
+        /* @todo write code */
     }
 }
