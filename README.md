@@ -18,6 +18,12 @@ Then, use the `create-project` command to generate a new project:
 
     php composer.phar create-project tronsha/cerberus --stability=dev
 
+Alternativ you can clone the project from git or download the files.
+Then, use the `install` command:
+
+    php composer.phar install
+
+
 ## Require
 * [PHP][5] 5.3.2 or newer
 * Database, for example [MySQL][6]
