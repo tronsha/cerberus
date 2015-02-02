@@ -4,10 +4,22 @@ namespace Cerberus\Plugins;
 
 use Cerberus\Plugin;
 
+/**
+ * Class PluginCrypt
+ * @package Cerberus
+ * @author Stefan Hüsges
+ * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
+ * @link https://github.com/tronsha/cerberus Project on GitHub
+ * @link http://tools.ietf.org/html/rfc2812 Internet Relay Chat: Client Protocol
+ * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
+ */
 class PluginCrypt extends Plugin
 {
     private $cryptkey = array();
 
+    /**
+     *
+     */
     protected function init()
     {
         if (extension_loaded('mcrypt')) {
@@ -51,6 +63,7 @@ class PluginCrypt extends Plugin
      * @param string $text
      * @param string $key
      * @return string
+     * @link http://php.net/manual/en/function.mcrypt-decrypt.php
      */
     public static function decodeMircryption($text, $key = '123456')
     {
@@ -65,7 +78,8 @@ class PluginCrypt extends Plugin
     /**
      * @param string $text
      * @param string $key
-     * @retrun string
+     * @return string
+     * @link http://php.net/manual/en/function.mcrypt-encrypt.php
      */
     public static function encodeMircryption($text, $key = '123456')
     {
