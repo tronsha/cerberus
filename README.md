@@ -18,7 +18,7 @@ Then, use the `create-project` command to generate a new project:
 
     php composer.phar create-project tronsha/cerberus --stability=dev
 
-Alternativ you can clone the project from git:
+Alternativ you can clone the project from github:
 
     git clone https://github.com/tronsha/cerberus.git
 
