@@ -365,17 +365,4 @@ class Db
             $this->error($e->getMessage());
         }
     }
-
-    /**
-     * @param $sql
-     * @return mixed
-     */
-    public function query($sql)
-    {
-        try {
-            return $this->conn->query($sql);
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
 }

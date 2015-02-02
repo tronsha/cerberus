@@ -20,8 +20,8 @@
 namespace Cerberus;
 
 use \Composer\Script\Event;
-use \Cerberus\Cerberus;
-use \Cerberus\Db;
+use \Doctrine\DBAL\Configuration;
+use \Doctrine\DBAL\DriverManager;
 
 /**
  * Class Installer
@@ -46,13 +46,25 @@ class Installer
     {
         $io = $event->getIO();
         $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
-        $dbname = $io->ask('Database Name: ');
+        $dbhost = $io->ask('Database Host (' . "\x1b[34m" . 'localhost' . "\x1b[0m" . '): ');
+        $config = str_replace(
+            '{dbhost}',
+            $dbhost ? $dbhost : 'localhost',
+            $config
+        );
+        $dbport = $io->ask('Database Port (' . "\x1b[34m" . '3306' . "\x1b[0m" . '): ');
+        $config = str_replace(
+            '{dbport}',
+            $dbport ? $dbport : '3306',
+            $config
+        );
+        $dbname = $io->ask('Database Name (' . "\x1b[34m" . 'cerberus' . "\x1b[0m" . '): ');
         $config = str_replace(
             '{dbname}',
             $dbname ? $dbname : 'cerberus',
             $config
         );
-        $dbuser = $io->ask('Database User: ');
+        $dbuser = $io->ask('Database User (' . "\x1b[34m" . 'root' . "\x1b[0m" . '): ');
         $config = str_replace(
             '{dbuser}',
             $dbuser ? $dbuser : 'root',
@@ -70,8 +82,17 @@ class Installer
     protected static function installDb()
     {
         $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
-        $db = new Db($config['db']);
-        $db->connect();
+        $dbname = $config['db']['dbname'];
+        $config['db']['dbname'] = null;
+        $db =  DriverManager::getConnection($config['db'], new Configuration);
+        $sm = $db->getSchemaManager();
+        $list = $sm->listDatabases();
+        if (in_array($dbname, $list) === false) {
+            $sm->createDatabase($dbname);
+        }
+        $db->close();
+        $config['db']['dbname'] = $dbname;
+        $db =  DriverManager::getConnection($config['db'], new Configuration);
         $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.sql'));
     }
 }
