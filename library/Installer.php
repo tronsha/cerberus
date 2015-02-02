@@ -19,11 +19,12 @@
 
 namespace Cerberus;
 
+use \Composer\Script\Event;
 use \Cerberus\Cerberus;
 use \Cerberus\Db;
 
 /**
- * Class Install
+ * Class Installer
  * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
@@ -32,25 +33,45 @@ use \Cerberus\Db;
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
 
-class Event
+class Installer
 {
-    public static function install()
+    public static function install(Event $event)
     {
-        $path = Cerberus::getPath();
-        Event::createConfig();
-        $config = parse_ini_file($path . '/config.ini', true);
-        Event::installDatabase($config);
+        $composer = $event->getComposer();
+        self::createConfig($event);
+        self::installDb();
     }
 
-    public static function createConfig()
+    protected static function createConfig($event)
     {
-        /* @todo */
+        $io = $event->getIO();
+        $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
+        $dbname = $io->ask('Database Name: ');
+        $config = str_replace(
+            '{dbname}',
+            $dbname ? $dbname : 'cerberus',
+            $config
+        );
+        $dbuser = $io->ask('Database User: ');
+        $config = str_replace(
+            '{dbuser}',
+            $dbuser ? $dbuser : 'root',
+            $config
+        );
+        $dbpass = $io->ask('Database Password: ');
+        $config = str_replace(
+            '{dbpassword}',
+            $dbpass ? $dbpass : '',
+            $config
+        );
+        file_put_contents(Cerberus::getPath() . '/config.ini', $config);
     }
 
-    public static function installDatabase($config)
+    protected static function installDb()
     {
+        $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
         $db = new Db($config['db']);
         $db->connect();
-        $db->query(file_get_contents('cerberus.sql'));
+        $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.sql'));
     }
 }
