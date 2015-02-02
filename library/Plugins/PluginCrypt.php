@@ -52,7 +52,7 @@ class PluginCrypt extends Plugin
      * @param string $key
      * @return string
      */
-    protected function decodeMircryption($text, $key)
+    public static function decodeMircryption($text, $key = '123456')
     {
         $encodedTextBase64 = str_replace('*', '', $text);
         $encodedText = base64_decode($encodedTextBase64);
@@ -63,12 +63,17 @@ class PluginCrypt extends Plugin
     }
 
     /**
-     * @param $text
-     * @param $key
+     * @param string $text
+     * @param string $key
      * @retrun string
      */
-    protected function encodeMircryption($text, $key)
+    public static function encodeMircryption($text, $key = '123456')
     {
-        /* @todo write code */
+        $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        $decodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, $text, MCRYPT_MODE_CBC, $iv);
+        $decodedText = $iv . $decodedText;
+        $decodedTextBase64 = base64_encode($decodedText);
+        return '+OK *' . $decodedTextBase64;
     }
 }
