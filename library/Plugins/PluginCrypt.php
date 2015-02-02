@@ -1,8 +1,26 @@
 <?php
 
+/*   Cerberus IRCBot
+ *   Copyright (C) 2008 - 2015 Stefan Hüsges
+ *
+ *   This program is free software; you can redistribute it and/or modify it
+ *   under the terms of the GNU General Public License as published by the Free
+ *   Software Foundation; either version 3 of the License, or (at your option)
+ *   any later version.
+ *
+ *   This program is distributed in the hope that it will be useful, but
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ *   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ *   for more details.
+ *
+ *   You should have received a copy of the GNU General Public License along
+ *   with this program; if not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace Cerberus\Plugins;
 
 use Cerberus\Plugin;
+use Cerberus\Mircryption;
 
 /**
  * Class PluginCrypt
@@ -16,6 +34,7 @@ use Cerberus\Plugin;
 class PluginCrypt extends Plugin
 {
     private $cryptkey = array();
+    private $mircryption = null;
 
     /**
      *
@@ -23,6 +42,7 @@ class PluginCrypt extends Plugin
     protected function init()
     {
         if (extension_loaded('mcrypt')) {
+            $this->mircryption = new Mircryption;
             $this->irc->addEvent('onPrivmsg', $this, 10);
         } else {
             $this->irc->sysinfo('Your version of PHP does NOT have the mcrypt extension loaded.');
@@ -63,31 +83,19 @@ class PluginCrypt extends Plugin
      * @param string $text
      * @param string $key
      * @return string
-     * @link http://php.net/manual/en/function.mcrypt-decrypt.php
      */
-    public static function decodeMircryption($text, $key = '123456')
+    protected function decodeMircryption($text, $key = '123456')
     {
-        $encodedTextBase64 = str_replace('*', '', $text);
-        $encodedText = base64_decode($encodedTextBase64);
-        $iv = substr($encodedText, 0, 8);
-        $encodedText = substr($encodedText, 8);
-        $plaintext = mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv);
-        return trim($plaintext);
+        return $this->mircryption->decode($text, $key);
     }
 
     /**
      * @param string $text
      * @param string $key
      * @return string
-     * @link http://php.net/manual/en/function.mcrypt-encrypt.php
      */
-    public static function encodeMircryption($text, $key = '123456')
+    protected function encodeMircryption($text, $key = '123456')
     {
-        $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $decodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, $text, MCRYPT_MODE_CBC, $iv);
-        $decodedText = $iv . $decodedText;
-        $decodedTextBase64 = base64_encode($decodedText);
-        return '+OK *' . $decodedTextBase64;
+        return '+OK ' . $this->mircryption->encode($text, $key);
     }
 }
