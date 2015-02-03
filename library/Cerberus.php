@@ -1,7 +1,7 @@
 <?php
 
 /*   Cerberus IRCBot
- *   Copyright (C) 2008 - 2014 Stefan Hüsges
+ *   Copyright (C) 2008 - 2015 Stefan Hüsges
  *
  *   This program is free software; you can redistribute it and/or modify it
  *   under the terms of the GNU General Public License as published by the Free
@@ -29,6 +29,8 @@ namespace Cerberus;
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
 
+use \Symfony\Component\Console\Output\ConsoleOutput;
+
 class Cerberus
 {
     const AUTH_NONE = 1;
@@ -39,10 +41,13 @@ class Cerberus
 
     protected static $path;
 
+    protected static $output = null;
+
     public function __construct()
     {
         set_time_limit(0);
         $this->config = parse_ini_file($this->getPath() . '/config.ini', true);
+        self::$output =  new ConsoleOutput;
     }
 
     /**
@@ -59,7 +64,10 @@ class Cerberus
      */
     public static function sysinfo($text)
     {
-        echo '**** ' . $text . ' ****' . PHP_EOL;
+        if (self::$output === null) {
+            self::$output = new ConsoleOutput;
+        }
+        self::$output->writeln('<info>**** ' . $text . ' ****</info>');
     }
 
     /**

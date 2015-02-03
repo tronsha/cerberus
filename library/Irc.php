@@ -1,7 +1,7 @@
 <?php
 
 /*   Cerberus IRCBot
- *   Copyright (C) 2008 - 2014 Stefan Hüsges
+ *   Copyright (C) 2008 - 2015 Stefan Hüsges
  *
  *   This program is free software; you can redistribute it and/or modify it 
  *   under the terms of the GNU General Public License as published by the Free 
@@ -19,7 +19,9 @@
 
 namespace Cerberus;
 
-use Cerberus\Plugins\PluginAuth;
+use \Cerberus\Plugins\PluginAuth;
+use \Symfony\Component\Console\Formatter\OutputFormatter;
+use \Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 /**
  * Class Irc
@@ -123,6 +125,8 @@ class Irc extends Cerberus
                 $this->config['plugins']['autoload'] = explode(',', $config['plugins']['autoload']);
             }
         }
+        self::$output->getFormatter()->setStyle('time', new OutputFormatterStyle('yellow'));
+        self::$output->getFormatter()->setStyle('traffic', new OutputFormatterStyle('cyan'));
     }
 
     public function __destruct()
@@ -383,9 +387,11 @@ class Irc extends Cerberus
      */
     protected function write($text)
     {
-        $output = trim($text) . PHP_EOL;
-        echo '[' . date("H:i:s") . '] => ' . $output;
-        fwrite($this->fp, $output);
+        $output = trim($text);
+        self::$output->writeln(
+            '<time>[' . date("H:i:s") . ']</time> => <traffic>' . OutputFormatter::escape($output) . '</traffic>'
+        );
+        fwrite($this->fp, $output . PHP_EOL);
         preg_match("/^([^ ]+).*?$/i", $text, $matches);
         $command = isset($matches[1]) ? $matches[1] : '';
         if (strtolower($command) == 'quit') {
@@ -403,7 +409,9 @@ class Irc extends Cerberus
         $text = trim($input);
         if ($text != '') {
             $this->log($text, 'socket');
-            echo '[' . date("H:i:s") . '] <= ' . $text . PHP_EOL;
+            self::$output->writeln(
+                '<time>[' . date("H:i:s") . ']</time> <= <traffic>' . OutputFormatter::escape($text) . '</traffic>'
+            );
         }
         return $input;
     }

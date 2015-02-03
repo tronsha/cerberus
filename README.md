@@ -9,8 +9,7 @@ Cerberus is an IRC bot written for PHP
 
 ### Use Composer
 
-If you don't have Composer yet, download it following the instructions on
-http://getcomposer.org/ or just run the following command:
+If you don't have Composer yet, download it following the instructions on [getcomposer.org][5] or just run the following command:
 
     curl -s http://getcomposer.org/installer | php
 
@@ -27,12 +26,10 @@ Then, use the `install` command:
     php composer.phar install
 
 
-## Require
-* [PHP][5] 5.3.2 or newer
-* Database, for example [MySQL][6]
-
 ## Libraries
-* [Doctrine Database Abstraction Layer][4] 2.5
+
+* [Doctrine Database Abstraction Layer 2.5.x][6]
+* [Symfony Console Component 2.6.x][7]
 
 ## Creator
 
@@ -46,15 +43,16 @@ Then, use the `install` command:
 
 **Daniel Basten**
 
-:octocat: [GitHub][5]
+:octocat: [GitHub][3]
 
 ## License
-[![GNU General Public License](http://www.gnu.org/graphics/gplv3-127x51.png)][3]
+[![GNU General Public License](http://www.gnu.org/graphics/gplv3-127x51.png)][4]
 
 [1]: http://www.mpcx.net
 [2]: https://github.com/tronsha
-[3]: http://www.gnu.org/licenses/gpl-3.0
-[4]: http://www.doctrine-project.org/projects/dbal.html
-[5]: https://github.com/axhm3a
-[6]: http://php.net/
-[7]: http://www.mysql.com/
+[3]: https://github.com/axhm3a
+[4]: http://www.gnu.org/licenses/gpl-3.0
+[5]: http://getcomposer.org/
+[6]: http://www.doctrine-project.org/projects/dbal.html
+[7]: http://symfony.com/components/Console
+
