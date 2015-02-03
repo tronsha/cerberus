@@ -99,7 +99,7 @@ class Installer
     }
 
     /**
-     * @throws \Doctrine\DBALDBALException
+     * @throws \Doctrine\DBAL\DBALException
      */
     protected static function installDb()
     {
