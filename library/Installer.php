@@ -47,7 +47,7 @@ class Installer
         $io = $event->getIO();
         $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
         $io->write("\x1b[1m" .'Setup config file' . "\x1b[0m");
-        $io->write("\x1b[31m" .'Bot' . "\x1b[0m");
+        $io->write("\x1b[31m" .'IRC' . "\x1b[0m");
         $botname = $io->ask('Nickname: ');
         $config = str_replace(
             '{botname}',
