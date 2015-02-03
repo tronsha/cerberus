@@ -46,31 +46,40 @@ class Installer
     {
         $io = $event->getIO();
         $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
-        $dbhost = $io->ask('Database Host (' . "\x1b[34m" . 'localhost' . "\x1b[0m" . '): ');
+        $io->write("\x1b[1m" .'Setup config file' . "\x1b[0m");
+        $io->write("\x1b[31m" .'Bot' . "\x1b[0m");
+        $botname = $io->ask('Nickname: ');
+        $config = str_replace(
+            '{botname}',
+            $botname ? $botname : 'JohnSmith',
+            $config
+        );
+        $io->write("\x1b[31m" .'Database' . "\x1b[0m");
+        $dbhost = $io->ask('Host (' . "\x1b[34m" . 'localhost' . "\x1b[0m" . '): ');
         $config = str_replace(
             '{dbhost}',
             $dbhost ? $dbhost : 'localhost',
             $config
         );
-        $dbport = $io->ask('Database Port (' . "\x1b[34m" . '3306' . "\x1b[0m" . '): ');
+        $dbport = $io->ask('Port (' . "\x1b[34m" . '3306' . "\x1b[0m" . '): ');
         $config = str_replace(
             '{dbport}',
             $dbport ? $dbport : '3306',
             $config
         );
-        $dbname = $io->ask('Database Name (' . "\x1b[34m" . 'cerberus' . "\x1b[0m" . '): ');
+        $dbname = $io->ask('Name (' . "\x1b[34m" . 'cerberus' . "\x1b[0m" . '): ');
         $config = str_replace(
             '{dbname}',
             $dbname ? $dbname : 'cerberus',
             $config
         );
-        $dbuser = $io->ask('Database User (' . "\x1b[34m" . 'root' . "\x1b[0m" . '): ');
+        $dbuser = $io->ask('User (' . "\x1b[34m" . 'root' . "\x1b[0m" . '): ');
         $config = str_replace(
             '{dbuser}',
             $dbuser ? $dbuser : 'root',
             $config
         );
-        $dbpass = $io->ask('Database Password: ');
+        $dbpass = $io->ask('Password: ');
         $config = str_replace(
             '{dbpassword}',
             $dbpass ? $dbpass : '',
@@ -94,5 +103,6 @@ class Installer
         $config['db']['dbname'] = $dbname;
         $db =  DriverManager::getConnection($config['db'], new Configuration);
         $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.sql'));
+        $db->close();
     }
 }
