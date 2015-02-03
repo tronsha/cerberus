@@ -47,9 +47,9 @@ class Installer
         $io = $event->getIO();
         $io->write("\x1b[1m" .'Setup config file' . "\x1b[0m");
         if (file_exists(Cerberus::getPath() . '/config.ini') === true) {
-            $configExists = $io->ask('The config file exists. Create a new config? (y/n): ');
+            $newConfig = $io->ask('The config file exists. Create a new config? (y/n): ');
         }
-        if ($configExists == 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
+        if ($newConfig == 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
             $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
             $io->write("\x1b[31m" .'IRC' . "\x1b[0m");
             $botname = $io->ask('Nickname: ');
