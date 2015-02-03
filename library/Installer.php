@@ -45,47 +45,52 @@ class Installer
     protected static function createConfig(Event $event)
     {
         $io = $event->getIO();
-        $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
         $io->write("\x1b[1m" .'Setup config file' . "\x1b[0m");
-        $io->write("\x1b[31m" .'IRC' . "\x1b[0m");
-        $botname = $io->ask('Nickname: ');
-        $config = str_replace(
-            '{botname}',
-            $botname ? $botname : 'JohnSmith',
-            $config
-        );
-        $io->write("\x1b[31m" .'Database' . "\x1b[0m");
-        $dbhost = $io->ask('Host (' . "\x1b[34m" . 'localhost' . "\x1b[0m" . '): ');
-        $config = str_replace(
-            '{dbhost}',
-            $dbhost ? $dbhost : 'localhost',
-            $config
-        );
-        $dbport = $io->ask('Port (' . "\x1b[34m" . '3306' . "\x1b[0m" . '): ');
-        $config = str_replace(
-            '{dbport}',
-            $dbport ? $dbport : '3306',
-            $config
-        );
-        $dbname = $io->ask('Name (' . "\x1b[34m" . 'cerberus' . "\x1b[0m" . '): ');
-        $config = str_replace(
-            '{dbname}',
-            $dbname ? $dbname : 'cerberus',
-            $config
-        );
-        $dbuser = $io->ask('User (' . "\x1b[34m" . 'root' . "\x1b[0m" . '): ');
-        $config = str_replace(
-            '{dbuser}',
-            $dbuser ? $dbuser : 'root',
-            $config
-        );
-        $dbpass = $io->ask('Password: ');
-        $config = str_replace(
-            '{dbpassword}',
-            $dbpass ? $dbpass : '',
-            $config
-        );
-        file_put_contents(Cerberus::getPath() . '/config.ini', $config);
+        if (file_exists(Cerberus::getPath() . '/config.ini') === true) {
+            $configExists = $io->ask('The config file exists. Create a new config? (y/n): ');
+        }
+        if ($configExists == 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
+            $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
+            $io->write("\x1b[31m" .'IRC' . "\x1b[0m");
+            $botname = $io->ask('Nickname: ');
+            $config = str_replace(
+                '{botname}',
+                $botname ? $botname : 'JohnSmith',
+                $config
+            );
+            $io->write("\x1b[31m" .'Database' . "\x1b[0m");
+            $dbhost = $io->ask('Host (' . "\x1b[34m" . 'localhost' . "\x1b[0m" . '): ');
+            $config = str_replace(
+                '{dbhost}',
+                $dbhost ? $dbhost : 'localhost',
+                $config
+            );
+            $dbport = $io->ask('Port (' . "\x1b[34m" . '3306' . "\x1b[0m" . '): ');
+            $config = str_replace(
+                '{dbport}',
+                $dbport ? $dbport : '3306',
+                $config
+            );
+            $dbname = $io->ask('Name (' . "\x1b[34m" . 'cerberus' . "\x1b[0m" . '): ');
+            $config = str_replace(
+                '{dbname}',
+                $dbname ? $dbname : 'cerberus',
+                $config
+            );
+            $dbuser = $io->ask('User (' . "\x1b[34m" . 'root' . "\x1b[0m" . '): ');
+            $config = str_replace(
+                '{dbuser}',
+                $dbuser ? $dbuser : 'root',
+                $config
+            );
+            $dbpass = $io->ask('Password: ');
+            $config = str_replace(
+                '{dbpassword}',
+                $dbpass ? $dbpass : '',
+                $config
+            );
+            file_put_contents(Cerberus::getPath() . '/config.ini', $config);
+        }
     }
 
     protected static function installDb()
