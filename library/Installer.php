@@ -32,9 +32,11 @@ use \Doctrine\DBAL\DriverManager;
  * @link https://getcomposer.org/doc/articles/scripts.md Composer scripts
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-
 class Installer
 {
+    /**
+     * @param Event $event
+     */
     public static function install(Event $event)
     {
         $composer = $event->getComposer();
@@ -42,23 +44,26 @@ class Installer
         self::installDb();
     }
 
+    /**
+     * @param Event $event
+     */
     protected static function createConfig(Event $event)
     {
         $io = $event->getIO();
-        $io->write("\x1b[1m" .'Setup config file' . "\x1b[0m");
+        $io->write("\x1b[1m" . 'Setup config file' . "\x1b[0m");
         if (file_exists(Cerberus::getPath() . '/config.ini') === true) {
             $newConfig = $io->ask('The config file exists. Create a new config? (y/n): ');
         }
         if ($newConfig == 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
             $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
-            $io->write("\x1b[31m" .'IRC' . "\x1b[0m");
+            $io->write("\x1b[31m" . 'IRC' . "\x1b[0m");
             $botname = $io->ask('Nickname: ');
             $config = str_replace(
                 '{botname}',
                 $botname ? $botname : 'JohnSmith',
                 $config
             );
-            $io->write("\x1b[31m" .'Database' . "\x1b[0m");
+            $io->write("\x1b[31m" . 'Database' . "\x1b[0m");
             $dbhost = $io->ask('Host (' . "\x1b[34m" . 'localhost' . "\x1b[0m" . '): ');
             $config = str_replace(
                 '{dbhost}',
@@ -93,12 +98,15 @@ class Installer
         }
     }
 
+    /**
+     * @throws \Doctrine\DBALDBALException
+     */
     protected static function installDb()
     {
         $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
         $dbname = $config['db']['dbname'];
         $config['db']['dbname'] = null;
-        $db =  DriverManager::getConnection($config['db'], new Configuration);
+        $db = DriverManager::getConnection($config['db'], new Configuration);
         $sm = $db->getSchemaManager();
         $list = $sm->listDatabases();
         if (in_array($dbname, $list) === false) {
@@ -106,7 +114,7 @@ class Installer
         }
         $db->close();
         $config['db']['dbname'] = $dbname;
-        $db =  DriverManager::getConnection($config['db'], new Configuration);
+        $db = DriverManager::getConnection($config['db'], new Configuration);
         $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.sql'));
         $db->close();
     }
