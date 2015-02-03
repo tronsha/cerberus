@@ -51,6 +51,7 @@ class Installer
     {
         $io = $event->getIO();
         $io->write("\x1b[1m" . 'Setup config file' . "\x1b[0m");
+        $newConfig = 'n';
         if (file_exists(Cerberus::getPath() . '/config.ini') === true) {
             $newConfig = $io->ask('The config file exists. Create a new config? (y/n): ');
         }
