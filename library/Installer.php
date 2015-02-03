@@ -50,21 +50,22 @@ class Installer
     protected static function createConfig(Event $event)
     {
         $io = $event->getIO();
-        $io->write("\x1b[1m" . 'Setup config file' . "\x1b[0m");
+        $io->write('<info>Setup config file</info>');
         $newConfig = 'n';
         if (file_exists(Cerberus::getPath() . '/config.ini') === true) {
-            $newConfig = $io->ask('The config file exists. Create a new config? (y/n): ');
+            $io->write('<comment>The config file exists.</comment>');
+            $newConfig = $io->ask('<question>Create a new config? (y/n):</question> ');
         }
         if ($newConfig == 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
             $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
-            $io->write("\x1b[31m" . 'IRC' . "\x1b[0m");
+            $io->write("\x1b[1m" . 'IRC' . "\x1b[0m");
             $botname = $io->ask('Nickname: ');
             $config = str_replace(
                 '{botname}',
                 $botname ? $botname : 'JohnSmith',
                 $config
             );
-            $io->write("\x1b[31m" . 'Database' . "\x1b[0m");
+            $io->write("\x1b[1m" . 'Database' . "\x1b[0m");
             $dbhost = $io->ask('Host (' . "\x1b[34m" . 'localhost' . "\x1b[0m" . '): ');
             $config = str_replace(
                 '{dbhost}',
@@ -95,6 +96,7 @@ class Installer
                 $dbpass ? $dbpass : '',
                 $config
             );
+            $io->write('<info>Writing config file</info>');
             file_put_contents(Cerberus::getPath() . '/config.ini', $config);
         }
     }
@@ -104,6 +106,7 @@ class Installer
      */
     protected static function installDb(Event $event)
     {
+        $io = $event->getIO();
         try {
             $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
             $dbname = $config['db']['dbname'];
@@ -112,16 +115,17 @@ class Installer
             $sm = $db->getSchemaManager();
             $list = $sm->listDatabases();
             if (in_array($dbname, $list) === false) {
+                $io->write('<info>Create database</info>');
                 $sm->createDatabase($dbname);
             }
             $db->close();
             $config['db']['dbname'] = $dbname;
             $db = DriverManager::getConnection($config['db'], new Configuration);
+            $io->write('<info>Create database tables</info>');
             $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.sql'));
             $db->close();
         } catch (\Exception $e) {
-            $io = $event->getIO();
-            $io->write("\x1b[41;37m" . $e->getMessage() . "\x1b[0m");
+            $io->write('<error>' . $e->getMessage() . '</error>');
         }
     }
 }
