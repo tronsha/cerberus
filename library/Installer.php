@@ -41,7 +41,7 @@ class Installer
     {
         $composer = $event->getComposer();
         self::createConfig($event);
-        self::installDb();
+        self::installDb($event);
     }
 
     /**
@@ -100,23 +100,28 @@ class Installer
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
+     * @param Event $event
      */
-    protected static function installDb()
+    protected static function installDb(Event $event)
     {
-        $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
-        $dbname = $config['db']['dbname'];
-        $config['db']['dbname'] = null;
-        $db = DriverManager::getConnection($config['db'], new Configuration);
-        $sm = $db->getSchemaManager();
-        $list = $sm->listDatabases();
-        if (in_array($dbname, $list) === false) {
-            $sm->createDatabase($dbname);
+        try {
+            $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
+            $dbname = $config['db']['dbname'];
+            $config['db']['dbname'] = null;
+            $db = DriverManager::getConnection($config['db'], new Configuration);
+            $sm = $db->getSchemaManager();
+            $list = $sm->listDatabases();
+            if (in_array($dbname, $list) === false) {
+                $sm->createDatabase($dbname);
+            }
+            $db->close();
+            $config['db']['dbname'] = $dbname;
+            $db = DriverManager::getConnection($config['db'], new Configuration);
+            $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.sql'));
+            $db->close();
+        } catch (\Exception $e) {
+            $io = $event->getIO();
+            $io->write("\x1b[41;37m" . $e->getMessage() . "\x1b[0m");
         }
-        $db->close();
-        $config['db']['dbname'] = $dbname;
-        $db = DriverManager::getConnection($config['db'], new Configuration);
-        $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.sql'));
-        $db->close();
     }
 }
