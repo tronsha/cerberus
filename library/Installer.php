@@ -29,7 +29,9 @@ use \Doctrine\DBAL\DriverManager;
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
  * @link https://github.com/tronsha/cerberus Project on GitHub
- * @link https://getcomposer.org/doc/articles/scripts.md Composer scripts
+ * @link https://getcomposer.org/doc/ Composer Documentation
+ * @link http://symfony.com/doc/current/components/console/introduction.html The Console Component
+ * @link http://en.wikipedia.org/wiki/ANSI_escape_code ANSI escape code
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
 class Installer
@@ -51,51 +53,27 @@ class Installer
     {
         $io = $event->getIO();
         $io->write('<info>Setup config file</info>');
-        $newConfig = 'n';
+        $update = 'n';
         if (file_exists(Cerberus::getPath() . '/config.ini') === true) {
             $io->write('<comment>The config file exists.</comment>');
-            $newConfig = $io->ask('<question>Create a new config? (y/n):</question> ');
+            $update = $io->ask('<question>Create a new config? (y/n):</question> ');
         }
-        if ($newConfig == 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
+        if ($update == 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
             $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
-            $io->write("\x1b[1m" . 'IRC' . "\x1b[0m");
+            $io->write('<options=bold>IRC</options=bold>');
             $botname = $io->ask('Nickname: ');
-            $config = str_replace(
-                '{botname}',
-                $botname ? $botname : 'JohnSmith',
-                $config
-            );
-            $io->write("\x1b[1m" . 'Database' . "\x1b[0m");
-            $dbhost = $io->ask('Host (' . "\x1b[34m" . 'localhost' . "\x1b[0m" . '): ');
-            $config = str_replace(
-                '{dbhost}',
-                $dbhost ? $dbhost : 'localhost',
-                $config
-            );
-            $dbport = $io->ask('Port (' . "\x1b[34m" . '3306' . "\x1b[0m" . '): ');
-            $config = str_replace(
-                '{dbport}',
-                $dbport ? $dbport : '3306',
-                $config
-            );
-            $dbname = $io->ask('Name (' . "\x1b[34m" . 'cerberus' . "\x1b[0m" . '): ');
-            $config = str_replace(
-                '{dbname}',
-                $dbname ? $dbname : 'cerberus',
-                $config
-            );
-            $dbuser = $io->ask('User (' . "\x1b[34m" . 'root' . "\x1b[0m" . '): ');
-            $config = str_replace(
-                '{dbuser}',
-                $dbuser ? $dbuser : 'root',
-                $config
-            );
+            $config = str_replace('{botname}', $botname ? $botname : 'JohnSmith', $config);
+            $io->write('<options=bold>Database</options=bold>');
+            $dbhost = $io->ask('Host (<fg=cyan>localhost</fg=cyan>): ');
+            $config = str_replace('{dbhost}', $dbhost ? $dbhost : 'localhost', $config);
+            $dbport = $io->ask('Port (<fg=cyan>3306</fg=cyan>): ');
+            $config = str_replace('{dbport}', $dbport ? $dbport : '3306', $config);
+            $dbname = $io->ask('Name (<fg=cyan>cerberus</fg=cyan>): ');
+            $config = str_replace('{dbname}', $dbname ? $dbname : 'cerberus', $config);
+            $dbuser = $io->ask('User (<fg=cyan>root</fg=cyan>): ');
+            $config = str_replace('{dbuser}', $dbuser ? $dbuser : 'root', $config);
             $dbpass = $io->ask('Password: ');
-            $config = str_replace(
-                '{dbpassword}',
-                $dbpass ? $dbpass : '',
-                $config
-            );
+            $config = str_replace('{dbpassword}', $dbpass ? $dbpass : '', $config);
             $io->write('<info>Writing config file</info>');
             file_put_contents(Cerberus::getPath() . '/config.ini', $config);
         }
