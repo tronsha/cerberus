@@ -43,7 +43,8 @@ class Console
     {
         $this->output = new ConsoleOutput;
         $this->output->getFormatter()->setStyle('time', new OutputFormatterStyle('yellow'));
-        $this->output->getFormatter()->setStyle('traffic', new OutputFormatterStyle('cyan'));
+        $this->output->getFormatter()->setStyle('in', new OutputFormatterStyle('cyan'));
+        $this->output->getFormatter()->setStyle('out', new OutputFormatterStyle('magenta'));
     }
 
     /**

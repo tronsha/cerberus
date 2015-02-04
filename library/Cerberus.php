@@ -34,9 +34,8 @@ class Cerberus
     const AUTH_MEMBER = 2;
     const AUTH_ADMIN = 3;
 
-    protected $config;
-    protected static $path;
     protected static $console = null;
+    protected static $path = null;
 
     /**
      *
@@ -44,17 +43,51 @@ class Cerberus
     public function __construct()
     {
         set_time_limit(0);
-        $this->config = parse_ini_file($this->getPath() . '/config.ini', true);
-        self::$console =  new Console;
     }
 
     /**
      * run me as main method
+     * @return Irc
+     * @throws \Exception
      */
     public function run()
     {
-        $irc = new Irc($this->config);
+        if (file_exists(self::getPath() . '/config.ini') === false) {
+            throw new \Exception('File Not Found: ' . self::getPath() . '/config.ini');
+        }
+        $irc = new Irc(parse_ini_file(self::getPath() . '/config.ini', true));
         $irc->connect();
+        return $irc;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getPath()
+    {
+        if (self::$path === null) {
+            self::$path = realpath(dirname(__FILE__) . '/..');
+        }
+        return self::$path;
+    }
+
+    /**
+     * @return Console
+     */
+    public static function getConsole()
+    {
+        if (self::$console === null) {
+            self::$console = new Console;
+        }
+        return self::$console;
+    }
+
+    /**
+     * @param string $text
+     */
+    public static function error($text)
+    {
+        self::getConsole()->writeln('<error>' . $text . '</error>');
     }
 
     /**
@@ -62,16 +95,13 @@ class Cerberus
      */
     public static function sysinfo($text)
     {
-        if (self::$console === null) {
-            self::$console = new Console;
-        }
-        self::$console->writeln('<info>**** ' . $text . ' ****</info>');
+        self::getConsole()->writeln('<info>**** ' . $text . ' ****</info>');
     }
 
     /**
      * @return float
      */
-    protected function getMicrotime()
+    protected static function getMicrotime()
     {
         if (version_compare(phpversion(), '5.0', '<') === true) {
             list($usec, $sec) = @explode(" ", @microtime());
@@ -84,20 +114,9 @@ class Cerberus
     /**
      * @param int $milliSeconds
      */
-    protected function msleep($milliSeconds)
+    protected static function msleep($milliSeconds)
     {
         usleep($milliSeconds * 1000);
-    }
-
-    /**
-     * @return string
-     */
-    public static function getPath()
-    {
-        if (empty(self::$path) === true) {
-            self::$path = realpath(dirname(__FILE__) . '/..');
-        }
-        return self::$path;
     }
 
     /**

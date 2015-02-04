@@ -2,7 +2,7 @@
 <?php
 
 /*   Cerberus IRCBot
- *   Copyright (C) 2008 - 2014 Stefan Hüsges
+ *   Copyright (C) 2008 - 2015 Stefan Hüsges
  *
  *   This program is free software; you can redistribute it and/or modify it
  *   under the terms of the GNU General Public License as published by the Free
@@ -32,5 +32,9 @@ require_once('../vendor/autoload.php');
 
 use \Cerberus\Cerberus;
 
-$cerberus = new Cerberus;
-$cerberus->run();
+try {
+    $cerberus = new Cerberus;
+    $cerberus->run();
+} catch (\Exception $e) {
+    Cerberus::error($e->getMessage());
+}

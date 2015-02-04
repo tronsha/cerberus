@@ -35,13 +35,7 @@ class Irc extends Cerberus
     protected $server = array();
     protected $bot = array();
     protected $db = array();
-    /**
-     * @var string
-     */
     protected $dbms;
-    /**
-     * @var resource
-     */
     protected $fp = false;
     protected $init = false;
     protected $run;
@@ -289,6 +283,7 @@ class Irc extends Cerberus
             $this->sysinfo('Try to connect to ' . $this->server['host'] . ':' . $this->server['port']);
             $this->fp = @fsockopen(($this->server['ip']), $this->server['port'], $errno, $errstr);
             if ($this->fp === false) {
+                $this->error($errstr);
                 $this->log('socket: ' . $errstr, 'error');
                 $this->sysinfo('Connection failed');
                 $i++;
@@ -354,6 +349,7 @@ class Irc extends Cerberus
      */
     public function sqlError($errstr)
     {
+        $this->error($errstr);
         $this->log('sql: ' . $errstr, 'error');
         return $errstr;
     }
@@ -389,8 +385,8 @@ class Irc extends Cerberus
     protected function write($text)
     {
         $output = trim($text);
-        self::$console->writeln(
-            '<time>[' . date("H:i:s") . ']</time> => <traffic>' . self::$console->escape($output) . '</traffic>'
+        $this->getConsole()->writeln(
+            '<time>[' . date("H:i:s") . ']</time> => <out>' . $this->getConsole()->escape($output) . '</out>'
         );
         fwrite($this->fp, $output . PHP_EOL);
         preg_match("/^([^ ]+).*?$/i", $text, $matches);
@@ -410,8 +406,8 @@ class Irc extends Cerberus
         $text = trim($input);
         if ($text != '') {
             $this->log($text, 'socket');
-            self::$console->writeln(
-                '<time>[' . date("H:i:s") . ']</time> <= <traffic>' . self::$console->escape($text) . '</traffic>'
+            $this->getConsole()->writeln(
+                '<time>[' . date("H:i:s") . ']</time> <= <in>' . $this->getConsole()->escape($text) . '</in>'
             );
         }
         return $input;
