@@ -20,8 +20,6 @@
 namespace Cerberus;
 
 use \Cerberus\Plugins\PluginAuth;
-use \Symfony\Component\Console\Formatter\OutputFormatter;
-use \Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 /**
  * Class Irc
@@ -127,8 +125,6 @@ class Irc extends Cerberus
                 $this->config['plugins']['autoload'] = explode(',', $config['plugins']['autoload']);
             }
         }
-        self::$output->getFormatter()->setStyle('time', new OutputFormatterStyle('yellow'));
-        self::$output->getFormatter()->setStyle('traffic', new OutputFormatterStyle('cyan'));
     }
 
     /**
@@ -393,8 +389,8 @@ class Irc extends Cerberus
     protected function write($text)
     {
         $output = trim($text);
-        self::$output->writeln(
-            '<time>[' . date("H:i:s") . ']</time> => <traffic>' . OutputFormatter::escape($output) . '</traffic>'
+        self::$console->writeln(
+            '<time>[' . date("H:i:s") . ']</time> => <traffic>' . self::$console->escape($output) . '</traffic>'
         );
         fwrite($this->fp, $output . PHP_EOL);
         preg_match("/^([^ ]+).*?$/i", $text, $matches);
@@ -414,8 +410,8 @@ class Irc extends Cerberus
         $text = trim($input);
         if ($text != '') {
             $this->log($text, 'socket');
-            self::$output->writeln(
-                '<time>[' . date("H:i:s") . ']</time> <= <traffic>' . OutputFormatter::escape($text) . '</traffic>'
+            self::$console->writeln(
+                '<time>[' . date("H:i:s") . ']</time> <= <traffic>' . self::$console->escape($text) . '</traffic>'
             );
         }
         return $input;

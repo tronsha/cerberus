@@ -19,8 +19,6 @@
 
 namespace Cerberus;
 
-use \Symfony\Component\Console\Output\ConsoleOutput;
-
 /**
  * Class Cerberus
  * @package Cerberus
@@ -38,7 +36,7 @@ class Cerberus
 
     protected $config;
     protected static $path;
-    protected static $output = null;
+    protected static $console = null;
 
     /**
      *
@@ -47,7 +45,7 @@ class Cerberus
     {
         set_time_limit(0);
         $this->config = parse_ini_file($this->getPath() . '/config.ini', true);
-        self::$output =  new ConsoleOutput;
+        self::$console =  new Console;
     }
 
     /**
@@ -64,10 +62,10 @@ class Cerberus
      */
     public static function sysinfo($text)
     {
-        if (self::$output === null) {
-            self::$output = new ConsoleOutput;
+        if (self::$console === null) {
+            self::$console = new Console;
         }
-        self::$output->writeln('<info>**** ' . $text . ' ****</info>');
+        self::$console->writeln('<info>**** ' . $text . ' ****</info>');
     }
 
     /**
