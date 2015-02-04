@@ -32,7 +32,6 @@ use \Symfony\Component\Console\Formatter\OutputFormatterStyle;
  * @link http://tools.ietf.org/html/rfc2812 Internet Relay Chat: Client Protocol
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-
 class Irc extends Cerberus
 {
     protected $server = array();
@@ -59,6 +58,9 @@ class Irc extends Cerberus
     protected $pluginevents = array();
     protected $auth = null;
 
+    /**
+     * @param array|null $config
+     */
     public function __construct($config = null)
     {
         $this->time['script_start'] = $this->getMicrotime();
@@ -129,6 +131,9 @@ class Irc extends Cerberus
         self::$output->getFormatter()->setStyle('traffic', new OutputFormatterStyle('cyan'));
     }
 
+    /**
+     *
+     */
     public function __destruct()
     {
         if ($this->init === true) {
@@ -145,8 +150,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $network
-     * @return $this
+     * @param string $network
+     * @return object $this
      */
     public function setNetwork($network)
     {
@@ -155,8 +160,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $password
-     * @return $this
+     * @param string $password
+     * @return object $this
      */
     public function setPassword($password)
     {
@@ -166,8 +171,8 @@ class Irc extends Cerberus
 
     /**
      * @link http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/configuration.html#driver
-     * @param $config
-     * @return $this
+     * @param array $config
+     * @return object $this
      */
     public function setDB($config)
     {
@@ -202,8 +207,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param null $nick
-     * @return $this
+     * @param string|null $nick
+     * @return object $this
      */
     public function setNick($nick = null)
     {
@@ -348,7 +353,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $errstr
+     * @param string $errstr
      * @return mixed
      */
     public function sqlError($errstr)
@@ -358,8 +363,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $text
-     * @param $type
+     * @param string $text
+     * @param string $type
      * @return null
      */
     protected function log($text, $type)
@@ -383,7 +388,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $text
+     * @param string $text
      */
     protected function write($text)
     {
@@ -500,7 +505,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $input
+     * @param string $input
      */
     protected function command($input)
     {
@@ -642,8 +647,8 @@ class Irc extends Cerberus
     /**
      * RPL_LIST
      * <channel> <# visible> :<topic>
-     * @param $rest
-     * @param $text
+     * @param string $rest
+     * @param string $text
      */
     protected function on322($rest, $text)
     {
@@ -671,7 +676,7 @@ class Irc extends Cerberus
     /**
      * RPL_WHOISUSER
      * <nick> <user> <host> * :<real name>
-     * @param $rest
+     * @param string $rest
      */
     protected function on311($rest)
     {
@@ -682,7 +687,7 @@ class Irc extends Cerberus
     /**
      * RPL_WHOISACCOUNT
      * :is logged in as
-     * @param $rest
+     * @param string $rest
      */
     protected function on330($rest)
     {
@@ -701,10 +706,10 @@ class Irc extends Cerberus
 
     /**
      * @link http://www.irchelp.org/irchelp/rfc/ctcpspec.html
-     * @param $nick
-     * @param $host
-     * @param $channel
-     * @param $text
+     * @param string $nick
+     * @param string $host
+     * @param string $channel
+     * @param string $text
      * @return null
      */
     protected function onPrivmsg($nick, $host, $channel, $text)
@@ -769,8 +774,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $nick
-     * @param $text
+     * @param string $nick
+     * @param string $text
      */
     protected function onNotice($nick, $text)
     {
@@ -778,8 +783,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $nick
-     * @param $text
+     * @param string $nick
+     * @param string $text
      */
     protected function onNick($nick, $text)
     {
@@ -792,8 +797,8 @@ class Irc extends Cerberus
 
     /**
      * RPL_NAMREPLY
-     * @param $rest
-     * @param $text
+     * @param string $rest
+     * @param string $text
      */
     protected function on353($rest, $text)
     {
@@ -808,8 +813,8 @@ class Irc extends Cerberus
     /**
      * RPL_TOPIC
      * <channel> :<topic>
-     * @param $rest
-     * @param $text
+     * @param string $rest
+     * @param string $text
      */
     protected function on332($rest, $text)
     {
@@ -818,8 +823,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $channel
-     * @param $topic
+     * @param string $channel
+     * @param string $topic
      */
     protected function onTopic($channel, $topic)
     {
@@ -827,8 +832,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $nick
-     * @param $channel
+     * @param string $nick
+     * @param string $channel
      */
     protected function onJoin($nick, $channel)
     {
@@ -842,8 +847,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $bouncer
-     * @param $rest
+     * @param string $bouncer
+     * @param string $rest
      */
     protected function onKick($bouncer, $rest)
     {
@@ -860,8 +865,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $nick
-     * @param $channel
+     * @param string $nick
+     * @param string $channel
      */
     protected function onPart($nick, $channel)
     {
@@ -875,7 +880,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $nick
+     * @param string $nick
      */
     protected function onQuit($nick)
     {
@@ -884,7 +889,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $mode
+     * @param string $mode
      */
     protected function onMode($mode)
     {
@@ -894,9 +899,9 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $channel
-     * @param $host
-     * @param $rest
+     * @param string $channel
+     * @param string $host
+     * @param string $rest
      */
     protected function onInvite($channel, $host, $rest)
     {
@@ -904,8 +909,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $to
-     * @param $text
+     * @param string $to
+     * @param string $text
      */
     public function privmsg($to, $text)
     {
@@ -913,8 +918,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $to
-     * @param $text
+     * @param string $to
+     * @param string $text
      */
     public function notice($to, $text)
     {
@@ -922,7 +927,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $text
+     * @param string $text
      */
     public function quit($text)
     {
@@ -930,7 +935,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param null $text
+     * @param string|null $text
      */
     public function mode($text = null)
     {
@@ -938,7 +943,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $channel
+     * @param string $channel
      */
     public function join($channel)
     {
@@ -946,7 +951,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $channel
+     * @param string $channel
      */
     public function part($channel)
     {
@@ -954,7 +959,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $nick
+     * @param string $nick
      */
     public function whois($nick)
     {
@@ -962,7 +967,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $nick
+     * @param string $nick
      */
     public function nick($nick)
     {
@@ -987,7 +992,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $auth
+     * @param string $auth
      * @return bool
      */
     public function getAuthLevel($auth)
@@ -996,8 +1001,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $nick
-     * @param $host
+     * @param string $nick
+     * @param string $host
      * @return mixed
      */
     public function isAdmin($nick, $host)
@@ -1006,8 +1011,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $nick
-     * @param $host
+     * @param string $nick
+     * @param string $host
      * @return mixed
      */
     public function isMember($nick, $host)
@@ -1027,8 +1032,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $name
-     * @param null $data
+     * @param string $name
+     * @param array|null $data
      */
     protected function loadPlugin($name, $data = null)
     {
@@ -1052,8 +1057,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $event
-     * @param $data
+     * @param string $event
+     * @param array $data
      */
     protected function runPluginEvent($event, $data)
     {
@@ -1069,8 +1074,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param $event
-     * @param $object
+     * @param string $event
+     * @param object $object
      * @param int $priority
      */
     public function addEvent($event, $object, $priority = 5)

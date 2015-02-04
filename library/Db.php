@@ -1,7 +1,7 @@
 <?php
 
 /*   Cerberus IRCBot
- *   Copyright (C) 2008 - 2014 Stefan Hüsges
+ *   Copyright (C) 2008 - 2015 Stefan Hüsges
  *
  *   This program is free software; you can redistribute it and/or modify it
  *   under the terms of the GNU General Public License as published by the Free
@@ -32,7 +32,6 @@ use \Doctrine\DBAL\Version;
  * @link http://www.doctrine-project.org/projects/dbal.html Database Abstraction Layer
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-
 class Db
 {
     protected $config = array();
@@ -40,6 +39,10 @@ class Db
     protected $conn = null;
     protected $botId = null;
 
+    /**
+     * @param array $config
+     * @param Irc $irc
+     */
     public function __construct($config, Irc $irc = null)
     {
         $this->irc = $irc;

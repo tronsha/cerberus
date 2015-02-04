@@ -19,6 +19,8 @@
 
 namespace Cerberus;
 
+use \Symfony\Component\Console\Output\ConsoleOutput;
+
 /**
  * Class Cerberus
  * @package Cerberus
@@ -28,9 +30,6 @@ namespace Cerberus;
  * @link http://tools.ietf.org/html/rfc2812 Internet Relay Chat: Client Protocol
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-
-use \Symfony\Component\Console\Output\ConsoleOutput;
-
 class Cerberus
 {
     const AUTH_NONE = 1;
@@ -38,11 +37,12 @@ class Cerberus
     const AUTH_ADMIN = 3;
 
     protected $config;
-
     protected static $path;
-
     protected static $output = null;
 
+    /**
+     *
+     */
     public function __construct()
     {
         set_time_limit(0);
@@ -60,7 +60,7 @@ class Cerberus
     }
 
     /**
-     * @param $text
+     * @param string $text
      */
     public static function sysinfo($text)
     {
