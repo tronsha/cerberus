@@ -25,11 +25,14 @@ Then, use the `install` command:
 
     php composer.phar install
 
+## Known Bugs
+
+[Escaped <tags> in console output][8]
 
 ## Libraries
 
 * [Doctrine Database Abstraction Layer 2.5.x][6]
-* [Symfony Console Component 2.6.x][7]
+* [Symfony Console Component 2.7.x][7]
 
 ## Creator
 
@@ -55,4 +58,5 @@ Then, use the `install` command:
 [5]: http://getcomposer.org/
 [6]: http://www.doctrine-project.org/projects/dbal.html
 [7]: http://symfony.com/components/Console
+[8]: https://github.com/symfony/symfony/pull/13607
 
