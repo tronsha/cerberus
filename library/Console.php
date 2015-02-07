@@ -19,9 +19,9 @@
 
 namespace Cerberus;
 
-use \Symfony\Component\Console\Output\ConsoleOutput;
-use \Symfony\Component\Console\Formatter\OutputFormatter;
-use \Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 /**
  * Class Console

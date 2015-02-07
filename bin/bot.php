@@ -30,7 +30,7 @@ date_default_timezone_set('Europe/Berlin');
 chdir(__DIR__);
 require_once('../vendor/autoload.php');
 
-use \Cerberus\Cerberus;
+use Cerberus\Cerberus;
 
 try {
     $cerberus = new Cerberus;

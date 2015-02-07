@@ -2,7 +2,7 @@
 <?php
 
 /*   Cerberus IRCBot
- *   Copyright (C) 2008 - 2014 Stefan Hüsges
+ *   Copyright (C) 2008 - 2015 Stefan Hüsges
  *
  *   This program is free software; you can redistribute it and/or modify it
  *   under the terms of the GNU General Public License as published by the Free
@@ -24,8 +24,8 @@
 chdir(__DIR__);
 require_once('../vendor/autoload.php');
 
-use \Cerberus\Cerberus;
-use \Cerberus\Db;
+use Cerberus\Cerberus;
+use Cerberus\Db;
 
 if (Cerberus::is_exec_available() === false) {
     echo 'Can\'t run the bot, because "exec" is disabled' . PHP_EOL;

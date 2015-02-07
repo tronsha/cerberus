@@ -19,7 +19,7 @@
 
 namespace Cerberus;
 
-use \Cerberus\Plugins\PluginAuth;
+use Cerberus\Plugins\PluginAuth;
 
 /**
  * Class Irc

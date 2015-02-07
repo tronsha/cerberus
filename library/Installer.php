@@ -19,9 +19,9 @@
 
 namespace Cerberus;
 
-use \Composer\Script\Event;
-use \Doctrine\DBAL\Configuration;
-use \Doctrine\DBAL\DriverManager;
+use Composer\Script\Event;
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
 
 /**
  * Class Installer

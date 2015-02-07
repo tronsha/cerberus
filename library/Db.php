@@ -19,9 +19,9 @@
 
 namespace Cerberus;
 
-use \Doctrine\DBAL\Configuration;
-use \Doctrine\DBAL\DriverManager;
-use \Doctrine\DBAL\Version;
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Version;
 
 /**
  * Class Db
