@@ -27,7 +27,7 @@ Then, use the `install` command:
 
 ## Known Bugs
 
-[Escaped <tags> in console output][8]
+[Escaped &lt;tags&gt; in console output][8]
 
 ## Libraries
 
