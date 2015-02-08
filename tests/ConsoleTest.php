@@ -42,7 +42,7 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $output->writeln('<info>' . OutputFormatter::escape('<error>some error</error>') . '</info>');
         rewind($output->getStream());
         $this->assertEquals(
-            "\033[32m<error>some error</error>\033[39m" . PHP_EOL,
+            "\033[32m<error>some error</error>\033[0m" . PHP_EOL,
             stream_get_contents($output->getStream())
         );
     }

@@ -25,14 +25,10 @@ Then, use the `install` command:
 
     php composer.phar install
 
-## Known Bugs
-
-[Escaped <tags> in console output][8]
-
 ## Libraries
 
-* [Doctrine Database Abstraction Layer 2.5.x][6]
-* [Symfony Console Component 2.7.x][7]
+* [Doctrine Database Abstraction Layer 2.5.*][6]
+* [Symfony Console Component 2.3.*@dev][7]
 
 ## Creator
 
