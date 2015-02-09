@@ -3,5 +3,4 @@ vendor
 config.ini
 composer.lock
 composer.phar
-phpunit.phar
 *.zip

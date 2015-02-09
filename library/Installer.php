@@ -119,13 +119,13 @@ class Installer
     protected static function runPhpUnit(Event $event)
     {
         $io = $event->getIO();
-        if (file_exists(Cerberus::getPath() . '/phpunit.phar') === false) {
-            $io->write('<error>Can\'t find "phpunit.phar".</error>');
+        if (file_exists(Cerberus::getPath() . '/vendor/bin/phpunit') === false) {
+            $io->write('<error>Can\'t find "PHPUnit".</error>');
         } elseif (Cerberus::is_exec_available() === false) {
             $io->write('<error>Can\'t run "PHPUnit", because "exec" is disabled.</error>');
         } else {
             $output = array();
-            exec(Cerberus::getPath() . '/phpunit.phar', $output);
+            exec(Cerberus::getPath() . '/vendor/bin/phpunit', $output);
             foreach ($output as $line) {
                 $io->write('<comment>' . $line . '</comment>');
             }
