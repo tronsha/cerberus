@@ -42,8 +42,14 @@ class Installer
     public static function install(Event $event)
     {
         $composer = $event->getComposer();
+        $io = $event->getIO();
+        $io->write(str_repeat('-', 80));
         self::createConfig($event);
+        $io->write(str_repeat('-', 80));
         self::installDb($event);
+        $io->write(str_repeat('-', 80));
+        self::runPhpUnit($event);
+        $io->write(str_repeat('-', 80));
     }
 
     /**
@@ -104,6 +110,25 @@ class Installer
             $db->close();
         } catch (\Exception $e) {
             $io->write('<error>' . $e->getMessage() . '</error>');
+        }
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected static function runPhpUnit(Event $event)
+    {
+        $io = $event->getIO();
+        if (file_exists(Cerberus::getPath() . '/phpunit.phar') === false) {
+            $io->write('<error>Can\'t find "phpunit.phar".</error>');
+        } elseif (Cerberus::is_exec_available() === false) {
+            $io->write('<error>Can\'t run "PHPUnit", because "exec" is disabled.</error>');
+        } else {
+            $output = array();
+            exec(Cerberus::getPath() . '/phpunit.phar', $output);
+            foreach ($output as $line) {
+                $io->write('<comment>' . $line . '</comment>');
+            }
         }
     }
 }
