@@ -4,7 +4,8 @@
     "version": "1.2.0-dev",
     "type": "project",
     "keywords": [
-        "irc"
+        "irc",
+        "bot"
     ],
     "homepage": "https://github.com/tronsha/cerberus",
     "license": "GPL-3.0",
