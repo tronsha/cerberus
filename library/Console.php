@@ -54,6 +54,7 @@ class Console
     public function writeln($output)
     {
         $this->output->writeln($output);
+
         return $this;
     }
 
@@ -65,4 +66,56 @@ class Console
     {
         return OutputFormatter::escape($text);
     }
+
+    /**
+     * @param string $text
+     * @param bool $escape
+     * @param mixed $maxlen
+     * @param bool $break
+     * @param int $offset
+     * @return string
+     */
+    public function prepare($text, $escape = true, $maxlen = null, $break = false, $offset = 0)
+    {
+        if ($maxlen === false) {
+            return $escape ? $this->escape($text)  : $text;
+        }
+
+        if ($maxlen === null) {
+            if (Cerberus::is_exec_available() === false) {
+                return $escape ? $this->escape($text)  : $text;
+            }
+            preg_match_all("/rows.([0-9]+);.columns.([0-9]+);/", strtolower(exec('stty -a |grep columns')), $output);
+            $maxlen = $output[2][0];
+        }
+
+        $maxlen = $maxlen - $offset;
+
+        if (strlen($text) <= $maxlen) {
+            return $escape ? $this->escape($text)  : $text;
+        }
+
+        $text = utf8_decode($text);
+
+        if ($break === true) {
+            $out = substr($text, 0, $maxlen);
+            $rest = substr($text, $maxlen);
+            while (true) {
+                if (strlen($rest) > $maxlen) {
+                    $out .= PHP_EOL . str_repeat(' ', $offset) . substr($rest, 0, $maxlen);
+                    $rest = substr($rest, $maxlen);
+                } else {
+                    $out .= PHP_EOL . str_repeat(' ', $offset) . $rest;
+                    break;
+                }
+            }
+        } else {
+            $out = substr($text, 0, $maxlen - 3) . '...';
+        }
+
+        $out = utf8_encode($out);
+
+        return $escape ? $this->escape($out)  : $out;
+    }
+
 }

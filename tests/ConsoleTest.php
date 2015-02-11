@@ -52,4 +52,17 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $console = new Console;
         $this->assertEquals('\<error>some error\</error>', $console->escape('<error>some error</error>'));
     }
+
+    public function testPrepareOutput()
+    {
+        $console = new Console;
+        $this->assertEquals(
+            str_repeat('x', 77) . '...',
+            $console->prepare(str_repeat('x', 100), false, 80, false, 0)
+        );
+        $this->assertEquals(
+            str_repeat('x', 80) . PHP_EOL . str_repeat('x', 20),
+            $console->prepare(str_repeat('x', 100), false, 80, true, 0)
+        );
+    }
 }
