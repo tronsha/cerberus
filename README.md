@@ -28,7 +28,7 @@ Then, use the `install` command:
 ## Libraries
 
 * [Doctrine Database Abstraction Layer 2.5.*][6]
-* [Symfony Console Component 2.3.*@dev][7]
+* [Symfony Console Component 2.7.*][7]
 
 ## Creator
 
