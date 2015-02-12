@@ -42,9 +42,9 @@ class Console
     public function __construct()
     {
         $this->output = new ConsoleOutput;
-        $this->output->getFormatter()->setStyle('time', new OutputFormatterStyle('yellow'));
-        $this->output->getFormatter()->setStyle('in', new OutputFormatterStyle('cyan'));
-        $this->output->getFormatter()->setStyle('out', new OutputFormatterStyle('magenta'));
+        $this->output->getFormatter()->setStyle('timestamp', new OutputFormatterStyle('yellow'));
+        $this->output->getFormatter()->setStyle('input', new OutputFormatterStyle('cyan'));
+        $this->output->getFormatter()->setStyle('output', new OutputFormatterStyle('magenta'));
     }
 
     /**
@@ -53,6 +53,7 @@ class Console
      */
     public function writeln($output)
     {
+//        $output = $this->irc2consoleBold($output);
         $this->output->writeln($output);
 
         return $this;
@@ -70,52 +71,70 @@ class Console
     /**
      * @param string $text
      * @param bool $escape
-     * @param mixed $maxlen
+     * @param mixed $length
      * @param bool $break
+     * @param bool $wordwrap
      * @param int $offset
      * @return string
      */
-    public function prepare($text, $escape = true, $maxlen = null, $break = false, $offset = 0)
+    public function prepare($text, $escape = true, $length = null, $break = true, $wordwrap = true, $offset = 0)
     {
-        if ($maxlen === false) {
-            return $escape ? $this->escape($text)  : $text;
+        if ($length === false) {
+            return $escape ? $this->escape($text) : $text;
         }
-
-        if ($maxlen === null) {
+        if ($length === null) {
             if (Cerberus::is_exec_available() === false) {
-                return $escape ? $this->escape($text)  : $text;
+                return $escape ? $this->escape($text) : $text;
             }
-            preg_match_all("/rows.([0-9]+);.columns.([0-9]+);/", strtolower(exec('stty -a |grep columns')), $output);
-            $maxlen = $output[2][0];
+            preg_match('/columns\s([0-9]+);/', strtolower(exec('stty -a | grep columns')), $matches);
+            $length = $matches[1];
         }
-
-        $maxlen = $maxlen - $offset;
-
-        if (strlen($text) <= $maxlen) {
-            return $escape ? $this->escape($text)  : $text;
+        $length = $length - $offset;
+        if (strlen($text) <= $length) {
+            return $escape ? $this->escape($text) : $text;
         }
-
         $text = utf8_decode($text);
-
         if ($break === true) {
-            $out = substr($text, 0, $maxlen);
-            $rest = substr($text, $maxlen);
-            while (true) {
-                if (strlen($rest) > $maxlen) {
-                    $out .= PHP_EOL . str_repeat(' ', $offset) . substr($rest, 0, $maxlen);
-                    $rest = substr($rest, $maxlen);
-                } else {
-                    $out .= PHP_EOL . str_repeat(' ', $offset) . $rest;
-                    break;
-                }
+            if ($wordwrap === true) {
+                $text = wordwrap($text, $length, PHP_EOL, true);
+            } else {
+                $text = trim(chunk_split($text, $length, PHP_EOL));
             }
+            $text = str_replace(PHP_EOL, PHP_EOL . str_repeat(' ', $offset), $text);
         } else {
-            $out = substr($text, 0, $maxlen - 3) . '...';
+            $text = substr($text, 0, $length - 3) . '...';
+        }
+        $text = utf8_encode($text);
+
+        return $escape ? $this->escape($text) : $text;
+    }
+
+    /**
+     * @param string $output
+     * @return string
+     */
+    public function irc2consoleBold($output)
+    {
+        $boldArray = explode("\x02", $output);
+        $output = array_shift($boldArray);
+        $open = false;
+        foreach ($boldArray as $part) {
+            if ($open) {
+                $output .= "\x1b[22m";
+                $output .= "\x02";
+                $open = false;
+            } else {
+                $output .= "\x02";
+                $output .= "\x1b[1m";
+                $open = true;
+            }
+            $output .= $part;
+        }
+        if ($open) {
+            $output .= "\x1b[22m";
         }
 
-        $out = utf8_encode($out);
-
-        return $escape ? $this->escape($out)  : $out;
+        return $output;
     }
 
 }

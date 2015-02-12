@@ -56,13 +56,17 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
     public function testPrepareOutput()
     {
         $console = new Console;
-        $this->assertEquals(
-            str_repeat('x', 77) . '...',
-            $console->prepare(str_repeat('x', 100), false, 80, false, 0)
-        );
-        $this->assertEquals(
-            str_repeat('x', 80) . PHP_EOL . str_repeat('x', 20),
-            $console->prepare(str_repeat('x', 100), false, 80, true, 0)
-        );
+
+        $input = str_repeat('x', 100);
+        $output = str_repeat('x', 77) . '...';
+        $this->assertEquals($output, $console->prepare($input, false, 80, false, false, 0));
+
+        $input = str_repeat('x', 100);
+        $output = str_repeat('x', 80) . PHP_EOL . str_repeat('x', 20);
+        $this->assertEquals($output, $console->prepare($input, false, 80, true, false, 0));
+
+        $input = str_repeat('x', 25) . ' ' . str_repeat('x', 25) . ' ' . str_repeat('x', 25) . ' ' . str_repeat('x', 25);
+        $output = str_repeat('x', 25) . ' ' . str_repeat('x', 25) . ' ' . str_repeat('x', 25) . PHP_EOL . str_repeat('x', 25);
+        $this->assertEquals($output, $console->prepare($input, false, 80, true, true, 0));
     }
 }

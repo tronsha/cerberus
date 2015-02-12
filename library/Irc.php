@@ -385,9 +385,7 @@ class Irc extends Cerberus
     protected function write($text)
     {
         $output = trim($text);
-        $this->getConsole()->writeln(
-            '<time>[' . date("H:i:s") . ']</time> => <out>' . $this->getConsole()->prepare($output, true, null, false, 14) . '</out>'
-        );
+        $this->getConsole()->writeln('<output>' . $this->getConsole()->prepare($output, true, null, true, true, 0) . '</output>');
         fwrite($this->fp, $output . PHP_EOL);
         preg_match("/^([^ ]+).*?$/i", $text, $matches);
         $command = isset($matches[1]) ? $matches[1] : '';
@@ -406,9 +404,7 @@ class Irc extends Cerberus
         $text = trim($input);
         if ($text != '') {
             $this->log($text, 'socket');
-            $this->getConsole()->writeln(
-                '<time>[' . date("H:i:s") . ']</time> <= <in>' . $this->getConsole()->prepare($text, true, null, false, 14) . '</in>'
-            );
+            $this->getConsole()->writeln('<input>' . $this->getConsole()->prepare($text, true, null, true, true, 0) . '</input>');
         }
         return $input;
     }
