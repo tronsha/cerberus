@@ -36,7 +36,7 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $this->stream = null;
     }
 
-    public function testEscapedFormattedOutput()
+    public function testFormattedEscapedOutput()
     {
         $output = new StreamOutput($this->stream, StreamOutput::VERBOSITY_NORMAL, true, null);
         $output->writeln('<info>' . OutputFormatter::escape('<error>some error</error>') . '</info>');
@@ -69,4 +69,15 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $output = str_repeat('x', 25) . ' ' . str_repeat('x', 25) . ' ' . str_repeat('x', 25) . PHP_EOL . str_repeat('x', 25);
         $this->assertEquals($output, $console->prepare($input, false, 80, true, true, 0));
     }
+
+//    public function testNestedFormattedOutput()
+//    {
+//        $output = new StreamOutput($this->stream, StreamOutput::VERBOSITY_NORMAL, true, null);
+//        $output->writeln('<fg=red>RRRRR<options=bold>BBBBB</options=bold>RRRRR</fg=red>');
+//        rewind($output->getStream());
+//        $this->assertEquals(
+//            "\x1b[31mRRRRR\x1b[1mBBBBB\x1b[22mRRRRR\x1b[39m" . PHP_EOL,
+//            stream_get_contents($output->getStream())
+//        );
+//    }
 }
