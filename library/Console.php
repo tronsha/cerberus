@@ -137,4 +137,61 @@ class Console
         return $output;
     }
 
+    /**
+     * @param int $id
+     * @return int
+     */
+    protected function matchColor($id)
+    {
+        $matchColor = array(
+            0 => 15,
+            1 => 0,
+            2 => 4,
+            3 => 2,
+            4 => 9,
+            5 => 1,
+            6 => 5,
+            7 => 3,
+            8 => 11,
+            9 => 10,
+            10 => 6,
+            11 => 14,
+            12 => 12,
+            13 => 13,
+            14 => 8,
+            15 => 7
+        );
+
+        return $matchColor[$id % 16];
+    }
+
+    /**
+     * @param int|null $fg
+     * @param int|null $bg
+     * @return string
+     */
+    protected function getColor($fg = null, $bg = null)
+    {
+        $fgbg = array();
+        if ($fg !== null) {
+            $fgbg[] = '38;5;' . matchColor($fg);
+            if ($bg !== null) {
+                $fgbg[] = '48;5;' . matchColor($bg);
+            }
+
+            return "\x1b[" . implode(';', $fgbg) . 'm';
+        }
+
+        return "\x1b[39;49m";
+    }
+
+    /**
+     * @param string $output
+     * @return string
+     */
+    public function irc2consoleColor($output)
+    {
+        return $output;
+    }
+
 }
