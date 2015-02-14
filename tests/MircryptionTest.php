@@ -21,8 +21,9 @@ namespace Cerberus;
 
 class MircryptionTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp() {
-        if (!(extension_loaded('mcrypt') && ini_get('mcrypt.enabled'))) {
+    protected function setUp()
+    {
+        if (extension_loaded('mcrypt') === false) {
             $this->markTestSkipped('The mcrypt extension is not available.');
         }
     }

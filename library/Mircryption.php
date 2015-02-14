@@ -33,7 +33,7 @@ class Mircryption
 {
     public function __construct()
     {
-        if (!extension_loaded('mcrypt')) {
+        if (extension_loaded('mcrypt') === false) {
             throw new \Exception('The mcrypt extension is not available.');
         }
     }
