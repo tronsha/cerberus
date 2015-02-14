@@ -31,6 +31,13 @@ namespace Cerberus;
 
 class Mircryption
 {
+    public function __construct()
+    {
+        if (!extension_loaded('mcrypt')) {
+            throw new \Exception('The mcrypt extension is not available.');
+        }
+    }
+
     /**
      * @param string $text
      * @param string $key

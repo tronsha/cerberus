@@ -45,7 +45,7 @@ class PluginCrypt extends Plugin
             $this->mircryption = new Mircryption;
             $this->irc->addEvent('onPrivmsg', $this, 10);
         } else {
-            $this->irc->sysinfo('Your version of PHP does NOT have the mcrypt extension loaded.');
+            $this->irc->sysinfo('The mcrypt extension is not available.');
         }
     }
 
