@@ -31,6 +31,9 @@ namespace Cerberus;
 
 class Mircryption
 {
+    /**
+     * @throws \Exception
+     */
     public function __construct()
     {
         if (extension_loaded('mcrypt') === false) {
