@@ -53,7 +53,6 @@ class Console
      */
     public function writeln($output)
     {
-//        $output = $this->irc2consoleBold($output);
         $this->output->writeln($output);
 
         return $this;
@@ -108,90 +107,4 @@ class Console
 
         return $escape ? $this->escape($text) : $text;
     }
-
-    /**
-     * @param string $output
-     * @return string
-     */
-    public function irc2consoleBold($output)
-    {
-        $boldArray = explode("\x02", $output);
-        $output = array_shift($boldArray);
-        $open = false;
-        foreach ($boldArray as $part) {
-            if ($open) {
-                $output .= "\x1b[22m";
-                $output .= "\x02";
-                $open = false;
-            } else {
-                $output .= "\x02";
-                $output .= "\x1b[1m";
-                $open = true;
-            }
-            $output .= $part;
-        }
-        if ($open) {
-            $output .= "\x1b[22m";
-        }
-
-        return $output;
-    }
-
-    /**
-     * @param int $id
-     * @return string
-     */
-    protected function matchColorIrc2Console($id)
-    {
-        $matchColor = array(
-            0 => '15',
-            1 => '0',
-            2 => '4',
-            3 => '2',
-            4 => '9',
-            5 => '1',
-            6 => '5',
-            7 => '3',
-            8 => '11',
-            9 => '10',
-            10 => '6',
-            11 => '14',
-            12 => '12',
-            13 => '13',
-            14 => '8',
-            15 => '7'
-        );
-
-        return $matchColor[$id % 16];
-    }
-
-    /**
-     * @param int|null $fg
-     * @param int|null $bg
-     * @return string
-     */
-    protected function getColor($fg = null, $bg = null)
-    {
-        $fgbg = array();
-        if ($fg !== null) {
-            $fgbg[] = '38;5;' . matchColorIrc2Console($fg);
-            if ($bg !== null) {
-                $fgbg[] = '48;5;' . matchColorIrc2Console($bg);
-            }
-
-            return "\x1b[" . implode(';', $fgbg) . 'm';
-        }
-
-        return "\x1b[39;49m";
-    }
-
-    /**
-     * @param string $output
-     * @return string
-     */
-    public function irc2consoleColor($output)
-    {
-        return $output;
-    }
-
 }
