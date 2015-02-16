@@ -78,6 +78,9 @@ class Console
      */
     public function prepare($text, $escape = true, $length = null, $break = true, $wordwrap = true, $offset = 0)
     {
+        $formatter = new Formatter(Formatter::CONSOLE);
+        $text = $formatter->bold($text);
+
         if ($length === false) {
             return $escape ? $this->escape($text) : $text;
         }
@@ -101,7 +104,7 @@ class Console
             }
             $text = str_replace(PHP_EOL, PHP_EOL . str_repeat(' ', $offset), $text);
         } else {
-            $text = substr($text, 0, $length - 3) . '...';
+            $text = substr($text, 0, $length - 3) . "\x1b[0m" . '...';
         }
         $text = utf8_encode($text);
 

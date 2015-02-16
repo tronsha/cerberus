@@ -30,39 +30,65 @@ namespace Cerberus;
  */
 class Formatter
 {
+    const CONSOLE = 1;
+    const HTML = 2;
+
+    private $type = 0;
+
+    /**
+     * @param int $type
+     */
+    public function __construct($type)
+    {
+        $this->type = $type;
+    }
+
     /**
      * @param string $output
      * @return string
      */
-    public function irc2consoleBold($output)
+    public function bold($output)
     {
         $boldArray = explode("\x02", $output);
         $output = array_shift($boldArray);
         $open = false;
         foreach ($boldArray as $part) {
             if ($open) {
-                $output .= "\x1b[22m";
-                $output .= "\x02";
+                $output .= ($this->type === self::CONSOLE ? "\x1b[22m" : ($this->type === self::HTML ? '</b>' : "\x02"));
                 $open = false;
             } else {
-                $output .= "\x02";
-                $output .= "\x1b[1m";
+                $output .= ($this->type === self::CONSOLE ? "\x1b[1m" : ($this->type === self::HTML ? '<b>' : "\x02"));
                 $open = true;
             }
             $output .= $part;
         }
         if ($open) {
-            $output .= "\x1b[22m";
+            $output .= ($this->type === self::CONSOLE ? "\x1b[22m" : ($this->type === self::HTML ? '</b>' : ''));
         }
 
         return $output;
     }
 
     /**
+     * @param string $output
+     * @return string
+     */
+    public function color($output)
+    {
+        if ($this->type === self::CONSOLE) {
+            return $this->colorConsole($output);
+        } elseif ($this->type === self::HTML) {
+            return $this->colorHtml($output);
+        } else {
+            return $output;
+        }
+    }
+
+    /**
      * @param int $id
      * @return string
      */
-    protected function matchColorIrc2Console($id)
+    protected function matchColorConsole($id)
     {
         $matchColor = array(
             0 => '15',
@@ -91,13 +117,13 @@ class Formatter
      * @param int|null $bg
      * @return string
      */
-    protected function getColor($fg = null, $bg = null)
+    protected function getConsoleColor($fg = null, $bg = null)
     {
         $fgbg = array();
         if ($fg !== null) {
-            $fgbg[] = '38;5;' . matchColorIrc2Console($fg);
+            $fgbg[] = '38;5;' . matchColorConsole($fg);
             if ($bg !== null) {
-                $fgbg[] = '48;5;' . matchColorIrc2Console($bg);
+                $fgbg[] = '48;5;' . matchColorConsole($bg);
             }
 
             return "\x1b[" . implode(';', $fgbg) . 'm';
@@ -110,7 +136,44 @@ class Formatter
      * @param string $output
      * @return string
      */
-    public function irc2consoleColor($output)
+    protected function colorConsole($output)
+    {
+        return $output;
+    }
+
+    /**
+     * @param int $id
+     * @return string
+     */
+    protected function matchColorHtml($id)
+    {
+        $matchColor = array(
+            0 => '#FFFFFF',
+            1 => '#000000',
+            2 => '#00007F',
+            3 => '#009300',
+            4 => '#FF0000',
+            5 => '#7F0000',
+            6 => '#9C009C',
+            7 => '#FC7F00',
+            8 => '#FFFF00',
+            9 => '#00FC00',
+            10 => '#009393',
+            11 => '#00FFFF',
+            12 => '#0000FC',
+            13 => '#FF00FF',
+            14 => '#7F7F7F',
+            15 => '#D2D2D2'
+        );
+
+        return $matchColor[$id % 16];
+    }
+
+    /**
+     * @param string $output
+     * @return string
+     */
+    protected function colorHtml($output)
     {
         return $output;
     }
