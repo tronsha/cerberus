@@ -33,7 +33,7 @@ class Formatter
     const CONSOLE = 1;
     const HTML = 2;
 
-    private $type = 0;
+    protected $type = 0;
 
     /**
      * @param int $type
@@ -54,16 +54,16 @@ class Formatter
         $open = false;
         foreach ($boldArray as $part) {
             if ($open) {
-                $output .= ($this->type === self::CONSOLE ? "\x1b[22m" : ($this->type === self::HTML ? '</b>' : "\x02"));
+                $output .= ($this->type === self::CONSOLE ? "\033[22m" : ($this->type === self::HTML ? '</b>' : "\x02"));
                 $open = false;
             } else {
-                $output .= ($this->type === self::CONSOLE ? "\x1b[1m" : ($this->type === self::HTML ? '<b>' : "\x02"));
+                $output .= ($this->type === self::CONSOLE ? "\033[1m" : ($this->type === self::HTML ? '<b>' : "\x02"));
                 $open = true;
             }
             $output .= $part;
         }
         if ($open) {
-            $output .= ($this->type === self::CONSOLE ? "\x1b[22m" : ($this->type === self::HTML ? '</b>' : ''));
+            $output .= ($this->type === self::CONSOLE ? "\033[22m" : ($this->type === self::HTML ? '</b>' : ''));
         }
 
         return $output;
@@ -126,10 +126,10 @@ class Formatter
                 $fgbg[] = '48;5;' . matchColorConsole($bg);
             }
 
-            return "\x1b[" . implode(';', $fgbg) . 'm';
+            return "\033[" . implode(';', $fgbg) . 'm';
         }
 
-        return "\x1b[39;49m";
+        return "\033[39;49m";
     }
 
     /**
