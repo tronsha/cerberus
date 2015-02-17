@@ -79,7 +79,7 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($output, $console->prepare($input, false, 80, true, true, 0));
 
         $input = "abc\033[1mdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
-        $output = "abc\033[1mdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy...";
+        $output = "abc\033[1mdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy...\033[0m";
         $this->assertEquals($output, $console->prepare($input, false, 80, false, false, 0));
     }
 

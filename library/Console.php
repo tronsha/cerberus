@@ -104,7 +104,10 @@ class Console
             }
             $text = str_replace(PHP_EOL, PHP_EOL . str_repeat(' ', $offset), $text);
         } else {
-            $text = $this->cut($text, $length - 3) . '...' . "\033[0m";
+            $text = $this->cut($text, $length - 3) . '...';
+            if (strpos($text, "\033") !== false) {
+                $text .= "\033[0m";
+            }
         }
         $text = utf8_encode($text);
 
