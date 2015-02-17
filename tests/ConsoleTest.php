@@ -36,6 +36,15 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $this->stream = null;
     }
 
+    public function invokeMethod(&$object, $methodName)
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+        $parameters = array_slice(func_get_args(), 2);
+        return $method->invokeArgs($object, $parameters);
+    }
+
     public function testFormattedEscapedOutput()
     {
         $output = new StreamOutput($this->stream, StreamOutput::VERBOSITY_NORMAL, true, null);
@@ -57,27 +66,38 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
     {
         $console = new Console;
 
-        $input = str_repeat('x', 100);
-        $output = str_repeat('x', 77) . '...';
+        $input = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz';
+        $output = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy...';
         $this->assertEquals($output, $console->prepare($input, false, 80, false, false, 0));
 
-        $input = str_repeat('x', 100);
-        $output = str_repeat('x', 80) . PHP_EOL . str_repeat('x', 20);
+        $input = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz';
+        $output = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzab' . PHP_EOL . 'cdefghijklmnopqrstuvwxyz';
         $this->assertEquals($output, $console->prepare($input, false, 80, true, false, 0));
 
-        $input = str_repeat('x', 25) . ' ' . str_repeat('x', 25) . ' ' . str_repeat('x', 25) . ' ' . str_repeat('x', 25);
-        $output = str_repeat('x', 25) . ' ' . str_repeat('x', 25) . ' ' . str_repeat('x', 25) . PHP_EOL . str_repeat('x', 25);
+        $input = 'abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz';
+        $output = 'abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'abcdefghijklmnopqrstuvwxyz';
         $this->assertEquals($output, $console->prepare($input, false, 80, true, true, 0));
+
+        $input = "abc\033[1mdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+        $output = "abc\033[1mdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy...";
+        $this->assertEquals($output, $console->prepare($input, false, 80, false, false, 0));
     }
 
-//    public function testNestedFormattedOutput()
-//    {
-//        $output = new StreamOutput($this->stream, StreamOutput::VERBOSITY_NORMAL, true, null);
-//        $output->writeln('<fg=red>RRRRR<options=bold>BBBBB</options=bold>RRRRR</fg=red>');
-//        rewind($output->getStream());
-//        $this->assertEquals(
-//            "\x1b[31mRRRRR\x1b[1mBBBBB\x1b[22mRRRRR\x1b[39m" . PHP_EOL,
-//            stream_get_contents($output->getStream())
-//        );
-//    }
+    public function testLen()
+    {
+        $this->assertEquals(4, strlen('test'));
+        $this->assertEquals(12, strlen("\033[1mtest\033[0m"));
+        $this->assertEquals(4, $this->invokeMethod(new Console, 'len', 'test'));
+        $this->assertEquals(4, $this->invokeMethod(new Console, 'len', "\033[1mtest\033[0m"));
+    }
+
+    public function testCut()
+    {
+        $this->assertEquals('foo', substr("foobar", 0, 3));
+        $this->assertEquals('foo', $this->invokeMethod(new Console, 'cut', "foobar", 3));
+        $this->assertEquals("\033[1", substr("\033[1mfoobar\033[0m", 0, 3));
+        $this->assertEquals("\033[1mfoo", $this->invokeMethod(new Console, 'cut', "\033[1mfoobar\033[0m", 3));
+        $this->assertEquals("\033[1mfoobar\033[0m", $this->invokeMethod(new Console, 'cut', "\033[1mfoobar\033[0m", 6));
+        $this->assertEquals("foo\033[1mbar\033[0m", $this->invokeMethod(new Console, 'cut', "foo\033[1mbar\033[0m", 6));
+    }
 }

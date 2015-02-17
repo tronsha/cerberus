@@ -92,7 +92,7 @@ class Console
             $length = $matches[1];
         }
         $length = $length - $offset;
-        if (strlen($text) <= $length) {
+        if ($this->len($text) <= $length) {
             return $escape ? $this->escape($text) : $text;
         }
         $text = utf8_decode($text);
@@ -104,10 +104,50 @@ class Console
             }
             $text = str_replace(PHP_EOL, PHP_EOL . str_repeat(' ', $offset), $text);
         } else {
-            $text = substr($text, 0, $length - 3) . "\x1b[0m" . '...';
+            $text = $this->cut($text, $length - 3) . '...' . "\033[0m";
         }
         $text = utf8_encode($text);
 
         return $escape ? $this->escape($text) : $text;
+    }
+
+    /**
+     * @param string $string
+     * @param int $length
+     * @return string
+     * @throws \Exception
+     */
+    protected function cut($string, $length)
+    {
+        if ($length < 0) {
+            throw new \Exception('Length cannot be negative.');
+        }
+        $ignore = false;
+        if ($length !== null) {
+            for ($i = 0; $i <= $length && $i < strlen($string); $i++) {
+                if ($string[$i] === "\033") {
+                    $ignore = true;
+                }
+                if ($ignore) {
+                    $length++;
+                }
+                if ($string[$i] === 'm') {
+                    $ignore = false;
+                }
+            }
+        }
+
+        return substr($string, 0, $length);
+    }
+
+    /**
+     * @param string $string
+     * @return int
+     */
+    protected function len($string)
+    {
+        $string = preg_replace("/\033\[[0-9;]+m/", '', $string);
+
+        return strlen($string);
     }
 }
