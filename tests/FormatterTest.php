@@ -41,4 +41,10 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("\033[1mfoo\033[22m", $this->formatter->bold("\x02foo\x02"));
         $this->assertEquals("\033[1mfoo\033[22m", $this->formatter->bold("\x02foo"));
     }
+
+    public function testUnderline()
+    {
+        $this->assertEquals("\033[4mfoo\033[24m", $this->formatter->underline("\x1Ffoo\x1F"));
+        $this->assertEquals("\033[4mfoo\033[24m", $this->formatter->underline("\x1Ffoo"));
+    }
 }
