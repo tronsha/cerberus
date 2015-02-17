@@ -85,6 +85,7 @@ class FormatterConsole extends Formatter
     {
         $coloredOutput = '';
         $xx = $fg = $bg = '';
+        $reset = '';
         foreach (str_split($output) as $char) {
             if ($char === "\x03") {
                 $xx = 'fg';
@@ -101,12 +102,13 @@ class FormatterConsole extends Formatter
                 }
                 $xx = $fg = $bg = '';
                 $coloredOutput .= $char;
+                $reset = $this->getColor();
             } else {
                 $coloredOutput .= $char;
             }
         }
 
-        return $coloredOutput . $this->getColor();
+        return $coloredOutput . $reset;
     }
 
     /**
