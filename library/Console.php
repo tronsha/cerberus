@@ -81,6 +81,7 @@ class Console
     {
         $formatter = FormatterFactory::console();
         $text = $formatter->bold($text);
+        $text = $formatter->underline($text);
 
         if ($length === false) {
             return $escape ? $this->escape($text) : $text;

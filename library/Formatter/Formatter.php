@@ -29,49 +29,30 @@ namespace Cerberus\Formatter;
  */
 abstract class Formatter
 {
-    const HTML = 'Cerberus\Formatter\FormatterHtml';
-    const CONSOLE = 'Cerberus\Formatter\FormatterConsole';
-
     /**
      * @param string $output
+     * @param string $delimiter
+     * @param string $start
+     * @param string $stop
      * @return string
      */
-    public function bold($output)
+    protected function format($output, $delimiter, $start = null, $stop = null)
     {
-        $type = get_class($this);
-        $boldArray = explode("\x02", $output);
+        $boldArray = explode($delimiter, $output);
         $output = array_shift($boldArray);
         $open = false;
         foreach ($boldArray as $part) {
-            if ($open) {
-                if ($type === self::CONSOLE) {
-                    $output .= "\033[22m";
-                } elseif ($type === self::HTML) {
-                    $output .= '</b>';
-                } else {
-                    $output .= "\x02";
-                }
-                $open = false;
-            } else {
-                if ($type === self::CONSOLE) {
-                    $output .= "\033[1m";
-                } elseif ($type === self::HTML) {
-                    $output .= '<b>';
-                } else {
-                    $output .= "\x02";
-                }
+            if ($open === false) {
+                $output .= $start;
                 $open = true;
+            } else {
+                $output .= $stop;
+                $open = false;
             }
             $output .= $part;
         }
         if ($open) {
-            if ($type === self::CONSOLE) {
-                $output .= "\033[22m";
-            } elseif ($type === self::HTML) {
-                $output .= '</b>';
-            } else {
-                $output .= "\x02";
-            }
+            $output .= $stop;
         }
 
         return $output;
@@ -81,5 +62,5 @@ abstract class Formatter
      * @param string $output
      * @return string
      */
-    abstract public function color($output);
+    abstract protected function color($output);
 }

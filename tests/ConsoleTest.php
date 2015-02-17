@@ -25,14 +25,17 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 class ConsoleTest extends \PHPUnit_Framework_TestCase
 {
     protected $stream;
+    protected $console;
 
     protected function setUp()
     {
+        $this->console = new Console;
         $this->stream = fopen('php://memory', 'a', false);
     }
 
     protected function tearDown()
     {
+        unset($this->console);
         $this->stream = null;
     }
 
@@ -58,8 +61,7 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
 
     public function testEscapedOutput()
     {
-        $console = new Console;
-        $this->assertEquals('\<error>some error\</error>', $console->escape('<error>some error</error>'));
+        $this->assertEquals('\<error>some error\</error>', $this->console->escape('<error>some error</error>'));
     }
 
     public function testPrepareOutput()
@@ -68,40 +70,40 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
 
         $input = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz';
         $output = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy...';
-        $this->assertEquals($output, $console->prepare($input, false, 80, false, false, 0));
+        $this->assertEquals($output, $this->console->prepare($input, false, 80, false, false, 0));
 
         $input = "abc\033[1mdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
         $output = "abc\033[1mdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy...\033[0m";
-        $this->assertEquals($output, $console->prepare($input, false, 80, false, false, 0));
+        $this->assertEquals($output, $this->console->prepare($input, false, 80, false, false, 0));
 
         $input = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz';
         $output = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzab' . PHP_EOL . 'cdefghijklmnopqrstuvwxyz';
-        $this->assertEquals($output, $console->prepare($input, false, 80, true, false, 0));
+        $this->assertEquals($output, $this->console->prepare($input, false, 80, true, false, 0));
 
         $input = 'abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz';
         $output = 'abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'abcdefghijklmnopqrstuvwxyz';
-        $this->assertEquals($output, $console->prepare($input, false, 80, true, true, 0));
+        $this->assertEquals($output, $this->console->prepare($input, false, 80, true, true, 0));
 
 //        $input = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstu \033[1mabcde fghijklmnopqrstuvwxyz";
 //        $output = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstu \033[1mabcde" . PHP_EOL . 'fghijklmnopqrstuvwxyz';
-//        $this->assertEquals($output, $console->prepare($input, false, 80, true, true, 0));
+//        $this->assertEquals($output, $this->console->prepare($input, false, 80, true, true, 0));
     }
 
     public function testLen()
     {
         $this->assertEquals(4, strlen('test'));
         $this->assertEquals(12, strlen("\033[1mtest\033[0m"));
-        $this->assertEquals(4, $this->invokeMethod(new Console, 'len', 'test'));
-        $this->assertEquals(4, $this->invokeMethod(new Console, 'len', "\033[1mtest\033[0m"));
+        $this->assertEquals(4, $this->invokeMethod($this->console, 'len', 'test'));
+        $this->assertEquals(4, $this->invokeMethod($this->console, 'len', "\033[1mtest\033[0m"));
     }
 
     public function testCut()
     {
         $this->assertEquals('foo', substr("foobar", 0, 3));
-        $this->assertEquals('foo', $this->invokeMethod(new Console, 'cut', "foobar", 3));
+        $this->assertEquals('foo', $this->invokeMethod($this->console, 'cut', "foobar", 3));
         $this->assertEquals("\033[1", substr("\033[1mfoobar\033[0m", 0, 3));
-        $this->assertEquals("\033[1mfoo", $this->invokeMethod(new Console, 'cut', "\033[1mfoobar\033[0m", 3));
-        $this->assertEquals("\033[1mfoobar\033[0m", $this->invokeMethod(new Console, 'cut', "\033[1mfoobar\033[0m", 6));
-        $this->assertEquals("foo\033[1mbar\033[0m", $this->invokeMethod(new Console, 'cut', "foo\033[1mbar\033[0m", 6));
+        $this->assertEquals("\033[1mfoo", $this->invokeMethod($this->console, 'cut', "\033[1mfoobar\033[0m", 3));
+        $this->assertEquals("\033[1mfoobar\033[0m", $this->invokeMethod($this->console, 'cut', "\033[1mfoobar\033[0m", 6));
+        $this->assertEquals("foo\033[1mbar\033[0m", $this->invokeMethod($this->console, 'cut', "foo\033[1mbar\033[0m", 6));
     }
 }

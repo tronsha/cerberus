@@ -65,4 +65,22 @@ class FormatterHtml extends Formatter
     {
         return $output;
     }
+
+    /**
+     * @param string $output
+     * @return string
+     */
+    public function bold($output)
+    {
+        return parent::format($output, "\x02", '<span style="font-weight: bold">', '</span>');
+    }
+
+    /**
+     * @param string $output
+     * @return string
+     */
+    public function underline($output)
+    {
+        return parent::format($output, "\x1F", '<span style="text-decoration: underline">', '</span>');
+    }
 }

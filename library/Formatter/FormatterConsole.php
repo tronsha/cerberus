@@ -85,4 +85,22 @@ class FormatterConsole extends Formatter
     {
         return $output;
     }
+
+    /**
+     * @param string $output
+     * @return string
+     */
+    public function bold($output)
+    {
+        return parent::format($output, "\x02", "\033[1m", "\033[22m");
+    }
+
+    /**
+     * @param string $output
+     * @return string
+     */
+    public function underline($output)
+    {
+        return parent::format($output, "\x1F", "\033[4m", "\033[24m");
+    }
 }
