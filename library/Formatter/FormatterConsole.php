@@ -66,9 +66,9 @@ class FormatterConsole extends Formatter
     {
         $fgbg = array();
         if ($fg !== null) {
-            $fgbg[] = '38;5;' . matchColorConsole($fg);
+            $fgbg[] = '38;5;' . $this->matchColor($fg);
             if ($bg !== null) {
-                $fgbg[] = '48;5;' . matchColorConsole($bg);
+                $fgbg[] = '48;5;' . $this->matchColor($bg);
             }
 
             return "\033[" . implode(';', $fgbg) . 'm';
