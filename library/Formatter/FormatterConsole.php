@@ -83,7 +83,30 @@ class FormatterConsole extends Formatter
      */
     public function color($output)
     {
-        return $output;
+        $coloredOutput = '';
+        $xx = $fg = $bg = '';
+        foreach (str_split($output) as $char) {
+            if ($char === "\x03") {
+                $xx = 'fg';
+            } elseif ($xx === 'fg' && (strlen($fg) === 0 || strlen($fg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+                $fg .= $char;
+            } elseif ($xx === 'fg' && (strlen($fg) === 1 || strlen($fg) === 2) && $char === ',') {
+                $xx = 'bg';
+            } elseif ($xx === 'bg' && (strlen($bg) === 0 || strlen($bg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+                $bg .= $char;
+            } elseif ($xx === 'fg' || $xx === 'bg') {
+                $coloredOutput .= $this->getColor($fg, $bg !== '' ? $bg : null);
+                if ($xx === 'bg' && $bg === '') {
+                    $coloredOutput .= ',';
+                }
+                $xx = $fg = $bg = '';
+                $coloredOutput .= $char;
+            } else {
+                $coloredOutput .= $char;
+            }
+        }
+
+        return $coloredOutput . $this->getColor();
     }
 
     /**
