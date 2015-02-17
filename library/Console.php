@@ -22,6 +22,7 @@ namespace Cerberus;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Cerberus\Formatter\FormatterFactory;
 
 /**
  * Class Console
@@ -78,7 +79,7 @@ class Console
      */
     public function prepare($text, $escape = true, $length = null, $break = true, $wordwrap = true, $offset = 0)
     {
-        $formatter = new Formatter(Formatter::CONSOLE);
+        $formatter = FormatterFactory::console();
         $text = $formatter->bold($text);
 
         if ($length === false) {
