@@ -50,6 +50,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
 
     public function testColor()
     {
-        $this->assertEquals("\033[38;5;0;48;5;11mfoo\033[39;49m", $this->formatter->color("\x03" . '1,8foo'));
+        $this->assertEquals("\033[38;5;0;48;5;11mfoobar\033[39;49m", $this->formatter->color("\x03" . '1,8foobar' . "\x03"));
+        $this->assertEquals("\033[38;5;0;48;5;11mfoobar\033[39;49m", $this->formatter->color("\x03" . '1,8foobar'));
+        $this->assertEquals("\033[38;5;0;48;5;11mfoo\033[39;49mbar", $this->formatter->color("\x03" . '1,8foo' . "\x03" . 'bar'));
     }
 }

@@ -96,13 +96,22 @@ class FormatterConsole extends Formatter
             } elseif ($xx === 'bg' && (strlen($bg) === 0 || strlen($bg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
                 $bg .= $char;
             } elseif ($xx === 'fg' || $xx === 'bg') {
-                $coloredOutput .= $this->getColor($fg, $bg !== '' ? $bg : null);
+                if ($bg !== '') {
+                    $coloredOutput .= $this->getColor($fg, $bg);
+                    $reset = $this->getColor();
+                } elseif ($fg !== '') {
+                    $coloredOutput .= $this->getColor($fg);
+                    $reset = $this->getColor();
+                } else {
+                    $coloredOutput .= $this->getColor();
+                    $reset = '';
+                }
+
                 if ($xx === 'bg' && $bg === '') {
                     $coloredOutput .= ',';
                 }
                 $xx = $fg = $bg = '';
                 $coloredOutput .= $char;
-                $reset = $this->getColor();
             } else {
                 $coloredOutput .= $char;
             }
