@@ -58,12 +58,68 @@ class FormatterHtml extends Formatter
     }
 
     /**
+     * @param int|null $fg
+     * @param int|null $bg
+     * @return string
+     */
+    protected function getColor($fg = null, $bg = null)
+    {
+        $fgbg = array();
+        if ($fg !== null) {
+            $fgbg[] = 'color: ' . $this->matchColor($fg);
+            if ($bg !== null) {
+                $fgbg[] = 'background-color: ' . $this->matchColor($bg);
+            }
+
+            return '<span style="' . implode('; ', $fgbg) . ';">';
+        }
+
+        return "</span>";
+    }
+
+    /**
      * @param string $output
      * @return string
      */
-    protected function color($output)
+    public function color($output)
     {
-        return $output;
+        $coloredOutput = '';
+        $xx = $fg = $bg = '';
+        $reset = 0;
+        foreach (str_split($output) as $char) {
+            if ($char === "\x03") {
+                $xx = 'fg';
+            } elseif ($xx === 'fg' && (strlen($fg) === 0 || strlen($fg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+                $fg .= $char;
+            } elseif ($xx === 'fg' && (strlen($fg) === 1 || strlen($fg) === 2) && $char === ',') {
+                $xx = 'bg';
+            } elseif ($xx === 'bg' && (strlen($bg) === 0 || strlen($bg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+                $bg .= $char;
+            } elseif ($xx === 'fg' || $xx === 'bg') {
+                if ($bg !== '') {
+                    $coloredOutput .= $this->getColor($fg, $bg);
+                    $reset++;
+                } elseif ($fg !== '') {
+                    $coloredOutput .= $this->getColor($fg);
+                    $reset++;
+                } else {
+                    $coloredOutput .= $this->getColor();
+                    $reset--;
+                }
+                if ($xx === 'bg' && $bg === '') {
+                    $coloredOutput .= ',';
+                }
+                $xx = $fg = $bg = '';
+                $coloredOutput .= $char;
+            } else {
+                $coloredOutput .= $char;
+            }
+        }
+        for ($i = 0; $i < $reset; $i++) {
+            $coloredOutput .= $this->getColor();
+        }
+
+        return $coloredOutput;
     }
 
     /**

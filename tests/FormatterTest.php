@@ -24,34 +24,37 @@ use Cerberus\Formatter\FormatterFactory;
 
 class FormatterTest extends \PHPUnit_Framework_TestCase
 {
-    protected $formatter;
+    protected $consoleFormatter;
+    protected $htmlFormatter;
 
     protected function setUp()
     {
-        $this->formatter = FormatterFactory::console();
+        $this->consoleFormatter = FormatterFactory::console();
+        $this->htmlFormatter = FormatterFactory::html();
     }
 
     protected function tearDown()
     {
-        unset($this->formatter);
+        unset($this->consoleFormatter);
+        unset($this->htmlFormatter);
     }
 
-    public function testBold()
+    public function testConsoleBold()
     {
-        $this->assertEquals("\033[1mfoo\033[22m", $this->formatter->bold("\x02foo\x02"));
-        $this->assertEquals("\033[1mfoo\033[22m", $this->formatter->bold("\x02foo"));
+        $this->assertEquals("\033[1mfoo\033[22m", $this->consoleFormatter->bold("\x02foo\x02"));
+        $this->assertEquals("\033[1mfoo\033[22m", $this->consoleFormatter->bold("\x02foo"));
     }
 
-    public function testUnderline()
+    public function testConsoleUnderline()
     {
-        $this->assertEquals("\033[4mfoo\033[24m", $this->formatter->underline("\x1Ffoo\x1F"));
-        $this->assertEquals("\033[4mfoo\033[24m", $this->formatter->underline("\x1Ffoo"));
+        $this->assertEquals("\033[4mfoo\033[24m", $this->consoleFormatter->underline("\x1Ffoo\x1F"));
+        $this->assertEquals("\033[4mfoo\033[24m", $this->consoleFormatter->underline("\x1Ffoo"));
     }
 
-    public function testColor()
+    public function testConsoleColor()
     {
-        $this->assertEquals("\033[38;5;0;48;5;11mfoobar\033[39;49m", $this->formatter->color("\x03" . '1,8foobar' . "\x03"));
-        $this->assertEquals("\033[38;5;0;48;5;11mfoobar\033[39;49m", $this->formatter->color("\x03" . '1,8foobar'));
-        $this->assertEquals("\033[38;5;0;48;5;11mfoo\033[39;49mbar", $this->formatter->color("\x03" . '1,8foo' . "\x03" . 'bar'));
+        $this->assertEquals("\033[38;5;0;48;5;11mfoobar\033[39;49m", $this->consoleFormatter->color("\x03" . '1,8foobar' . "\x03"));
+        $this->assertEquals("\033[38;5;0;48;5;11mfoobar\033[39;49m", $this->consoleFormatter->color("\x03" . '1,8foobar'));
+        $this->assertEquals("\033[38;5;0;48;5;11mfoo\033[39;49mbar", $this->consoleFormatter->color("\x03" . '1,8foo' . "\x03" . 'bar'));
     }
 }

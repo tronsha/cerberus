@@ -106,7 +106,6 @@ class FormatterConsole extends Formatter
                     $coloredOutput .= $this->getColor();
                     $reset = '';
                 }
-
                 if ($xx === 'bg' && $bg === '') {
                     $coloredOutput .= ',';
                 }
