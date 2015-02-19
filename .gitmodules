@@ -1,3 +1,3 @@
 [submodule "public"]
 	path = public
-	url = git://github.com/tronsha/hades.git
+	url = https://github.com/tronsha/hades.git
