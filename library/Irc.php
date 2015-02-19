@@ -100,7 +100,7 @@ class Irc extends Cerberus
             if (isset($config['bot']['ctcp'])) {
                 $this->config['ctcp'] = $config['bot']['ctcp'] == 1 ? true : false;
             }
-            if (isset($config['log']['directory']) && is_dir($config['log']['directory'])) {
+            if (!empty($config['log']['directory']) && is_dir($config['log']['directory'])) {
                 $this->config['logfiledirectory'] = $config['log']['directory'];
             }
             if (isset($config['log']['error'])) {
@@ -371,7 +371,7 @@ class Irc extends Cerberus
             $file = $type . '_log.txt';
         }
 
-        $handle = @fopen($this->config['logfiledirectory'] . $file, 'a+');
+        $handle = @fopen(realpath($this->config['logfiledirectory']) . '/' . $file, 'a+');
         if ($handle !== false) {
             fputs($handle, date("d.m.Y H:i:s", time()) . ' >>>> ' . $text . PHP_EOL);
             fflush($handle);
