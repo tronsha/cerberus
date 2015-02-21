@@ -110,4 +110,12 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("\033[1mfoobar\033[0m", $this->invokeMethod($this->console, 'cut', "\033[1mfoobar\033[0m", 6));
         $this->assertEquals("foo\033[1mbar\033[0m", $this->invokeMethod($this->console, 'cut', "foo\033[1mbar\033[0m", 6));
     }
+
+    public function testWordwrap()
+    {
+        $this->assertEquals("foo bar\nbaz", wordwrap("foo bar baz", 10, "\n"));
+        $this->assertEquals("foo\n\033[1mbar\nbaz", wordwrap("foo \033[1mbar baz", 10, "\n"));
+        $this->assertEquals("foo bar\nbaz", $this->invokeMethod($this->console, 'wordwrap', "foo bar baz", 10));
+        $this->assertEquals("foo \033[1mbar\nbaz", $this->invokeMethod($this->console, 'wordwrap', "foo \033[1mbar baz", 10));
+    }
 }
