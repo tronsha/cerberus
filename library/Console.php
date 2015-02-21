@@ -161,11 +161,28 @@ class Console
      * @param string $text
      * @param int $length
      * @param string $break
-     * @param bool $cut
      * @return string
      */
-    protected function wordwrap($text, $length = 80, $break = PHP_EOL, $cut = false)
+    protected function wordwrap($text, $length = 80, $break = PHP_EOL)
     {
-        return wordwrap($text, $length, $break, $cut);
+        $textArray = explode(' ', $text);
+        $output = array();
+        $count = 0;
+        $lineCount = 0;
+        $output[$lineCount] = '';
+        foreach ($textArray as $word) {
+            $wordLength = $this->len($word);
+            if (($count + $wordLength) <= $length) {
+                $count += $wordLength + 1;
+                $output[$lineCount] .= $word . ' ';
+            } else {
+                $output[$lineCount] = trim($output[$lineCount]);
+                $lineCount++;
+                $count = $wordLength + 1;
+                $output[$lineCount] = $word . ' ';
+            }
+        }
+
+        return trim(implode($break, $output));
     }
 }
