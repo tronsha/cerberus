@@ -101,7 +101,7 @@ class Console
         $text = utf8_decode($text);
         if ($break === true) {
             if ($wordwrap === true) {
-                $text = wordwrap($text, $length, PHP_EOL, true);
+                $text = $this->wordwrap($text, $length);
             } else {
                 $text = trim(chunk_split($text, $length, PHP_EOL));
             }
@@ -155,5 +155,17 @@ class Console
         $string = preg_replace("/\033\[[0-9;]+m/", '', $string);
 
         return strlen($string);
+    }
+
+    /**
+     * @param string $text
+     * @param int $length
+     * @param string $break
+     * @param bool $cut
+     * @return string
+     */
+    protected function wordwrap($text, $length = 80, $break = PHP_EOL, $cut = false)
+    {
+        return wordwrap($text, $length, $break, $cut);
     }
 }
