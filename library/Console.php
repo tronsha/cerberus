@@ -103,7 +103,7 @@ class Console
             if ($wordwrap === true) {
                 $text = $this->wordwrap($text, $length);
             } else {
-                $text = trim($this->split($text, $length, PHP_EOL));
+                $text = $this->split($text, $length, PHP_EOL);
             }
             $text = str_replace(PHP_EOL, PHP_EOL . str_repeat(' ', $offset), $text);
         } else {
@@ -220,6 +220,6 @@ class Console
             }
         }
 
-        return $output . $end;
+        return $output;
     }
 }
