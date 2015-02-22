@@ -118,4 +118,12 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("foo bar\nbaz", $this->invokeMethod($this->console, 'wordwrap', "foo bar baz", 10));
         $this->assertEquals("foo \033[1mbar\nbaz", $this->invokeMethod($this->console, 'wordwrap', "foo \033[1mbar baz", 10));
     }
+
+    public function testSplit()
+    {
+        $this->assertEquals("foo b\nar ba\nz\n", chunk_split("foo bar baz", 5, "\n"));
+        $this->assertEquals("foo \033\n[1mba\nr baz\n", chunk_split("foo \033[1mbar baz", 5, "\n"));
+        $this->assertEquals("foo b\nar ba\nz\n", $this->invokeMethod($this->console, 'split', "foo bar baz", 5));
+        $this->assertEquals("foo \033[1mb\nar ba\nz\n", $this->invokeMethod($this->console, 'split', "foo \033[1mbar baz", 5));
+    }
 }

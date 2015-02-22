@@ -103,7 +103,7 @@ class Console
             if ($wordwrap === true) {
                 $text = $this->wordwrap($text, $length);
             } else {
-                $text = trim(chunk_split($text, $length, PHP_EOL));
+                $text = trim($this->split($text, $length, PHP_EOL));
             }
             $text = str_replace(PHP_EOL, PHP_EOL . str_repeat(' ', $offset), $text);
         } else {
@@ -184,5 +184,42 @@ class Console
         }
 
         return trim(implode($break, $output));
+    }
+
+    /**
+     * @param string $text
+     * @param int $length
+     * @param string $end
+     * @return string
+     * @throws \Exception
+     */
+    protected function split($text, $length = 80, $end = PHP_EOL)
+    {
+        if ($length < 1) {
+            throw new \Exception('Length cannot be negative or null.');
+        }
+
+        $output = '';
+        $count = 0;
+        $ignore = false;
+
+        for ($i = 0; $i < strlen($text); $i++) {
+            $output .= $text[$i];
+            if ($text[$i] === "\033") {
+                $ignore = true;
+            }
+            if ($ignore === false) {
+                $count++;
+            }
+            if ($text[$i] === 'm') {
+                $ignore = false;
+            }
+            if ($count == $length) {
+                $count = 0;
+                $output .= $end;
+            }
+        }
+
+        return $output . $end;
     }
 }

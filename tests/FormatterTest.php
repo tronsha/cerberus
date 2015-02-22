@@ -19,7 +19,6 @@
 
 namespace Cerberus;
 
-
 use Cerberus\Formatter\FormatterFactory;
 
 class FormatterTest extends \PHPUnit_Framework_TestCase
