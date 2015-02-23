@@ -118,14 +118,14 @@ class Console
     }
 
     /**
-     * @param string $string
+     * @param string $text
      * @return int
      */
-    protected function len($string)
+    protected function len($text)
     {
-        $string = preg_replace("/\033\[[0-9;]+m/", '', $string);
+        $text = preg_replace("/\033\[[0-9;]+m/", '', $text);
 
-        return strlen($string);
+        return strlen($text);
     }
 
     /**
@@ -140,13 +140,11 @@ class Console
         if ($length < 1) {
             throw new \Exception('Length cannot be negative or null.');
         }
-
         $textArray = explode(' ', $text);
         $count = 0;
         $lineCount = 0;
         $output = array();
         $output[$lineCount] = '';
-
         foreach ($textArray as $word) {
             $wordLength = $this->len($word);
             if (($count + $wordLength) <= $length) {
@@ -175,22 +173,11 @@ class Console
         if ($length < 1) {
             throw new \Exception('Length cannot be negative or null.');
         }
-
         $output = '';
         $count = 0;
         $ignore = false;
-
         for ($i = 0; $i < strlen($text); $i++) {
-            $output .= $text[$i];
-            if ($text[$i] === "\033") {
-                $ignore = true;
-            }
-            if ($ignore === false) {
-                $count++;
-            }
-            if ($text[$i] === 'm') {
-                $ignore = false;
-            }
+            $output .= $this->count($text[$i], $count, $ignore);
             if ($count == $length) {
                 $count = 0;
                 $output .= $end;
@@ -211,27 +198,36 @@ class Console
         if ($length < 1) {
             throw new \Exception('Length cannot be negative or null.');
         }
-
         $output = '';
         $count = 0;
         $ignore = false;
-
         for ($i = 0; $i < strlen($text); $i++) {
-            $output .= $text[$i];
-            if ($text[$i] === "\033") {
-                $ignore = true;
-            }
-            if ($ignore === false) {
-                $count++;
-            }
-            if ($text[$i] === 'm') {
-                $ignore = false;
-            }
+            $output .= $this->count($text[$i], $count, $ignore);
             if ($count == $length) {
                 break;
             }
         }
 
         return $output;
+    }
+
+    /**
+     * @param string $char
+     * @param int $count
+     * @param bool $ignore
+     * @return string
+     */
+    protected function count($char, &$count, &$ignore)
+    {
+        if ($char === "\033") {
+            $ignore = true;
+        }
+        if ($ignore === false) {
+            $count++;
+        }
+        if ($ignore === true && $char === 'm') {
+            $ignore = false;
+        }
+        return $char;
     }
 }
