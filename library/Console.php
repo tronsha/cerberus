@@ -119,35 +119,6 @@ class Console
 
     /**
      * @param string $string
-     * @param int $length
-     * @return string
-     * @throws \Exception
-     */
-    protected function cut($string, $length)
-    {
-        if ($length < 0) {
-            throw new \Exception('Length cannot be negative.');
-        }
-        $ignore = false;
-        if ($length !== null) {
-            for ($i = 0; $i <= $length && $i < strlen($string); $i++) {
-                if ($string[$i] === "\033") {
-                    $ignore = true;
-                }
-                if ($ignore) {
-                    $length++;
-                }
-                if ($string[$i] === 'm') {
-                    $ignore = false;
-                }
-            }
-        }
-
-        return substr($string, 0, $length);
-    }
-
-    /**
-     * @param string $string
      * @return int
      */
     protected function len($string)
@@ -162,14 +133,20 @@ class Console
      * @param int $length
      * @param string $break
      * @return string
+     * @throws \Exception
      */
     protected function wordwrap($text, $length = 80, $break = PHP_EOL)
     {
+        if ($length < 1) {
+            throw new \Exception('Length cannot be negative or null.');
+        }
+
         $textArray = explode(' ', $text);
-        $output = array();
         $count = 0;
         $lineCount = 0;
+        $output = array();
         $output[$lineCount] = '';
+
         foreach ($textArray as $word) {
             $wordLength = $this->len($word);
             if (($count + $wordLength) <= $length) {
@@ -217,6 +194,41 @@ class Console
             if ($count == $length) {
                 $count = 0;
                 $output .= $end;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * @param string $text
+     * @param int $length
+     * @return string
+     * @throws \Exception
+     */
+    protected function cut($text, $length)
+    {
+        if ($length < 1) {
+            throw new \Exception('Length cannot be negative or null.');
+        }
+
+        $output = '';
+        $count = 0;
+        $ignore = false;
+
+        for ($i = 0; $i < strlen($text); $i++) {
+            $output .= $text[$i];
+            if ($text[$i] === "\033") {
+                $ignore = true;
+            }
+            if ($ignore === false) {
+                $count++;
+            }
+            if ($text[$i] === 'm') {
+                $ignore = false;
+            }
+            if ($count == $length) {
+                break;
             }
         }
 

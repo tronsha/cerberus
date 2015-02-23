@@ -66,14 +66,16 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
 
     public function testPrepareOutput()
     {
-        $console = new Console;
-
         $input = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz';
         $output = 'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy...';
         $this->assertEquals($output, $this->console->prepare($input, false, 80, false, false, 0));
 
         $input = "abc\033[1mdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
         $output = "abc\033[1mdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy...\033[0m";
+        $this->assertEquals($output, $this->console->prepare($input, false, 80, false, false, 0));
+
+        $input = "abc\033[1mdefghijklmnopqrstuvwxyz\033[22mabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+        $output = "abc\033[1mdefghijklmnopqrstuvwxyz\033[22mabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy...\033[0m";
         $this->assertEquals($output, $this->console->prepare($input, false, 80, false, false, 0));
 
         $input = 'abcmdefghijklmnopqrstuvwxyz' . "\x03" . '1,8abcmdefghijklmnopqrstuvwxyz';
@@ -111,8 +113,8 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $this->invokeMethod($this->console, 'cut', "foobar", 3));
         $this->assertEquals("\033[1", substr("\033[1mfoobar\033[0m", 0, 3));
         $this->assertEquals("\033[1mfoo", $this->invokeMethod($this->console, 'cut', "\033[1mfoobar\033[0m", 3));
-        $this->assertEquals("\033[1mfoobar\033[0m", $this->invokeMethod($this->console, 'cut', "\033[1mfoobar\033[0m", 6));
-        $this->assertEquals("foo\033[1mbar\033[0m", $this->invokeMethod($this->console, 'cut', "foo\033[1mbar\033[0m", 6));
+        $this->assertEquals("\033[1mfoobar", $this->invokeMethod($this->console, 'cut', "\033[1mfoobar\033[0m", 6));
+        $this->assertEquals("foo\033[1mbar", $this->invokeMethod($this->console, 'cut', "foo\033[1mbar\033[0m", 6));
     }
 
     public function testWordwrap()
