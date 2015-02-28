@@ -19,7 +19,8 @@ Then, use the `create-project` command to generate a new project:
 
 Alternativ you can clone the project from github:
 
-    git clone --recursive https://github.com/tronsha/cerberus.git
+    git clone https://github.com/tronsha/cerberus.git
+    git clone https://github.com/tronsha/hades.git
 
 Then, use the `install` command:
 
