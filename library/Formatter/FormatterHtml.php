@@ -128,7 +128,7 @@ class FormatterHtml extends Formatter
      */
     public function bold($output)
     {
-        return parent::format($output, "\x02", '<span style="font-weight: bold;">', '</span>');
+        return parent::format($output, "\x02", '<b style="font-weight: bold;">', '</b>');
     }
 
     /**
@@ -137,6 +137,6 @@ class FormatterHtml extends Formatter
      */
     public function underline($output)
     {
-        return parent::format($output, "\x1F", '<span style="text-decoration: underline;">', '</span>');
+        return parent::format($output, "\x1F", '<u style="text-decoration: underline;">', '</u>');
     }
 }
