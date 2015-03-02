@@ -16,15 +16,27 @@ If you don't have Composer yet, download it following the instructions on [getco
 Then, use the `create-project` command to generate a new project:
 
     php composer.phar create-project tronsha/cerberus --stability=dev
+    
+The Composer installation is without Webchat Frontend
 
-Alternativ you can clone the project from github:
+### Clone from Github
+
+Clone the projects `Cerberus` and `Hades` form Github:
 
     git clone https://github.com/tronsha/cerberus.git
     git clone https://github.com/tronsha/hades.git
+    
+Change to the cerberus directory:
+
+    cd cerberus
 
 Then, use the `install` command:
 
     php composer.phar install
+    
+## Require
+
+* PHP 5.5.0 or greater
 
 ## Libraries
 
@@ -56,4 +68,3 @@ Then, use the `install` command:
 [6]: http://www.doctrine-project.org/projects/dbal.html
 [7]: http://symfony.com/components/Console
 [8]: https://github.com/symfony/symfony/pull/13607
-
