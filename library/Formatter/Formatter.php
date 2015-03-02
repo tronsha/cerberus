@@ -38,10 +38,10 @@ abstract class Formatter
      */
     protected function format($output, $delimiter, $start = null, $stop = null)
     {
-        $boldArray = explode($delimiter, $output);
-        $output = array_shift($boldArray);
+        $formatArray = explode($delimiter, $output);
+        $output = array_shift($formatArray);
         $open = false;
-        foreach ($boldArray as $part) {
+        foreach ($formatArray as $part) {
             if ($open === false) {
                 $output .= $start;
                 $open = true;
