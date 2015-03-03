@@ -146,11 +146,11 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
     public function testHtmlBold()
     {
         $this->assertEquals(
-            '<span style="font-weight: bold;">foo</span>',
+            '<b style="font-weight: bold;">foo</b>',
             $this->htmlFormatter->bold("\x02foo\x02")
         );
         $this->assertEquals(
-            '<span style="font-weight: bold;">foo</span>',
+            '<b style="font-weight: bold;">foo</b>',
             $this->htmlFormatter->bold("\x02foo")
         );
     }
@@ -158,11 +158,11 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
     public function testHtmlUnderline()
     {
         $this->assertEquals(
-            '<span style="text-decoration: underline;">foo</span>',
+            '<u style="text-decoration: underline;">foo</u>',
             $this->htmlFormatter->underline("\x1Ffoo\x1F")
         );
         $this->assertEquals(
-            '<span style="text-decoration: underline;">foo</span>',
+            '<u style="text-decoration: underline;">foo</u>',
             $this->htmlFormatter->underline("\x1Ffoo")
         );
     }
