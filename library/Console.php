@@ -113,6 +113,9 @@ class Console
             }
         }
         $text = utf8_encode($text);
+        if (substr($text, -1) == '\\') {
+            $text .= ' ';
+        }
 
         return $escape ? $this->escape($text) : $text;
     }
@@ -228,6 +231,7 @@ class Console
         if ($ignore === true && $char === 'm') {
             $ignore = false;
         }
+
         return $char;
     }
 }
