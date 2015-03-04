@@ -118,8 +118,9 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('bot')
                 ->set('stop', '?')
+                ->where('id = ?')
                 ->setParameter(0, $now)
-                ->where('id = ' . ($botId === null ? $this->botId : $botId))
+                ->setParameter(1, ($botId === null ? $this->botId : $botId))
                 ->execute();
 //            $sql = 'UPDATE `bot` SET `stop` = NOW() WHERE `id` = ' . ($botId === null ? $this->botId : $botId) . '';
 //            $this->conn->query($sql);
@@ -195,8 +196,9 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('bot')
                 ->set('server_id', '?')
+                ->where('id = ?')
                 ->setParameter(0, $row['id'])
-                ->where('id = ' . $this->botId)
+                ->setParameter(1, $this->botId)
                 ->execute();
 //            $sql = 'UPDATE `bot` SET `server_id` = ' . $row['id'] . ' WHERE `id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
@@ -327,8 +329,9 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('bot')
                 ->set('ping', '?')
+                ->where('id = ?')
                 ->setParameter(0, $now)
-                ->where('id = ' . $this->botId)
+                ->setParameter(1, $this->botId)
                 ->execute();
 //            $sql = 'UPDATE `bot` SET `ping` = NOW() WHERE `id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
@@ -343,8 +346,9 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('bot')
                 ->set('nick', '?')
+                ->where('id = ?')
                 ->setParameter(0, $nick)
-                ->where('id = ' . $this->botId)
+                ->setParameter(1, $this->botId)
                 ->execute();
 //            $sql = 'UPDATE `bot` SET `nick` = ' . $this->conn->quote($nick) . ' WHERE `id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
@@ -435,8 +439,10 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('channel_user')
                 ->set('user', '?')
+                ->where('bot_id = ? AND user = ?')
                 ->setParameter(0, $new)
-                ->where('bot_id = ' . $this->botId . ' AND user = ' . $this->conn->quote($old))
+                ->setParameter(1, $this->botId)
+                ->setParameter(2, $old)
                 ->execute();
 //            $sql = 'UPDATE `channel_user` SET `user` = ' . $this->conn->quote($new) . ' WHERE `bot_id` = ' . $this->botId . ' AND `user` = ' . $this->conn->quote($old) . '';
 //            $this->conn->query($sql);
@@ -451,8 +457,10 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('channel')
                 ->set('topic', '?')
+                ->where('bot_id = ? AND channel = ?')
                 ->setParameter(0, $topic)
-                ->where('bot_id = ' . $this->botId . ' AND channel = ' . $this->conn->quote($channel))
+                ->setParameter(1, $this->botId)
+                ->setParameter(2, $channel)
                 ->execute();
 //            $sql = 'UPDATE `channel` SET `topic` = ' . $this->conn->quote($topic) . ' WHERE `bot_id` = ' . $this->botId . ' AND `channel` = ' . $this->conn->quote($channel) . '';
 //            $this->conn->query($sql);
