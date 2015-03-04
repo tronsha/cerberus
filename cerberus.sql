@@ -38,31 +38,6 @@ CREATE TABLE IF NOT EXISTS `channel_user` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `color` (
-  `id` int(10) unsigned NOT NULL,
-  `color` varchar(7) COLLATE utf8_unicode_ci NOT NULL,
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `color` (`color`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `color` (`id`, `color`) VALUES
-(0, '#FFFFFF'),
-(1, '#000000'),
-(2, '#00007F'),
-(3, '#009300'),
-(4, '#FF0000'),
-(5, '#7F0000'),
-(6, '#9C009C'),
-(7, '#FC7F00'),
-(8, '#FFFF00'),
-(9, '#00FC00'),
-(10, '#009393'),
-(11, '#00FFFF'),
-(12, '#0000FC'),
-(13, '#FF00FF'),
-(14, '#7F7F7F'),
-(15, '#D2D2D2');
-
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `bot_id` int(11) unsigned NOT NULL,
@@ -72,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `command` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `rest` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `text` text COLLATE utf8_unicode_ci NOT NULL,
-  `all` text COLLATE utf8_unicode_ci NOT NULL,
+  `irc` text COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime NOT NULL,
   `direction` enum('in','out') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'in',
   PRIMARY KEY (`id`)
@@ -86,8 +61,8 @@ CREATE TABLE IF NOT EXISTS `network` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
 INSERT INTO `network` (`id`, `network`) VALUES
-(1, 'Freenode'),
-(2, 'Quakenet');
+(1, 'freenode'),
+(2, 'quakenet');
 
 CREATE TABLE IF NOT EXISTS `preform` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

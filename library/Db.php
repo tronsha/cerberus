@@ -89,8 +89,22 @@ class Db
     public function createBot($pid, $nick)
     {
         try {
-            $sql = 'INSERT INTO `bot` SET `pid` = ' . $this->conn->quote($pid) . ', `start` = NOW(), `nick` = ' . $this->conn->quote($nick) . '';
-            $this->conn->query($sql);
+            $now = (new \DateTime())->format('Y-m-d H:i:s');
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->insert('bot')
+                ->values(
+                    array(
+                        'pid' => '?',
+                        'start' => '?',
+                        'nick' => '?'
+                    )
+                )
+                ->setParameter(0, $pid)
+                ->setParameter(1, $now)
+                ->setParameter(2, $nick)
+                ->execute();
+//            $sql = 'INSERT INTO `bot` SET `pid` = ' . $this->conn->quote($pid) . ', `start` = NOW(), `nick` = ' . $this->conn->quote($nick) . '';
+//            $this->conn->query($sql);
             $this->botId = $this->conn->lastInsertId();
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -100,8 +114,15 @@ class Db
     public function shutdownBot($botId = null)
     {
         try {
-            $sql = 'UPDATE `bot` SET `stop` = NOW() WHERE `id` = ' . ($botId === null ? $this->botId : $botId) . '';
-            $this->conn->query($sql);
+            $now = (new \DateTime())->format('Y-m-d H:i:s');
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->update('bot')
+                ->set('stop', '?')
+                ->setParameter(0, $now)
+                ->where('id = ' . ($botId === null ? $this->botId : $botId))
+                ->execute();
+//            $sql = 'UPDATE `bot` SET `stop` = NOW() WHERE `id` = ' . ($botId === null ? $this->botId : $botId) . '';
+//            $this->conn->query($sql);
             $this->close();
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -171,9 +192,14 @@ class Db
             $row = $stmt->fetch();
             $row['ip'] = @gethostbyname($row['host']);
 
-            $sql = 'UPDATE `bot` SET `server_id` = ' . $row['id'] . ' WHERE `id` = ' . $this->botId . '';
-            $this->conn->query($sql);
-
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->update('bot')
+                ->set('server_id', '?')
+                ->setParameter(0, $row['id'])
+                ->where('id = ' . $this->botId)
+                ->execute();
+//            $sql = 'UPDATE `bot` SET `server_id` = ' . $row['id'] . ' WHERE `id` = ' . $this->botId . '';
+//            $this->conn->query($sql);
             return array_merge($server, $row);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -207,8 +233,19 @@ class Db
     public function setWrite($text)
     {
         try {
-            $sql = 'INSERT INTO `send` SET `text` = ' . $this->conn->quote($text) . ', `bot_id` = ' . $this->botId . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->insert('send')
+                ->values(
+                    array(
+                        'text' => '?',
+                        'bot_id' => '?'
+                    )
+                )
+                ->setParameter(0, $text)
+                ->setParameter(1, $this->botId)
+                ->execute();
+//            $sql = 'INSERT INTO `send` SET `text` = ' . $this->conn->quote($text) . ', `bot_id` = ' . $this->botId . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -238,18 +275,46 @@ class Db
     public function setLog($network, $all, $nick, $host, $command, $rest, $text, $direction)
     {
         try {
-            $sql = 'INSERT INTO log SET '
-                . '`nick`      = ' . $this->conn->quote($nick) . ', '
-                . '`host`      = ' . $this->conn->quote($host) . ', '
-                . '`command`   = ' . $this->conn->quote($command) . ', '
-                . '`rest`      = ' . $this->conn->quote($rest) . ', '
-                . '`text`      = ' . $this->conn->quote($text) . ', '
-                . '`all`       = ' . $this->conn->quote($all) . ', '
-                . '`network`   = ' . $this->conn->quote($network) . ', '
-                . '`bot_id`    = ' . $this->botId . ', '
-                . '`time`      = NOW(), '
-                . '`direction` = ' . $this->conn->quote($direction) . '';
-            $this->conn->query($sql);
+            $now = (new \DateTime())->format('Y-m-d H:i:s');
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->insert('log')
+                ->values(
+                    array(
+                        'nick' => '?',
+                        'host' => '?',
+                        'command' => '?',
+                        'rest' => '?',
+                        'text' => '?',
+                        'irc' => '?',
+                        'network' => '?',
+                        'bot_id' => '?',
+                        'time' => '?',
+                        'direction' => '?'
+                    )
+                )
+                ->setParameter(0, $nick)
+                ->setParameter(1, $host)
+                ->setParameter(2, $command)
+                ->setParameter(3, $rest)
+                ->setParameter(4, $text)
+                ->setParameter(5, $all)
+                ->setParameter(6, $network)
+                ->setParameter(7, $this->botId)
+                ->setParameter(8, $now)
+                ->setParameter(9, $direction)
+                ->execute();
+//            $sql = 'INSERT INTO log SET '
+//                . '`nick`      = ' . $this->conn->quote($nick) . ', '
+//                . '`host`      = ' . $this->conn->quote($host) . ', '
+//                . '`command`   = ' . $this->conn->quote($command) . ', '
+//                . '`rest`      = ' . $this->conn->quote($rest) . ', '
+//                . '`text`      = ' . $this->conn->quote($text) . ', '
+//                . '`all`       = ' . $this->conn->quote($all) . ', '
+//                . '`network`   = ' . $this->conn->quote($network) . ', '
+//                . '`bot_id`    = ' . $this->botId . ', '
+//                . '`time`      = NOW(), '
+//                . '`direction` = ' . $this->conn->quote($direction) . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -258,8 +323,15 @@ class Db
     public function setPing()
     {
         try {
-            $sql = 'UPDATE `bot` SET `ping` = NOW() WHERE `id` = ' . $this->botId . '';
-            $this->conn->query($sql);
+            $now = (new \DateTime())->format('Y-m-d H:i:s');
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->update('bot')
+                ->set('ping', '?')
+                ->setParameter(0, $now)
+                ->where('id = ' . $this->botId)
+                ->execute();
+//            $sql = 'UPDATE `bot` SET `ping` = NOW() WHERE `id` = ' . $this->botId . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -268,8 +340,14 @@ class Db
     public function setBotNick($nick)
     {
         try {
-            $sql = 'UPDATE `bot` SET `nick` = ' . $this->conn->quote($nick) . ' WHERE `id` = ' . $this->botId . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->update('bot')
+                ->set('nick', '?')
+                ->setParameter(0, $nick)
+                ->where('id = ' . $this->botId)
+                ->execute();
+//            $sql = 'UPDATE `bot` SET `nick` = ' . $this->conn->quote($nick) . ' WHERE `id` = ' . $this->botId . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -278,8 +356,19 @@ class Db
     public function addChannel($channel)
     {
         try {
-            $sql = 'INSERT INTO `channel` SET `channel` = ' . $this->conn->quote($channel) . ', `bot_id` = ' . $this->botId . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->insert('channel')
+                ->values(
+                    array(
+                        'channel' => '?',
+                        'bot_id' => '?'
+                    )
+                )
+                ->setParameter(0, $channel)
+                ->setParameter(1, $this->botId)
+                ->execute();
+//            $sql = 'INSERT INTO `channel` SET `channel` = ' . $this->conn->quote($channel) . ', `bot_id` = ' . $this->botId . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -308,8 +397,23 @@ class Db
     public function addUserToChannel($channel, $user, $mode = '')
     {
         try {
-            $sql = 'INSERT INTO `channel_user` SET `user` = ' . $this->conn->quote($user) . ', `mode` = ' . $this->conn->quote($mode) . ', `channel` = ' . $this->conn->quote($channel) . ', `bot_id` = ' . $this->botId . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->insert('channel_user')
+                ->values(
+                    array(
+                        'user' => '?',
+                        'mode' => '?',
+                        'channel' => '?',
+                        'bot_id' => '?'
+                    )
+                )
+                ->setParameter(0, $user)
+                ->setParameter(1, $mode)
+                ->setParameter(2, $channel)
+                ->setParameter(3, $this->botId)
+                ->execute();
+//            $sql = 'INSERT INTO `channel_user` SET `user` = ' . $this->conn->quote($user) . ', `mode` = ' . $this->conn->quote($mode) . ', `channel` = ' . $this->conn->quote($channel) . ', `bot_id` = ' . $this->botId . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -328,8 +432,14 @@ class Db
     public function changeNick($old, $new)
     {
         try {
-            $sql = 'UPDATE `channel_user` SET `user` = ' . $this->conn->quote($new) . ' WHERE `bot_id` = ' . $this->botId . ' AND `user` = ' . $this->conn->quote($old) . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->update('channel_user')
+                ->set('user', '?')
+                ->setParameter(0, $new)
+                ->where('bot_id = ' . $this->botId . ' AND user = ' . $this->conn->quote($old))
+                ->execute();
+//            $sql = 'UPDATE `channel_user` SET `user` = ' . $this->conn->quote($new) . ' WHERE `bot_id` = ' . $this->botId . ' AND `user` = ' . $this->conn->quote($old) . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -338,8 +448,14 @@ class Db
     public function setChannelTopic($channel, $topic)
     {
         try {
-            $sql = 'UPDATE `channel` SET `topic` = ' . $this->conn->quote($topic) . ' WHERE `bot_id` = ' . $this->botId . ' AND `channel` = ' . $this->conn->quote($channel) . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->update('channel')
+                ->set('topic', '?')
+                ->setParameter(0, $topic)
+                ->where('bot_id = ' . $this->botId . ' AND channel = ' . $this->conn->quote($channel))
+                ->execute();
+//            $sql = 'UPDATE `channel` SET `topic` = ' . $this->conn->quote($topic) . ' WHERE `bot_id` = ' . $this->botId . ' AND `channel` = ' . $this->conn->quote($channel) . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -360,7 +476,7 @@ class Db
     public function getAuthLevel($network, $auth)
     {
         try {
-            $sql = 'SELECT `authlevel` FROM `auth` WHERE `network` = ' . $this->conn->quote($network) . ' AND `authname` = ' . $this->conn->quote($auth) . '';
+            $sql = 'SELECT `authlevel` FROM `auth` WHERE `network` = ' . $this->conn->quote($network) . ' AND `authname` = ' . $this->conn->quote(strtolower($auth)) . '';
             $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
             return $row['authlevel'];
