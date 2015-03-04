@@ -133,12 +133,27 @@ class Db
     public function cleanupBot($botId = null)
     {
         try {
-            $sql = 'DELETE FROM `send` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
-            $this->conn->query($sql);
-            $sql = 'DELETE FROM `channel` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
-            $this->conn->query($sql);
-            $sql = 'DELETE FROM `channel_user` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('send')
+                ->where('bot_id = ?')
+                ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                ->execute();
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('channel')
+                ->where('bot_id = ?')
+                ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                ->execute();
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('channel_user')
+                ->where('bot_id = ?')
+                ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                ->execute();
+//            $sql = 'DELETE FROM `send` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
+//            $this->conn->query($sql);
+//            $sql = 'DELETE FROM `channel` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
+//            $this->conn->query($sql);
+//            $sql = 'DELETE FROM `channel_user` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -147,8 +162,14 @@ class Db
     public function getActiveBotList()
     {
         try {
-            $sql = 'SELECT * FROM bot WHERE stop IS NULL';
-            $stmt = $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('*')
+                ->from('bot')
+                ->where('stop IS NULL')
+                ->execute();
+//            $sql = 'SELECT * FROM bot WHERE stop IS NULL';
+//            $stmt = $this->conn->query($sql);
             $rows = $stmt->fetchAll();
             return $rows;
         } catch (\Exception $e) {
@@ -159,11 +180,19 @@ class Db
     public function getServerCount($network)
     {
         try {
-            $sql = 'SELECT count(*) AS number '
-                . 'FROM `server` s, `network` n '
-                . 'WHERE n.`id` = s.`network_id` '
-                . 'AND n.`network` = ' . $this->conn->quote($network) . '';
-            $stmt = $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('COUNT(*) AS number')
+                ->from('server', 's')
+                ->innerJoin('s', 'network', 'n', 's.network_id = n.id')
+                ->where('n.network = ?')
+                ->setParameter(0, $network)
+                ->execute();
+//            $sql = 'SELECT count(*) AS number '
+//                . 'FROM `server` s, `network` n '
+//                . 'WHERE n.`id` = s.`network_id` '
+//                . 'AND n.`network` = ' . $this->conn->quote($network) . '';
+//            $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
             return $row['number'];
         } catch (\Exception $e) {
@@ -181,15 +210,27 @@ class Db
     public function getServerData($server, $i = 0)
     {
         try {
-            $network = $server['network'];
+            $network = strtolower($server['network']);
             $i = (string)$i;
-            $sql = 'SELECT s.`id` , s.`server` AS host, s.`port` '
-                . 'FROM `server` s, `network` n '
-                . 'WHERE n.`id` = s.`network_id` '
-                . 'AND n.`network` = ' . $this->conn->quote($network) . ' '
-                . 'ORDER BY s.`id` , s.`port` '
-                . 'LIMIT ' . $i . ', 1';
-            $stmt = $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('s.id', 's.server AS host', 's.port')
+                ->from('server', 's')
+                ->innerJoin('s', 'network', 'n', 's.network_id = n.id')
+                ->where('n.network = ?')
+                ->orderBy('s.id', 'ASC')
+                ->addOrderBy('s.port', 'ASC')
+                ->setFirstResult($i)
+                ->setMaxResults(1)
+                ->setParameter(0, $network)
+                ->execute();
+//            $sql = 'SELECT s.`id` , s.`server` AS host, s.`port` '
+//                . 'FROM `server` s, `network` n '
+//                . 'WHERE n.`id` = s.`network_id` '
+//                . 'AND n.`network` = ' . $this->conn->quote($network) . ' '
+//                . 'ORDER BY s.`id` , s.`port` '
+//                . 'LIMIT ' . $i . ', 1';
+//            $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
             $row['ip'] = @gethostbyname($row['host']);
 
@@ -223,8 +264,16 @@ class Db
     public function getPreform($network)
     {
         try {
-            $sql = 'SELECT `text` FROM `preform` WHERE `network` = ' . $this->conn->quote($network) . ' ORDER BY `priority` DESC';
-            $stmt = $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('text')
+                ->from('preform')
+                ->where('network = ?')
+                ->orderBy('priority', 'DESC')
+                ->setParameter(0, $network)
+                ->execute();
+//            $sql = 'SELECT `text` FROM `preform` WHERE `network` = ' . $this->conn->quote($network) . ' ORDER BY `priority` DESC';
+//            $stmt = $this->conn->query($sql);
             $rows = $stmt->fetchAll();
             return $rows;
         } catch (\Exception $e) {
@@ -256,8 +305,17 @@ class Db
     public function getWrite()
     {
         try {
-            $sql = 'SELECT `id`, `text` FROM `send` WHERE `bot_id` = ' . $this->botId . ' ORDER BY `id` LIMIT 0, 1';
-            $stmt = $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('id', 'text')
+                ->from('send')
+                ->where('bot_id = ?')
+                ->orderBy('id', 'ASC')
+                ->setMaxResults(1)
+                ->setParameter(0, $this->botId)
+                ->execute();
+//            $sql = 'SELECT `id`, `text` FROM `send` WHERE `bot_id` = ' . $this->botId . ' ORDER BY `id` LIMIT 0, 1';
+//            $stmt = $this->conn->query($sql);
             return $stmt->fetch();
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -267,8 +325,13 @@ class Db
     public function unsetWrite($id)
     {
         try {
-            $sql = 'DELETE FROM `send` WHERE `id` = ' . $this->conn->quote($id) . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('send')
+                ->where('id = ?')
+                ->setParameter(0, $id)
+                ->execute();
+//            $sql = 'DELETE FROM `send` WHERE `id` = ' . $this->conn->quote($id) . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -381,8 +444,14 @@ class Db
     public function removeChannel($channel)
     {
         try {
-            $sql = 'DELETE FROM `channel` WHERE `channel` = ' . $this->conn->quote($channel) . ' AND `bot_id` = ' . $this->botId . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('channel')
+                ->where('channel = ? AND bot_id = ?')
+                ->setParameter(0, $channel)
+                ->setParameter(1, $this->botId)
+                ->execute();
+//            $sql = 'DELETE FROM `channel` WHERE `channel` = ' . $this->conn->quote($channel) . ' AND `bot_id` = ' . $this->botId . '';
+//            $this->conn->query($sql);
             $this->removeUserFromChannel($channel);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
@@ -426,8 +495,15 @@ class Db
     public function removeUserFromChannel($channel, $user = '%')
     {
         try {
-            $sql = 'DELETE FROM `channel_user` WHERE `user` LIKE ' . $this->conn->quote($user) . ' AND `channel` LIKE ' . $this->conn->quote($channel) . ' AND `bot_id` = ' . $this->botId . '';
-            $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('channel_user')
+                ->where('user LIKE ? AND channel LIKE ? AND bot_id = ?')
+                ->setParameter(0, $user)
+                ->setParameter(1, $channel)
+                ->setParameter(2, $this->botId)
+                ->execute();
+//            $sql = 'DELETE FROM `channel_user` WHERE `user` LIKE ' . $this->conn->quote($user) . ' AND `channel` LIKE ' . $this->conn->quote($channel) . ' AND `bot_id` = ' . $this->botId . '';
+//            $this->conn->query($sql);
         } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
@@ -472,8 +548,15 @@ class Db
     public function getJoinedChannels()
     {
         try {
-            $sql = 'SELECT `channel` FROM `channel` WHERE `bot_id` = ' . $this->botId . '';
-            $stmt = $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('channel')
+                ->from('channel')
+                ->where('bot_id = ?')
+                ->setParameter(0, $this->botId)
+                ->execute();
+//            $sql = 'SELECT `channel` FROM `channel` WHERE `bot_id` = ' . $this->botId . '';
+//            $stmt = $this->conn->query($sql);
             $rows = $stmt->fetchAll();
             return $rows;
         } catch (\Exception $e) {
@@ -484,8 +567,16 @@ class Db
     public function getAuthLevel($network, $auth)
     {
         try {
-            $sql = 'SELECT `authlevel` FROM `auth` WHERE `network` = ' . $this->conn->quote($network) . ' AND `authname` = ' . $this->conn->quote(strtolower($auth)) . '';
-            $stmt = $this->conn->query($sql);
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('authlevel')
+                ->from('auth')
+                ->where('network = ? AND authname = ?')
+                ->setParameter(0, $network)
+                ->setParameter(1, strtolower($auth))
+                ->execute();
+//            $sql = 'SELECT `authlevel` FROM `auth` WHERE `network` = ' . $this->conn->quote($network) . ' AND `authname` = ' . $this->conn->quote(strtolower($auth)) . '';
+//            $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
             return $row['authlevel'];
         } catch (\Exception $e) {
