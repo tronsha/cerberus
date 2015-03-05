@@ -65,6 +65,6 @@ if ($config['bot']['autostart']) {
         if (is_dir($config['log']['directory']) === false) {
             mkdir($config['log']['directory']);
         }
-        exec('php -f ' . Cerberus::getPath() . '/bin/bot.php > ' . $config['log']['directory'] . 'log.txt 2>&1 &');
+        exec(Cerberus::getPath() . '/bin/bot.php -noconsole > ' . $config['log']['directory'] . 'log.txt 2>&1 &');
     }
 }

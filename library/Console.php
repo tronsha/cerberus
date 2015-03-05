@@ -79,6 +79,11 @@ class Console
      */
     public function prepare($text, $escape = true, $length = null, $break = true, $wordwrap = true, $offset = 0)
     {
+        global $argv;
+        if (isset($argv) && is_array($argv) && in_array('-noconsole', $argv)) {
+            return $text;
+        }
+
         $formatter = FormatterFactory::console();
         $text = $formatter->bold($text);
         $text = $formatter->underline($text);
@@ -92,6 +97,9 @@ class Console
                 return $escape ? $this->escape($text) : $text;
             }
             preg_match('/columns\s([0-9]+);/', strtolower(exec('stty -a | grep columns')), $matches);
+            if (isset($matches[1]) === false) {
+                return $escape ? $this->escape($text) : $text;
+            }
             $length = $matches[1];
         }
         $length = $length - $offset;
