@@ -19,7 +19,6 @@
 
 namespace Cerberus;
 
-use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Version;
 use DateTime;
@@ -57,7 +56,7 @@ class Db
 
     public function connect()
     {
-        return $this->conn = DriverManager::getConnection($this->config, new Configuration);
+        return $this->conn = DriverManager::getConnection($this->config);
     }
 
     public function close()
