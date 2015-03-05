@@ -19,6 +19,8 @@
 
 namespace Cerberus;
 
+use Exception;
+
 /**
  * Class Mircryption
  * @package Cerberus
@@ -32,12 +34,12 @@ namespace Cerberus;
 class Mircryption
 {
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct()
     {
         if (extension_loaded('mcrypt') === false) {
-            throw new \Exception('The mcrypt extension is not available.');
+            throw new Exception('The mcrypt extension is not available.');
         }
     }
 

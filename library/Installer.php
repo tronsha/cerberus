@@ -22,6 +22,7 @@ namespace Cerberus;
 use Composer\Script\Event;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
+use Exception;
 
 /**
  * Class Installer
@@ -108,7 +109,7 @@ class Installer
             $io->write('<info>Create database tables</info>');
             $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.sql'));
             $db->close();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $io->write('<error>' . $e->getMessage() . '</error>');
         }
     }

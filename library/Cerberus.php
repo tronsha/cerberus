@@ -19,6 +19,8 @@
 
 namespace Cerberus;
 
+use Exception;
+
 /**
  * Class Cerberus
  * @package Cerberus
@@ -48,12 +50,12 @@ class Cerberus
     /**
      * run me as main method
      * @return Irc
-     * @throws \Exception
+     * @throws Exception
      */
     public function run()
     {
         if (file_exists(self::getPath() . '/config.ini') === false) {
-            throw new \Exception('File Not Found: ' . self::getPath() . '/config.ini');
+            throw new Exception('File Not Found: ' . self::getPath() . '/config.ini');
         }
         $irc = new Irc(parse_ini_file(self::getPath() . '/config.ini', true));
         $irc->connect();

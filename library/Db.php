@@ -22,6 +22,8 @@ namespace Cerberus;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Version;
+use DateTime;
+use Exception;
 
 /**
  * Class Db
@@ -89,7 +91,7 @@ class Db
     public function createBot($pid, $nick)
     {
         try {
-            $now = (new \DateTime())->format('Y-m-d H:i:s');
+            $now = (new DateTime())->format('Y-m-d H:i:s');
             $qb = $this->conn->createQueryBuilder();
             $qb ->insert('bot')
                 ->values(
@@ -106,7 +108,7 @@ class Db
 //            $sql = 'INSERT INTO `bot` SET `pid` = ' . $this->conn->quote($pid) . ', `start` = NOW(), `nick` = ' . $this->conn->quote($nick) . '';
 //            $this->conn->query($sql);
             $this->botId = $this->conn->lastInsertId();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -114,7 +116,7 @@ class Db
     public function shutdownBot($botId = null)
     {
         try {
-            $now = (new \DateTime())->format('Y-m-d H:i:s');
+            $now = (new DateTime())->format('Y-m-d H:i:s');
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('bot')
                 ->set('stop', '?')
@@ -125,7 +127,7 @@ class Db
 //            $sql = 'UPDATE `bot` SET `stop` = NOW() WHERE `id` = ' . ($botId === null ? $this->botId : $botId) . '';
 //            $this->conn->query($sql);
             $this->close();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -154,7 +156,7 @@ class Db
 //            $this->conn->query($sql);
 //            $sql = 'DELETE FROM `channel_user` WHERE `bot_id` = ' . ($botId === null ? $this->botId : $botId) . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -172,7 +174,7 @@ class Db
 //            $stmt = $this->conn->query($sql);
             $rows = $stmt->fetchAll();
             return $rows;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -195,7 +197,7 @@ class Db
 //            $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
             return $row['number'];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -244,7 +246,7 @@ class Db
 //            $sql = 'UPDATE `bot` SET `server_id` = ' . $row['id'] . ' WHERE `id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
             return array_merge($server, $row);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -256,7 +258,7 @@ class Db
             $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
             return $row['version'];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -276,7 +278,7 @@ class Db
 //            $stmt = $this->conn->query($sql);
             $rows = $stmt->fetchAll();
             return $rows;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -297,7 +299,7 @@ class Db
                 ->execute();
 //            $sql = 'INSERT INTO `send` SET `text` = ' . $this->conn->quote($text) . ', `bot_id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -317,7 +319,7 @@ class Db
 //            $sql = 'SELECT `id`, `text` FROM `send` WHERE `bot_id` = ' . $this->botId . ' ORDER BY `id` LIMIT 0, 1';
 //            $stmt = $this->conn->query($sql);
             return $stmt->fetch();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -332,7 +334,7 @@ class Db
                 ->execute();
 //            $sql = 'DELETE FROM `send` WHERE `id` = ' . $this->conn->quote($id) . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -340,7 +342,7 @@ class Db
     public function setLog($network, $all, $nick, $host, $command, $rest, $text, $direction)
     {
         try {
-            $now = (new \DateTime())->format('Y-m-d H:i:s');
+            $now = (new DateTime())->format('Y-m-d H:i:s');
             $qb = $this->conn->createQueryBuilder();
             $qb ->insert('log')
                 ->values(
@@ -380,7 +382,7 @@ class Db
 //                . '`time`      = NOW(), '
 //                . '`direction` = ' . $this->conn->quote($direction) . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -388,7 +390,7 @@ class Db
     public function setPing()
     {
         try {
-            $now = (new \DateTime())->format('Y-m-d H:i:s');
+            $now = (new DateTime())->format('Y-m-d H:i:s');
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('bot')
                 ->set('ping', '?')
@@ -398,7 +400,7 @@ class Db
                 ->execute();
 //            $sql = 'UPDATE `bot` SET `ping` = NOW() WHERE `id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -415,7 +417,7 @@ class Db
                 ->execute();
 //            $sql = 'UPDATE `bot` SET `nick` = ' . $this->conn->quote($nick) . ' WHERE `id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -436,7 +438,7 @@ class Db
                 ->execute();
 //            $sql = 'INSERT INTO `channel` SET `channel` = ' . $this->conn->quote($channel) . ', `bot_id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -453,7 +455,7 @@ class Db
 //            $sql = 'DELETE FROM `channel` WHERE `channel` = ' . $this->conn->quote($channel) . ' AND `bot_id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
             $this->removeUserFromChannel($channel);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -462,7 +464,7 @@ class Db
     {
         try {
             $this->removeUserFromChannel('%', $user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -487,7 +489,7 @@ class Db
                 ->execute();
 //            $sql = 'INSERT INTO `channel_user` SET `user` = ' . $this->conn->quote($user) . ', `mode` = ' . $this->conn->quote($mode) . ', `channel` = ' . $this->conn->quote($channel) . ', `bot_id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -504,7 +506,7 @@ class Db
                 ->execute();
 //            $sql = 'DELETE FROM `channel_user` WHERE `user` LIKE ' . $this->conn->quote($user) . ' AND `channel` LIKE ' . $this->conn->quote($channel) . ' AND `bot_id` = ' . $this->botId . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -522,7 +524,7 @@ class Db
                 ->execute();
 //            $sql = 'UPDATE `channel_user` SET `user` = ' . $this->conn->quote($new) . ' WHERE `bot_id` = ' . $this->botId . ' AND `user` = ' . $this->conn->quote($old) . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -540,7 +542,7 @@ class Db
                 ->execute();
 //            $sql = 'UPDATE `channel` SET `topic` = ' . $this->conn->quote($topic) . ' WHERE `bot_id` = ' . $this->botId . ' AND `channel` = ' . $this->conn->quote($channel) . '';
 //            $this->conn->query($sql);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -559,7 +561,7 @@ class Db
 //            $stmt = $this->conn->query($sql);
             $rows = $stmt->fetchAll();
             return $rows;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -579,7 +581,7 @@ class Db
 //            $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
             return $row['authlevel'];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }

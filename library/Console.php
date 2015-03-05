@@ -23,6 +23,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Cerberus\Formatter\FormatterFactory;
+use Exception;
 
 /**
  * Class Console
@@ -144,12 +145,12 @@ class Console
      * @param int $length
      * @param string $break
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     protected function wordwrap($text, $length = 80, $break = PHP_EOL)
     {
         if ($length < 1) {
-            throw new \Exception('Length cannot be negative or null.');
+            throw new Exception('Length cannot be negative or null.');
         }
         $textArray = explode(' ', $text);
         $count = 0;
@@ -177,12 +178,12 @@ class Console
      * @param int $length
      * @param string $end
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     protected function split($text, $length = 80, $end = PHP_EOL)
     {
         if ($length < 1) {
-            throw new \Exception('Length cannot be negative or null.');
+            throw new Exception('Length cannot be negative or null.');
         }
         $output = '';
         $count = 0;
@@ -202,12 +203,12 @@ class Console
      * @param string $text
      * @param int $length
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     protected function cut($text, $length)
     {
         if ($length < 1) {
-            throw new \Exception('Length cannot be negative or null.');
+            throw new Exception('Length cannot be negative or null.');
         }
         $output = '';
         $count = 0;

@@ -20,6 +20,7 @@
 namespace Cerberus;
 
 use Cerberus\Plugins\PluginAuth;
+use SQLite3;
 
 /**
  * Class Irc
@@ -229,6 +230,10 @@ class Irc extends Cerberus
             $this->version['bot'] = 'PHP ' . $this->version['php'] . ' - ' . $this->version['os'];
             if ($this->dbms == 'mysql' || $this->dbms == 'pg') {
                 $this->version['sql'] = $this->db->getDbVersion();
+                $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
+            } elseif ($this->dbms == 'sqlite') {
+                $version = SQLite3::version();
+                $this->version['sql'] = $version['versionString'];
                 $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
             }
         }
