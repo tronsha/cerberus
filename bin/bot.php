@@ -31,7 +31,6 @@ chdir(__DIR__);
 require_once('../vendor/autoload.php');
 
 use Cerberus\Cerberus;
-use Exception;
 
 try {
     $cerberus = new Cerberus;
