@@ -81,7 +81,7 @@ class Console
     {
         global $argv;
         if (isset($argv) && is_array($argv) && in_array('-noconsole', $argv)) {
-            return $text;
+            return $escape ? $this->escape($text) : $text;
         }
 
         $formatter = FormatterFactory::console();

@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `preform` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `network` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `text` text COLLATE utf8_unicode_ci NOT NULL,
-  `priority` enum('low','medium','high') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'medium',
+  `priority` int(11) NOT NULL DEFAULT '50',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
