@@ -18,9 +18,9 @@
  *   with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-if (version_compare(phpversion(), '5.3.2', '<') === true) {
+if (version_compare(phpversion(), '5.5.0', '<') === true) {
     echo 'Your version of PHP is ' . phpversion() . PHP_EOL;
-    echo 'PHP 5.3.2 or higher is required' . PHP_EOL;
+    echo 'PHP 5.5.0 or higher is required' . PHP_EOL;
     exit;
 }
 
