@@ -69,6 +69,8 @@ class Db
     {
         if($this->irc !== null) {
             $this->irc->sqlError($error);
+        } else {
+            echo $error;
         }
     }
 
