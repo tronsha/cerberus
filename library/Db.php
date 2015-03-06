@@ -527,7 +527,7 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('channel_user')
                 ->set('username', '?')
-                ->where('bot_id = ? AND user = ?')
+                ->where('bot_id = ? AND username = ?')
                 ->setParameter(0, $new)
                 ->setParameter(1, $this->botId)
                 ->setParameter(2, $old)
