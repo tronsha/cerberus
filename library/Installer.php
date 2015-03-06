@@ -47,7 +47,7 @@ class Installer
         $io->write(str_repeat('-', 80));
         self::createConfig($event);
         $io->write(str_repeat('-', 80));
-        self::installDb($event);
+        self::installMysqlDb($event);
         $io->write(str_repeat('-', 80));
         self::runPhpUnit($event);
         $io->write(str_repeat('-', 80));
@@ -89,7 +89,7 @@ class Installer
     /**
      * @param Event $event
      */
-    protected static function installDb(Event $event)
+    protected static function installMysqlDb(Event $event)
     {
         $io = $event->getIO();
         try {
@@ -107,7 +107,7 @@ class Installer
             $config['db']['dbname'] = $dbname;
             $db = DriverManager::getConnection($config['db'], new Configuration);
             $io->write('<info>Create database tables</info>');
-            $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.sql'));
+            $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.mysql.sql'));
             $db->close();
         } catch (Exception $e) {
             $io->write('<error>' . $e->getMessage() . '</error>');
