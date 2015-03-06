@@ -107,6 +107,15 @@ class Db
 //            $sql = 'INSERT INTO `bot` SET `pid` = ' . $this->conn->quote($pid) . ', `start` = NOW(), `nick` = ' . $this->conn->quote($nick) . '';
 //            $this->conn->query($sql);
             $this->botId = $this->conn->lastInsertId();
+            if ($this->botId === false && $this->config['driver'] === 'pdo_pgsql') {
+                $qb = $this->conn->createQueryBuilder();
+                $stmt = $qb
+                    ->select('MAX(id) AS id')
+                    ->from('bot')
+                    ->execute();
+                $row = $stmt->fetch();
+                $this->botId = $row['id'];
+            }
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -475,7 +484,7 @@ class Db
             $qb ->insert('channel_user')
                 ->values(
                     array(
-                        'user' => '?',
+                        'username' => '?',
                         'mode' => '?',
                         'channel' => '?',
                         'bot_id' => '?'
@@ -498,7 +507,7 @@ class Db
         try {
             $qb = $this->conn->createQueryBuilder();
             $qb ->delete('channel_user')
-                ->where('user LIKE ? AND channel LIKE ? AND bot_id = ?')
+                ->where('username LIKE ? AND channel LIKE ? AND bot_id = ?')
                 ->setParameter(0, $user)
                 ->setParameter(1, $channel)
                 ->setParameter(2, $this->botId)
@@ -515,7 +524,7 @@ class Db
         try {
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('channel_user')
-                ->set('user', '?')
+                ->set('username', '?')
                 ->where('bot_id = ? AND user = ?')
                 ->setParameter(0, $new)
                 ->setParameter(1, $this->botId)

@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `channellist` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `network` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `channel` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `user` int(11) unsigned NOT NULL,
+  `usercount` int(11) unsigned NOT NULL,
   `topic` text COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `channel_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `bot_id` int(11) NOT NULL,
   `channel` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `user` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `mode` enum('','+','@') COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
