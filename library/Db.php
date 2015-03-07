@@ -178,7 +178,7 @@ class Db
             $stmt = $qb
                 ->select('*')
                 ->from('bot')
-                ->where('stop IS NULL')
+                ->where('stop IS NULL OR stop = \'NULL\'')
                 ->execute();
 //            $sql = 'SELECT * FROM bot WHERE stop IS NULL';
 //            $stmt = $this->conn->query($sql);
