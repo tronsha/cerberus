@@ -50,21 +50,34 @@ class Db
         $this->config = $config;
     }
 
+    /**
+     *
+     */
     public function __destruct()
     {
     }
 
+    /**
+     * @return \Doctrine\DBAL\Connection
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function connect()
     {
         return $this->conn = DriverManager::getConnection($this->config);
     }
 
+    /**
+     * @return mixed
+     */
     public function close()
     {
         return $this->conn->close();
     }
 
 
+    /**
+     * @param string $error
+     */
     public function error($error)
     {
         if($this->irc !== null) {
@@ -89,6 +102,10 @@ class Db
         }
     }
 
+    /**
+     * @param int $pid
+     * @param string $nick
+     */
     public function createBot($pid, $nick)
     {
         try {
@@ -106,8 +123,6 @@ class Db
                 ->setParameter(1, $now)
                 ->setParameter(2, $nick)
                 ->execute();
-//            $sql = 'INSERT INTO `bot` SET `pid` = ' . $this->conn->quote($pid) . ', `start` = NOW(), `nick` = ' . $this->conn->quote($nick) . '';
-//            $this->conn->query($sql);
             $this->botId = $this->conn->lastInsertId();
             if ($this->botId === false && $this->config['driver'] === 'pdo_pgsql') {
                 $qb = $this->conn->createQueryBuilder();
@@ -118,11 +133,16 @@ class Db
                 $row = $stmt->fetch();
                 $this->botId = $row['id'];
             }
+//            $sql = 'INSERT INTO `bot` SET `pid` = ' . $this->conn->quote($pid) . ', `start` = NOW(), `nick` = ' . $this->conn->quote($nick) . '';
+//            $this->conn->query($sql);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
 
+    /**
+     * @param int|null $botId
+     */
     public function shutdownBot($botId = null)
     {
         try {
@@ -142,6 +162,9 @@ class Db
         }
     }
 
+    /**
+     * @param int|null $botId
+     */
     public function cleanupBot($botId = null)
     {
         try {
@@ -171,6 +194,9 @@ class Db
         }
     }
 
+    /**
+     * @return array
+     */
     public function getActiveBotList()
     {
         try {
@@ -189,6 +215,10 @@ class Db
         }
     }
 
+    /**
+     * @param string $network
+     * @return int
+     */
     public function getServerCount($network)
     {
         try {
@@ -261,6 +291,9 @@ class Db
         }
     }
 
+    /**
+     * @return string
+     */
     public function getDbVersion()
     {
         try {
@@ -273,6 +306,10 @@ class Db
         }
     }
 
+    /**
+     * @param string $network
+     * @return array
+     */
     public function getPreform($network)
     {
         try {
@@ -293,6 +330,9 @@ class Db
         }
     }
 
+    /**
+     * @param string $text
+     */
     public function setWrite($text)
     {
         try {
@@ -314,6 +354,9 @@ class Db
         }
     }
 
+    /**
+     * @return array
+     */
     public function getWrite()
     {
         try {
@@ -334,6 +377,9 @@ class Db
         }
     }
 
+    /**
+     * @param int $id
+     */
     public function unsetWrite($id)
     {
         try {
@@ -349,6 +395,16 @@ class Db
         }
     }
 
+    /**
+     * @param string $network
+     * @param string $all
+     * @param string $nick
+     * @param string $host
+     * @param string $command
+     * @param string $rest
+     * @param string $text
+     * @param string $direction
+     */
     public function setLog($network, $all, $nick, $host, $command, $rest, $text, $direction)
     {
         try {
@@ -397,6 +453,9 @@ class Db
         }
     }
 
+    /**
+     *
+     */
     public function setPing()
     {
         try {
@@ -415,6 +474,9 @@ class Db
         }
     }
 
+    /**
+     * @param string $nick
+     */
     public function setBotNick($nick)
     {
         try {
@@ -432,6 +494,9 @@ class Db
         }
     }
 
+    /**
+     * @param string $channel
+     */
     public function addChannel($channel)
     {
         try {
@@ -453,6 +518,9 @@ class Db
         }
     }
 
+    /**
+     * @param string $channel
+     */
     public function removeChannel($channel)
     {
         try {
@@ -470,6 +538,9 @@ class Db
         }
     }
 
+    /**
+     * @param string $user
+     */
     public function removeUser($user)
     {
         try {
@@ -479,6 +550,11 @@ class Db
         }
     }
 
+    /**
+     * @param string $channel
+     * @param string $user
+     * @param string $mode
+     */
     public function addUserToChannel($channel, $user, $mode = '')
     {
         try {
@@ -504,6 +580,10 @@ class Db
         }
     }
 
+    /**
+     * @param string $channel
+     * @param string $user
+     */
     public function removeUserFromChannel($channel, $user = '%')
     {
         try {
@@ -521,6 +601,10 @@ class Db
         }
     }
 
+    /**
+     * @param string $old
+     * @param string $new
+     */
     public function changeNick($old, $new)
     {
         try {
@@ -539,6 +623,10 @@ class Db
         }
     }
 
+    /**
+     * @param string $channel
+     * @param string $topic
+     */
     public function setChannelTopic($channel, $topic)
     {
         try {
@@ -557,6 +645,9 @@ class Db
         }
     }
 
+    /**
+     * @return array
+     */
     public function getJoinedChannels()
     {
         try {
@@ -576,6 +667,11 @@ class Db
         }
     }
 
+    /**
+     * @param string $network
+     * @param string $auth
+     * @return string
+     */
     public function getAuthLevel($network, $auth)
     {
         try {
