@@ -201,11 +201,14 @@ class Db
     {
         try {
             $qb = $this->conn->createQueryBuilder();
-            $stmt = $qb
-                ->select('*')
-                ->from('bot')
-                ->where('stop IS NULL OR stop = \'NULL\'')
-                ->execute();
+            $qb ->select('*')
+                ->from('bot');
+            if ($this->config['driver'] === 'pdo_sqlite') {
+                $qb->where('stop = \'NULL\'');
+            } else {
+                $qb->where('stop IS NULL');
+            }
+            $stmt = $qb->execute();
 //            $sql = 'SELECT * FROM bot WHERE stop IS NULL';
 //            $stmt = $this->conn->query($sql);
             $rows = $stmt->fetchAll();
