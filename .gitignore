@@ -1,9 +1,10 @@
-.idea/
-vendor/
-log/
+/.idea/
+/log/
+/tmp/
+/vendor/
 config.ini
 composer.lock
 composer.phar
+phpunit.phar
 *.zip
 php7
-
