@@ -48,6 +48,15 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         return $method->invokeArgs($object, $parameters);
     }
 
+    public function testNestedStyles()
+    {
+        $formatter = new OutputFormatter(true);
+        $this->assertEquals(
+            "\033[32mTest \033[39m\033[37;41merror\033[39;49m\033[32m and \033[39m\033[33mcomment\033[39m\033[32m inside a info.\033[39m",
+            $formatter->format('<info>Test <error>error</error> and <comment>comment</comment> inside a info.</info>')
+        );
+    }
+
     public function testFormattedEscapedOutput()
     {
         $output = new StreamOutput($this->stream, StreamOutput::VERBOSITY_NORMAL, true, null);
