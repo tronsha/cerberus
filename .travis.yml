@@ -17,6 +17,9 @@ matrix:
     - php: nightly
     - php: hhvm
   
+before_install:
+    - composer self-update
+  
 install:
   - composer install
   
