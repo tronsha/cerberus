@@ -20,7 +20,6 @@
 namespace Cerberus;
 
 use Composer\Script\Event;
-use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Exception;
 
@@ -96,7 +95,7 @@ class Installer
             $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
             $dbname = $config['db']['dbname'];
             $config['db']['dbname'] = null;
-            $db = DriverManager::getConnection($config['db'], new Configuration);
+            $db = DriverManager::getConnection($config['db']);
             $sm = $db->getSchemaManager();
             $list = $sm->listDatabases();
             if (in_array($dbname, $list) === false) {
@@ -105,7 +104,7 @@ class Installer
             }
             $db->close();
             $config['db']['dbname'] = $dbname;
-            $db = DriverManager::getConnection($config['db'], new Configuration);
+            $db = DriverManager::getConnection($config['db']);
             $io->write('<info>Create database tables</info>');
             $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.mysql.sql'));
             $db->close();

@@ -37,6 +37,7 @@ use Exception;
 class Console
 {
     protected $output;
+    protected $return = false;
 
     /**
      *
@@ -51,10 +52,13 @@ class Console
 
     /**
      * @param string $output
-     * @return object $this
+     * @return mixed
      */
     public function writeln($output)
     {
+        if ($this->return) {
+            return $output;
+        }
         $this->output->writeln($output);
 
         return $this;
@@ -242,5 +246,17 @@ class Console
         }
 
         return $char;
+    }
+
+    /**
+     * @param bool $output
+     */
+    public function output($output)
+    {
+        if ($output) {
+            $this->return = false;
+        } else {
+            $this->return = true;
+        }
     }
 }

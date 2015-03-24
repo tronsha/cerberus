@@ -86,18 +86,20 @@ class Cerberus
 
     /**
      * @param string $text
+     * @return string
      */
     public static function error($text)
     {
-        self::getConsole()->writeln('<error>' . $text . '</error>');
+        return self::getConsole()->writeln('<error>' . $text . '</error>');
     }
 
     /**
      * @param string $text
+     * @return string
      */
     public static function sysinfo($text)
     {
-        self::getConsole()->writeln('<info>**** ' . $text . ' ****</info>');
+        return self::getConsole()->writeln('<info>**** ' . $text . ' ****</info>');
     }
 
     /**
