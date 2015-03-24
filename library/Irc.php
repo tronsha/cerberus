@@ -134,10 +134,10 @@ class Irc extends Cerberus
             $this->db->cleanupBot();
             $this->db->shutdownBot();
         }
-        printf(
-            PHP_EOL . PHP_EOL . "Execute time: %.5fs" . PHP_EOL,
-            $this->getMicrotime() - $this->time['script_start']
-        );
+        $output = vsprintf('Execute time: %.5fs', $this->getMicrotime() - $this->time['script_start']);
+        $this->getConsole()->writeln();
+        $this->getConsole()->writeln('<info>' . $output . '</info>');
+        $this->getConsole()->writeln();
     }
 
     /**

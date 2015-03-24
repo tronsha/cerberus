@@ -54,7 +54,7 @@ class Console
      * @param string $output
      * @return mixed
      */
-    public function writeln($output)
+    public function writeln($output = '')
     {
         if ($this->return) {
             return $output;
