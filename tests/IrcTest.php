@@ -23,10 +23,10 @@ use Doctrine\DBAL\DriverManager;
 
 class IrcTest extends \PHPUnit_Framework_TestCase
 {
-	protected $irc;
+    protected $irc;
 
-	protected function setUp()
-	{
+    protected function setUp()
+    {
         date_default_timezone_set('Europe/Berlin');
         $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
         $name = $config['testdb']['dbname'];
@@ -40,13 +40,13 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.mysql.sql'));
         $db->close();
         $this->irc = new Irc($config);
-		$this->irc->getConsole()->output(false);
- 		$this->irc->init();
-	}
+        $this->irc->getConsole()->output(false);
+        $this->irc->init();
+    }
 
-	protected function tearDown()
-	{
-		unset($this->irc);
+    protected function tearDown()
+    {
+        unset($this->irc);
         $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
         $name = $config['testdb']['dbname'];
         $config['testdb']['dbname'] = null;
@@ -54,7 +54,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $sm = $db->getSchemaManager();
         $sm->tryMethod('dropDatabase', $name);
         $db->close();
-	}
+    }
 
     public function invokeMethod(&$object, $methodName)
     {
@@ -62,16 +62,20 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
         $parameters = array_slice(func_get_args(), 2);
+
         return $method->invokeArgs($object, $parameters);
     }
 
-	public function testRandomNick()
-	{
-		$this->assertEquals(6, strlen($this->irc->randomNick()));
-	}
+    public function testRandomNick()
+    {
+        $this->assertEquals(6, strlen($this->irc->randomNick()));
+    }
 
     public function testSysinfo()
     {
-        $this->assertEquals('<info>**** Connection to server lost ****</info>', $this->irc->sysinfo('Connection to server lost'));
+        $this->assertEquals(
+            '<info>**** Connection to server lost ****</info>',
+            $this->irc->sysinfo('Connection to server lost')
+        );
     }
 }
