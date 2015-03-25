@@ -23,23 +23,26 @@ use Doctrine\DBAL\DriverManager;
 
 class IrcTest extends \PHPUnit_Framework_TestCase
 {
+    protected $config;
+    protected $database;
+    protected $db;
     protected $irc;
 
     protected function setUp()
     {
         date_default_timezone_set('Europe/Berlin');
-        $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
-        $name = $config['testdb']['dbname'];
-        $config['testdb']['dbname'] = null;
-        $db = DriverManager::getConnection($config['testdb']);
+        $this->config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
+        $this->database = $this->config['testdb']['dbname'];
+        $this->config['testdb']['dbname'] = null;
+        $db = DriverManager::getConnection($this->config['testdb']);
         $sm = $db->getSchemaManager();
-        $sm->dropAndCreateDatabase($name);
+        $sm->dropAndCreateDatabase($this->database);
         $db->close();
-        $config['testdb']['dbname'] = $name;
-        $db = DriverManager::getConnection($config['testdb']);
-        $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.mysql.sql'));
-        $db->close();
-        $this->irc = new Irc($config);
+        $this->config['testdb']['dbname'] = $this->database;
+        $this->db = DriverManager::getConnection($this->config['testdb']);
+        $this->db->query(file_get_contents(Cerberus::getPath() . '/cerberus.mysql.sql'));
+        $this->config['db'] = $this->config['testdb'];
+        $this->irc = new Irc($this->config);
         $this->irc->getConsole()->output(false);
         $this->irc->init();
     }
@@ -47,13 +50,9 @@ class IrcTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         unset($this->irc);
-        $config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
-        $name = $config['testdb']['dbname'];
-        $config['testdb']['dbname'] = null;
-        $db = DriverManager::getConnection($config['testdb']);
-        $sm = $db->getSchemaManager();
-        $sm->tryMethod('dropDatabase', $name);
-        $db->close();
+        $sm = $this->db->getSchemaManager();
+        $sm->tryMethod('dropDatabase', $this->database);
+        $this->db->close();
     }
 
     public function invokeMethod(&$object, $methodName)
@@ -77,5 +76,13 @@ class IrcTest extends \PHPUnit_Framework_TestCase
             '<info>**** Connection to server lost ****</info>',
             $this->irc->sysinfo('Connection to server lost')
         );
+    }
+
+    public function testCreateBot()
+    {
+        $sql = 'SELECT * FROM bot WHERE id = 1';
+        $stmt = $this->db->query($sql);
+        $row = $stmt->fetch();
+        $this->assertEquals(date('Y-m-d', time()), substr($row['start'], 0, 10));
     }
 }
