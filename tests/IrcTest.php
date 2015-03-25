@@ -83,6 +83,6 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT * FROM bot WHERE id = 1';
         $stmt = $this->db->query($sql);
         $row = $stmt->fetch();
-        $this->assertEquals(date('Y-m-d', time()), substr($row['start'], 0, 10));
+        $this->assertEquals($this->config['bot']['nick'], $row['nick']);
     }
 }

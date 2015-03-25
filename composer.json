@@ -23,14 +23,12 @@
     },
     "require": {
         "php": ">=5.5.0",
+        "ext-mcrypt": "*",
         "doctrine/dbal": "2.5.*",
         "symfony/console": "2.7.*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.5.*"
-    },
-    "suggest": {
-        "ext-mcrypt": "required by crypt plugin"
     },
     "autoload": {
         "psr-4": {
