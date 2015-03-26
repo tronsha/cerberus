@@ -23,10 +23,10 @@ use Doctrine\DBAL\DriverManager;
 
 class IrcTest extends \PHPUnit_Framework_TestCase
 {
+    protected $irc;
     protected $config;
     protected $database;
     protected $db;
-    protected $irc;
 
     protected function setUp()
     {
@@ -45,6 +45,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->irc = new Irc($this->config);
         $this->irc->getConsole()->output(false);
         $this->irc->init();
+        $this->invokeMethod($this->irc, 'loadPlugin', 'test');
     }
 
     protected function tearDown()
@@ -84,5 +85,26 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $stmt = $this->db->query($sql);
         $row = $stmt->fetch();
         $this->assertEquals($this->config['bot']['nick'], $row['nick']);
+    }
+
+    public function testCommandJoin()
+    {
+        $input = ':foo!~bar@127.0.0.1 JOIN #cerberbot';
+        $this->expectOutputString("nick:foo\nchannel:#cerberbot\n");
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
+
+    public function testCommandPart()
+    {
+        $input = ':foo!~bar@127.0.0.1 PART #cerberbot';
+        $this->expectOutputString("channel:#cerberbot\nme:\nnick:foo\n");
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
+
+    public function testCommandQuit()
+    {
+        $input = ':foo!~bar@127.0.0.1 QUIT :Remote host closed the connection';
+        $this->expectOutputString("nick:foo\n");
+        $this->invokeMethod($this->irc, 'command', $input);
     }
 }
