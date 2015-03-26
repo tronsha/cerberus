@@ -25,6 +25,8 @@ class PluginTest extends Plugin
 {
     protected function init()
     {
+        $this->irc->addEvent('onPrivmsg', $this);
+        $this->irc->addEvent('onNotice', $this);
         $this->irc->addEvent('onJoin', $this);
         $this->irc->addEvent('onPart', $this);
         $this->irc->addEvent('onQuit', $this);
@@ -47,9 +49,27 @@ class PluginTest extends Plugin
      */
     protected function doEcho($data)
     {
-        foreach($data as $key => $value) {
-            echo $key . ':' . $value . "\n";
+        $array = array();
+        foreach ($data as $key => $value) {
+            $array[] = $key . ':' . $value;
         }
+        echo implode('|', $array);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onPrivmsg($data)
+    {
+        $this->doEcho($data);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onNotice($data)
+    {
+        $this->doEcho($data);
     }
 
     /**
