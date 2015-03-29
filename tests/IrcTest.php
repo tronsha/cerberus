@@ -23,26 +23,30 @@ use Doctrine\DBAL\DriverManager;
 
 class IrcTest extends \PHPUnit_Framework_TestCase
 {
-    protected $irc;
-    protected $config;
-    protected $database;
+    protected static $config;
+    protected static $database;
     protected $db;
+    protected $irc;
+
+    public static function setUpBeforeClass()
+    {
+        date_default_timezone_set('Europe/Berlin');
+        self::$config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
+        self::$database = self::$config['testdb']['dbname'];
+    }
 
     protected function setUp()
     {
-        date_default_timezone_set('Europe/Berlin');
-        $this->config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
-        $this->database = $this->config['testdb']['dbname'];
-        $this->config['testdb']['dbname'] = null;
-        $db = DriverManager::getConnection($this->config['testdb']);
+        self::$config['testdb']['dbname'] = null;
+        $db = DriverManager::getConnection(self::$config['testdb']);
         $sm = $db->getSchemaManager();
-        $sm->dropAndCreateDatabase($this->database);
+        $sm->dropAndCreateDatabase(self::$database);
         $db->close();
-        $this->config['testdb']['dbname'] = $this->database;
-        $this->db = DriverManager::getConnection($this->config['testdb']);
+        self::$config['testdb']['dbname'] = self::$database;
+        $this->db = DriverManager::getConnection(self::$config['testdb']);
         $this->db->query(file_get_contents(Cerberus::getPath() . '/cerberus.mysql.sql'));
-        $this->config['db'] = $this->config['testdb'];
-        $this->irc = new Irc($this->config);
+        self::$config['db'] = self::$config['testdb'];
+        $this->irc = new Irc(self::$config);
         $this->irc->getConsole()->output(false);
         $this->irc->init();
         $this->invokeMethod($this->irc, 'loadPlugin', 'test');
@@ -52,7 +56,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
     {
         unset($this->irc);
         $sm = $this->db->getSchemaManager();
-        $sm->tryMethod('dropDatabase', $this->database);
+        $sm->tryMethod('dropDatabase', self::$database);
         $this->db->close();
     }
 
@@ -84,7 +88,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT * FROM bot WHERE id = 1';
         $stmt = $this->db->query($sql);
         $row = $stmt->fetch();
-        $this->assertEquals($this->config['bot']['nick'], $row['nick']);
+        $this->assertEquals(self::$config['bot']['nick'], $row['nick']);
     }
 
     public function testCommandPrivmsg()
