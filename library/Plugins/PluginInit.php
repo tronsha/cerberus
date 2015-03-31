@@ -45,6 +45,12 @@ class PluginInit extends Plugin
      */
     public function onConnect($data)
     {
-        // @TODO
+        if (isset($data['frontend']['url']) === true) {
+            $url = trim($data['frontend']['url'], " \t\n\r\0\x0B/") . '/sethost.php';
+            if (isset($data['frontend']['password']) === true) {
+                $url .= '?pw=' . md5($data['frontend']['password']);
+            }
+            @file_get_contents($url);
+        }
     }
 }

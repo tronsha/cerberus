@@ -119,6 +119,12 @@ class Irc extends Cerberus
             if (isset($config['plugins']['autoload'])) {
                 $this->config['plugins']['autoload'] = explode(',', $config['plugins']['autoload']);
             }
+            if (isset($config['frontend']['url'])) {
+                $this->config['frontend']['url'] = $config['frontend']['url'];
+            }
+            if (isset($config['frontend']['password'])) {
+                $this->config['frontend']['password'] = $config['frontend']['password'];
+            }
         }
     }
 
@@ -317,7 +323,7 @@ class Irc extends Cerberus
         $this->run = true;
         $this->db->cleanupBot();
         $this->preform();
-        $this->runPluginEvent('onConnect', array());
+        $this->runPluginEvent('onConnect', $this->config);
         return $this->run();
     }
 
