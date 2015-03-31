@@ -317,6 +317,7 @@ class Irc extends Cerberus
         $this->run = true;
         $this->db->cleanupBot();
         $this->preform();
+        $this->runPluginEvent('onConnect', array());
         return $this->run();
     }
 
