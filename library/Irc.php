@@ -313,7 +313,6 @@ class Irc extends Cerberus
             }
         }
         $this->time['irc_connect'] = $this->getMicrotime();
-        //stream_set_blocking($this->fp, 0);
         if ($this->server['password'] !== null) {
             $this->write('PASS ' . $this->server['password']);
         }

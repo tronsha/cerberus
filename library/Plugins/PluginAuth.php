@@ -40,7 +40,6 @@ class PluginAuth extends Plugin
         $this->irc->addEvent('onPrivmsg', $this);
         $this->irc->addEvent('onNick', $this);
         $this->irc->addEvent('onQuit', $this);
-//        $this->irc->addEvent('onJoin', $this, 10);
     }
 
     /**
