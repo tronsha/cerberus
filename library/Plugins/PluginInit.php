@@ -20,6 +20,7 @@
 namespace Cerberus\Plugins;
 
 use Cerberus\Plugin;
+use Exception;
 
 class PluginInit extends Plugin
 {
@@ -50,7 +51,11 @@ class PluginInit extends Plugin
             if (isset($data['frontend']['password']) === true) {
                 $url .= '?pw=' . md5($data['frontend']['password']);
             }
-            @file_get_contents($url);
+            try {
+                file_get_contents($url);
+            } catch (Exception $e) {
+                $this->irc->error($e->getMessage());
+            }
         }
     }
 }

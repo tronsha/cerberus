@@ -277,8 +277,11 @@ class Db
 //                . 'LIMIT ' . $i . ', 1';
 //            $stmt = $this->conn->query($sql);
             $row = $stmt->fetch();
-            $row['ip'] = @gethostbyname($row['host']);
-
+            try {
+                $row['ip'] = gethostbyname($row['host']);
+            } catch (Exception $e) {
+                $this->irc->error($e->getMessage());
+            }
             $qb = $this->conn->createQueryBuilder();
             $qb ->update('bot')
                 ->set('server_id', '?')

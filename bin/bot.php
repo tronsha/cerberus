@@ -27,6 +27,12 @@ if (version_compare(phpversion(), '5.4.0', '<') === true) {
 error_reporting(-1);
 date_default_timezone_set('Europe/Berlin');
 
+set_error_handler(
+    function ($errno, $errstr, $errfile, $errline, array $errcontext) {
+        throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+    }
+);
+
 chdir(__DIR__);
 require_once('../vendor/autoload.php');
 

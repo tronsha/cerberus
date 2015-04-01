@@ -21,6 +21,7 @@ namespace Cerberus;
 
 use Cerberus\Plugins\PluginAuth;
 use SQLite3;
+use Exception;
 
 /**
  * Class Irc
@@ -292,7 +293,11 @@ class Irc extends Cerberus
         while ($repeat) {
             $this->server = $this->db->getServerData($this->server, $i);
             $this->sysinfo('Try to connect to ' . $this->server['host'] . ':' . $this->server['port']);
-            $this->fp = @fsockopen(($this->server['ip']), $this->server['port'], $errno, $errstr);
+            try {
+                $this->fp = fsockopen(($this->server['ip']), $this->server['port'], $errno, $errstr);
+            } catch (Exception $e) {
+                $this->error($e->getMessage());
+            }
             if ($this->fp === false) {
                 $this->error($errstr);
                 $this->log('socket: ' . $errstr, 'error');
@@ -302,7 +307,6 @@ class Irc extends Cerberus
                 $this->sysinfo('Connection success');
                 $repeat = false;
             }
-
             if ($i == $n) {
                 $this->sysinfo('All attempts failed');
                 return false;
@@ -415,7 +419,11 @@ class Irc extends Cerberus
     protected function read()
     {
         stream_set_timeout($this->fp, 10);
-        $input = @fgets($this->fp, 4096);
+        try {
+            $input = fgets($this->fp, 4096);
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
         $text = trim($input);
         if ($text != '') {
             if (substr($text, -1) == '\\') {

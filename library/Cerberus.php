@@ -108,8 +108,12 @@ class Cerberus
     protected static function getMicrotime()
     {
         if (version_compare(phpversion(), '5.0', '<') === true) {
-            list($usec, $sec) = @explode(" ", @microtime());
-            return ((float)$usec + (float)$sec);
+            try {
+                list($usec, $sec) = explode(" ", microtime());
+                return ((float)$usec + (float)$sec);
+            } catch (Exception $e) {
+                self::error($e->getMessage());
+            }
         } else {
             return microtime(true);
         }
