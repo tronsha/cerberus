@@ -5,6 +5,8 @@ Cerberus is an IRC bot written for PHP
 
 [![Build Status](https://travis-ci.org/tronsha/cerberus.svg?branch=master)](https://travis-ci.org/tronsha/cerberus)
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/6117c02a-7ed1-4502-86de-8065c68098ae/mini.png)](https://insight.sensiolabs.com/projects/6117c02a-7ed1-4502-86de-8065c68098ae)
+
 ## Install
 
 ### Use Composer
