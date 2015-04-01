@@ -27,7 +27,7 @@ require_once('../vendor/autoload.php');
 use Cerberus\Cerberus;
 use Cerberus\Db;
 
-if (Cerberus::is_exec_available() === false) {
+if (Cerberus::isExecAvailable() === false) {
     echo 'Can\'t run the bot, because "exec" is disabled' . PHP_EOL;
     exit;
 }

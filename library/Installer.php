@@ -121,7 +121,7 @@ class Installer
         $io = $event->getIO();
         if (file_exists(Cerberus::getPath() . '/vendor/bin/phpunit') === false) {
             $io->write('<error>Can\'t find "PHPUnit".</error>');
-        } elseif (Cerberus::is_exec_available() === false) {
+        } elseif (Cerberus::isExecAvailable() === false) {
             $io->write('<error>Can\'t run "PHPUnit", because "exec" is disabled.</error>');
         } else {
             $output = array();

@@ -98,7 +98,7 @@ class Console
             return $escape ? $this->escape($text) : $text;
         }
         if ($length === null) {
-            if (Cerberus::is_exec_available() === false) {
+            if (Cerberus::isExecAvailable() === false) {
                 return $escape ? $this->escape($text) : $text;
             }
             preg_match('/columns\s([0-9]+);/', strtolower(exec('stty -a | grep columns')), $matches);

@@ -130,7 +130,7 @@ class Cerberus
     /**
      * @return bool
      */
-    public static function is_exec_available()
+    public static function isExecAvailable()
     {
         $available = true;
         if (ini_get('safe_mode')) {
