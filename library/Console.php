@@ -192,7 +192,8 @@ class Console
         $output = '';
         $count = 0;
         $ignore = false;
-        for ($i = 0; $i < strlen($text); $i++) {
+        $len = strlen($text);
+        for ($i = 0; $i < $len; $i++) {
             $output .= $this->count($text[$i], $count, $ignore);
             if ($count == $length) {
                 $count = 0;
@@ -217,7 +218,8 @@ class Console
         $output = '';
         $count = 0;
         $ignore = false;
-        for ($i = 0; $i < strlen($text); $i++) {
+        $len = strlen($text);
+        for ($i = 0; $i < $len; $i++) {
             $output .= $this->count($text[$i], $count, $ignore);
             if ($count == $length) {
                 break;
