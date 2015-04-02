@@ -38,6 +38,7 @@ class Cerberus
 
     protected static $console = null;
     protected static $path = null;
+    protected static $argv = null;
 
     /**
      *
@@ -45,6 +46,14 @@ class Cerberus
     public function __construct()
     {
         set_time_limit(0);
+    }
+
+    /**
+     * @param array $argv
+     */
+    public function setParam($argv)
+    {
+        self::$argv = $argv;
     }
 
     /**
@@ -80,6 +89,7 @@ class Cerberus
     {
         if (self::$console === null) {
             self::$console = new Console;
+            self::$console->setParam(self::$argv);
         }
         return self::$console;
     }

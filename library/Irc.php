@@ -51,6 +51,7 @@ class Irc extends Cerberus
     protected $loaded = array();
     protected $pluginevents = array();
     protected $auth = null;
+    protected $param = null;
 
     /**
      * @param array|null $config
@@ -145,6 +146,14 @@ class Irc extends Cerberus
         $this->getConsole()->writeln();
         $this->getConsole()->writeln('<info>' . $output . '</info>');
         $this->getConsole()->writeln();
+    }
+
+    /**
+     * @param array $argv
+     */
+    public function setParam($argv)
+    {
+        $this->param = $argv;
     }
 
     /**

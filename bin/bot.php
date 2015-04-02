@@ -40,6 +40,7 @@ use Cerberus\Cerberus;
 
 try {
     $cerberus = new Cerberus;
+    $cerberus->setParam($argv);
     $cerberus->run();
 } catch (Exception $e) {
     Cerberus::error($e->getMessage());

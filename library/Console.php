@@ -38,6 +38,7 @@ class Console
 {
     protected $output;
     protected $return = false;
+    protected $param = null;
 
     /**
      *
@@ -48,6 +49,14 @@ class Console
         $this->output->getFormatter()->setStyle('timestamp', new OutputFormatterStyle('yellow'));
         $this->output->getFormatter()->setStyle('input', new OutputFormatterStyle('cyan'));
         $this->output->getFormatter()->setStyle('output', new OutputFormatterStyle('magenta'));
+    }
+
+    /**
+     * @param array $argv
+     */
+    public function setParam($argv)
+    {
+        $this->param = $argv;
     }
 
     /**
@@ -84,8 +93,7 @@ class Console
      */
     public function prepare($text, $escape = true, $length = null, $break = true, $wordwrap = true, $offset = 0)
     {
-        global $argv;
-        if (isset($argv) && is_array($argv) && in_array('-noconsole', $argv)) {
+        if (isset($this->param) && is_array($this->param) && in_array('-noconsole', $this->param)) {
             return $escape ? $this->escape($text) : $text;
         }
 
