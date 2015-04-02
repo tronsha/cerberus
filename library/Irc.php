@@ -522,7 +522,7 @@ class Irc extends Cerberus
             }
         }
         $this->sysinfo('Connection to server lost');
-        sleep(20);
+        $this->msleep(20000);
         $this->reconnect();
     }
 
