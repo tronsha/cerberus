@@ -43,10 +43,10 @@ class Irc extends Cerberus
     protected $run;
     protected $lastping;
     protected $nowrite;
-    public $var = array();
-    public $time = array();
-    public $version = array();
-    public $config = array();
+    protected $var = array();
+    protected $time = array();
+    protected $version = array();
+    protected $config = array();
     protected $reconnect = array();
     protected $loaded = array();
     protected $pluginevents = array();
@@ -531,7 +531,8 @@ class Irc extends Cerberus
      */
     protected function command($input)
     {
-        $event = new Event($this, $this->db);
+        $vars = array('var' => $this->var, 'time' => $this->time, 'version' => $this->version, 'config' => $this->config);
+        $event = new Event($this, $this->db, $vars);
         preg_match(
             "/^\:(?:([^\!\ \:]+)\!)?([^\!\ ]+)\ ([^\ ]+)(?:\ ([^\:].*?))?(?:\ \:(.*?))?(?:\r)?$/i",
             $input,

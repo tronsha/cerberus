@@ -32,15 +32,18 @@ class Event
 {
     protected $irc;
     protected $db;
+    protected $vars;
 
     /**
      * @param Irc $irc
      * @param Db $db
+     * @param array $vars
      */
-    public function __construct(Irc $irc, Db $db)
+    public function __construct(Irc $irc, Db $db, $vars)
     {
         $this->irc = $irc;
         $this->db = $db;
+        $this->vars = $vars;
     }
 
     /**
@@ -151,7 +154,7 @@ class Event
     public function onPrivmsg($nick, $host, $channel, $text)
     {
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
-            if ($this->irc->config['ctcp'] === false) {
+            if ($this->vars['config']['ctcp'] === false) {
                 return null;
             }
             $send = '';
@@ -165,14 +168,14 @@ class Event
                     $send = 'PING' . $matches[2];
                     break;
                 case 'VERSION':
-                    $send = 'VERSION ' . $this->irc->version['bot'];
+                    $send = 'VERSION ' . $this->vars['version']['bot'];
                     break;
                 case 'TIME':
                     $send = 'TIME ' . date('D M d H:i:s Y T');
                     break;
                 case 'FINGER':
-                    $send = 'FINGER ' . $this->irc->config['info']['name'] . (isset($this->irc->config['info']['homepage']) ? ' (' . $this->irc->config['info']['homepage'] . ')' : '') . ' Idle ' . round(
-                            $this->irc->getMicrotime() - $this->irc->time['irc_connect']
+                    $send = 'FINGER ' . $this->vars['config']['info']['name'] . (isset($this->vars['config']['info']['homepage']) ? ' (' . $this->vars['config']['info']['homepage'] . ')' : '') . ' Idle ' . round(
+                            $this->irc->getMicrotime() - $this->vars['time']['irc_connect']
                         ) . ' seconds';
                     break;
                 case 'SOURCE':
@@ -224,7 +227,7 @@ class Event
      */
     public function onNick($nick, $text)
     {
-        if ($nick == $this->irc->var['me']) {
+        if ($nick == $this->vars['var']['me']) {
             $this->irc->setNick($text);
         }
         $this->db->changeNick($nick, $text);
@@ -277,7 +280,7 @@ class Event
      */
     public function onJoin($nick, $channel)
     {
-        if ($nick == $this->irc->var['me']) {
+        if ($nick == $this->vars['var']['me']) {
             $this->db->addChannel($channel);
             $this->irc->mode($channel);
         } else {
@@ -293,9 +296,9 @@ class Event
     public function onKick($bouncer, $rest)
     {
         list($channel, $nick) = explode(' ', $rest);
-        $me = $nick == $this->irc->var['me'] ? true : false;
+        $me = $nick == $this->vars['var']['me'] ? true : false;
         $this->onPart($nick, $channel);
-        if ($this->irc->config['autorejoin'] === true && $me === true) {
+        if ($this->vars['config']['autorejoin'] === true && $me === true) {
             $this->irc->join($channel);
         }
         $this->irc->runPluginEvent(
@@ -310,7 +313,7 @@ class Event
      */
     public function onPart($nick, $channel)
     {
-        $me = $nick == $this->irc->var['me'] ? true : false;
+        $me = $nick == $this->vars['var']['me'] ? true : false;
         if ($me === true) {
             $this->db->removeChannel($channel);
         } else {
