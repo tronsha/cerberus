@@ -1,7 +1,6 @@
 {
     "name": "tronsha/cerberus",
     "description": "Cerberus IRC Bot",
-    "version": "1.2.0-dev",
     "type": "project",
     "keywords": [
         "irc",
