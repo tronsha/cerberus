@@ -41,7 +41,6 @@ class Installer
      */
     public static function install(Event $event)
     {
-        $composer = $event->getComposer();
         $io = $event->getIO();
         $io->write(str_repeat('-', 80));
         self::createConfig($event);

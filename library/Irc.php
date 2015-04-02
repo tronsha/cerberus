@@ -703,6 +703,7 @@ class Irc extends Cerberus
     protected function on311($rest)
     {
         list($me, $nick, $user, $host) = explode(' ', $rest);
+        unset($me);
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'host' => $user . '@' . $host));
     }
 
@@ -714,6 +715,7 @@ class Irc extends Cerberus
     protected function on330($rest)
     {
         list($me, $nick, $auth) = explode(' ', $rest);
+        unset($me);
         $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'auth' => $auth));
     }
 
@@ -825,6 +827,8 @@ class Irc extends Cerberus
     protected function on353($rest, $text)
     {
         list($me, $dummy, $channel) = explode(' ', $rest);
+        unset($me);
+        unset($dummy);
         $user_array = explode(' ', $text);
         foreach ($user_array as $user) {
             preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
@@ -841,6 +845,7 @@ class Irc extends Cerberus
     protected function on332($rest, $text)
     {
         list($me, $channel) = explode(' ', $rest);
+        unset($me);
         $this->onTopic($channel, $text);
     }
 
