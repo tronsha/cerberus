@@ -23,11 +23,11 @@
     "require": {
         "php": ">=5.4.0",
         "ext-mcrypt": "*",
-        "doctrine/dbal": "2.5.*",
-        "symfony/console": "2.7.*"
+        "doctrine/dbal": "~2.5",
+        "symfony/console": "~2.7"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.5.*"
+        "phpunit/phpunit": "~4.5"
     },
     "autoload": {
         "psr-4": {
@@ -36,6 +36,11 @@
         }
     },
     "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.2-dev"
+        }
+    },
     "scripts": {
         "post-install-cmd": [
             "Cerberus\\Installer::install"
