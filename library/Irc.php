@@ -674,7 +674,7 @@ class Irc extends Cerberus
      */
     protected function on322($rest, $text)
     {
-        /* TODO */
+        $this->runPluginEvent(__FUNCTION__, array('rest' => $rest, 'text' => $text));
     }
 
     /**
@@ -692,7 +692,7 @@ class Irc extends Cerberus
      */
     protected function on324()
     {
-        /* TODO */
+        $this->runPluginEvent(__FUNCTION__, array());
     }
 
     /**
@@ -851,6 +851,7 @@ class Irc extends Cerberus
     protected function onTopic($channel, $topic)
     {
         $this->db->setChannelTopic($channel, $topic);
+        $this->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'topic' => $topic, ));
     }
 
     /**
@@ -915,9 +916,7 @@ class Irc extends Cerberus
      */
     protected function onMode($mode)
     {
-        $array = explode(' ', $mode);
-        $channel = $array[0];
-        /* TODO */
+        $this->runPluginEvent(__FUNCTION__, array('mode' => $mode));
     }
 
     /**
@@ -927,7 +926,7 @@ class Irc extends Cerberus
      */
     protected function onInvite($channel, $host, $rest)
     {
-        /* TODO */
+        $this->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'host' => $host, 'rest' => $rest));
     }
 
     /**
@@ -1002,7 +1001,6 @@ class Irc extends Cerberus
      */
     public function channellist()
     {
-        /* TODO */
     }
 
     /**
