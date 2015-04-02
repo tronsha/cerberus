@@ -115,7 +115,7 @@ class Cerberus
     /**
      * @return float
      */
-    protected static function getMicrotime()
+    public static function getMicrotime()
     {
         if (version_compare(phpversion(), '5.0', '<') === true) {
             try {
@@ -132,7 +132,7 @@ class Cerberus
     /**
      * @param int $milliSeconds
      */
-    protected static function msleep($milliSeconds)
+    public static function msleep($milliSeconds)
     {
         usleep($milliSeconds * 1000);
     }

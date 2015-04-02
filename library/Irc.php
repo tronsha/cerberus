@@ -36,17 +36,17 @@ class Irc extends Cerberus
 {
     protected $server = array();
     protected $bot = array();
-    protected $db = array();
+    protected $db = null;
     protected $dbms;
     protected $fp = false;
     protected $init = false;
     protected $run;
     protected $lastping;
     protected $nowrite;
-    protected $var = array();
-    protected $time = array();
-    protected $version = array();
-    protected $config = array();
+    public $var = array();
+    public $time = array();
+    public $version = array();
+    public $config = array();
     protected $reconnect = array();
     protected $loaded = array();
     protected $pluginevents = array();
@@ -531,6 +531,7 @@ class Irc extends Cerberus
      */
     protected function command($input)
     {
+        $event = new Event($this, $this->db);
         preg_match(
             "/^\:(?:([^\!\ \:]+)\!)?([^\!\ ]+)\ ([^\ ]+)(?:\ ([^\:].*?))?(?:\ \:(.*?))?(?:\r)?$/i",
             $input,
@@ -542,396 +543,91 @@ class Irc extends Cerberus
         $command = isset($matches[3]) ? $matches[3] : '';
         $rest = isset($matches[4]) ? $matches[4] : '';
         $text_ = isset($matches[5]) ? $matches[5] : '';
-
         $text = trim($text_);
-
         switch ($command) {
             case '001':
                 $this->nowrite = false;
                 break;
             case '311':
-                $this->on311($rest);
+                $event->on311($rest);
                 break;
             case '318':
-                $this->on318();
+                $event->on318();
                 break;
             case '322':
-                $this->on322($rest, $text);
+                $event->on322($rest, $text);
                 break;
             case '323':
-                $this->on323();
+                $event->on323();
                 break;
             case '324':
-                $this->on324();
+                $event->on324();
                 break;
             case '330':
-                $this->on330($rest);
+                $event->on330($rest);
                 break;
             case '332':
-                $this->on332($rest, $text);
+                $event->on332($rest, $text);
                 break;
             case '353':
-                $this->on353($rest, $text);
+                $event->on353($rest, $text);
                 break;
             case '431':
-                $this->on431();
+                $event->on431();
                 break;
             case '432':
-                $this->on432();
+                $event->on432();
                 break;
             case '433':
-                $this->on433();
+                $event->on433();
                 break;
             case '437':
-                $this->on437();
+                $event->on437();
                 break;
             case 'PRIVMSG':
-                $this->onPrivmsg($nick, $host, $rest, $text);
+                $event->onPrivmsg($nick, $host, $rest, $text);
                 break;
             case 'NOTICE':
-                $this->onNotice($nick, $text);
+                $event->onNotice($nick, $text);
                 break;
             case 'JOIN':
-                $this->onJoin($nick, ($rest != '' ? $rest : $text));
+                $event->onJoin($nick, ($rest != '' ? $rest : $text));
                 break;
             case 'PART':
-                $this->onPart($nick, $rest);
+                $event->onPart($nick, $rest);
                 break;
             case 'QUIT':
-                $this->onQuit($nick);
+                $event->onQuit($nick);
                 break;
             case 'KICK':
-                $this->onKick($nick, $rest);
+                $event->onKick($nick, $rest);
                 break;
             case 'NICK':
-                $this->onNick($nick, $text);
+                $event->onNick($nick, $text);
                 break;
             case 'MODE':
-                $this->onMode($rest);
+                $event->onMode($rest);
                 break;
             case 'TOPIC':
-                $this->onTopic($rest, $text);
+                $event->onTopic($rest, $text);
                 break;
             case 'INVITE':
-                $this->onInvite($text, $host, $rest);
+                $event->onInvite($text, $host, $rest);
                 break;
         }
         $this->db->setLog($this->server['network'], $all, $nick, $host, $command, $rest, $text, 'in');
     }
 
     /**
-     * ERR_NONICKNAMEGIVEN
-     * :No nickname given
-     */
-    protected function on431()
-    {
-    }
-
-    /**
-     * ERR_ERRONEUSNICKNAME
-     * <nick> :Erroneous nickname
-     */
-    protected function on432()
-    {
-        $this->otherNick();
-    }
-
-    /**
-     * ERR_NICKNAMEINUSE
-     * <nick> :Nickname is already in use
-     */
-    protected function on433()
-    {
-        $this->otherNick();
-    }
-
-    /**
-     * ERR_UNAVAILRESOURCE
-     * <nick/channel> :Nick/channel is temporarily unavailable
-     */
-    protected function on437()
-    {
-        $this->otherNick();
-    }
-
-    /**
      *
      */
-    protected function otherNick()
+    public function otherNick()
     {
         if ($this->nowrite === false) {
             return;
         }
         $nick = $this->setNick(null);
         $this->write('NICK ' . $nick);
-    }
-
-    /**
-     * RPL_LIST
-     * <channel> <# visible> :<topic>
-     * @param string $rest
-     * @param string $text
-     */
-    protected function on322($rest, $text)
-    {
-        $this->runPluginEvent(__FUNCTION__, array('rest' => $rest, 'text' => $text));
-    }
-
-    /**
-     * RPL_LISTEND
-     * :End of LIST
-     */
-    protected function on323()
-    {
-        $this->runPluginEvent(__FUNCTION__, array());
-    }
-
-    /**
-     * RPL_CHANNELMODEIS
-     * <channel> <mode> <mode params>
-     */
-    protected function on324()
-    {
-        $this->runPluginEvent(__FUNCTION__, array());
-    }
-
-    /**
-     * RPL_WHOISUSER
-     * <nick> <user> <host> * :<real name>
-     * @param string $rest
-     */
-    protected function on311($rest)
-    {
-        list($me, $nick, $user, $host) = explode(' ', $rest);
-        unset($me);
-        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'host' => $user . '@' . $host));
-    }
-
-    /**
-     * RPL_WHOISACCOUNT
-     * :is logged in as
-     * @param string $rest
-     */
-    protected function on330($rest)
-    {
-        list($me, $nick, $auth) = explode(' ', $rest);
-        unset($me);
-        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'auth' => $auth));
-    }
-
-    /**
-     * RPL_ENDOFWHOIS
-     * <nick> :End of WHOIS list
-     */
-    protected function on318()
-    {
-        $this->runPluginEvent(__FUNCTION__, array());
-    }
-
-    /**
-     * @link http://www.irchelp.org/irchelp/rfc/ctcpspec.html
-     * @param string $nick
-     * @param string $host
-     * @param string $channel
-     * @param string $text
-     * @return null
-     */
-    protected function onPrivmsg($nick, $host, $channel, $text)
-    {
-        if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
-            if ($this->config['ctcp'] === false) {
-                return null;
-            }
-            $send = '';
-            switch ($matches[1]) {
-                case 'ACTION':
-                    break;
-                case 'CLIENTINFO':
-                    $send = 'CLIENTINFO PING VERSION TIME FINGER SOURCE CLIENTINFO';
-                    break;
-                case 'PING':
-                    $send = 'PING' . $matches[2];
-                    break;
-                case 'VERSION':
-                    $send = 'VERSION ' . $this->version['bot'];
-                    break;
-                case 'TIME':
-                    $send = 'TIME ' . date('D M d H:i:s Y T');
-                    break;
-                case 'FINGER':
-                    $send = 'FINGER ' . $this->config['info']['name'] . (isset($this->config['info']['homepage']) ? ' (' . $this->config['info']['homepage'] . ')' : '') . ' Idle ' . round(
-                        $this->getMicrotime() - $this->time['irc_connect']
-                    ) . ' seconds';
-                    break;
-                case 'SOURCE':
-                    $send = 'SOURCE https://github.com/tronsha/cerberus';
-                    break;
-                default:
-                    return null;
-            }
-            if (empty($send) === false) {
-                $this->notice($nick, "\x01" . $send . "\x01");
-            }
-        } else {
-            $splitText = explode(' ', $text);
-            switch ($splitText[0]) {
-                case '!load':
-                    if (empty($splitText[1]) === false) {
-                        if ($this->isAdmin($nick, $host) === true) {
-                            if (preg_match('/^[a-z]+$/i', $splitText[1]) > 0) {
-                                $this->loadPlugin(
-                                    $splitText[1],
-                                    array('nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text)
-                                );
-                            }
-                        }
-                    }
-                    break;
-                default:
-                    $this->runPluginEvent(
-                        __FUNCTION__,
-                        array('nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text)
-                    );
-                    return null;
-            }
-        }
-    }
-
-    /**
-     * @param string $nick
-     * @param string $text
-     */
-    protected function onNotice($nick, $text)
-    {
-        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
-    }
-
-    /**
-     * @param string $nick
-     * @param string $text
-     */
-    protected function onNick($nick, $text)
-    {
-        if ($nick == $this->var['me']) {
-            $this->setNick($text);
-        }
-        $this->db->changeNick($nick, $text);
-        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
-    }
-
-    /**
-     * RPL_NAMREPLY
-     * @param string $rest
-     * @param string $text
-     */
-    protected function on353($rest, $text)
-    {
-        list($me, $dummy, $channel) = explode(' ', $rest);
-        unset($me);
-        unset($dummy);
-        $user_array = explode(' ', $text);
-        foreach ($user_array as $user) {
-            preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
-            $this->db->addUserToChannel($channel, $matches[2], $matches[1]);
-        }
-    }
-
-    /**
-     * RPL_TOPIC
-     * <channel> :<topic>
-     * @param string $rest
-     * @param string $text
-     */
-    protected function on332($rest, $text)
-    {
-        list($me, $channel) = explode(' ', $rest);
-        unset($me);
-        $this->onTopic($channel, $text);
-    }
-
-    /**
-     * @param string $channel
-     * @param string $topic
-     */
-    protected function onTopic($channel, $topic)
-    {
-        $this->db->setChannelTopic($channel, $topic);
-        $this->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'topic' => $topic, ));
-    }
-
-    /**
-     * @param string $nick
-     * @param string $channel
-     */
-    protected function onJoin($nick, $channel)
-    {
-        if ($nick == $this->var['me']) {
-            $this->db->addChannel($channel);
-            $this->mode($channel);
-        } else {
-            $this->db->addUserToChannel($channel, $nick);
-        }
-        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'channel' => $channel));
-    }
-
-    /**
-     * @param string $bouncer
-     * @param string $rest
-     */
-    protected function onKick($bouncer, $rest)
-    {
-        list($channel, $nick) = explode(' ', $rest);
-        $me = $nick == $this->var['me'] ? true : false;
-        $this->onPart($nick, $channel);
-        if ($this->config['autorejoin'] === true && $me === true) {
-            $this->join($channel);
-        }
-        $this->runPluginEvent(
-            __FUNCTION__,
-            array('channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer)
-        );
-    }
-
-    /**
-     * @param string $nick
-     * @param string $channel
-     */
-    protected function onPart($nick, $channel)
-    {
-        $me = $nick == $this->var['me'] ? true : false;
-        if ($me === true) {
-            $this->db->removeChannel($channel);
-        } else {
-            $this->db->removeUserFromChannel($channel, $nick);
-        }
-        $this->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'me' => $me, 'nick' => $nick));
-    }
-
-    /**
-     * @param string $nick
-     */
-    protected function onQuit($nick)
-    {
-        $this->db->removeUser($nick);
-        $this->runPluginEvent(__FUNCTION__, array('nick' => $nick));
-    }
-
-    /**
-     * @param string $mode
-     */
-    protected function onMode($mode)
-    {
-        $this->runPluginEvent(__FUNCTION__, array('mode' => $mode));
-    }
-
-    /**
-     * @param string $channel
-     * @param string $host
-     * @param string $rest
-     */
-    protected function onInvite($channel, $host, $rest)
-    {
-        $this->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'host' => $host, 'rest' => $rest));
     }
 
     /**
@@ -1048,7 +744,7 @@ class Irc extends Cerberus
     /**
      *
      */
-    protected function autoloadPlugins()
+    public function autoloadPlugins()
     {
         $this->loadPlugin('auth');
         foreach ($this->config['plugins']['autoload'] as $plugin) {
@@ -1060,7 +756,7 @@ class Irc extends Cerberus
      * @param string $name
      * @param array|null $data
      */
-    protected function loadPlugin($name, $data = null)
+    public function loadPlugin($name, $data = null)
     {
         $pluginClass = 'Cerberus\\Plugins\\Plugin' . ucfirst($name);
 
@@ -1085,7 +781,7 @@ class Irc extends Cerberus
      * @param string $event
      * @param array $data
      */
-    protected function runPluginEvent($event, $data)
+    public function runPluginEvent($event, $data)
     {
         if (array_key_exists($event, $this->pluginevents)) {
             for ($priority = 10; $priority > 0; $priority--) {
