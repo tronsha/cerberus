@@ -2,6 +2,7 @@
 /log/
 /tmp/
 /vendor/
+/public/
 config.ini
 composer.lock
 composer.phar

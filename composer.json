@@ -1,52 +1,53 @@
 {
-    "name": "tronsha/cerberus",
-    "description": "Cerberus IRC Bot",
-    "type": "project",
-    "keywords": [
-        "irc",
-        "bot"
-    ],
-    "homepage": "https://github.com/tronsha/cerberus",
-    "license": "GPL-3.0",
-    "authors": [
-        {
-            "name": "Stefan Hüsges",
-            "homepage": "http://www.mpcx.net",
-            "role": "Developer"
-        }
-    ],
-    "support": {
-        "irc": "irc://irc.freenode.org/cerberbot",
-        "source": "https://github.com/tronsha/cerberus",
-        "issues": "https://github.com/tronsha/cerberus/issues"
-    },
-    "require": {
-        "php": ">=5.4.0",
-        "ext-mcrypt": "*",
-        "doctrine/dbal": "~2.5",
-        "symfony/console": "~2.7"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~4.5"
-    },
-    "autoload": {
-        "psr-4": {
-            "Cerberus\\": "library/",
-            "Hades\\": "public/library/"
-        }
-    },
-    "minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.2-dev"
-        }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "Cerberus\\Installer::install"
-        ],
-        "post-create-project-cmd" : [
-            "Cerberus\\Installer::install"
-        ]
+  "name": "tronsha/cerberus",
+  "description": "Cerberus IRC Bot",
+  "type": "project",
+  "keywords": [
+    "irc",
+    "bot"
+  ],
+  "homepage": "https://github.com/tronsha/cerberus",
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Stefan Hüsges",
+      "homepage": "http://www.mpcx.net",
+      "role": "Developer"
     }
+  ],
+  "support": {
+    "irc": "irc://irc.freenode.org/cerberbot",
+    "source": "https://github.com/tronsha/cerberus",
+    "issues": "https://github.com/tronsha/cerberus/issues"
+  },
+  "require": {
+    "php": ">=5.4.0",
+    "ext-mcrypt": "*",
+    "doctrine/dbal": "~2.5",
+    "symfony/console": "~2.7",
+    "ronanguilloux/php-gpio": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Cerberus\\": "library/",
+      "Hades\\": "public/library/"
+    }
+  },
+  "minimum-stability": "dev",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.2-dev"
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "Cerberus\\Installer::install"
+    ],
+    "post-create-project-cmd": [
+      "Cerberus\\Installer::install"
+    ]
+  }
 }
