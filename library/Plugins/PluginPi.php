@@ -46,8 +46,14 @@ class PluginPi extends Plugin
         if (php_uname('n') === 'raspberrypi') {
             $this->gpio = new Gpio;
             $this->gpio->setup(17, "out");
+            $this->gpio->setup(27, "out");
+            $this->gpio->setup(22, "out");
             $this->gpio->output(17, 0);
-            $this->irc->addEvent('onPrivmsg', $this, 10);
+            $this->gpio->output(27, 0);
+            $this->gpio->output(22, 0);
+            $this->irc->addEvent('onPrivmsg', $this);
+            $this->irc->addEvent('onJoin', $this);
+            $this->irc->addEvent('onPart', $this);
         } else {
             $this->irc->sysinfo('This Plugin is only for the RaspberryPi.');
         }
@@ -85,9 +91,28 @@ class PluginPi extends Plugin
             $output = (float)str_replace('temp=', '', $output);
             $this->irc->privmsg($data['channel'], $output);
         }
-
         $this->gpio->output(17, 1);
         Cerberus::msleep(100);
         $this->gpio->output(17, 0);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onJoin($data)
+    {
+        $this->gpio->output(27, 1);
+        Cerberus::msleep(100);
+        $this->gpio->output(27, 0);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onPart($data)
+    {
+        $this->gpio->output(22, 1);
+        Cerberus::msleep(100);
+        $this->gpio->output(22, 0);
     }
 }
