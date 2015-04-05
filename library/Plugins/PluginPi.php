@@ -82,7 +82,7 @@ class PluginPi extends Plugin
         $command = array_shift($splitText);
         if ($command == '!temp') {
             $output = exec('vcgencmd measure_temp');
-            $output = (int)str_replace('temp=','', $output);
+            $output = (float)str_replace('temp=', '', $output);
             $this->irc->privmsg($data['channel'], $output);
         }
 
