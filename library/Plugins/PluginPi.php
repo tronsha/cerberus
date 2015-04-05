@@ -54,6 +54,14 @@ class PluginPi extends Plugin
     }
 
     /**
+     *
+     */
+    protected function shutdown()
+    {
+        $this->gpio->unexportAll();
+    }
+
+    /**
      * @param array $data
      * @return bool
      */

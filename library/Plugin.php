@@ -36,9 +36,22 @@ abstract class Plugin extends Cerberus
     }
 
     /**
+     *
+     */
+    public function __destruct()
+    {
+        $this->shutdown();
+    }
+
+    /**
      * abstract method for consructor logic
      */
     abstract protected function init();
+
+    /**
+     * destructor logic
+     */
+    protected function shutdown() {}
 
     /**
      * @param array $data
