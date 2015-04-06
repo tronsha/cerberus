@@ -36,6 +36,8 @@ use PhpGpio\Gpio;
  */
 class PluginPi extends Plugin
 {
+    const BLINKTIME = 50;
+
     protected $gpio = null;
 
     /**
@@ -79,6 +81,13 @@ class PluginPi extends Plugin
         return $returnValue;
     }
 
+    protected function blink($pin)
+    {
+        $this->gpio->output($pin, 1);
+        Cerberus::msleep(self::BLINKTIME);
+        $this->gpio->output($pin, 0);
+    }
+
     /**
      * @param array $data
      */
@@ -91,9 +100,7 @@ class PluginPi extends Plugin
             $output = (float)str_replace('temp=', '', $output);
             $this->irc->privmsg($data['channel'], $output);
         }
-        $this->gpio->output(17, 1);
-        Cerberus::msleep(100);
-        $this->gpio->output(17, 0);
+        $this->blink(17);
     }
 
     /**
@@ -101,9 +108,7 @@ class PluginPi extends Plugin
      */
     public function onJoin($data)
     {
-        $this->gpio->output(27, 1);
-        Cerberus::msleep(100);
-        $this->gpio->output(27, 0);
+        $this->blink(27);
     }
 
     /**
@@ -111,8 +116,14 @@ class PluginPi extends Plugin
      */
     public function onPart($data)
     {
-        $this->gpio->output(22, 1);
-        Cerberus::msleep(100);
-        $this->gpio->output(22, 0);
+        $this->blink(22);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onQuit($data)
+    {
+        $this->blink(22);
     }
 }
