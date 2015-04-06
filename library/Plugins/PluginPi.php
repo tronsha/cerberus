@@ -56,6 +56,7 @@ class PluginPi extends Plugin
             $this->irc->addEvent('onPrivmsg', $this);
             $this->irc->addEvent('onJoin', $this);
             $this->irc->addEvent('onPart', $this);
+            $this->irc->addEvent('onQuit', $this);
         } else {
             $this->irc->sysinfo('This Plugin is only for the RaspberryPi.');
         }
