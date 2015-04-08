@@ -570,9 +570,6 @@ class Irc extends Cerberus
         switch ($command) {
             case '001':
                 $this->nowrite = false;
-                if (empty($this->config['channel']) === false) {
-                    $this->join($this->config['channel']);
-                }
                 break;
             case '311':
                 $this->event->on311($rest);
