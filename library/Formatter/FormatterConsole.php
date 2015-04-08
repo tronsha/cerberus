@@ -30,6 +30,14 @@ namespace Cerberus\Formatter;
 class FormatterConsole extends Formatter
 {
     /**
+     *
+     */
+    public function __construct()
+    {
+        $this->type = 'CONSOLE';
+    }
+
+    /**
      * @param int $id
      * @return string
      */
@@ -75,48 +83,6 @@ class FormatterConsole extends Formatter
         }
 
         return "\033[39;49m";
-    }
-
-    /**
-     * @param string $output
-     * @return string
-     */
-    public function color($output)
-    {
-        $coloredOutput = '';
-        $xx = $fg = $bg = '';
-        $reset = '';
-        foreach (str_split($output) as $char) {
-            if ($char === "\x03") {
-                $xx = 'fg';
-            } elseif ($xx === 'fg' && (strlen($fg) === 0 || strlen($fg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
-                $fg .= $char;
-            } elseif ($xx === 'fg' && (strlen($fg) === 1 || strlen($fg) === 2) && $char === ',') {
-                $xx = 'bg';
-            } elseif ($xx === 'bg' && (strlen($bg) === 0 || strlen($bg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
-                $bg .= $char;
-            } elseif ($xx === 'fg' || $xx === 'bg') {
-                if ($bg !== '') {
-                    $coloredOutput .= $this->getColor($fg, $bg);
-                    $reset = $this->getColor();
-                } elseif ($fg !== '') {
-                    $coloredOutput .= $this->getColor($fg);
-                    $reset = $this->getColor();
-                } else {
-                    $coloredOutput .= $this->getColor();
-                    $reset = '';
-                }
-                if ($xx === 'bg' && $bg === '') {
-                    $coloredOutput .= ',';
-                }
-                $xx = $fg = $bg = '';
-                $coloredOutput .= $char;
-            } else {
-                $coloredOutput .= $char;
-            }
-        }
-
-        return $coloredOutput . $reset;
     }
 
     /**

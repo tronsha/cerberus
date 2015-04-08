@@ -19,6 +19,8 @@
 
 namespace Cerberus\Formatter;
 
+use Exception;
+
 /**
  * Class Formatter
  * @package Cerberus
@@ -29,6 +31,8 @@ namespace Cerberus\Formatter;
  */
 abstract class Formatter
 {
+    protected $type = null;
+
     /**
      * @param string $output
      * @param string $delimiter
@@ -61,6 +65,69 @@ abstract class Formatter
     /**
      * @param string $output
      * @return string
+     * @throws Exception
      */
-    abstract protected function color($output);
+    public function color($output)
+    {
+        if ($this->type != 'HTML' && $this->type != 'CONSOLE') {
+            throw new Exception('Type must be HTML or Console.');
+        }
+        $coloredOutput = '';
+        $xx = $fg = $bg = '';
+        if ($this->type == 'HTML') {
+            $reset = 0;
+        } elseif ($this->type == 'CONSOLE') {
+            $reset = '';
+        }
+        foreach (str_split($output) as $char) {
+            if ($char === "\x03") {
+                $xx = 'fg';
+            } elseif ($xx === 'fg' && (strlen($fg) === 0 || strlen($fg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+                $fg .= $char;
+            } elseif ($xx === 'fg' && (strlen($fg) === 1 || strlen($fg) === 2) && $char === ',') {
+                $xx = 'bg';
+            } elseif ($xx === 'bg' && (strlen($bg) === 0 || strlen($bg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+                $bg .= $char;
+            } elseif ($xx === 'fg' || $xx === 'bg') {
+                if ($bg !== '') {
+                    $coloredOutput .= $this->getColor($fg, $bg);
+                    if ($this->type == 'HTML') {
+                        $reset++;
+                    } elseif ($this->type == 'CONSOLE') {
+                        $reset = $this->getColor();
+                    }
+                } elseif ($fg !== '') {
+                    $coloredOutput .= $this->getColor($fg);
+                    if ($this->type == 'HTML') {
+                        $reset++;
+                    } elseif ($this->type == 'CONSOLE') {
+                        $reset = $this->getColor();
+                    }
+                } else {
+                    $coloredOutput .= $this->getColor();
+                    if ($this->type == 'HTML') {
+                        $reset--;
+                    } elseif ($this->type == 'CONSOLE') {
+                        $reset = '';
+                    }
+                }
+                if ($xx === 'bg' && $bg === '') {
+                    $coloredOutput .= ',';
+                }
+                $xx = $fg = $bg = '';
+                $coloredOutput .= $char;
+            } else {
+                $coloredOutput .= $char;
+            }
+        }
+        if ($this->type == 'HTML') {
+            for ($i = 0; $i < $reset; $i++) {
+                $coloredOutput .= $this->getColor();
+            }
+        } elseif ($this->type == 'CONSOLE') {
+            $coloredOutput .= $reset;
+        }
+
+        return $coloredOutput;
+    }
 }

@@ -30,6 +30,14 @@ namespace Cerberus\Formatter;
 class FormatterHtml extends Formatter
 {
     /**
+     *
+     */
+    public function __construct()
+    {
+        $this->type = 'HTML';
+    }
+
+    /**
      * @param int $id
      * @return string
      */
@@ -75,51 +83,6 @@ class FormatterHtml extends Formatter
         }
 
         return "</span>";
-    }
-
-    /**
-     * @param string $output
-     * @return string
-     */
-    public function color($output)
-    {
-        $coloredOutput = '';
-        $xx = $fg = $bg = '';
-        $reset = 0;
-        foreach (str_split($output) as $char) {
-            if ($char === "\x03") {
-                $xx = 'fg';
-            } elseif ($xx === 'fg' && (strlen($fg) === 0 || strlen($fg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
-                $fg .= $char;
-            } elseif ($xx === 'fg' && (strlen($fg) === 1 || strlen($fg) === 2) && $char === ',') {
-                $xx = 'bg';
-            } elseif ($xx === 'bg' && (strlen($bg) === 0 || strlen($bg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
-                $bg .= $char;
-            } elseif ($xx === 'fg' || $xx === 'bg') {
-                if ($bg !== '') {
-                    $coloredOutput .= $this->getColor($fg, $bg);
-                    $reset++;
-                } elseif ($fg !== '') {
-                    $coloredOutput .= $this->getColor($fg);
-                    $reset++;
-                } else {
-                    $coloredOutput .= $this->getColor();
-                    $reset--;
-                }
-                if ($xx === 'bg' && $bg === '') {
-                    $coloredOutput .= ',';
-                }
-                $xx = $fg = $bg = '';
-                $coloredOutput .= $char;
-            } else {
-                $coloredOutput .= $char;
-            }
-        }
-        for ($i = 0; $i < $reset; $i++) {
-            $coloredOutput .= $this->getColor();
-        }
-
-        return $coloredOutput;
     }
 
     /**
