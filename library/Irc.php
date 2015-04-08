@@ -52,6 +52,7 @@ class Irc extends Cerberus
     protected $pluginevents = array();
     protected $auth = null;
     protected $param = null;
+    protected $event = null;
 
     /**
      * @param array|null $config
@@ -97,6 +98,9 @@ class Irc extends Cerberus
             if (!empty($config['info']['version'])) {
                 $this->version['bot'] = $config['info']['version'];
             }
+            if (!empty($config['bot']['channel'])) {
+                $this->config['channel'] = '#' . $config['bot']['channel'];
+            }
             if (isset($config['bot']['autorejoin'])) {
                 $this->config['autorejoin'] = $config['bot']['autorejoin'] == 1 ? true : false;
             }
@@ -128,6 +132,7 @@ class Irc extends Cerberus
                 $this->config['frontend']['password'] = $config['frontend']['password'];
             }
         }
+        $this->event = new Event($this, $this->db);
     }
 
     /**
@@ -136,6 +141,7 @@ class Irc extends Cerberus
     public function __destruct()
     {
         if ($this->init === true) {
+            $this->event->onShutdown();
             if ($this->fp !== false) {
                 fclose($this->fp);
             }
@@ -146,6 +152,24 @@ class Irc extends Cerberus
         $this->getConsole()->writeln();
         $this->getConsole()->writeln('<info>' . $output . '</info>');
         $this->getConsole()->writeln();
+    }
+
+    /**
+     * @param string $text
+     * @return mixed
+     */
+    public function onError($text)
+    {
+        $this->event->onError($text);
+        return $this->error($text);
+    }
+
+    /**
+     * @return array
+     */
+    public function getVars()
+    {
+        return array('config' => $this->config, 'version' => $this->version, 'var' => $this->var, 'time' => $this->time);
     }
 
     /**
@@ -335,7 +359,7 @@ class Irc extends Cerberus
         $this->run = true;
         $this->db->cleanupBot();
         $this->preform();
-        $this->runPluginEvent('onConnect', $this->config);
+        $this->event->onConnect();
         return $this->run();
     }
 
@@ -531,8 +555,6 @@ class Irc extends Cerberus
      */
     protected function command($input)
     {
-        $vars = array('var' => $this->var, 'time' => $this->time, 'version' => $this->version, 'config' => $this->config);
-        $event = new Event($this, $this->db, $vars);
         preg_match(
             "/^\:(?:([^\!\ \:]+)\!)?([^\!\ ]+)\ ([^\ ]+)(?:\ ([^\:].*?))?(?:\ \:(.*?))?(?:\r)?$/i",
             $input,
@@ -548,72 +570,75 @@ class Irc extends Cerberus
         switch ($command) {
             case '001':
                 $this->nowrite = false;
+                if (empty($this->config['channel']) === false) {
+                    $this->join($this->config['channel']);
+                }
                 break;
             case '311':
-                $event->on311($rest);
+                $this->event->on311($rest);
                 break;
             case '318':
-                $event->on318();
+                $this->event->on318();
                 break;
             case '322':
-                $event->on322($rest, $text);
+                $this->event->on322($rest, $text);
                 break;
             case '323':
-                $event->on323();
+                $this->event->on323();
                 break;
             case '324':
-                $event->on324();
+                $this->event->on324();
                 break;
             case '330':
-                $event->on330($rest);
+                $this->event->on330($rest);
                 break;
             case '332':
-                $event->on332($rest, $text);
+                $this->event->on332($rest, $text);
                 break;
             case '353':
-                $event->on353($rest, $text);
+                $this->event->on353($rest, $text);
                 break;
             case '431':
-                $event->on431();
+                $this->event->on431();
                 break;
             case '432':
-                $event->on432();
+                $this->event->on432();
                 break;
             case '433':
-                $event->on433();
+                $this->event->on433();
                 break;
             case '437':
-                $event->on437();
+                $this->event->on437();
                 break;
             case 'PRIVMSG':
-                $event->onPrivmsg($nick, $host, $rest, $text);
+                $this->event->onPrivmsg($nick, $host, $rest, $text);
                 break;
             case 'NOTICE':
-                $event->onNotice($nick, $text);
+                $this->event->onNotice($nick, $text);
                 break;
             case 'JOIN':
-                $event->onJoin($nick, ($rest != '' ? $rest : $text));
+                $this->event->onJoin($nick, ($rest != '' ? $rest : $text));
                 break;
             case 'PART':
-                $event->onPart($nick, $rest);
+                $this->event->onPart($nick, $rest);
                 break;
             case 'QUIT':
-                $event->onQuit($nick);
+                $this->event->onQuit($nick);
                 break;
             case 'KICK':
-                $event->onKick($nick, $rest);
+                $this->event->onKick($nick, $rest);
                 break;
             case 'NICK':
-                $event->onNick($nick, $text);
+                $this->event->onNick($nick, $text);
                 break;
             case 'MODE':
-                $event->onMode($rest);
+                $this->event->onMode($rest);
                 break;
             case 'TOPIC':
-                $event->onTopic($rest, $text);
+                $this->event->onTopic($rest, $text);
                 break;
             case 'INVITE':
-                $event->onInvite($text, $host, $rest);
+                $this->event->onInvite($text, $host, $rest);
                 break;
         }
         $this->db->setLog($this->server['network'], $all, $nick, $host, $command, $rest, $text, 'in');

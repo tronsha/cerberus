@@ -68,6 +68,8 @@ class Installer
             $io->write('<options=bold>IRC</options=bold>');
             $botname = $io->ask('Nickname: ');
             $config = str_replace('{botname}', $botname ? $botname : 'JohnSmith', $config);
+            $botchannel = $io->ask('Channel: ');
+            $config = str_replace('{botchannel}', $botchannel ? trim($botchannel, " \t\n\r\0\x0B#") : 'cerberbot', $config);
             $io->write('<options=bold>Database</options=bold>');
             $dbhost = $io->ask('Host (<fg=cyan>localhost</fg=cyan>): ');
             $config = str_replace('{dbhost}', $dbhost ? $dbhost : 'localhost', $config);

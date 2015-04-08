@@ -96,7 +96,7 @@ class Cerberus
 
     /**
      * @param string $text
-     * @return string
+     * @return mixed
      */
     public static function error($text)
     {

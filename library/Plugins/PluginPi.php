@@ -57,17 +57,10 @@ class PluginPi extends Plugin
             $this->irc->addEvent('onJoin', $this);
             $this->irc->addEvent('onPart', $this);
             $this->irc->addEvent('onQuit', $this);
+            $this->irc->addEvent('onShutdown', $this);
         } else {
             $this->irc->sysinfo('This Plugin is only for the RaspberryPi.');
         }
-    }
-
-    /**
-     *
-     */
-    protected function shutdown()
-    {
-        $this->gpio->unexportAll();
     }
 
     /**
@@ -80,6 +73,14 @@ class PluginPi extends Plugin
         if ($data !== null) {
         }
         return $returnValue;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onShutdown($data)
+    {
+        $this->gpio->unexportAll();
     }
 
     protected function blink($pin)
