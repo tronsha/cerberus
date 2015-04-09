@@ -30,7 +30,7 @@ use Cerberus\Plugin;
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @link http://tools.ietf.org/html/rfc2812 Internet Relay Chat: Client Protocol
  * @link http://www.raspberrypi.org/ Raspberry Pi
- * @link https://projects.drogon.net/raspberry-pi/wiringpi/ WiringPi
+ * @link http://wiringpi.com/ WiringPi
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
 class PluginPi extends Plugin
@@ -38,8 +38,6 @@ class PluginPi extends Plugin
     const HIGH = 1;
     const LOW = 0;
     const TIME = 50;
-
-    protected $gpio = null;
 
     /**
      *
