@@ -21,7 +21,6 @@ namespace Cerberus\Plugins;
 
 use Cerberus\Cerberus;
 use Cerberus\Plugin;
-use PhpGpio\Gpio;
 
 /**
  * Class PluginPi
@@ -31,12 +30,14 @@ use PhpGpio\Gpio;
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @link http://tools.ietf.org/html/rfc2812 Internet Relay Chat: Client Protocol
  * @link http://www.raspberrypi.org/ Raspberry Pi
- * @link https://github.com/ronanguilloux/php-gpio PHP GPIO
+ * @link https://projects.drogon.net/raspberry-pi/wiringpi/ WiringPi
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
 class PluginPi extends Plugin
 {
-    const BLINKTIME = 50;
+    const HIGH = 1;
+    const LOW = 0;
+    const TIME = 50;
 
     protected $gpio = null;
 
@@ -45,21 +46,21 @@ class PluginPi extends Plugin
      */
     protected function init()
     {
-        if (php_uname('n') === 'raspberrypi') {
-            $this->gpio = new Gpio;
-            $this->gpio->setup(17, "out");
-            $this->gpio->setup(27, "out");
-            $this->gpio->setup(22, "out");
-            $this->gpio->output(17, 0);
-            $this->gpio->output(27, 0);
-            $this->gpio->output(22, 0);
-            $this->irc->addEvent('onPrivmsg', $this);
-            $this->irc->addEvent('onJoin', $this);
-            $this->irc->addEvent('onPart', $this);
-            $this->irc->addEvent('onQuit', $this);
-            $this->irc->addEvent('onShutdown', $this);
+        if (Cerberus::isExecAvailable()) {
+            if (php_uname('n') === 'raspberrypi') {
+                exec('gpio -g write 17 ' . self::LOW);
+                exec('gpio -g write 22 ' . self::LOW);
+                exec('gpio -g write 27 ' . self::LOW);
+                $this->irc->addEvent('onPrivmsg', $this);
+                $this->irc->addEvent('onJoin', $this);
+                $this->irc->addEvent('onPart', $this);
+                $this->irc->addEvent('onQuit', $this);
+                $this->irc->addEvent('onShutdown', $this);
+            } else {
+                $this->irc->sysinfo('This Plugin is only for the RaspberryPi.');
+            }
         } else {
-            $this->irc->sysinfo('This Plugin is only for the RaspberryPi.');
+
         }
     }
 
@@ -80,14 +81,13 @@ class PluginPi extends Plugin
      */
     public function onShutdown($data)
     {
-        $this->gpio->unexportAll();
     }
 
     protected function blink($pin)
     {
-        $this->gpio->output($pin, 1);
-        Cerberus::msleep(self::BLINKTIME);
-        $this->gpio->output($pin, 0);
+        exec('gpio -g write ' . $pin . ' ' . self::HIGH);
+        Cerberus::msleep(self::TIME);
+        exec('gpio -g write ' . $pin . ' ' . self::LOW);
     }
 
     /**
