@@ -39,26 +39,41 @@ class PluginPi extends Plugin
     const LOW = 0;
     const TIME = 50;
 
+    protected $vars = null;
+    protected $info = array();
+
     /**
      *
      */
     protected function init()
     {
         if (Cerberus::isExecAvailable()) {
-            if (php_uname('n') === 'raspberrypi') {
-                exec('gpio -g write 17 ' . self::LOW);
-                exec('gpio -g write 22 ' . self::LOW);
-                exec('gpio -g write 27 ' . self::LOW);
+            exec('gpio -v', $outputArray);
+            $output = implode(' ', $outputArray);
+            $pos = strpos($output, 'Raspberry Pi');
+            if ($pos !== false) {
+                $this->vars = $this->irc->getVars();
+                $info = substr($output, $pos);
+                preg_match_all('/Type:\s*([^,:]+),\s*Revision:\s*([^,:]+),\s*Memory:\s*([^,:]+),\s*Maker:\s*([^,:]+)\s*$/i', $info, $matches, PREG_SET_ORDER);
+                $this->info['type'] = $matches[0][1];
+                $this->info['revision'] = $matches[0][2];
+                $this->info['memory'] = $matches[0][3];
+                $this->info['maker'] = $matches[0][4];
+                $this->blink(27);
+                $this->blink(17);
+                $this->blink(22);
                 $this->irc->addEvent('onPrivmsg', $this);
                 $this->irc->addEvent('onJoin', $this);
                 $this->irc->addEvent('onPart', $this);
                 $this->irc->addEvent('onQuit', $this);
                 $this->irc->addEvent('onShutdown', $this);
             } else {
-                $this->irc->sysinfo('This Plugin is only for the RaspberryPi.');
+                $this->irc->sysinfo('This Plugin is only for the RaspberryPi with WiringPi.');
+                $this->irc->sysinfo('http://www.raspberrypi.org');
+                $this->irc->sysinfo('http://wiringpi.com');
             }
         } else {
-
+            $this->irc->sysinfo('Can\'t run the bot, because "exec" is disabled');
         }
     }
 
@@ -81,11 +96,47 @@ class PluginPi extends Plugin
     {
     }
 
+    /**
+     * @param int $pin
+     */
     protected function blink($pin)
     {
+        $this->setHigh($pin);
+        $this->wait();
+        $this->setLow($pin);
+    }
+
+    /**
+     * @param int $pin
+     */
+    protected function setHigh($pin)
+    {
         exec('gpio -g write ' . $pin . ' ' . self::HIGH);
-        Cerberus::msleep(self::TIME);
+    }
+
+    /**
+     * @param int $pin
+     */
+    protected function setLow($pin)
+    {
         exec('gpio -g write ' . $pin . ' ' . self::LOW);
+    }
+
+    /**
+     *
+     */
+    protected function wait()
+    {
+        Cerberus::msleep(self::TIME);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTemp()
+    {
+        preg_match('/[0-9\.]+/', exec('vcgencmd measure_temp'), $matches);
+        return sprintf('%.1f°C', (float)$matches[0]);
     }
 
     /**
@@ -95,10 +146,8 @@ class PluginPi extends Plugin
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '!temp') {
-            $output = exec('vcgencmd measure_temp');
-            $output = (float)str_replace('temp=', '', $output);
-            $this->irc->privmsg($data['channel'], $output);
+        if ($command == '!temp' && $data['channel'] == $this->vars['config']['channel']) {
+            $this->irc->privmsg($data['channel'], $this->getTemp());
         }
         $this->blink(17);
     }
