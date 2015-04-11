@@ -71,6 +71,14 @@ class Event
     }
 
     /**
+     *
+     */
+    public function onTick()
+    {
+        $this->irc->runPluginEvent(__FUNCTION__, array());
+    }
+
+    /**
      * ERR_NONICKNAMEGIVEN
      * :No nickname given
      */

@@ -514,7 +514,6 @@ class Irc extends Cerberus
     {
         while (!feof($this->fp)) {
             $input = $this->read();
-
             if (trim($input) != '') {
                 if ($this->db->ping() === false) {
                     $this->db->close();
@@ -533,6 +532,7 @@ class Irc extends Cerberus
                     $this->command($input);
                 }
             }
+            $this->event->onTick();
             if ($this->nowrite === false && floor($this->getMicrotime() - $this->time['irc_connect']) > 10) {
                 $this->send();
             }
