@@ -19,6 +19,8 @@
 
 namespace Cerberus;
 
+use DateTime;
+
 /**
  * Class Event
  * @package Cerberus
@@ -33,6 +35,8 @@ class Event
     protected $irc;
     protected $db;
     protected $vars;
+    protected $minute = '';
+    protected $hour = '';
 
     /**
      * @param Irc $irc
@@ -43,6 +47,8 @@ class Event
         $this->irc = $irc;
         $this->db = $db;
         $this->vars = $this->irc->getVars();
+        $this->minute = (new DateTime())->format('i');
+        $this->hour = (new DateTime())->format('H');
     }
 
     /**
@@ -74,6 +80,32 @@ class Event
      *
      */
     public function onTick()
+    {
+        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $minute = (new DateTime())->format('i');
+        if ($minute != $this->minute) {
+            $this->minute = $minute;
+            $this->onMinute();
+        }
+        $hour = (new DateTime())->format('H');
+        if ($hour != $this->hour) {
+            $this->hour = $hour;
+            $this->onHour();
+        }
+    }
+
+    /**
+     *
+     */
+    public function onMinute()
+    {
+        $this->irc->runPluginEvent(__FUNCTION__, array());
+    }
+
+    /**
+     *
+     */
+    public function onHour()
     {
         $this->irc->runPluginEvent(__FUNCTION__, array());
     }
