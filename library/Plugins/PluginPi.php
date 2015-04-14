@@ -67,6 +67,7 @@ class PluginPi extends Plugin
                 $this->irc->addEvent('onPart', $this);
                 $this->irc->addEvent('onQuit', $this);
                 $this->irc->addEvent('onShutdown', $this);
+                $this->irc->addEvent('onHour', $this);
             } else {
                 $this->irc->sysinfo('This Plugin is only for the RaspberryPi with WiringPi.');
                 $this->irc->sysinfo('http://www.raspberrypi.org');
@@ -174,5 +175,13 @@ class PluginPi extends Plugin
     public function onQuit($data)
     {
         $this->blink(22);
+    }
+
+    /**
+     *
+     */
+    public function onHour()
+    {
+        $this->irc->privmsg($this->vars['config']['channel'], $this->getTemp());
     }
 }
