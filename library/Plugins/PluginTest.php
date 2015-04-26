@@ -49,11 +49,8 @@ class PluginTest extends Plugin
      */
     protected function doEcho($data)
     {
-        $array = array();
-        foreach ($data as $key => $value) {
-            $array[] = $key . ':' . $value;
-        }
-        echo implode('|', $array);
+        ksort($data);
+        echo serialize($data);
     }
 
     /**

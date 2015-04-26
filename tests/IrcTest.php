@@ -94,35 +94,45 @@ class IrcTest extends \PHPUnit_Framework_TestCase
     public function testCommandPrivmsg()
     {
         $input = ':foo!~bar@127.0.0.1 PRIVMSG #cerberbot :Humpty Dumpty sat on a wall, Humpty Dumpty had a great fall, All the King’s horses and all the King’s men, Couldn’t put Humpty together again.';
-        $this->expectOutputString('nick:foo|host:~bar@127.0.0.1|channel:#cerberbot|text:Humpty Dumpty sat on a wall, Humpty Dumpty had a great fall, All the King’s horses and all the King’s men, Couldn’t put Humpty together again.');
+        $array = array('nick' => 'foo', 'host' => '~bar@127.0.0.1', 'channel' => '#cerberbot', 'text' => 'Humpty Dumpty sat on a wall, Humpty Dumpty had a great fall, All the King’s horses and all the King’s men, Couldn’t put Humpty together again.');
+        ksort($array);
+        $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
 
     public function testCommandNotice()
     {
         $input = ':foo!~bar@127.0.0.1 NOTICE Neo :follow the white rabbit';
-        $this->expectOutputString('nick:foo|text:follow the white rabbit');
+        $array = array('nick' => 'foo', 'text' => 'follow the white rabbit');
+        ksort($array);
+        $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
 
     public function testCommandJoin()
     {
         $input = ':foo!~bar@127.0.0.1 JOIN #cerberbot';
-        $this->expectOutputString('nick:foo|channel:#cerberbot');
+        $array = array('nick' => 'foo', 'channel' => '#cerberbot');
+        ksort($array);
+        $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
 
     public function testCommandPart()
     {
         $input = ':foo!~bar@127.0.0.1 PART #cerberbot';
-        $this->expectOutputString('channel:#cerberbot|me:|nick:foo');
+        $array = array('channel' => '#cerberbot', 'nick' => 'foo', 'me' => false);
+        ksort($array);
+        $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
 
     public function testCommandQuit()
     {
         $input = ':foo!~bar@127.0.0.1 QUIT :Remote host closed the connection';
-        $this->expectOutputString('nick:foo');
+        $array = array('nick' => 'foo');
+        ksort($array);
+        $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
 }
