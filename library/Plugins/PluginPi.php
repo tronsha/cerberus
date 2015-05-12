@@ -35,6 +35,8 @@ use Cerberus\Plugin;
  */
 class PluginPi extends Plugin
 {
+    const IN = 'in';
+    const OUT = 'out';
     const HIGH = 1;
     const LOW = 0;
     const TIME = 50;
@@ -59,6 +61,9 @@ class PluginPi extends Plugin
                 $this->info['revision'] = $matches[0][2];
                 $this->info['memory'] = $matches[0][3];
                 $this->info['maker'] = $matches[0][4];
+                $this->setOut(27);
+                $this->setOut(17);
+                $this->setOut(11);
                 $this->blink(27);
                 $this->blink(17);
                 $this->blink(22);
@@ -105,6 +110,22 @@ class PluginPi extends Plugin
         $this->setHigh($pin);
         $this->wait();
         $this->setLow($pin);
+    }
+
+    /**
+     * @param int $pin
+     */
+    protected function setIn($pin)
+    {
+        exec('gpio -g mode ' . $pin . ' ' . self::IN);
+    }
+
+    /**
+     * @param int $pin
+     */
+    protected function setOut($pin)
+    {
+        exec('gpio -g mode ' . $pin . ' ' . self::OUT);
     }
 
     /**
