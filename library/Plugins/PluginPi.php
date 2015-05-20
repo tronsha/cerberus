@@ -63,7 +63,7 @@ class PluginPi extends Plugin
                 $this->info['maker'] = $matches[0][4];
                 $this->setOut(27);
                 $this->setOut(17);
-                $this->setOut(11);
+                $this->setOut(22);
                 $this->blink(27);
                 $this->blink(17);
                 $this->blink(22);
