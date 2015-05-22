@@ -91,6 +91,19 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$config['bot']['nick'], $row['nick']);
     }
 
+    public function testTranslation()
+    {
+        $this->irc->setLang('en');
+        $this->irc->setTranslations(array('de' => array('hello' => 'hallo'), 'en' => array('hello' => 'hello')));
+        $this->irc->setTranslations(array('de' => array('world' => 'welt'), 'en' => array('world' => 'world')));
+        $this->assertEquals('unknown', $this->irc->__('unknown'));
+        $this->assertEquals('hello', $this->irc->__('hello'));
+        $this->assertEquals('hallo', $this->irc->__('hello', 'de'));
+        $this->irc->setLang('de');
+        $this->assertEquals('hallo', $this->irc->__('hello'));
+        $this->assertEquals('welt', $this->irc->__('world'));
+    }
+
     public function testCommandPrivmsg()
     {
         $input = ':foo!~bar@127.0.0.1 PRIVMSG #cerberbot :Humpty Dumpty sat on a wall, Humpty Dumpty had a great fall, All the King’s horses and all the King’s men, Couldn’t put Humpty together again.';

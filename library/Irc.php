@@ -53,6 +53,7 @@ class Irc extends Cerberus
     protected $auth = null;
     protected $param = null;
     protected $event = null;
+    protected $translate = null;
 
     /**
      * @param array|null $config
@@ -133,6 +134,7 @@ class Irc extends Cerberus
             }
         }
         $this->event = new Event($this, $this->db);
+        $this->translate = new Translate;
     }
 
     /**
@@ -825,5 +827,31 @@ class Irc extends Cerberus
     public function addEvent($event, $object, $priority = 5)
     {
         $this->pluginevents[$event][$priority][] = $object;
+    }
+
+    /**
+     * @param string $text
+     * @param mixed $lang
+     * @return string
+     */
+    public function __($text, $lang = null)
+    {
+        return $this->translate->__($text, $lang);
+    }
+
+    /**
+     * @param string $lang
+     */
+    public function setLang($lang)
+    {
+        $this->translate->setLang($lang);
+    }
+
+    /**
+     * @param array $translations
+     */
+    public function setTranslations($translations = array())
+    {
+        $this->translate->setTranslations($translations);
     }
 }

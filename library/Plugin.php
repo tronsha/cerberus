@@ -54,6 +54,24 @@ abstract class Plugin extends Cerberus
     protected function shutdown() {}
 
     /**
+     * @return array
+     */
+    protected function translations()
+    {
+        return array();
+    }
+
+    /**
+     * @param string $text
+     * @param mixed $lang
+     * @return string
+     */
+    protected function __($text, $lang = null)
+    {
+        return $this->irc->__($text, $lang);
+    }
+
+    /**
      * @param array $data
      * @return bool
      */
@@ -62,6 +80,7 @@ abstract class Plugin extends Cerberus
         if (isset($data) === true) {
             $this->irc->notice($data['nick'], 'Load: ' . get_called_class());
         }
+        $this->irc->setTranslations($this->translations());
         return true;
     }
 }
