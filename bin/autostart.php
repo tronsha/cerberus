@@ -40,6 +40,7 @@ if (is_dir('../.git') === true) {
     foreach($output as $line) {
         $console->writeln('<info>' . $line . '</info>');
     }
+    unset($output);
     chdir(__DIR__);
 }
 
