@@ -32,6 +32,17 @@ if (Cerberus::isExecAvailable() === false) {
     exit;
 }
 
+if (is_dir('../.git') === true) {
+    chdir(dirname(__DIR__));
+    exec('git pull', $output);
+    $console = Cerberus::getConsole();
+    $console->writeln('<comment>git pull</comment>');
+    foreach($output as $line) {
+        $console->writeln('<info>' . $line . '</info>');
+    }
+    chdir(__DIR__);
+}
+
 $path = Cerberus::getPath();
 $config = parse_ini_file($path . '/config.ini', true);
 
