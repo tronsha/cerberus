@@ -39,7 +39,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
     {
         self::$config['testdb']['dbname'] = null;
         $db = DriverManager::getConnection(self::$config['testdb']);
-        $this->checkDatabase($db);
+//        $this->checkDatabase($db);
         $sm = $db->getSchemaManager();
         $sm->dropAndCreateDatabase(self::$database);
         $db->close();
@@ -56,7 +56,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         unset($this->irc);
-        $this->checkDatabase($this->db);
+//        $this->checkDatabase($this->db);
         $sm = $this->db->getSchemaManager();
         $sm->tryMethod('dropDatabase', self::$database);
         $this->db->close();
