@@ -39,6 +39,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
     {
         self::$config['testdb']['dbname'] = null;
         $db = DriverManager::getConnection(self::$config['testdb']);
+        $this->checkDatabase($db);
         $sm = $db->getSchemaManager();
         $sm->dropAndCreateDatabase(self::$database);
         $db->close();
@@ -55,6 +56,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         unset($this->irc);
+        $this->checkDatabase($this->db);
         $sm = $this->db->getSchemaManager();
         $sm->tryMethod('dropDatabase', self::$database);
         $this->db->close();
@@ -68,6 +70,13 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $parameters = array_slice(func_get_args(), 2);
 
         return $method->invokeArgs($object, $parameters);
+    }
+
+    protected function checkDatabase($db)
+    {
+        if ($db === null || $db->isConnected() === false) {
+            $this->fail('No connection to database...');
+        }
     }
 
     public function testRandomNick()
