@@ -389,6 +389,11 @@ class Irc extends Cerberus
         $preform = $this->db->getPreform($this->server['network']);
         foreach ($preform as $command) {
             $this->db->setWrite($command['text']);
+            preg_match('/join\s+(#[^\s]+)/i', $command['text'], $matches);
+            if (isset($matches[1])) {
+                unset($matches[0]);
+                $this->reconnect['channel'] = array_diff($this->reconnect['channel'], $matches);
+            }
         }
         foreach ($this->reconnect['channel'] as $channel) {
             $this->join($channel);
