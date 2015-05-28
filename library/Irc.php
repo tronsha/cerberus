@@ -76,7 +76,7 @@ class Irc extends Cerberus
         $this->config['logfile']['socket'] = false;
         $this->config['logfile']['sql'] = false;
         $this->config['dailylogfile'] = true;
-
+        $this->translate = new Translate;
         if (is_array($config)) {
             if (!empty($config['bot']['nick'])) {
                 $this->setNick($config['bot']['nick']);
@@ -132,9 +132,11 @@ class Irc extends Cerberus
             if (isset($config['frontend']['password'])) {
                 $this->config['frontend']['password'] = $config['frontend']['password'];
             }
+            if (isset($config['bot']['lang'])) {
+                $this->translate->setLang($config['bot']['lang']);
+            }
         }
         $this->event = new Event($this, $this->db);
-        $this->translate = new Translate;
     }
 
     /**
