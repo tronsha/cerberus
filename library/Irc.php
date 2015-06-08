@@ -293,11 +293,11 @@ class Irc extends Cerberus
      */
     public static function randomNick()
     {
-        $konsonant = 'bcdfghjklmnpqrstvwxyz';
-        $vokal = 'aeiou';
+        $consonant = 'bcdfghjklmnpqrstvwxyz';
+        $vowel = 'aeiou';
         $nick = '';
         for ($i = 0; $i < 3; $i++) {
-            $nick .= $konsonant{rand(0, 20)} . $vokal{rand(0, 4)};
+            $nick .= $consonant{mt_rand(0, 20)} . $vowel{mt_rand(0, 4)};
         }
         return ucfirst($nick);
     }
