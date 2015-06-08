@@ -31,6 +31,7 @@ use Cerberus\Plugin;
  * @link http://tools.ietf.org/html/rfc2812 Internet Relay Chat: Client Protocol
  * @link http://www.raspberrypi.org/ Raspberry Pi
  * @link http://wiringpi.com/ WiringPi
+ * @link https://github.com/tronsha/wiringPi WiringPi GIT Fork
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
 class PluginPi extends Plugin
