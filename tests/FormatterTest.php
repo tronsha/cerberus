@@ -128,7 +128,6 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
             "\033[38;5;7mfoo\033[39;49m",
             $this->consoleFormatter->color("\x03" . '15foo' . "\x03")
         );
-
         $this->assertEquals(
             "\033[38;5;15;48;5;0mfoo\033[39;49m",
             $this->consoleFormatter->color("\x03" . '0,1foo' . "\x03")
@@ -140,6 +139,10 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             "\033[38;5;15;48;5;0mfoo\033[39;49mbar",
             $this->consoleFormatter->color("\x03" . '0,1foo' . "\x03" . 'bar')
+        );
+        $this->assertEquals(
+            "\033[38;5;15m,foo\033[39;49m",
+            $this->consoleFormatter->color("\x03" . '0,foo' . "\x03")
         );
     }
 
@@ -233,7 +236,6 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
             '<span style="color: #D2D2D2;">foo</span>',
             $this->htmlFormatter->color("\x03" . '15foo' . "\x03")
         );
-
         $this->assertEquals(
             '<span style="color: #FFFFFF; background-color: #000000;">foo</span>',
             $this->htmlFormatter->color("\x03" . '0,1foo' . "\x03")
@@ -245,6 +247,10 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             '<span style="color: #FFFFFF; background-color: #000000;">foo</span>bar',
             $this->htmlFormatter->color("\x03" . '0,1foo' . "\x03" . 'bar')
+        );
+        $this->assertEquals(
+            '<span style="color: #FFFFFF;">,foo</span>',
+            $this->htmlFormatter->color("\x03" . '0,foo' . "\x03")
         );
     }
 }
