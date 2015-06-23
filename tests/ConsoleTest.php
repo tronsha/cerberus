@@ -141,4 +141,23 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("foo b\nar ba\nz", $this->invokeMethod($this->console, 'split', "foo bar baz", 5));
         $this->assertEquals("foo \033[1mb\nar ba\nz", $this->invokeMethod($this->console, 'split', "foo \033[1mbar baz", 5));
     }
+
+    public function testException()
+    {
+        try {
+            $this->invokeMethod($this->console, 'wordwrap', "foo", -1);
+        } catch (\Exception $e) {
+            $this->assertEquals("Length cannot be negative or null.", $e->getMessage());
+        }
+        try {
+            $this->invokeMethod($this->console, 'split', "foo", -1);
+        } catch (\Exception $e) {
+            $this->assertEquals("Length cannot be negative or null.", $e->getMessage());
+        }
+        try {
+            $this->invokeMethod($this->console, 'cut', "foo", -1);
+        } catch (\Exception $e) {
+            $this->assertEquals("Length cannot be negative or null.", $e->getMessage());
+        }
+    }
 }
