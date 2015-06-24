@@ -103,6 +103,8 @@ class Console
         $text = $formatter->color($text);
 
         if ($length === false) {
+            $text .= (substr($text, -1) == '\\') ? ' ' : '';
+
             return $escape ? $this->escape($text) : $text;
         }
         if ($length === null) {
@@ -117,6 +119,8 @@ class Console
         }
         $length = $length - $offset;
         if ($this->len($text) <= $length) {
+            $text .= (substr($text, -1) == '\\') ? ' ' : '';
+
             return $escape ? $this->escape($text) : $text;
         }
         $text = utf8_decode($text);
@@ -134,9 +138,7 @@ class Console
             }
         }
         $text = utf8_encode($text);
-        if (substr($text, -1) == '\\') {
-            $text .= ' ';
-        }
+        $text .= (substr($text, -1) == '\\') ? ' ' : '';
 
         return $escape ? $this->escape($text) : $text;
     }

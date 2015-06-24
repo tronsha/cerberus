@@ -86,6 +86,14 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testError()
+    {
+        $this->assertEquals(
+            '<error>Some Error</error>',
+            $this->irc->error('Some Error')
+        );
+    }
+
     public function testCreateBot()
     {
         $sql = 'SELECT * FROM bot WHERE id = 1';

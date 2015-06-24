@@ -106,6 +106,22 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $input = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstu \033[1mabcde fghijklmnopqrstuvwxyz";
         $output = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstu \033[1mabcde" . PHP_EOL . 'fghijklmnopqrstuvwxyz';
         $this->assertEquals($output, $this->console->prepare($input, false, 80, true, true, 0));
+
+        $input = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstu \033[1mabcde fghijklmnopqrstuvwxyz";
+        $output = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstu \033[1mabcde fghijklmnopqrstuvwxyz";
+        $this->assertEquals($output, $this->console->prepare($input));
+
+        $input = '0123456789\\';
+        $output = '0123456789\\ ';
+        $this->assertEquals($output, $this->console->prepare($input, false, false));
+
+        $input = '0123456789\\';
+        $output = '0123456789\\ ';
+        $this->assertEquals($output, $this->console->prepare($input, false, 80));
+
+        $input = '0123456789\\';
+        $output = '01234' . PHP_EOL . '56789' .  PHP_EOL . '\\ ';
+        $this->assertEquals($output, $this->console->prepare($input, false, 5, true, false));
     }
 
     public function testLen()
