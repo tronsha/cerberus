@@ -154,12 +154,28 @@ class PluginPi extends Plugin
     }
 
     /**
-     * @return string
+     * @return float
      */
     protected function getTemp()
     {
         preg_match('/[0-9\.]+/', exec('vcgencmd measure_temp'), $matches);
-        return sprintf('%.1f°C', (float)$matches[0]);
+        return (float)$matches[0];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTempCelsius()
+    {
+        return sprintf('%.1f°C', $this->getTemp());
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTempFahrenheit()
+    {
+        return sprintf('%.1f°F',  $this->getTemp() * 1.8 + 32);
     }
 
     /**
@@ -204,6 +220,6 @@ class PluginPi extends Plugin
      */
     public function onHour()
     {
-        $this->irc->privmsg($this->vars['config']['channel'], $this->getTemp());
+        $this->irc->privmsg($this->vars['config']['channel'], $this->getTempCelsius());
     }
 }
