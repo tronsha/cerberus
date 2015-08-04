@@ -34,7 +34,14 @@ set_error_handler(
 );
 
 chdir(__DIR__);
-require_once('../vendor/autoload.php');
+if (file_exists('../vendor/autoload.php')) {
+    require_once '../vendor/autoload.php';
+} else {
+    echo 'You must set up the project dependencies, run the following commands:' . PHP_EOL;
+    echo 'curl -s https://getcomposer.org/installer | php' . PHP_EOL;
+    echo 'php composer.phar install' . PHP_EOL;
+    exit;
+}
 
 use Cerberus\Cerberus;
 
