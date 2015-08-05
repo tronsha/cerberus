@@ -3,6 +3,7 @@
 /tmp/
 /vendor/
 /public/
+/hades/
 config.ini
 composer.lock
 composer.phar
