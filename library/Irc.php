@@ -665,14 +665,6 @@ class Irc extends Cerberus
     }
 
     /**
-     * @return Action|null
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
      *
      */
     public function channellist()
@@ -777,6 +769,14 @@ class Irc extends Cerberus
     public function addEvent($event, $object, $priority = 5)
     {
         $this->pluginevents[$event][$priority][] = $object;
+    }
+
+    /**
+     * @return Action|null
+     */
+    public function getAction()
+    {
+        return $this->action;
     }
 
     /**

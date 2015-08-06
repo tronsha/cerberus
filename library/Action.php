@@ -34,10 +34,10 @@ class Action
     protected $db;
 
     /**
-     * @param Irc $irc
+     * @param Irc|null $irc
      * @param Db $db
      */
-    public function __construct(Irc $irc, Db $db)
+    public function __construct(Irc $irc = null, Db $db)
     {
         $this->irc = $irc;
         $this->db = $db;
