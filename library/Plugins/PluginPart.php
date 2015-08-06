@@ -36,7 +36,7 @@ class PluginPart extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->notice($data['nick'], 'New Command: !part [#channel]');
+            $this->irc->getAction()->notice($data['nick'], 'New Command: !part [#channel]');
         }
         return $returnValue;
     }
@@ -56,10 +56,10 @@ class PluginPart extends Plugin
             $channel = trim(array_shift($splitText));
             if (empty($channel) === true) {
                 $channel = $data['channel'];
-                $this->irc->part($channel);
+                $this->irc->getAction()->part($channel);
             } else {
                 do {
-                    $this->irc->part($channel);
+                    $this->irc->getAction()->part($channel);
                 } while ($channel = array_shift($splitText));
             }
             return true;

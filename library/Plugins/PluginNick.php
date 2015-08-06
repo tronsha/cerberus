@@ -36,7 +36,7 @@ class PluginNick extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->notice($data['nick'], 'New Command: !nick [name]');
+            $this->irc->getAction()->notice($data['nick'], 'New Command: !nick [name]');
         }
         return $returnValue;
     }
@@ -54,7 +54,7 @@ class PluginNick extends Plugin
         $command = array_shift($splitText);
         if ($command == '!nick') {
             $nick = trim(array_shift($splitText));
-            return $this->irc->nick($nick);
+            return $this->irc->getAction()->nick($nick);
         }
     }
 }

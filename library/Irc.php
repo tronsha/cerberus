@@ -53,6 +53,7 @@ class Irc extends Cerberus
     protected $auth = null;
     protected $param = null;
     protected $event = null;
+    protected $action = null;
     protected $translate = null;
 
     /**
@@ -136,6 +137,7 @@ class Irc extends Cerberus
                 $this->translate->setLang($config['bot']['lang']);
             }
         }
+        $this->action = new Action($this, $this->db);
         $this->event = new Event($this, $this->db);
     }
 
@@ -396,7 +398,7 @@ class Irc extends Cerberus
             }
         }
         foreach ($this->reconnect['channel'] as $channel) {
-            $this->join($channel);
+            $this->getAction()->join($channel);
         }
     }
 
@@ -663,70 +665,11 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param string $to
-     * @param string $text
+     * @return Action|null
      */
-    public function privmsg($to, $text)
+    public function getAction()
     {
-        $this->db->setWrite('PRIVMSG ' . $to . ' :' . $text);
-    }
-
-    /**
-     * @param string $to
-     * @param string $text
-     */
-    public function notice($to, $text)
-    {
-        $this->db->setWrite('NOTICE ' . $to . ' :' . $text);
-    }
-
-    /**
-     * @param string $text
-     */
-    public function quit($text)
-    {
-        $this->db->setWrite('QUIT :' . $text);
-    }
-
-    /**
-     * @param string|null $text
-     */
-    public function mode($text = null)
-    {
-        $this->db->setWrite('MODE' . ($text === null ? '' : ' ' . $text));
-    }
-
-    /**
-     * @param string $channel
-     */
-    public function join($channel)
-    {
-        $this->db->setWrite('JOIN ' . $channel);
-    }
-
-    /**
-     * @param string $channel
-     */
-    public function part($channel)
-    {
-        $this->db->setWrite('PART ' . $channel);
-    }
-
-    /**
-     * @param string $nick
-     */
-    public function whois($nick)
-    {
-        $this->db->setWrite('WHOIS :' . $nick);
-    }
-
-    /**
-     * @param string $nick
-     */
-    public function nick($nick)
-    {
-        $this->setNick($nick);
-        $this->db->setWrite('NICK :' . $nick);
+        return $this->action;
     }
 
     /**

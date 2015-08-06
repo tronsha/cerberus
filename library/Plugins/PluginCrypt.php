@@ -57,7 +57,7 @@ class PluginCrypt extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->notice($data['nick'], 'New Command: !cryptkey [#channel] [key]');
+            $this->irc->getAction()->notice($data['nick'], 'New Command: !cryptkey [#channel] [key]');
         }
         return $returnValue;
     }

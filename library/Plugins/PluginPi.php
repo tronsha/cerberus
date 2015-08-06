@@ -186,7 +186,7 @@ class PluginPi extends Plugin
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!temp' && $data['channel'] == $this->vars['config']['channel']) {
-            $this->irc->privmsg($data['channel'], $this->getTemp());
+            $this->irc->getAction()->privmsg($data['channel'], $this->getTemp());
         }
         $this->blink(17);
     }
@@ -220,6 +220,6 @@ class PluginPi extends Plugin
      */
     public function onHour()
     {
-        $this->irc->privmsg($this->vars['config']['channel'], $this->getTempCelsius());
+        $this->irc->getAction()->privmsg($this->vars['config']['channel'], $this->getTempCelsius());
     }
 }

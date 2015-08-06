@@ -96,7 +96,7 @@ class PluginAuth extends Plugin
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!auth') {
-            return $this->irc->whois($data['nick']);
+            return $this->irc->getAction()->whois($data['nick']);
         }
         if ($command == '!debug') {
             return print_r($this, true);

@@ -78,7 +78,7 @@ abstract class Plugin extends Cerberus
     public function onLoad($data)
     {
         if (isset($data) === true) {
-            $this->irc->notice($data['nick'], 'Load: ' . get_called_class());
+            $this->irc->getAction()->notice($data['nick'], 'Load: ' . get_called_class());
         }
         $this->irc->setTranslations($this->translations());
         return true;
