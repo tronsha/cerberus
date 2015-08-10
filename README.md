@@ -43,6 +43,11 @@ Then, use the `install` command:
 * PHP 5.4.0 or greater. 
 * For the Hades Frontend: PHP 5.5.0 or greater.
 * A Database. MySQL or PostgreSQL.
+ 
+## Info
+
+* [RFC 1459][9]
+* [RFC 2810][10]
 
 ## Libraries
 
@@ -74,3 +79,6 @@ Then, use the `install` command:
 [6]: http://www.doctrine-project.org/projects/dbal.html
 [7]: http://symfony.com/components/Console
 [8]: https://github.com/symfony/symfony/pull/13607
+[9]: https://tools.ietf.org/html/rfc1459
+[10]: https://tools.ietf.org/html/rfc2810
+
