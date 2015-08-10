@@ -186,7 +186,7 @@ class PluginPi extends Plugin
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!temp' && $data['channel'] == $this->vars['config']['channel']) {
-            $this->irc->getAction()->privmsg($data['channel'], $this->getTemp());
+            $this->irc->getAction()->privmsg($data['channel'], $this->getTempCelsius());
         }
         $this->blink(17);
     }
