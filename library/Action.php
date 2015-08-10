@@ -56,6 +56,15 @@ class Action
      * @param string $to
      * @param string $text
      */
+    public function me($to, $text)
+    {
+        $this->db->setWrite('PRIVMSG ' . $to . ' :' . "\x01" . 'ACTION ' . $text . "\x01");
+    }
+
+    /**
+     * @param string $to
+     * @param string $text
+     */
     public function notice($to, $text)
     {
         $this->db->setWrite('NOTICE ' . $to . ' :' . $text);
