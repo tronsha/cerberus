@@ -35,7 +35,7 @@ use Exception;
  */
 class Db
 {
-    protected $config = array();
+    protected $config = [];
     protected $irc = null;
     protected $conn = null;
     protected $botId = null;
@@ -113,11 +113,11 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->insert('bot')
                 ->values(
-                    array(
+                    [
                         'pid' => '?',
                         'start' => '?',
                         'nick' => '?'
-                    )
+                    ]
                 )
                 ->setParameter(0, $pid)
                 ->setParameter(1, $now)
@@ -317,10 +317,10 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->insert('send')
                 ->values(
-                    array(
+                    [
                         'text' => '?',
                         'bot_id' => '?'
-                    )
+                    ]
                 )
                 ->setParameter(0, $text)
                 ->setParameter(1, $this->botId)
@@ -384,7 +384,7 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->insert('log')
                 ->values(
-                    array(
+                    [
                         'nick' => '?',
                         'host' => '?',
                         'command' => '?',
@@ -395,7 +395,7 @@ class Db
                         'bot_id' => '?',
                         'time' => '?',
                         'direction' => '?'
-                    )
+                    ]
                 )
                 ->setParameter(0, $nick)
                 ->setParameter(1, $host)
@@ -459,10 +459,10 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->insert('channel')
                 ->values(
-                    array(
+                    [
                         'channel' => '?',
                         'bot_id' => '?'
-                    )
+                    ]
                 )
                 ->setParameter(0, $channel)
                 ->setParameter(1, $this->botId)
@@ -513,12 +513,12 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->insert('channel_user')
                 ->values(
-                    array(
+                    [
                         'username' => '?',
                         'mode' => '?',
                         'channel' => '?',
                         'bot_id' => '?'
-                    )
+                    ]
                 )
                 ->setParameter(0, $user)
                 ->setParameter(1, $mode)

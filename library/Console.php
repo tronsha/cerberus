@@ -169,7 +169,7 @@ class Console
         $textArray = explode(' ', $text);
         $count = 0;
         $lineCount = 0;
-        $output = array();
+        $output = [];
         $output[$lineCount] = '';
         foreach ($textArray as $word) {
             $wordLength = $this->len($word);

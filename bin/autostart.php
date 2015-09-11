@@ -61,7 +61,7 @@ if ($config['bot']['autostart']) {
     $botCount = 0;
     if ($bots) {
         exec('ps -e | grep php', $output);
-        $pidList = array();
+        $pidList = [];
         foreach ($output as $line) {
             $data = explode(' ', trim(preg_replace('/[ ]+/', ' ', $line)));
             if ($data[3] == 'php') {

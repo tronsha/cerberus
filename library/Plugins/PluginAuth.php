@@ -31,7 +31,7 @@ use Cerberus\Plugin;
  */
 class PluginAuth extends Plugin
 {
-    private $auth = array();
+    private $auth = [];
 
     protected function init()
     {

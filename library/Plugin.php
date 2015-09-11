@@ -58,7 +58,7 @@ abstract class Plugin extends Cerberus
      */
     protected function translations()
     {
-        return array();
+        return [];
     }
 
     /**

@@ -125,7 +125,7 @@ class Installer
         } elseif (Cerberus::isExecAvailable() === false) {
             $io->write('<error>Can\'t run "PHPUnit", because "exec" is disabled.</error>');
         } else {
-            $output = array();
+            $output = [];
             exec(Cerberus::getPath() . '/vendor/bin/phpunit', $output);
             foreach ($output as $line) {
                 $io->write('<comment>' . $line . '</comment>');

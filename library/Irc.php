@@ -34,8 +34,8 @@ use Exception;
  */
 class Irc extends Cerberus
 {
-    protected $server = array();
-    protected $bot = array();
+    protected $server = [];
+    protected $bot = [];
     protected $db = null;
     protected $dbms;
     protected $fp = false;
@@ -43,13 +43,13 @@ class Irc extends Cerberus
     protected $run;
     protected $lastping;
     protected $nowrite;
-    protected $var = array();
-    protected $time = array();
-    protected $version = array();
-    protected $config = array();
-    protected $reconnect = array();
-    protected $loaded = array();
-    protected $pluginevents = array();
+    protected $var = [];
+    protected $time = [];
+    protected $version = [];
+    protected $config = [];
+    protected $reconnect = [];
+    protected $loaded = [];
+    protected $pluginevents = [];
     protected $auth = null;
     protected $param = null;
     protected $event = null;
@@ -66,10 +66,10 @@ class Irc extends Cerberus
         $this->bot['nick'] = null;
         $this->server['network'] = null;
         $this->server['password'] = null;
-        $this->config['info'] = array('name' => 'Cerberus');
-        $this->reconnect['channel'] = array();
-        $this->loaded['classes'] = array();
-        $this->config['dbms'] = array('mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite');
+        $this->config['info'] = ['name' => 'Cerberus'];
+        $this->reconnect['channel'] = [];
+        $this->loaded['classes'] = [];
+        $this->config['dbms'] = ['mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite'];
         $this->config['autorejoin'] = false;
         $this->config['ctcp'] = false;
         $this->config['logfiledirectory'] = $this->getPath() . '/log/';
@@ -175,7 +175,7 @@ class Irc extends Cerberus
      */
     public function getVars()
     {
-        return array('config' => $this->config, 'version' => $this->version, 'var' => $this->var, 'time' => $this->time);
+        return ['config' => $this->config, 'version' => $this->version, 'var' => $this->var, 'time' => $this->time];
     }
 
     /**
@@ -374,7 +374,7 @@ class Irc extends Cerberus
      */
     protected function reconnect()
     {
-        $this->reconnect['channel'] = array();
+        $this->reconnect['channel'] = [];
         $channels = $this->db->getJoinedChannels();
         foreach ($channels as $channel) {
             $this->reconnect['channel'][] = $channel['channel'];
@@ -800,7 +800,7 @@ class Irc extends Cerberus
     /**
      * @param array $translations
      */
-    public function setTranslations($translations = array())
+    public function setTranslations($translations = [])
     {
         $this->translate->setTranslations($translations);
     }

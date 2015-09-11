@@ -43,7 +43,7 @@ class PluginPi extends Plugin
     const TIME = 50;
 
     protected $vars = null;
-    protected $info = array();
+    protected $info = [];
 
     /**
      *

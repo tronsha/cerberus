@@ -43,7 +43,7 @@ class FormatterConsole extends Formatter
      */
     protected function matchColor($id)
     {
-        $matchColor = array(
+        $matchColor = [
             0 => '15',
             1 => '0',
             2 => '4',
@@ -60,7 +60,7 @@ class FormatterConsole extends Formatter
             13 => '13',
             14 => '8',
             15 => '7'
-        );
+        ];
 
         return $matchColor[$id % 16];
     }
@@ -72,7 +72,7 @@ class FormatterConsole extends Formatter
      */
     protected function getColor($fg = null, $bg = null)
     {
-        $fgbg = array();
+        $fgbg = [];
         if ($fg !== null) {
             $fgbg[] = '38;5;' . $this->matchColor($fg);
             if ($bg !== null) {

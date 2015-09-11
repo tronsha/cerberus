@@ -33,7 +33,7 @@ use Cerberus\Mircryption;
  */
 class PluginCrypt extends Plugin
 {
-    private $cryptkey = array();
+    private $cryptkey = [];
     private $mircryption = null;
 
     /**

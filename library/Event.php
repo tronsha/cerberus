@@ -65,7 +65,7 @@ class Event
      */
     public function onShutdown()
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -73,7 +73,7 @@ class Event
      */
     public function onError($text)
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array('error' => $text));
+        $this->irc->runPluginEvent(__FUNCTION__, ['error' => $text]);
     }
 
     /**
@@ -81,7 +81,7 @@ class Event
      */
     public function onTick()
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
         $minute = (new DateTime())->format('i');
         if ($minute != $this->minute) {
             $this->minute = $minute;
@@ -99,7 +99,7 @@ class Event
      */
     public function onMinute()
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -107,7 +107,7 @@ class Event
      */
     public function onHour()
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -116,7 +116,7 @@ class Event
      */
     public function on431()
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -126,7 +126,7 @@ class Event
     public function on432()
     {
         $this->irc->otherNick();
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -136,7 +136,7 @@ class Event
     public function on433()
     {
         $this->irc->otherNick();
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -146,7 +146,7 @@ class Event
     public function on437()
     {
         $this->irc->otherNick();
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -157,7 +157,7 @@ class Event
      */
     public function on322($rest, $text)
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array('rest' => $rest, 'text' => $text));
+        $this->irc->runPluginEvent(__FUNCTION__, ['rest' => $rest, 'text' => $text]);
     }
 
     /**
@@ -166,7 +166,7 @@ class Event
      */
     public function on323()
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -175,7 +175,7 @@ class Event
      */
     public function on324()
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -187,7 +187,7 @@ class Event
     {
         list($me, $nick, $user, $host) = explode(' ', $rest);
         unset($me);
-        $this->irc->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'host' => $user . '@' . $host));
+        $this->irc->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'host' => $user . '@' . $host]);
     }
 
     /**
@@ -199,7 +199,7 @@ class Event
     {
         list($me, $nick, $auth) = explode(' ', $rest);
         unset($me);
-        $this->irc->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'auth' => $auth));
+        $this->irc->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'auth' => $auth]);
     }
 
     /**
@@ -208,7 +208,7 @@ class Event
      */
     public function on318()
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -265,7 +265,7 @@ class Event
                             if (preg_match('/^[a-z]+$/i', $splitText[1]) > 0) {
                                 $this->irc->loadPlugin(
                                     $splitText[1],
-                                    array('nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text)
+                                    ['nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text]
                                 );
                             }
                         }
@@ -274,7 +274,7 @@ class Event
                 default:
                     $this->irc->runPluginEvent(
                         __FUNCTION__,
-                        array('nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text)
+                        ['nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text]
                     );
                     return null;
             }
@@ -287,7 +287,7 @@ class Event
      */
     public function onNotice($nick, $text)
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
+        $this->irc->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
     }
 
     /**
@@ -301,7 +301,7 @@ class Event
             $this->irc->setNick($text);
         }
         $this->db->changeNick($nick, $text);
-        $this->irc->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'text' => $text));
+        $this->irc->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
     }
 
     /**
@@ -319,7 +319,7 @@ class Event
             preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
             $this->db->addUserToChannel($channel, $matches[2], $matches[1]);
         }
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -333,7 +333,7 @@ class Event
         list($me, $channel) = explode(' ', $rest);
         unset($me);
         $this->onTopic($channel, $text);
-        $this->irc->runPluginEvent(__FUNCTION__, array());
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -343,7 +343,7 @@ class Event
     public function onTopic($channel, $topic)
     {
         $this->db->setChannelTopic($channel, $topic);
-        $this->irc->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'topic' => $topic, ));
+        $this->irc->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'topic' => $topic]);
     }
 
     /**
@@ -359,7 +359,7 @@ class Event
         } else {
             $this->db->addUserToChannel($channel, $nick);
         }
-        $this->irc->runPluginEvent(__FUNCTION__, array('nick' => $nick, 'channel' => $channel));
+        $this->irc->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'channel' => $channel]);
     }
 
     /**
@@ -375,7 +375,7 @@ class Event
         if ($this->vars['config']['autorejoin'] === true && $me === true) {
             $this->irc->getAction()->join($channel);
         }
-        $this->irc->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer));
+        $this->irc->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer]);
     }
 
     /**
@@ -386,7 +386,7 @@ class Event
     {
         $this->vars = $this->irc->getVars();
         $me = $nick == $this->vars['var']['me'] ? true : false;
-        $this->irc->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'me' => $me, 'nick' => $nick));
+        $this->irc->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick]);
         if ($me === true) {
             $this->db->removeChannel($channel);
         } else {
@@ -399,7 +399,7 @@ class Event
      */
     public function onQuit($nick)
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array('nick' => $nick));
+        $this->irc->runPluginEvent(__FUNCTION__, ['nick' => $nick]);
         $this->db->removeUser($nick);
     }
 
@@ -408,7 +408,7 @@ class Event
      */
     public function onMode($mode)
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array('mode' => $mode));
+        $this->irc->runPluginEvent(__FUNCTION__, ['mode' => $mode]);
     }
 
     /**
@@ -418,6 +418,6 @@ class Event
      */
     public function onInvite($channel, $host, $rest)
     {
-        $this->irc->runPluginEvent(__FUNCTION__, array('channel' => $channel, 'host' => $host, 'rest' => $rest));
+        $this->irc->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'host' => $host, 'rest' => $rest]);
     }
 }

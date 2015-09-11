@@ -32,7 +32,7 @@ namespace Cerberus;
 class Translate
 {
     protected $lang;
-    protected $translations = array();
+    protected $translations = [];
 
     /**
      *
