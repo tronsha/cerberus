@@ -51,8 +51,7 @@ if (is_dir('../.git') === true) {
     chdir(__DIR__);
 }
 
-$path = Cerberus::getPath();
-$config = parse_ini_file($path . '/config.ini', true);
+$config = Cerberus::getConfig();
 
 if ($config['bot']['autostart']) {
     $db = new Db($config['db']);

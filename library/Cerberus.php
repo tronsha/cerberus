@@ -63,12 +63,21 @@ class Cerberus
      */
     public function run()
     {
+        $irc = new Irc(self::getConfig());
+        $irc->connect();
+        return $irc;
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public static function getConfig()
+    {
         if (file_exists(self::getPath() . '/config.ini') === false) {
             throw new Exception('File Not Found: ' . self::getPath() . '/config.ini');
         }
-        $irc = new Irc(parse_ini_file(self::getPath() . '/config.ini', true));
-        $irc->connect();
-        return $irc;
+        return parse_ini_file(self::getPath() . '/config.ini', true);
     }
 
     /**
