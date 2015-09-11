@@ -42,7 +42,7 @@ Then, use the `install` command:
 
 * PHP 5.4.0 or greater. 
 * For the Hades Frontend: PHP 5.5.0 or greater.
-* A Database. MySQL or PostgreSQL.
+* A Database: MySQL or PostgreSQL.
  
 ## Info
 
