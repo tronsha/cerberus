@@ -59,7 +59,6 @@ class Cerberus
     /**
      * run me as main method
      * @return Irc
-     * @throws Exception
      */
     public function run()
     {
