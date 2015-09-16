@@ -51,6 +51,25 @@ if (is_dir('../.git') === true) {
     chdir(__DIR__);
 }
 
+if (file_exists('../vendor/bin/phpunit') === true) {
+    chdir(dirname(__DIR__));
+    exec('./vendor/bin/phpunit', $output);
+    $console = Cerberus::getConsole();
+    foreach ($output as $line) {
+        if ($line === 'FAILURES!') {
+            $console->writeln('<error>' . $line . '</error>');
+        } else {
+            $console->writeln($line);
+        }
+    }
+    end($output);
+    if (prev($output) === 'FAILURES!') {
+        exit;
+    }
+    unset($output);
+    chdir(__DIR__);
+}
+
 $config = Cerberus::getConfig();
 
 if ($config['bot']['autostart']) {
