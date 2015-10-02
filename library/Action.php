@@ -88,18 +88,22 @@ class Action
 
     /**
      * @param string $channel
+     * @return array
      */
     public function join($channel)
     {
         $this->db->setWrite('JOIN ' . $channel);
+        return ['action' => 'join', 'channel' => $channel];
     }
 
     /**
      * @param string $channel
+     * @return array
      */
     public function part($channel)
     {
         $this->db->setWrite('PART ' . $channel);
+        return ['action' => 'part', 'channel' => $channel];
     }
 
     /**
