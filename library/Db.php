@@ -408,6 +408,28 @@ class Db
                 ->setParameter(8, $now)
                 ->setParameter(9, $direction)
                 ->execute();
+            $logId = $this->conn->lastInsertId();
+            if (strtolower($command) == 'privmsg') {
+                $qb = $this->conn->createQueryBuilder();
+                $qb ->insert('log_privmsg')
+                    ->values(
+                        [
+                            'log_id' => '?',
+                            'bot_id' => '?',
+                            'channel' => '?',
+                            'nick' => '?',
+                            'text' => '?',
+                            'time' => '?'
+                        ]
+                    )
+                    ->setParameter(0, $logId)
+                    ->setParameter(1, $this->botId)
+                    ->setParameter(2, $rest)
+                    ->setParameter(3, $nick)
+                    ->setParameter(4, $text)
+                    ->setParameter(5, $now)
+                    ->execute();
+            }
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }

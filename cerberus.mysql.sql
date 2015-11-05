@@ -53,6 +53,17 @@ CREATE TABLE IF NOT EXISTS `log` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `log_privmsg` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `log_id` int(11) unsigned NOT NULL,
+  `bot_id` int(11) unsigned NOT NULL,
+  `channel` varchar(255) NOT NULL,
+  `nick` varchar(255) NOT NULL,
+  `text` text NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `network` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `network` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
