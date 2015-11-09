@@ -409,27 +409,46 @@ class Db
                 ->setParameter(9, $direction)
                 ->execute();
             $logId = $this->conn->lastInsertId();
-            if (strtolower($command) == 'privmsg') {
-                $qb = $this->conn->createQueryBuilder();
-                $qb ->insert('log_privmsg')
-                    ->values(
-                        [
-                            'log_id' => '?',
-                            'bot_id' => '?',
-                            'channel' => '?',
-                            'nick' => '?',
-                            'text' => '?',
-                            'time' => '?'
-                        ]
-                    )
-                    ->setParameter(0, $logId)
-                    ->setParameter(1, $this->botId)
-                    ->setParameter(2, $rest)
-                    ->setParameter(3, $nick)
-                    ->setParameter(4, $text)
-                    ->setParameter(5, $now)
-                    ->execute();
+            switch (strtolower($command)) {
+                case 'privmsg':
+                    $this->setPrivmsgLog($rest, $nick, $text, $now, $logId);
+                    break;
             }
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
+     * @param string $channel
+     * @param string $nick
+     * @param string $text
+     * @param string $time
+     * @param string|null $logId
+     * @param string|null $botId
+     */
+    public function setPrivmsgLog($channel, $nick, $text, $time, $logId = null, $botId = null)
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->insert('log_privmsg')
+                ->values(
+                    [
+                        'log_id' => '?',
+                        'bot_id' => '?',
+                        'channel' => '?',
+                        'nick' => '?',
+                        'text' => '?',
+                        'time' => '?'
+                    ]
+                )
+                ->setParameter(0, $logId)
+                ->setParameter(1, ($botId === null ? $this->botId : $botId))
+                ->setParameter(2, $channel)
+                ->setParameter(3, $nick)
+                ->setParameter(4, $text)
+                ->setParameter(5, $time)
+                ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
