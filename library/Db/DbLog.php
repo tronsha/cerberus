@@ -94,7 +94,7 @@ class DbLog
                 ->setParameter(2, $time)
                 ->execute();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
+            $this->db->error($e->getMessage());
         }
     }
 
@@ -115,7 +115,7 @@ class DbLog
                 ->setParameter(2, $time)
                 ->execute();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
+            $this->db->error($e->getMessage());
         }
     }
 
@@ -136,7 +136,7 @@ class DbLog
                 ->setParameter(2, $time)
                 ->execute();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
+            $this->db->error($e->getMessage());
         }
     }
 
@@ -157,7 +157,7 @@ class DbLog
                 ->setParameter(2, $time)
                 ->execute();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
+            $this->db->error($e->getMessage());
         }
     }
 
@@ -178,7 +178,7 @@ class DbLog
                 ->setParameter(2, $time)
                 ->execute();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
+            $this->db->error($e->getMessage());
         }
     }
 
@@ -199,7 +199,7 @@ class DbLog
                 ->setParameter(2, $time)
                 ->execute();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
+            $this->db->error($e->getMessage());
         }
     }
 
@@ -220,7 +220,7 @@ class DbLog
                 ->setParameter(2, $time)
                 ->execute();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
+            $this->db->error($e->getMessage());
         }
     }
 
@@ -241,7 +241,7 @@ class DbLog
                 ->setParameter(2, $time)
                 ->execute();
         } catch (Exception $e) {
-            $this->error($e->getMessage());
+            $this->db->error($e->getMessage());
         }
     }
 }
