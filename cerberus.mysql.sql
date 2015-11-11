@@ -64,6 +64,50 @@ CREATE TABLE IF NOT EXISTS `log_privmsg` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
+CREATE TABLE IF NOT EXISTS `log_notice` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `log_id` int(11) unsigned NOT NULL,
+  `bot_id` int(11) unsigned NOT NULL,
+  `toUser` varchar(255) NOT NULL,
+  `fromUser` varchar(255) NOT NULL,
+  `text` text NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `log_join` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `log_id` int(11) unsigned NOT NULL,
+  `bot_id` int(11) unsigned NOT NULL,
+  `channel` varchar(255) NOT NULL,
+  `nick` varchar(255) NOT NULL,
+  `text` text NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `log_part` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `log_id` int(11) unsigned NOT NULL,
+  `bot_id` int(11) unsigned NOT NULL,
+  `channel` varchar(255) NOT NULL,
+  `nick` varchar(255) NOT NULL,
+  `text` text NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `log_quit` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `log_id` int(11) unsigned NOT NULL,
+  `bot_id` int(11) unsigned NOT NULL,
+  `channel` varchar(255) NOT NULL,
+  `nick` varchar(255) NOT NULL,
+  `text` text NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
 CREATE TABLE IF NOT EXISTS `network` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `network` varchar(255) COLLATE utf8_unicode_ci NOT NULL,

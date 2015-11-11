@@ -432,6 +432,18 @@ class Db
                 case 'privmsg':
                     $this->log->setPrivmsgLog($rest, $nick, $text, $now, $logId);
                     break;
+                case 'notice':
+                    $this->log->setNoticeLog($rest, $nick, $text, $now, $logId);
+                    break;
+                case 'join':
+                    $this->log->setJoinLog($rest, $nick, $text, $now, $logId);
+                    break;
+                case 'part':
+                    $this->log->setPartLog($rest, $nick, $text, $now, $logId);
+                    break;
+                case 'quit':
+                    $this->log->setQuitLog($rest, $nick, $text, $now, $logId);
+                    break;
             }
         } catch (Exception $e) {
             $this->error($e->getMessage());

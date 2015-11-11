@@ -3,3 +3,8 @@ TRUNCATE TABLE `channel`;
 TRUNCATE TABLE `channel_user`;
 TRUNCATE TABLE `send`;
 TRUNCATE TABLE `log`;
+TRUNCATE TABLE `log_privmsg`;
+TRUNCATE TABLE `log_notice`;
+TRUNCATE TABLE `log_join`;
+TRUNCATE TABLE `log_part`;
+TRUNCATE TABLE `log_quit`;

@@ -77,7 +77,34 @@ class DbLog
         }
     }
 
-    public function setJoinLog($time, $logId = null, $botId = null)
+    public function setNoticeLog($toUser, $fromUser, $text, $time, $logId = null, $botId = null)
+    {
+        try {
+            $qb = $this->db->getConn()->createQueryBuilder();
+            $qb ->insert('log_notice')
+                ->values(
+                    [
+                        'log_id' => '?',
+                        'bot_id' => '?',
+                        'toUser' => '?',
+                        'fromUser' => '?',
+                        'text' => '?',
+                        'time' => '?'
+                    ]
+                )
+                ->setParameter(0, $logId)
+                ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+                ->setParameter(2, $toUser)
+                ->setParameter(3, $fromUser)
+                ->setParameter(4, $text)
+                ->setParameter(5, $time)
+                ->execute();
+        } catch (Exception $e) {
+            $this->db->error($e->getMessage());
+        }
+    }
+
+    public function setJoinLog($channel, $nick, $text, $time, $logId = null, $botId = null)
     {
         try {
             $qb = $this->db->getConn()->createQueryBuilder();
@@ -86,40 +113,25 @@ class DbLog
                     [
                         'log_id' => '?',
                         'bot_id' => '?',
+                        'channel' => '?',
+                        'nick' => '?',
+                        'text' => '?',
                         'time' => '?'
                     ]
                 )
                 ->setParameter(0, $logId)
                 ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
-                ->setParameter(2, $time)
+                ->setParameter(2, $channel)
+                ->setParameter(3, $nick)
+                ->setParameter(4, $text)
+                ->setParameter(5, $time)
                 ->execute();
         } catch (Exception $e) {
             $this->db->error($e->getMessage());
         }
     }
 
-    public function setQuitLog($time, $logId = null, $botId = null)
-    {
-        try {
-            $qb = $this->db->getConn()->createQueryBuilder();
-            $qb ->insert('log_quit')
-                ->values(
-                    [
-                        'log_id' => '?',
-                        'bot_id' => '?',
-                        'time' => '?'
-                    ]
-                )
-                ->setParameter(0, $logId)
-                ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
-                ->setParameter(2, $time)
-                ->execute();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
-    }
-
-    public function setPartLog($time, $logId = null, $botId = null)
+    public function setPartLog($channel, $nick, $text, $time, $logId = null, $botId = null)
     {
         try {
             $qb = $this->db->getConn()->createQueryBuilder();
@@ -128,12 +140,45 @@ class DbLog
                     [
                         'log_id' => '?',
                         'bot_id' => '?',
+                        'channel' => '?',
+                        'nick' => '?',
+                        'text' => '?',
                         'time' => '?'
                     ]
                 )
                 ->setParameter(0, $logId)
                 ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
-                ->setParameter(2, $time)
+                ->setParameter(2, $channel)
+                ->setParameter(3, $nick)
+                ->setParameter(4, $text)
+                ->setParameter(5, $time)
+                ->execute();
+        } catch (Exception $e) {
+            $this->db->error($e->getMessage());
+        }
+    }
+
+    public function setQuitLog($channel, $nick, $text, $time, $logId = null, $botId = null)
+    {
+        try {
+            $qb = $this->db->getConn()->createQueryBuilder();
+            $qb ->insert('log_quit')
+                ->values(
+                    [
+                        'log_id' => '?',
+                        'bot_id' => '?',
+                        'channel' => '?',
+                        'nick' => '?',
+                        'text' => '?',
+                        'time' => '?'
+                    ]
+                )
+                ->setParameter(0, $logId)
+                ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+                ->setParameter(2, $channel)
+                ->setParameter(3, $nick)
+                ->setParameter(4, $text)
+                ->setParameter(5, $time)
                 ->execute();
         } catch (Exception $e) {
             $this->db->error($e->getMessage());
@@ -166,27 +211,6 @@ class DbLog
         try {
             $qb = $this->db->getConn()->createQueryBuilder();
             $qb ->insert('log_mode')
-                ->values(
-                    [
-                        'log_id' => '?',
-                        'bot_id' => '?',
-                        'time' => '?'
-                    ]
-                )
-                ->setParameter(0, $logId)
-                ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
-                ->setParameter(2, $time)
-                ->execute();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
-    }
-
-    public function setNoticeLog($time, $logId = null, $botId = null)
-    {
-        try {
-            $qb = $this->db->getConn()->createQueryBuilder();
-            $qb ->insert('log_notice')
                 ->values(
                     [
                         'log_id' => '?',
