@@ -436,13 +436,19 @@ class Db
                     $this->log->setNoticeLog($rest, $nick, $text, $now, $logId);
                     break;
                 case 'join':
-                    $this->log->setJoinLog($rest, $nick, $text, $now, $logId);
+                    if ($direction == 'in') {
+                        $this->log->setJoinLog($rest, $nick, $now, $logId);
+                    }
                     break;
                 case 'part':
-                    $this->log->setPartLog($rest, $nick, $text, $now, $logId);
+                    if ($direction == 'in') {
+                        $this->log->setPartLog($rest, $nick, $text, $now, $logId);
+                    }
                     break;
                 case 'quit':
-                    $this->log->setQuitLog($rest, $nick, $text, $now, $logId);
+                    if ($direction == 'in') {
+                        $this->log->setQuitLog($nick, $text, $now, $logId);
+                    }
                     break;
             }
         } catch (Exception $e) {
