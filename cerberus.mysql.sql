@@ -135,7 +135,10 @@ CREATE TABLE IF NOT EXISTS `preform` (
   `text` text COLLATE utf8_unicode_ci NOT NULL,
   `priority` int(11) NOT NULL DEFAULT '50',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+
+INSERT INTO `preform` (`id`, `network`, `text`, `priority`) VALUES
+(1, 'freenode', 'JOIN #cerberbot', 50);
 
 CREATE TABLE IF NOT EXISTS `server` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
