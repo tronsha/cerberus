@@ -181,6 +181,35 @@ class DbLog
         }
     }
 
+    public function setKickLog($channel, $nick, $kicked, $text, $time, $logId = null, $botId = null)
+    {
+        try {
+            $qb = $this->db->getConn()->createQueryBuilder();
+            $qb ->insert('log_kick')
+                ->values(
+                    [
+                        'log_id' => '?',
+                        'bot_id' => '?',
+                        'channel' => '?',
+                        'nick' => '?',
+                        'kicked' => '?',
+                        'text' => '?',
+                        'time' => '?'
+                    ]
+                )
+                ->setParameter(0, $logId)
+                ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+                ->setParameter(2, $channel)
+                ->setParameter(3, $nick)
+                ->setParameter(4, $kicked)
+                ->setParameter(5, $text)
+                ->setParameter(6, $time)
+                ->execute();
+        } catch (Exception $e) {
+            $this->db->error($e->getMessage());
+        }
+    }
+
     public function setNickLog($time, $logId = null, $botId = null)
     {
         try {
@@ -207,27 +236,6 @@ class DbLog
         try {
             $qb = $this->db->getConn()->createQueryBuilder();
             $qb ->insert('log_mode')
-                ->values(
-                    [
-                        'log_id' => '?',
-                        'bot_id' => '?',
-                        'time' => '?'
-                    ]
-                )
-                ->setParameter(0, $logId)
-                ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
-                ->setParameter(2, $time)
-                ->execute();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
-    }
-
-    public function setKickLog($time, $logId = null, $botId = null)
-    {
-        try {
-            $qb = $this->db->getConn()->createQueryBuilder();
-            $qb ->insert('log_kick')
                 ->values(
                     [
                         'log_id' => '?',

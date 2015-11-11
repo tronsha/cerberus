@@ -450,6 +450,12 @@ class Db
                         $this->log->setQuitLog($nick, $text, $now, $logId);
                     }
                     break;
+                case 'kick':
+                    if ($direction == 'in') {
+                        list($channel, $kicked) = explode(' ', $rest);
+                        $this->log->setQuitLog($channel, $nick, $kicked, $text, $now, $logId);
+                    }
+                    break;
             }
         } catch (Exception $e) {
             $this->error($e->getMessage());
