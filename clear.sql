@@ -8,3 +8,4 @@ TRUNCATE TABLE `log_notice`;
 TRUNCATE TABLE `log_join`;
 TRUNCATE TABLE `log_part`;
 TRUNCATE TABLE `log_quit`;
+TRUNCATE TABLE `log_kick`;
