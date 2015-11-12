@@ -453,7 +453,17 @@ class Db
                 case 'kick':
                     if ($direction == 'in') {
                         list($channel, $kicked) = explode(' ', $rest);
-                        $this->log->setQuitLog($channel, $nick, $kicked, $text, $now, $logId);
+                        $this->log->setKickLog($channel, $nick, $kicked, $text, $now, $logId);
+                    }
+                    break;
+                case 'nick':
+                    if ($direction == 'in') {
+                        $this->log->setNickLog($nick, $text, $now, $logId);
+                    }
+                    break;
+                case 'topic':
+                    if ($direction == 'in') {
+                        $this->log->setTopicLog($rest, $nick, $text, $now, $logId);
                     }
                     break;
             }

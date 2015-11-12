@@ -210,7 +210,7 @@ class DbLog
         }
     }
 
-    public function setNickLog($time, $logId = null, $botId = null)
+    public function setNickLog($oldNick, $newNick, $time, $logId = null, $botId = null)
     {
         try {
             $qb = $this->db->getConn()->createQueryBuilder();
@@ -219,40 +219,23 @@ class DbLog
                     [
                         'log_id' => '?',
                         'bot_id' => '?',
+                        'oldnick' => '?',
+                        'newnick' => '?',
                         'time' => '?'
                     ]
                 )
                 ->setParameter(0, $logId)
                 ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
-                ->setParameter(2, $time)
+                ->setParameter(2, $oldNick)
+                ->setParameter(3, $newNick)
+                ->setParameter(4, $time)
                 ->execute();
         } catch (Exception $e) {
             $this->db->error($e->getMessage());
         }
     }
 
-    public function setModeLog($time, $logId = null, $botId = null)
-    {
-        try {
-            $qb = $this->db->getConn()->createQueryBuilder();
-            $qb ->insert('log_mode')
-                ->values(
-                    [
-                        'log_id' => '?',
-                        'bot_id' => '?',
-                        'time' => '?'
-                    ]
-                )
-                ->setParameter(0, $logId)
-                ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
-                ->setParameter(2, $time)
-                ->execute();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
-    }
-
-    public function setTopicLog($time, $logId = null, $botId = null)
+    public function setTopicLog($channel, $nick, $topic, $time, $logId = null, $botId = null)
     {
         try {
             $qb = $this->db->getConn()->createQueryBuilder();
@@ -261,12 +244,18 @@ class DbLog
                     [
                         'log_id' => '?',
                         'bot_id' => '?',
+                        'channel' => '?',
+                        'nick' => '?',
+                        'topic' => '?',
                         'time' => '?'
                     ]
                 )
                 ->setParameter(0, $logId)
                 ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
-                ->setParameter(2, $time)
+                ->setParameter(2, $channel)
+                ->setParameter(3, $nick)
+                ->setParameter(4, $topic)
+                ->setParameter(5, $time)
                 ->execute();
         } catch (Exception $e) {
             $this->db->error($e->getMessage());
