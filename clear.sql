@@ -9,3 +9,5 @@ TRUNCATE TABLE `log_join`;
 TRUNCATE TABLE `log_part`;
 TRUNCATE TABLE `log_quit`;
 TRUNCATE TABLE `log_kick`;
+TRUNCATE TABLE `log_nick`;
+TRUNCATE TABLE `log_topic`;
