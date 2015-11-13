@@ -428,44 +428,43 @@ class Db
                 ->setParameter(9, $direction)
                 ->execute();
             $logId = $this->conn->lastInsertId();
-            switch (strtolower($command)) {
-                case 'privmsg':
-                    $this->log->setPrivmsgLog($rest, $nick, $text, $now, $logId);
-                    break;
-                case 'notice':
-                    $this->log->setNoticeLog($rest, $nick, $text, $now, $logId);
-                    break;
-                case 'join':
-                    if ($direction == 'in') {
+            if ($direction == 'in') {
+                switch (strtolower($command)) {
+                    case 'privmsg':
+                        $this->log->setPrivmsgLog($rest, $nick, $text, $now, $logId);
+                        break;
+                    case 'notice':
+                        $this->log->setNoticeLog($rest, $nick, $text, $now, $logId);
+                        break;
+                    case 'join':
                         $this->log->setJoinLog($rest, $nick, $now, $logId);
-                    }
-                    break;
-                case 'part':
-                    if ($direction == 'in') {
+                        break;
+                    case 'part':
                         $this->log->setPartLog($rest, $nick, $text, $now, $logId);
-                    }
-                    break;
-                case 'quit':
-                    if ($direction == 'in') {
+                        break;
+                    case 'quit':
                         $this->log->setQuitLog($nick, $text, $now, $logId);
-                    }
-                    break;
-                case 'kick':
-                    if ($direction == 'in') {
+                        break;
+                    case 'kick':
                         list($channel, $kicked) = explode(' ', $rest);
                         $this->log->setKickLog($channel, $nick, $kicked, $text, $now, $logId);
-                    }
-                    break;
-                case 'nick':
-                    if ($direction == 'in') {
+                        break;
+                    case 'nick':
                         $this->log->setNickLog($nick, $text, $now, $logId);
-                    }
-                    break;
-                case 'topic':
-                    if ($direction == 'in') {
+                        break;
+                    case 'topic':
                         $this->log->setTopicLog($rest, $nick, $text, $now, $logId);
-                    }
-                    break;
+                        break;
+                }
+            } elseif ($direction == 'out') {
+                switch (strtolower($command)) {
+                    case 'privmsg':
+                        $this->log->setPrivmsgLog($rest, $nick, $text, $now, $logId);
+                        break;
+                    case 'notice':
+                        $this->log->setNoticeLog($rest, $nick, $text, $now, $logId);
+                        break;
+                }
             }
         } catch (Exception $e) {
             $this->error($e->getMessage());
