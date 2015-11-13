@@ -50,6 +50,8 @@ class Db
     {
         $this->irc = $irc;
         $this->config = $config;
+        $this->config['charset'] = 'utf8';
+        $this->config['driverOptions'] = array(1002 => 'SET NAMES utf8');
         $this->log = new DbLog($this);
     }
 
