@@ -506,11 +506,11 @@ class Irc extends Cerberus
             $text = isset($matches[3]) ? $matches[3] : '';
 
             $this->db->setLog(
-                $this->server['network'],
                 $send['text'],
+                $command,
+                $this->server['network'],
                 $this->bot['nick'],
                 '',
-                $command,
                 $rest,
                 $text,
                 'out'
@@ -649,7 +649,7 @@ class Irc extends Cerberus
                 $this->event->onInvite($text, $host, $rest);
                 break;
         }
-        $this->db->setLog($this->server['network'], $all, $nick, $host, $command, $rest, $text, 'in');
+        $this->db->setLog($all, $command, $this->server['network'], $nick, $host, $rest, $text, 'in');
     }
 
     /**

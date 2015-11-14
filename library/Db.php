@@ -389,16 +389,16 @@ class Db
     }
 
     /**
-     * @param string $network
      * @param string $all
+     * @param string $command
+     * @param string $network
      * @param string $nick
      * @param string $host
-     * @param string $command
      * @param string $rest
      * @param string $text
      * @param string $direction
      */
-    public function setLog($network, $all, $nick, $host, $command, $rest, $text, $direction)
+    public function setLog($all, $command, $network, $nick, $host, $rest, $text, $direction)
     {
         try {
             $now = (new DateTime())->format('Y-m-d H:i:s');
