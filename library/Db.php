@@ -389,7 +389,7 @@ class Db
     }
 
     /**
-     * @param string $all
+     * @param string $irc
      * @param string $command
      * @param string $network
      * @param string $nick
