@@ -398,7 +398,7 @@ class Db
      * @param string $text
      * @param string $direction
      */
-    public function setLog($all, $command, $network, $nick, $host, $rest, $text, $direction)
+    public function setLog($irc, $command, $network, $nick, $host, $rest, $text, $direction)
     {
         try {
             $now = (new DateTime())->format('Y-m-d H:i:s');
@@ -406,28 +406,20 @@ class Db
             $qb ->insert('log')
                 ->values(
                     [
-                        'nick' => '?',
-                        'host' => '?',
-                        'command' => '?',
-                        'rest' => '?',
-                        'text' => '?',
-                        'irc' => '?',
-                        'network' => '?',
                         'bot_id' => '?',
+                        'network' => '?',
+                        'command' => '?',
+                        'irc' => '?',
                         'time' => '?',
                         'direction' => '?'
                     ]
                 )
-                ->setParameter(0, $nick)
-                ->setParameter(1, $host)
+                ->setParameter(0, $this->botId)
+                ->setParameter(1, $network)
                 ->setParameter(2, $command)
-                ->setParameter(3, $rest)
-                ->setParameter(4, $text)
-                ->setParameter(5, $all)
-                ->setParameter(6, $network)
-                ->setParameter(7, $this->botId)
-                ->setParameter(8, $now)
-                ->setParameter(9, $direction)
+                ->setParameter(3, $irc)
+                ->setParameter(4, $now)
+                ->setParameter(5, $direction)
                 ->execute();
             $logId = $this->conn->lastInsertId();
             if ($direction == 'in') {

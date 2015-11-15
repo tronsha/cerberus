@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS `channel` (
 
 CREATE TABLE IF NOT EXISTS `channellist` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `network` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `channel` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `network` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `channel` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `usercount` int(11) unsigned NOT NULL,
   `topic` text COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime NOT NULL,
@@ -41,12 +41,8 @@ CREATE TABLE IF NOT EXISTS `channel_user` (
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `bot_id` int(11) unsigned NOT NULL,
-  `network` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `nick` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `host` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `command` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `rest` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `network` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `command` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `irc` text COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime NOT NULL,
   `direction` enum('in','out') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'in',
@@ -152,7 +148,7 @@ INSERT INTO `network` (`id`, `network`) VALUES
 
 CREATE TABLE IF NOT EXISTS `preform` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `network` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `network` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `text` text COLLATE utf8_unicode_ci NOT NULL,
   `priority` int(11) NOT NULL DEFAULT '50',
   PRIMARY KEY (`id`)
