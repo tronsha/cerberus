@@ -53,8 +53,8 @@ SELECT setval('"channel_user_id_seq"', 1, true);
 DROP TABLE IF EXISTS "channellist";
 CREATE TABLE "channellist" (
 	"id" serial NOT NULL ,
-	"network" varchar(200) NOT NULL ,
-	"channel" varchar(200) NOT NULL ,
+	"network" varchar(255) NOT NULL ,
+	"channel" varchar(255) NOT NULL ,
 	"usercount" integer NOT NULL ,
 	"topic" text NOT NULL ,
 	"time" timestamp with time zone NOT NULL ,
@@ -69,18 +69,124 @@ CREATE TYPE "log_enum_direction" as enum('in','out');
 CREATE TABLE "log" (
 	"id" serial NOT NULL ,
 	"bot_id" integer NOT NULL ,
-	"network" varchar(200) NOT NULL ,
-	"nick" varchar(200) NOT NULL ,
-	"host" varchar(200) NOT NULL ,
-	"command" varchar(200) NOT NULL ,
-	"rest" varchar(200) NOT NULL ,
-	"text" text NOT NULL ,
+	"network" varchar(255) NOT NULL ,
+	"command" varchar(255) NOT NULL ,
 	"irc" text NOT NULL ,
 	"time" timestamp with time zone NOT NULL ,
 	"direction" log_enum_direction NOT NULL ,
 	PRIMARY KEY ("id")
 );
 SELECT setval('"log_id_seq"', 1, true);
+;
+
+DROP TABLE IF EXISTS "log_privmsg";
+CREATE TABLE "log_privmsg" (
+	"id" serial NOT NULL ,
+	"log_id" integer NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"channel" varchar(255) NOT NULL ,
+	"nick" varchar(255) NOT NULL ,
+	"text" text NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"log_privmsg_id_seq"', 1, true);
+;
+
+DROP TABLE IF EXISTS "log_notice";
+CREATE TABLE "log_notice" (
+	"id" serial NOT NULL ,
+	"log_id" integer NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"target" varchar(255) NOT NULL ,
+	"nick" varchar(255) NOT NULL ,
+	"text" text NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"log_notice_id_seq"', 1, true);
+;
+
+DROP TABLE IF EXISTS "log_join";
+CREATE TABLE "log_join" (
+	"id" serial NOT NULL ,
+	"log_id" integer NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"channel" varchar(255) NOT NULL ,
+	"nick" varchar(255) NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"log_join_id_seq"', 1, true);
+;
+
+DROP TABLE IF EXISTS "log_part";
+CREATE TABLE "log_part" (
+	"id" serial NOT NULL ,
+	"log_id" integer NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"channel" varchar(255) NOT NULL ,
+	"nick" varchar(255) NOT NULL ,
+	"text" text NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"log_part_id_seq"', 1, true);
+;
+
+DROP TABLE IF EXISTS "log_quit";
+CREATE TABLE "log_quit" (
+	"id" serial NOT NULL ,
+	"log_id" integer NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"nick" varchar(255) NOT NULL ,
+	"text" text NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"log_quit_id_seq"', 1, true);
+;
+
+DROP TABLE IF EXISTS "log_kick";
+CREATE TABLE "log_kick" (
+	"id" serial NOT NULL ,
+	"log_id" integer NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"channel" varchar(255) NOT NULL ,
+	"nick" varchar(255) NOT NULL ,
+	"kicked" varchar(255) NOT NULL ,
+	"text" text NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"log_kick_id_seq"', 1, true);
+;
+
+DROP TABLE IF EXISTS "log_nick";
+CREATE TABLE "log_nick" (
+	"id" serial NOT NULL ,
+	"log_id" integer NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"oldnick" varchar(255) NOT NULL ,
+	"newnick" varchar(255) NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"log_nick_id_seq"', 1, true);
+;
+
+DROP TABLE IF EXISTS "log_topic";
+CREATE TABLE "log_topic" (
+	"id" serial NOT NULL ,
+	"log_id" integer NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"channel" varchar(255) NOT NULL ,
+	"nick" varchar(255) NOT NULL ,
+	"topic" text NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"log_topic_id_seq"', 1, true);
 ;
 
 DROP TABLE IF EXISTS "network";
@@ -99,13 +205,14 @@ INSERT INTO "network" ("id","network") VALUES
 DROP TABLE IF EXISTS "preform";
 CREATE TABLE "preform" (
 	"id" serial NOT NULL ,
-	"network" varchar(200) NOT NULL ,
+	"network" varchar(255) NOT NULL ,
 	"text" text NOT NULL ,
 	"priority" integer NOT NULL ,
 	PRIMARY KEY ("id")
 );
-SELECT setval('"preform_id_seq"', 1, true);
-;
+SELECT setval('"preform_id_seq"', 2, true);
+INSERT INTO "network" ("id","network","text","priority") VALUES
+(1, 'freenode', 'JOIN #cerberbot', 50);
 
 DROP TABLE IF EXISTS "send";
 CREATE TABLE "send" (
