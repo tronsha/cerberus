@@ -43,6 +43,10 @@ class PluginPi extends Plugin
     const LOW = 0;
     const TIME = 50;
 
+    const LED_BLUE = 17;
+    const LED_GREEN = 27;
+    const LED_RED = 22;
+
     protected $vars = null;
     protected $info = [];
 
@@ -63,25 +67,25 @@ class PluginPi extends Plugin
                 $this->info['revision'] = $matches[0][2];
                 $this->info['memory'] = $matches[0][3];
                 $this->info['maker'] = $matches[0][4];
-                $this->setOut(27);
-                $this->setOut(17);
-                $this->setOut(22);
-                $this->blink(27);
-                $this->blink(17);
-                $this->blink(22);
+                $this->setOut(self::LED_GREEN);
+                $this->setOut(self::LED_BLUE);
+                $this->setOut(self::LED_RED);
+                $this->blink(self::LED_GREEN);
+                $this->blink(self::LED_BLUE);
+                $this->blink(self::LED_RED);
                 $this->irc->addEvent('onPrivmsg', $this);
                 $this->irc->addEvent('onJoin', $this);
                 $this->irc->addEvent('onPart', $this);
                 $this->irc->addEvent('onQuit', $this);
                 $this->irc->addEvent('onShutdown', $this);
-                $this->irc->addEvent('onHour', $this);
+                $this->irc->addCron('0 * * * *', $this, 'privmsgTemp');
             } else {
                 $this->irc->sysinfo('This Plugin is only for the RaspberryPi with WiringPi.');
                 $this->irc->sysinfo('http://www.raspberrypi.org');
                 $this->irc->sysinfo('http://wiringpi.com');
             }
         } else {
-            $this->irc->sysinfo('Can\'t run the bot, because "exec" is disabled');
+            $this->irc->sysinfo('Can\'t use this Plugin, because "exec" is disabled');
         }
     }
 
@@ -187,9 +191,9 @@ class PluginPi extends Plugin
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!temp' && $data['channel'] == $this->vars['config']['channel']) {
-            $this->irc->getAction()->privmsg($data['channel'], $this->getTempCelsius());
+            $this->privmsgTemp($data['channel']);
         }
-        $this->blink(17);
+        $this->blink(self::LED_BLUE);
     }
 
     /**
@@ -197,7 +201,7 @@ class PluginPi extends Plugin
      */
     public function onJoin($data)
     {
-        $this->blink(27);
+        $this->blink(self::LED_GREEN);
     }
 
     /**
@@ -205,7 +209,7 @@ class PluginPi extends Plugin
      */
     public function onPart($data)
     {
-        $this->blink(22);
+        $this->blink(self::LED_RED);
     }
 
     /**
@@ -213,14 +217,15 @@ class PluginPi extends Plugin
      */
     public function onQuit($data)
     {
-        $this->blink(22);
+        $this->blink(self::LED_RED);
     }
 
     /**
-     *
+     * @param string|null $channel
      */
-    public function onHour()
+    public function privmsgTemp($channel = null)
     {
-        $this->irc->getAction()->privmsg($this->vars['config']['channel'], $this->getTempCelsius());
+        $channel = $channel == null ? $this->vars['config']['channel'] : $channel;
+        $this->irc->getAction()->privmsg($channel, $this->getTempCelsius());
     }
 }

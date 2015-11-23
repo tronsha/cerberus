@@ -46,7 +46,7 @@ class Cron
      * @param string $method
      * @return int
      */
-    public function setCron($cronString, $object, $method)
+    public function addCron($cronString, $object, $method)
     {
         $this->cronId++;
         $cronString = preg_replace('/\s+/', ' ', $cronString);
@@ -72,7 +72,7 @@ class Cron
     public function cron($minute, $hour, $day_of_month, $month, $day_of_week)
     {
         foreach ($this->cronjobs as $cron) {
-            if ($this->checkCron($cron['cron'], $minute, $hour, $day_of_month, $month, $day_of_week) === true) {
+            if ($this->compareCron($cron['cron'], $minute, $hour, $day_of_month, $month, $day_of_week) === true) {
                 $cron['object']->{$cron['method']}();
             }
         }
@@ -87,15 +87,39 @@ class Cron
      * @param int $day_of_week
      * @return bool
      */
-    public function checkCron($cronString, $minute, $hour, $day_of_month, $month, $day_of_week)
+    public function compareCron($cronString, $minute, $hour, $day_of_month, $month, $day_of_week)
     {
+        $cronString = trim($cronString);
         list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = explode(' ', $cronString);
+        $cronDayOfWeek = $cronDayOfWeek == 7 ? 0 : $cronDayOfWeek;
         if (
-            in_array($cronMinute, ['*', $minute]) === true &&
-            in_array($cronHour, ['*', $hour]) === true &&
-            in_array($cronDayOfMonth, ['*', $day_of_month]) === true &&
-            in_array($cronMonth, ['*', $month]) === true &&
-            in_array($cronDayOfWeek, ['*', $day_of_week]) === true
+            (
+                $cronMinute == '*' || $cronMinute == $minute
+            ) && (
+                $cronHour == '*' || $cronHour == $hour
+            ) && (
+                $cronMonth == '*' || $cronMonth == $month
+            ) && (
+                (
+                    (
+                        $cronDayOfMonth == '*' || $cronDayOfMonth == $day_of_month
+                    ) && (
+                        $cronDayOfWeek == '*' || $cronDayOfWeek == $day_of_week
+                    )
+                ) || (
+                    (
+                        $cronDayOfMonth != '*'
+                    ) && (
+                        $cronDayOfWeek != '*'
+                    ) && (
+                        (
+                            $cronDayOfMonth == $day_of_month
+                        ) || (
+                            $cronDayOfWeek == $day_of_week
+                        )
+                    )
+                )
+            )
         ) {
             return true;
         }

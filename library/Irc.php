@@ -825,8 +825,8 @@ class Irc extends Cerberus
      * @param string $method
      * @return int
      */
-    public function setCron($cronString, $object, $method)
+    public function addCron($cronString, $object, $method)
     {
-        return $this->cron->setCron($cronString, $object, $method);
+        return $this->cron->addCron($cronString, $object, $method);
     }
 }
