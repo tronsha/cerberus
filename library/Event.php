@@ -37,6 +37,9 @@ class Event
     protected $vars;
     protected $minute = '';
     protected $hour = '';
+    protected $day_of_month = '';
+    protected $month = '';
+    protected $day_of_week = '';
 
     /**
      * @param Irc $irc
@@ -49,6 +52,9 @@ class Event
         $this->vars = $this->irc->getVars();
         $this->minute = (new DateTime())->format('i');
         $this->hour = (new DateTime())->format('H');
+        $this->day_of_month = (new DateTime())->format('j');
+        $this->month = (new DateTime())->format('n');
+        $this->day_of_week = (new DateTime())->format('w');
     }
 
     /**
@@ -92,6 +98,18 @@ class Event
             $this->hour = $hour;
             $this->onHour();
         }
+        $day_of_month = (new DateTime())->format('j');
+        if ($day_of_month != $this->day_of_month) {
+            $this->day_of_month = $day_of_month;
+        }
+        $month = (new DateTime())->format('n');
+        if ($month != $this->month) {
+            $this->month = $month;
+        }
+        $day_of_week = (new DateTime())->format('w');
+        if ($day_of_week != $this->day_of_week) {
+            $this->day_of_week = $day_of_week;
+        }
     }
 
     /**
@@ -100,6 +118,7 @@ class Event
     public function onMinute()
     {
         $this->irc->runPluginEvent(__FUNCTION__, []);
+        $this->irc-cron($this->minute, $this->hour, $this->day_of_month, $this->month, $this->day_of_week);
     }
 
     /**

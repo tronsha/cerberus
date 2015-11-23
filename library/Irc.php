@@ -55,6 +55,7 @@ class Irc extends Cerberus
     protected $event = null;
     protected $action = null;
     protected $translate = null;
+    protected $cron = null;
 
     /**
      * @param array|null $config
@@ -139,6 +140,7 @@ class Irc extends Cerberus
         }
         $this->action = new Action($this, $this->db);
         $this->event = new Event($this, $this->db);
+        $this->cron = new Cron();
     }
 
     /**
@@ -803,5 +805,28 @@ class Irc extends Cerberus
     public function setTranslations($translations = [])
     {
         $this->translate->setTranslations($translations);
+    }
+
+    /**
+     * @param int $minute
+     * @param int $hour
+     * @param int $day_of_month
+     * @param int $month
+     * @param int $day_of_week
+     */
+    public function runCron($minute, $hour, $day_of_month, $month, $day_of_week)
+    {
+        $this->cron->cron($minute, $hour, $day_of_month, $month, $day_of_week);
+    }
+
+    /**
+     * @param string $cronString
+     * @param string $object
+     * @param string $method
+     * @return int
+     */
+    public function setCron($cronString, $object, $method)
+    {
+        return $this->cron->setCron($cronString, $object, $method);
     }
 }
