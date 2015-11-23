@@ -118,7 +118,7 @@ class Event
     public function onMinute()
     {
         $this->irc->runPluginEvent(__FUNCTION__, []);
-        $this->irc-runCron($this->minute, $this->hour, $this->day_of_month, $this->month, $this->day_of_week);
+        $this->irc->runCron($this->minute, $this->hour, $this->day_of_month, $this->month, $this->day_of_week);
     }
 
     /**
