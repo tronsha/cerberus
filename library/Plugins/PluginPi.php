@@ -47,6 +47,8 @@ class PluginPi extends Plugin
     const LED_GREEN = 27;
     const LED_RED = 22;
 
+    const TEMP = 7;
+
     protected $vars = null;
     protected $info = [];
 
@@ -78,7 +80,7 @@ class PluginPi extends Plugin
                 $this->irc->addEvent('onPart', $this);
                 $this->irc->addEvent('onQuit', $this);
                 $this->irc->addEvent('onShutdown', $this);
-                $this->irc->addCron('0 * * * *', $this, 'privmsgTemp');
+                $this->irc->addCron('0 * * * *', $this, 'privmsgCpuTemp');
             } else {
                 $this->irc->sysinfo('This Plugin is only for the RaspberryPi with WiringPi.');
                 $this->irc->sysinfo('http://www.raspberrypi.org');
@@ -161,10 +163,36 @@ class PluginPi extends Plugin
     /**
      * @return float
      */
-    protected function getTemp()
+    protected function getCpuTemp()
     {
         preg_match('/[0-9\.]+/', exec('vcgencmd measure_temp'), $matches);
         return (float)$matches[0];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCpuTempCelsius()
+    {
+        return sprintf('%.1f°C', $this->getCpuTemp());
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCpuTempFahrenheit()
+    {
+        return sprintf('%.1f°F', $this->getCpuTemp() * 1.8 + 32);
+    }
+
+    /**
+     * @return float
+     */
+    protected function getTemp()
+    {
+        $output = exec('sudo /home/pi/projects/lol_dht22/loldht ' . self::TEMP . ' | grep Temperature');
+        preg_match('/Temperature = ([0-9\.]+)/', $output, $matches);
+        return (float)$matches[1];
     }
 
     /**
@@ -180,7 +208,7 @@ class PluginPi extends Plugin
      */
     protected function getTempFahrenheit()
     {
-        return sprintf('%.1f°F',  $this->getTemp() * 1.8 + 32);
+        return sprintf('%.1f°F', $this->getTemp() * 1.8 + 32);
     }
 
     /**
@@ -218,6 +246,15 @@ class PluginPi extends Plugin
     public function onQuit($data)
     {
         $this->blink(self::LED_RED);
+    }
+
+    /**
+     * @param string|null $channel
+     */
+    public function privmsgCpuTemp($channel = null)
+    {
+        $channel = $channel == null ? $this->vars['config']['channel'] : $channel;
+        $this->irc->getAction()->privmsg($channel, $this->getCpuTempCelsius());
     }
 
     /**
