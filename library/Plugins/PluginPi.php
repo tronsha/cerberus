@@ -47,8 +47,8 @@ class PluginPi extends Plugin
     const LED_GREEN = 27;
     const LED_RED = 22;
 
-    const LOLDHT_PATH = '/home/pi/projects/lol_dht22/loldht';
-    const DHT_PIN = 7;
+    const DHT = 7;
+    const LOLDHT = '/home/pi/projects/lol_dht22/loldht';
 
     protected $vars = null;
     protected $info = [];
@@ -76,6 +76,7 @@ class PluginPi extends Plugin
                 $this->blink(self::LED_GREEN);
                 $this->blink(self::LED_BLUE);
                 $this->blink(self::LED_RED);
+                $this->setIn(self::DHT);
                 $this->irc->addEvent('onPrivmsg', $this);
                 $this->irc->addEvent('onJoin', $this);
                 $this->irc->addEvent('onPart', $this);
@@ -191,7 +192,7 @@ class PluginPi extends Plugin
      */
     protected function getTemp()
     {
-        $output = exec('sudo ' . self::LOLDHT_PATH . ' ' . self::DHT_PIN . ' | grep Temperature');
+        $output = exec('sudo ' . self::LOLDHT . ' ' . self::DHT . ' | grep Temperature');
         preg_match('/Temperature = ([0-9\.]+)/', $output, $matches);
         return (float)$matches[1];
     }
