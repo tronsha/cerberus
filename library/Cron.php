@@ -30,7 +30,7 @@ namespace Cerberus;
 class Cron
 {
     protected $irc;
-    protected $cronjobs = array();
+    protected $cronjobs = [];
     protected $cronId = 0;
 
     /**
@@ -56,10 +56,15 @@ class Cron
 
     /**
      * @param int $id
+     * @return bool
      */
     public function remove($id)
     {
-        unset($this->cronjobs[$id]);
+        if (array_key_exists($id, $this->cronjobs)) {
+            unset($this->cronjobs[$id]);
+            return true;
+        }
+        return false;
     }
 
     /**

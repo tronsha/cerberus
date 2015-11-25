@@ -832,6 +832,7 @@ class Irc extends Cerberus
 
     /**
      * @param int $id
+     * @return bool
      */
     public function removeCron($id)
     {
