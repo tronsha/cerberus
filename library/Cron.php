@@ -46,7 +46,7 @@ class Cron
      * @param string $method
      * @return int
      */
-    public function addCron($cronString, $object, $method)
+    public function add($cronString, $object, $method)
     {
         $this->cronId++;
         $cronString = preg_replace('/\s+/', ' ', $cronString);
@@ -57,7 +57,7 @@ class Cron
     /**
      * @param int $id
      */
-    public function removeCron($id)
+    public function remove($id)
     {
         unset($this->cronjobs[$id]);
     }
@@ -69,10 +69,10 @@ class Cron
      * @param int $month
      * @param int $day_of_week
      */
-    public function cron($minute, $hour, $day_of_month, $month, $day_of_week)
+    public function run($minute, $hour, $day_of_month, $month, $day_of_week)
     {
         foreach ($this->cronjobs as $cron) {
-            if ($this->compareCron($cron['cron'], $minute, $hour, $day_of_month, $month, $day_of_week) === true) {
+            if ($this->compare($cron['cron'], $minute, $hour, $day_of_month, $month, $day_of_week) === true) {
                 $cron['object']->{$cron['method']}();
             }
         }
@@ -87,7 +87,7 @@ class Cron
      * @param int $day_of_week
      * @return bool
      */
-    public function compareCron($cronString, $minute, $hour, $day_of_month, $month, $day_of_week)
+    public function compare($cronString, $minute, $hour, $day_of_month, $month, $day_of_week)
     {
         $cronString = trim($cronString);
         list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = explode(' ', $cronString);

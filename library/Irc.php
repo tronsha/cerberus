@@ -816,7 +816,7 @@ class Irc extends Cerberus
      */
     public function runCron($minute, $hour, $day_of_month, $month, $day_of_week)
     {
-        $this->cron->cron($minute, $hour, $day_of_month, $month, $day_of_week);
+        $this->cron->run($minute, $hour, $day_of_month, $month, $day_of_week);
     }
 
     /**
@@ -827,6 +827,14 @@ class Irc extends Cerberus
      */
     public function addCron($cronString, $object, $method)
     {
-        return $this->cron->addCron($cronString, $object, $method);
+        return $this->cron->add($cronString, $object, $method);
+    }
+
+    /**
+     * @param int $id
+     */
+    public function removeCron($id)
+    {
+        return $this->cron->remove($id);
     }
 }
