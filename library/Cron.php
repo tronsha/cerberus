@@ -92,11 +92,11 @@ class Cron
         $cronString = trim($cronString);
         list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = explode(' ', $cronString);
         $cronDayOfWeek = $cronDayOfWeek == 7 ? 0 : $cronDayOfWeek;
-        $cronMinute = $cronMinute != '*' ? $this->stringToArray($cronMinute) : $cronMinute;
-        $cronHour = $cronHour != '*' ? $this->stringToArray($cronHour) : $cronHour;
-        $cronDayOfMonth = $cronDayOfMonth != '*' ? $this->stringToArray($cronDayOfMonth) : $cronDayOfMonth;
-        $cronMonth = $cronMonth != '*' ? $this->stringToArray($cronMonth) : $cronMonth;
-        $cronDayOfWeek = $cronDayOfWeek != '*' ? $this->stringToArray($cronDayOfWeek) : $cronDayOfWeek;
+        $cronMinute = $cronMinute != '*' ? $this->prepare($cronMinute, 0, 59) : $cronMinute;
+        $cronHour = $cronHour != '*' ? $this->prepare($cronHour, 0, 23) : $cronHour;
+        $cronDayOfMonth = $cronDayOfMonth != '*' ? $this->prepare($cronDayOfMonth, 1, 31) : $cronDayOfMonth;
+        $cronMonth = $cronMonth != '*' ? $this->prepare($cronMonth, 1, 12) : $cronMonth;
+        $cronDayOfWeek = $cronDayOfWeek != '*' ? $this->prepare($cronDayOfWeek, 0, 6) : $cronDayOfWeek;
         if (
             (
                 $cronMinute == '*' || in_array($minute, $cronMinute) === true
@@ -133,9 +133,11 @@ class Cron
 
     /**
      * @param string $string
+     * @param int $a
+     * @param int $b
      * @return array
      */
-    public function stringToArray($string)
+    public function prepare($string, $a, $b)
     {
         $values = [];
         if (strpos($string, ',') !== false) {
