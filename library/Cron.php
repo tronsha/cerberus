@@ -152,12 +152,21 @@ class Cron
         }
         $array = [];
         foreach ($values as $value) {
+            $steps = 1;
+            if (strpos($string, '/') !== false) {
+                list($value, $steps) = explode('/', $string);
+            }
+            if ($value == '*') {
+                $value = $a . '-' . $b;
+            }
             if (strpos($value, '-') !== false) {
                 list($min, $max) = explode('-', $value);
                 $min = (int)$min;
                 $max = (int)$max;
-                for ($i = $min; $i <= $max; $i++) {
-                    $array[] = $i;
+                for ($i = $min, $j = 0; $i <= $max; $i++, $j++) {
+                    if ($j % $steps == 0) {
+                        $array[] = $i;
+                    }
                 }
             } else {
                 $array[] = (int)$value;

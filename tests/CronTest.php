@@ -64,11 +64,23 @@ class CronTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->cron->compare('10-20,30-40 * * * *', 15, 12, 1, 1, 0));
         $this->assertFalse($this->cron->compare('20-30,40-50 * * * *', 15, 12, 1, 1, 0));
 
-//        $this->assertTrue($this->cron->compare('*/5 * * * *', 15, 12, 1, 1, 0));
-//        $this->assertFalse($this->cron->compare('*/10 * * * *', 15, 12, 1, 1, 0));
+        $this->assertTrue($this->cron->compare('*/5 * * * *', 15, 12, 1, 1, 0));
+        $this->assertFalse($this->cron->compare('*/10 * * * *', 15, 12, 1, 1, 0));
 
-//        $this->assertTrue($this->cron->compare('0-30/5 * * * *', 15, 12, 1, 1, 0));
-//        $this->assertFalse($this->cron->compare('30-55/5 * * * *', 15, 12, 1, 1, 0));
-//        $this->assertFalse($this->cron->compare('1-20/5 * * * *', 15, 12, 1, 1, 0));
+        $this->assertTrue($this->cron->compare('0-30/5 * * * *', 15, 12, 1, 1, 0));
+        $this->assertFalse($this->cron->compare('30-55/5 * * * *', 15, 12, 1, 1, 0));
+
+        $this->assertTrue($this->cron->compare('2-32/5 * * * *', 17, 12, 1, 1, 0));
+        $this->assertFalse($this->cron->compare('2-32/5 * * * *', 15, 12, 1, 1, 0));
+
+        $this->assertTrue($this->cron->compare('1-20/3 * * * *', 1, 12, 1, 1, 0));
+        $this->assertTrue($this->cron->compare('1-20/3 * * * *', 4, 12, 1, 1, 0));
+        $this->assertFalse($this->cron->compare('1-20/3 * * * *', 3, 12, 1, 1, 0));
+
+        $this->assertTrue($this->cron->compare('0 */6 * * *', 0, 0, 1, 1, 0));
+        $this->assertTrue($this->cron->compare('0 */6 * * *', 0, 6, 1, 1, 0));
+        $this->assertTrue($this->cron->compare('0 */6 * * *', 0, 12, 1, 1, 0));
+        $this->assertTrue($this->cron->compare('0 */6 * * *', 0, 18, 1, 1, 0));
+        $this->assertFalse($this->cron->compare('0 */6 * * *', 0, 14, 1, 1, 0));
     }
 }
