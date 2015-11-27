@@ -25,6 +25,7 @@ namespace Cerberus;
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/cerberus/ Project Homepage
  * @link https://github.com/tronsha/Cerberus Project on GitHub
+ * @link https://en.wikipedia.org/wiki/Cron Cron
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
 class Cron
@@ -96,6 +97,8 @@ class Cron
     {
         $cronString = trim($cronString);
         list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = explode(' ', $cronString);
+        $cronDayOfWeek = $this->dowNameToNumber($cronDayOfWeek);
+        $cronMonth = $this->monthNameToNumber($cronMonth);
         $cronDayOfWeek = $cronDayOfWeek == 7 ? 0 : $cronDayOfWeek;
         $cronMinute = $cronMinute != '*' ? $this->prepare($cronMinute, 0, 59) : $cronMinute;
         $cronHour = $cronHour != '*' ? $this->prepare($cronHour, 0, 23) : $cronHour;
@@ -173,5 +176,29 @@ class Cron
             }
         }
         return $array;
+    }
+
+    /**
+     * @param string $subject
+     * @return string
+     */
+    public function monthNameToNumber($subject)
+    {
+        $subject = strtolower($subject);
+        $search = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+        $replace = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        return str_replace($search, $replace, $subject);
+    }
+
+    /**
+     * @param string $subject
+     * @return string
+     */
+    public function dowNameToNumber($subject)
+    {
+        $subject = strtolower($subject);
+        $search = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+        $replace = [0, 1, 2, 3, 4, 5, 6];
+        return str_replace($search, $replace, $subject);
     }
 }

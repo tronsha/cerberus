@@ -82,5 +82,11 @@ class CronTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->cron->compare('0 */6 * * *', 0, 12, 1, 1, 0));
         $this->assertTrue($this->cron->compare('0 */6 * * *', 0, 18, 1, 1, 0));
         $this->assertFalse($this->cron->compare('0 */6 * * *', 0, 14, 1, 1, 0));
+
+        $this->assertTrue($this->cron->compare('0 12 * * SUN', 0, 12, 1, 1, 0));
+        $this->assertFalse($this->cron->compare('0 12 * * SAT', 0, 12, 1, 1, 0));
+
+        $this->assertTrue($this->cron->compare('0 12 * JAN-JUN *', 0, 12, 1, 1, 0));
+        $this->assertFalse($this->cron->compare('0 12 * JUL-DEC *', 0, 12, 1, 1, 0));
     }
 }
