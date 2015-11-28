@@ -449,7 +449,7 @@ class Irc extends Cerberus
         if (substr($output, -1) == '\\') {
             $output .= ' ';
         }
-        $this->getConsole()->writeln('<output>' . $this->getConsole()->prepare($output, true, null, true, true, 0) . '</output>');
+        $this->getConsole()->writeln($this->getConsole()->prepare($output, true, null, true, true, 0));
         fwrite($this->fp, $output . PHP_EOL);
         preg_match("/^([^ ]+).*?$/i", $text, $matches);
         $command = isset($matches[1]) ? $matches[1] : '';
@@ -475,7 +475,7 @@ class Irc extends Cerberus
                 $text .= ' ';
             }
             $this->log($text, 'socket');
-            $this->getConsole()->writeln('<input>' . $this->getConsole()->prepare($text, true, null, true, true, 0) . '</input>');
+            $this->getConsole()->writeln($this->getConsole()->prepare($text, true, null, true, true, 0));
         }
         return $input;
     }
