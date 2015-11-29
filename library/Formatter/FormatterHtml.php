@@ -29,6 +29,8 @@ namespace Cerberus\Formatter;
  */
 class FormatterHtml extends Formatter
 {
+    protected $open = false;
+
     /**
      *
      */
@@ -78,11 +80,14 @@ class FormatterHtml extends Formatter
             if ($bg !== null) {
                 $fgbg[] = 'background-color: ' . $this->matchColor($bg);
             }
-
+            if ($this->open === true) {
+                return '</span><span style="' . implode('; ', $fgbg) . ';">';
+            }
+            $this->open = true;
             return '<span style="' . implode('; ', $fgbg) . ';">';
         }
-
-        return "</span>";
+        $this->open = false;
+        return '</span>';
     }
 
     /**

@@ -74,11 +74,7 @@ abstract class Formatter
         }
         $coloredOutput = '';
         $xx = $fg = $bg = '';
-        if ($this->type == 'HTML') {
-            $reset = 0;
-        } elseif ($this->type == 'CONSOLE') {
-            $reset = '';
-        }
+        $reset = false;
         foreach (str_split($output) as $char) {
             if ($char === "\x03") {
                 $xx = 'fg';
@@ -91,25 +87,13 @@ abstract class Formatter
             } elseif ($xx === 'fg' || $xx === 'bg') {
                 if ($bg !== '') {
                     $coloredOutput .= $this->getColor($fg, $bg);
-                    if ($this->type == 'HTML') {
-                        $reset++;
-                    } elseif ($this->type == 'CONSOLE') {
-                        $reset = $this->getColor();
-                    }
+                    $reset = true;
                 } elseif ($fg !== '') {
                     $coloredOutput .= $this->getColor($fg);
-                    if ($this->type == 'HTML') {
-                        $reset++;
-                    } elseif ($this->type == 'CONSOLE') {
-                        $reset = $this->getColor();
-                    }
+                    $reset = true;
                 } else {
                     $coloredOutput .= $this->getColor();
-                    if ($this->type == 'HTML') {
-                        $reset--;
-                    } elseif ($this->type == 'CONSOLE') {
-                        $reset = '';
-                    }
+                    $reset = false;
                 }
                 if ($xx === 'bg' && $bg === '') {
                     $coloredOutput .= ',';
@@ -120,12 +104,8 @@ abstract class Formatter
                 $coloredOutput .= $char;
             }
         }
-        if ($this->type == 'HTML') {
-            for ($i = 0; $i < $reset; $i++) {
-                $coloredOutput .= $this->getColor();
-            }
-        } elseif ($this->type == 'CONSOLE') {
-            $coloredOutput .= $reset;
+        if ($reset === true) {
+            $coloredOutput .= $this->getColor();
         }
 
         return $coloredOutput;
