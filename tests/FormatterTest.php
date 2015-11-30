@@ -260,5 +260,9 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
             '<span style="color: #00007F;">foo</span><span style="color: #7F0000;">bar</span>',
             $this->htmlFormatter->color("\x03" . '2foo' . "\x03" . "\x03" . '5bar' . "\x03")
         );
+        $this->assertEquals(
+            '<span style="color: #00007F; background-color: #00FFFF;">foo</span><span style="color: #7F0000; background-color: #00FFFF;">bar</span>',
+            $this->htmlFormatter->color("\x03" . '2,11foo' . "\x03" . '5bar' . "\x03")
+        );
     }
 }
