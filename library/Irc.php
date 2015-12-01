@@ -512,7 +512,6 @@ class Irc extends Cerberus
                 $command,
                 $this->server['network'],
                 $this->bot['nick'],
-                '',
                 $rest,
                 $text,
                 'out'
@@ -651,7 +650,7 @@ class Irc extends Cerberus
                 $this->event->onInvite($text, $host, $rest);
                 break;
         }
-        $this->db->setLog($all, $command, $this->server['network'], $nick, $host, $rest, $text, 'in');
+        $this->db->setLog($all, $command, $this->server['network'], $nick, $rest, $text, 'in');
     }
 
     /**

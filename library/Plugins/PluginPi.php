@@ -255,7 +255,7 @@ class PluginPi extends Plugin
      */
     public function privmsgCpuTemp($channel = null)
     {
-        $channel = $channel == null ? $this->vars['config']['channel'] : $channel;
+        $channel = $channel === null ? $this->vars['config']['channel'] : $channel;
         $this->irc->getAction()->privmsg($channel, $this->getCpuTempCelsius());
     }
 
@@ -264,7 +264,7 @@ class PluginPi extends Plugin
      */
     public function privmsgTemp($channel = null)
     {
-        $channel = $channel == null ? $this->vars['config']['channel'] : $channel;
+        $channel = $channel === null ? $this->vars['config']['channel'] : $channel;
         $this->irc->getAction()->privmsg($channel, $this->getTempCelsius());
     }
 }

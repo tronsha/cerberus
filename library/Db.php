@@ -50,8 +50,6 @@ class Db
     {
         $this->irc = $irc;
         $this->config = $config;
-//        $this->config['charset'] = 'utf8';
-//        $this->config['driverOptions'] = array(1002 => 'SET NAMES utf8');
         $this->log = new DbLog($this);
     }
 
@@ -393,12 +391,11 @@ class Db
      * @param string $command
      * @param string $network
      * @param string $nick
-     * @param string $host
      * @param string $rest
      * @param string $text
      * @param string $direction
      */
-    public function setLog($irc, $command, $network, $nick, $host, $rest, $text, $direction)
+    public function setLog($irc, $command, $network, $nick, $rest, $text, $direction)
     {
         try {
             $now = (new DateTime())->format('Y-m-d H:i:s');
