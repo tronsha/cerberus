@@ -90,9 +90,12 @@ class FormatterHtml extends Formatter
             $this->open = true;
             return '<span style="' . implode('; ', $fgbg) . ';">';
         }
-        $this->bg = '';
-        $this->open = false;
-        return '</span>';
+        if ($this->open === true) {
+            $this->bg = '';
+            $this->open = false;
+            return '</span>';
+        }
+        return '';
     }
 
     /**
