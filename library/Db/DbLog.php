@@ -77,6 +77,14 @@ class DbLog
         }
     }
 
+    /**
+     * @param string $target
+     * @param string $nick
+     * @param string $text
+     * @param string $time
+     * @param string|null $logId
+     * @param string|null $botId
+     */
     public function setNoticeLog($target, $nick, $text, $time, $logId = null, $botId = null)
     {
         try {
@@ -104,6 +112,13 @@ class DbLog
         }
     }
 
+    /**
+     * @param string $channel
+     * @param string $nick
+     * @param string $time
+     * @param string|null $logId
+     * @param string|null $botId
+     */
     public function setJoinLog($channel, $nick, $time, $logId = null, $botId = null)
     {
         try {
@@ -129,6 +144,14 @@ class DbLog
         }
     }
 
+    /**
+     * @param string $channel
+     * @param string $nick
+     * @param string $text
+     * @param string $time
+     * @param string|null $logId
+     * @param string|null $botId
+     */
     public function setPartLog($channel, $nick, $text, $time, $logId = null, $botId = null)
     {
         try {
@@ -156,6 +179,13 @@ class DbLog
         }
     }
 
+    /**
+     * @param string $nick
+     * @param string $text
+     * @param string $time
+     * @param string|null $logId
+     * @param string|null $botId
+     */
     public function setQuitLog($nick, $text, $time, $logId = null, $botId = null)
     {
         try {
@@ -181,6 +211,15 @@ class DbLog
         }
     }
 
+    /**
+     * @param string $channel
+     * @param string $nick
+     * @param string $kicked
+     * @param string $text
+     * @param string $time
+     * @param string|null $logId
+     * @param string|null $botId
+     */
     public function setKickLog($channel, $nick, $kicked, $text, $time, $logId = null, $botId = null)
     {
         try {
@@ -210,6 +249,13 @@ class DbLog
         }
     }
 
+    /**
+     * @param string $oldNick
+     * @param string $newNick
+     * @param string $time
+     * @param string|null $logId
+     * @param string|null $botId
+     */
     public function setNickLog($oldNick, $newNick, $time, $logId = null, $botId = null)
     {
         try {
@@ -235,6 +281,14 @@ class DbLog
         }
     }
 
+    /**
+     * @param string $channel
+     * @param string $nick
+     * @param string $topic
+     * @param string $time
+     * @param string|null $logId
+     * @param string|null $botId
+     */
     public function setTopicLog($channel, $nick, $topic, $time, $logId = null, $botId = null)
     {
         try {
