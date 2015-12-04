@@ -211,7 +211,7 @@ CREATE TABLE "preform" (
 	PRIMARY KEY ("id")
 );
 SELECT setval('"preform_id_seq"', 2, true);
-INSERT INTO "network" ("id","network","text","priority") VALUES
+INSERT INTO "preform" ("id","network","text","priority") VALUES
 (1, 'freenode', 'JOIN #cerberbot', 50);
 
 DROP TABLE IF EXISTS "send";
