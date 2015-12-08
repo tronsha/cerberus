@@ -19,6 +19,7 @@
 
 namespace Cerberus\Plugins;
 
+use Cerberus\Cerberus;
 use Cerberus\Plugin;
 
 class PluginWork extends Plugin
@@ -56,20 +57,26 @@ class PluginWork extends Plugin
     {
         $this->irc->getAction()->nick(self::NICK_WORK);
         $this->irc->getAction()->join(self::CHANNEL);
-        $this->irc->getAction()->privmsg(self::CHANNEL, $this->irc->__('Good morning'));
+        if ($this->irc->inChannel(self::CHANNEL)) {
+            $this->irc->getAction()->privmsg(self::CHANNEL, $this->irc->__('Good morning'));
+        }
     }
 
     public function niceevening()
     {
-        $this->irc->getAction()->privmsg(self::CHANNEL, $this->irc->__('Have a nice evening'));
-        $this->irc->getAction()->part(self::CHANNEL);
+        if ($this->irc->inChannel(self::CHANNEL)) {
+            $this->irc->getAction()->privmsg(self::CHANNEL, $this->irc->__('Have a nice evening'));
+            $this->irc->getAction()->part(self::CHANNEL);
+        }
         $this->irc->getAction()->nick(self::NICK_HOME);
     }
 
     public function niceweekend()
     {
-        $this->irc->getAction()->privmsg(self::CHANNEL, $this->irc->__('Nice weekend'));
-        $this->irc->getAction()->part(self::CHANNEL);
+        if ($this->irc->inChannel(self::CHANNEL)) {
+            $this->irc->getAction()->privmsg(self::CHANNEL, $this->irc->__('Nice weekend'));
+            $this->irc->getAction()->part(self::CHANNEL);
+        }
         $this->irc->getAction()->nick(self::NICK_HOME);
     }
 }

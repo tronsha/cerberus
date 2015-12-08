@@ -673,6 +673,25 @@ class Irc extends Cerberus
     }
 
     /**
+     * @param string $channel
+     * @param string|null $user
+     * @return bool|null
+     */
+    public function inChannel($channel, $user = null)
+    {
+        if ($user === null) {
+            $channels = $this->db->getJoinedChannels();
+            if (in_array($channel, $channels) === true) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @param PluginAuth $object
      */
     public function registerAuth(PluginAuth $object)
