@@ -44,6 +44,14 @@ class Action
     }
 
     /**
+     * @param string $pluginName
+     */
+    public function load($pluginName)
+    {
+        $this->irc->loadPlugin($pluginName);
+    }
+
+    /**
      * @param string $to
      * @param string $text
      */
