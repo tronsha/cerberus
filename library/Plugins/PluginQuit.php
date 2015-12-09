@@ -36,7 +36,7 @@ class PluginQuit extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->getAction()->notice($data['nick'], 'New Command: !die');
+            $this->irc->getActions()->notice($data['nick'], 'New Command: !die');
         }
         return $returnValue;
     }
@@ -53,7 +53,7 @@ class PluginQuit extends Plugin
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!die') {
-            return $this->irc->getAction()->quit('Client Quit');
+            return $this->irc->getActions()->quit('Client Quit');
         }
     }
 }

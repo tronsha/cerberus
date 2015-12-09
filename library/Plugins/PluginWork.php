@@ -55,28 +55,28 @@ class PluginWork extends Plugin
 
     public function goodmorning()
     {
-        $this->irc->getAction()->nick(self::NICK_WORK);
-        $this->irc->getAction()->join(self::CHANNEL);
+        $this->irc->getActions()->nick(self::NICK_WORK);
+        $this->irc->getActions()->join(self::CHANNEL);
         if ($this->irc->inChannel(self::CHANNEL)) {
-            $this->irc->getAction()->privmsg(self::CHANNEL, $this->irc->__('Good morning'));
+            $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Good morning'));
         }
     }
 
     public function niceevening()
     {
         if ($this->irc->inChannel(self::CHANNEL)) {
-            $this->irc->getAction()->privmsg(self::CHANNEL, $this->irc->__('Have a nice evening'));
-            $this->irc->getAction()->part(self::CHANNEL);
+            $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Have a nice evening'));
+            $this->irc->getActions()->part(self::CHANNEL);
         }
-        $this->irc->getAction()->nick(self::NICK_HOME);
+        $this->irc->getActions()->nick(self::NICK_HOME);
     }
 
     public function niceweekend()
     {
         if ($this->irc->inChannel(self::CHANNEL)) {
-            $this->irc->getAction()->privmsg(self::CHANNEL, $this->irc->__('Nice weekend'));
-            $this->irc->getAction()->part(self::CHANNEL);
+            $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Nice weekend'));
+            $this->irc->getActions()->part(self::CHANNEL);
         }
-        $this->irc->getAction()->nick(self::NICK_HOME);
+        $this->irc->getActions()->nick(self::NICK_HOME);
     }
 }

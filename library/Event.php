@@ -273,7 +273,7 @@ class Event
                     return null;
             }
             if (empty($send) === false) {
-                $this->irc->getAction()->notice($nick, "\x01" . $send . "\x01");
+                $this->irc->getActions()->notice($nick, "\x01" . $send . "\x01");
             }
         } else {
             $splitText = explode(' ', $text);
@@ -374,7 +374,7 @@ class Event
         $this->vars = $this->irc->getVars();
         if ($nick == $this->vars['var']['me']) {
             $this->db->addChannel($channel);
-            $this->irc->getAction()->mode($channel);
+            $this->irc->getActions()->mode($channel);
         } else {
             $this->db->addUserToChannel($channel, $nick);
         }
@@ -392,7 +392,7 @@ class Event
         $me = $nick == $this->vars['var']['me'] ? true : false;
         $this->onPart($nick, $channel);
         if ($this->vars['config']['autorejoin'] === true && $me === true) {
-            $this->irc->getAction()->join($channel);
+            $this->irc->getActions()->join($channel);
         }
         $this->irc->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer]);
     }

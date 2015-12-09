@@ -36,7 +36,7 @@ class PluginJoin extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->getAction()->notice($data['nick'], 'New Command: !join [#channel]');
+            $this->irc->getActions()->notice($data['nick'], 'New Command: !join [#channel]');
         }
         return $returnValue;
     }
@@ -54,7 +54,7 @@ class PluginJoin extends Plugin
         $command = array_shift($splitText);
         if ($command == '!join') {
             while ($channel = array_shift($splitText)) {
-                $this->irc->getAction()->join($channel);
+                $this->irc->getActions()->join($channel);
             }
             return true;
         }

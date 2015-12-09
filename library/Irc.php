@@ -400,7 +400,7 @@ class Irc extends Cerberus
             }
         }
         foreach ($this->reconnect['channel'] as $channel) {
-            $this->getAction()->join($channel);
+            $this->getActions()->join($channel);
         }
     }
 
@@ -794,9 +794,17 @@ class Irc extends Cerberus
     /**
      * @return Action|null
      */
-    public function getAction()
+    public function getActions()
     {
         return $this->action;
+    }
+
+    /**
+     * @return Action|null
+     */
+    public function getDb()
+    {
+        return $this->db;
     }
 
     /**
