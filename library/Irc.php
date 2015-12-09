@@ -138,7 +138,7 @@ class Irc extends Cerberus
                 $this->translate->setLang($config['bot']['lang']);
             }
         }
-        $this->action = new Action($this, $this->db);
+        $this->action = new Action($this);
         $this->event = new Event($this, $this->db);
         $this->cron = new Cron();
     }
@@ -153,8 +153,8 @@ class Irc extends Cerberus
             if ($this->fp !== false) {
                 fclose($this->fp);
             }
-            $this->db->cleanupBot();
-            $this->db->shutdownBot();
+            $this->getDb()->cleanupBot();
+            $this->getDb()->shutdownBot();
         }
         $output = vsprintf('Execute time: %.5fs', $this->getMicrotime() - $this->time['script_start']);
         $this->getConsole()->writeln();
@@ -257,7 +257,7 @@ class Irc extends Cerberus
         $this->bot['nick'] = $nick;
         $this->var['me'] = $nick;
         if ($this->init === true) {
-            $this->db->setBotNick($nick);
+            $this->getDb()->setBotNick($nick);
         }
         return $nick;
     }
@@ -271,13 +271,13 @@ class Irc extends Cerberus
             return false;
         }
         $this->dbConnect();
-        $this->db->createBot($this->bot['pid'], $this->bot['nick']);
+        $this->getDb()->createBot($this->bot['pid'], $this->bot['nick']);
         if (isset($this->version['bot']) === false) {
             $this->version['php'] = phpversion();
             $this->version['os'] = php_uname('s') . ' ' . php_uname('r');
             $this->version['bot'] = 'PHP ' . $this->version['php'] . ' - ' . $this->version['os'];
             if ($this->dbms == 'mysql' || $this->dbms == 'pg') {
-                $this->version['sql'] = $this->db->getDbVersion();
+                $this->version['sql'] = $this->getDb()->getDbVersion();
                 $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
             } elseif ($this->dbms == 'sqlite') {
                 $version = SQLite3::version();
@@ -311,7 +311,7 @@ class Irc extends Cerberus
      */
     protected function dbConnect()
     {
-        $this->db->connect();
+        $this->getDb()->connect();
     }
 
     /**
@@ -324,7 +324,7 @@ class Irc extends Cerberus
                 return false;
             }
         }
-        $n = $this->db->getServerCount($this->server['network']);
+        $n = $this->getDb()->getServerCount($this->server['network']);
         $i = 0;
         $repeat = true;
         if ($n == 0) {
@@ -332,7 +332,7 @@ class Irc extends Cerberus
             return false;
         }
         while ($repeat) {
-            $this->server = $this->db->getServerData($this->server, $i);
+            $this->server = $this->getDb()->getServerData($this->server, $i);
             $this->sysinfo('Try to connect to ' . $this->server['host'] . ':' . $this->server['port']);
             try {
                 $this->fp = fsockopen(($this->server['ip']), $this->server['port'], $errno, $errstr);
@@ -365,7 +365,7 @@ class Irc extends Cerberus
         $this->lastping = time();
         $this->nowrite = true;
         $this->run = true;
-        $this->db->cleanupBot();
+        $this->getDb()->cleanupBot();
         $this->preform();
         $this->getEvents()->onConnect();
         return $this->run();
@@ -377,7 +377,7 @@ class Irc extends Cerberus
     protected function reconnect()
     {
         $this->reconnect['channel'] = [];
-        $channels = $this->db->getJoinedChannels();
+        $channels = $this->getDb()->getJoinedChannels();
         foreach ($channels as $channel) {
             $this->reconnect['channel'][] = $channel['channel'];
         }
@@ -390,9 +390,9 @@ class Irc extends Cerberus
      */
     protected function preform()
     {
-        $preform = $this->db->getPreform($this->server['network']);
+        $preform = $this->getDb()->getPreform($this->server['network']);
         foreach ($preform as $command) {
-            $this->db->setWrite($command['text']);
+            $this->getDb()->setWrite($command['text']);
             preg_match('/join\s+(#[^\s]+)/i', $command['text'], $matches);
             if (isset($matches[1])) {
                 unset($matches[0]);
@@ -485,7 +485,7 @@ class Irc extends Cerberus
      */
     protected function send()
     {
-        $send = $this->db->getWrite();
+        $send = $this->getDb()->getWrite();
         if ($send !== false) {
             if ($send['text'] != '') {
                 preg_match_all("/\%([a-z0-9_]*)/i", $send['text'], $array, PREG_PATTERN_ORDER);
@@ -500,14 +500,14 @@ class Irc extends Cerberus
                 }
                 $this->write($send['text']);
             }
-            $this->db->unsetWrite($send['id']);
+            $this->getDb()->unsetWrite($send['id']);
 
             preg_match("/^([^\ ]+)(?:\ ([^\:].*?))?(?:\ \:(.*?))?(?:\r)?$/i", $send['text'], $matches);
             $command = isset($matches[1]) ? $matches[1] : '';
             $rest = isset($matches[2]) ? $matches[2] : '';
             $text = isset($matches[3]) ? $matches[3] : '';
 
-            $this->db->setLog(
+            $this->getDb()->setLog(
                 $send['text'],
                 $command,
                 $this->server['network'],
@@ -527,9 +527,9 @@ class Irc extends Cerberus
         while (!feof($this->fp)) {
             $input = $this->read();
             if (trim($input) != '') {
-                if ($this->db->ping() === false) {
-                    $this->db->close();
-                    $this->db->connect();
+                if ($this->getDb()->ping() === false) {
+                    $this->getDb()->close();
+                    $this->getDb()->connect();
                 }
                 if ($input{0} != ':') {
                     if (strpos(strtoupper($input), 'PING') !== false) {
@@ -538,7 +538,7 @@ class Irc extends Cerberus
                         $output{1} = 'O';
                         $this->write($output);
                         unset($output);
-                        $this->db->setPing();
+                        $this->getDb()->setPing();
                     }
                 } else {
                     $this->command($input);
@@ -650,7 +650,7 @@ class Irc extends Cerberus
                 $this->getEvents()->onInvite($text, $host, $rest);
                 break;
         }
-        $this->db->setLog($all, $command, $this->server['network'], $nick, $rest, $text, 'in');
+        $this->getDb()->setLog($all, $command, $this->server['network'], $nick, $rest, $text, 'in');
     }
 
     /**
@@ -680,7 +680,7 @@ class Irc extends Cerberus
     public function inChannel($channel, $user = null)
     {
         if ($user === null) {
-            $channels = $this->db->getJoinedChannels();
+            $channels = $this->getDb()->getJoinedChannels();
             if (in_array($channel, $channels) === true) {
                 return true;
             } else {
@@ -705,7 +705,7 @@ class Irc extends Cerberus
      */
     public function getAuthLevel($auth)
     {
-        return $this->db->getAuthLevel($this->server['network'], $auth);
+        return $this->getDb()->getAuthLevel($this->server['network'], $auth);
     }
 
     /**

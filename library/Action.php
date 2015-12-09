@@ -34,13 +34,21 @@ class Action
     protected $db;
 
     /**
+     * Action constructor.
      * @param Irc|null $irc
-     * @param Db $db
+     * @param Db|null $db
+     * @throws Exception
      */
-    public function __construct(Irc $irc = null, Db $db)
+    public function __construct(Irc $irc = null, Db $db = null)
     {
         $this->irc = $irc;
-        $this->db = $db;
+        if ($this->irc !== null) {
+            $this->db = $this->irc->getDB();
+        } elseif ($db !== null) {
+            $this->db = $db;
+        } else {
+            throw new Exception('database is not set');
+        }
     }
 
     /**
@@ -48,7 +56,9 @@ class Action
      */
     public function load($pluginName)
     {
-        $this->irc->loadPlugin($pluginName);
+        if ($this->irc !== null) {
+            $this->irc->loadPlugin($pluginName);
+        }
     }
 
     /**
