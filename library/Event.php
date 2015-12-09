@@ -56,6 +56,14 @@ class Event
     }
 
     /**
+     * @return Db
+     */
+    protected function getDb()
+    {
+        return $this->irc->getDb();
+    }
+
+    /**
      *
      */
     public function onConnect()
@@ -317,7 +325,7 @@ class Event
         if ($nick == $this->vars['var']['me']) {
             $this->irc->setNick($text);
         }
-        $this->irc->getDb()->changeNick($nick, $text);
+        $this->getDb()->changeNick($nick, $text);
         $this->irc->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
     }
 
@@ -334,7 +342,7 @@ class Event
         $user_array = explode(' ', $text);
         foreach ($user_array as $user) {
             preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
-            $this->irc->getDb()->addUserToChannel($channel, $matches[2], $matches[1]);
+            $this->getDb()->addUserToChannel($channel, $matches[2], $matches[1]);
         }
         $this->irc->runPluginEvent(__FUNCTION__, []);
     }
@@ -359,7 +367,7 @@ class Event
      */
     public function onTopic($channel, $topic)
     {
-        $this->irc->getDb()->setChannelTopic($channel, $topic);
+        $this->getDb()->setChannelTopic($channel, $topic);
         $this->irc->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'topic' => $topic]);
     }
 
@@ -371,10 +379,10 @@ class Event
     {
         $this->vars = $this->irc->getVars();
         if ($nick == $this->vars['var']['me']) {
-            $this->irc->getDb()->addChannel($channel);
+            $this->getDb()->addChannel($channel);
             $this->irc->getActions()->mode($channel);
         } else {
-            $this->irc->getDb()->addUserToChannel($channel, $nick);
+            $this->getDb()->addUserToChannel($channel, $nick);
         }
         $this->irc->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'channel' => $channel]);
     }
@@ -405,9 +413,9 @@ class Event
         $me = $nick == $this->vars['var']['me'] ? true : false;
         $this->irc->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick]);
         if ($me === true) {
-            $this->irc->getDb()->removeChannel($channel);
+            $this->getDb()->removeChannel($channel);
         } else {
-            $this->irc->getDb()->removeUserFromChannel($channel, $nick);
+            $this->getDb()->removeUserFromChannel($channel, $nick);
         }
     }
 
@@ -417,7 +425,7 @@ class Event
     public function onQuit($nick)
     {
         $this->irc->runPluginEvent(__FUNCTION__, ['nick' => $nick]);
-        $this->irc->getDb()->removeUser($nick);
+        $this->getDb()->removeUser($nick);
     }
 
     /**
