@@ -139,7 +139,7 @@ class Irc extends Cerberus
             }
         }
         $this->action = new Action($this);
-        $this->event = new Event($this, $this->db);
+        $this->event = new Event($this);
         $this->cron = new Cron();
     }
 
