@@ -97,10 +97,11 @@ class Cron
     public function compare($cronString, $minute, $hour, $day_of_month, $month, $day_of_week)
     {
         $cronString = trim($cronString);
-        list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = explode(' ', $cronString);
-        if ($cronMinute === null || $cronHour === null || $cronDayOfMonth === null || $cronMonth === null || $cronDayOfWeek === null) {
+        $cronArray = explode(' ', $cronString);
+        if (count($cronArray) != 5) {
             throw new Exception('a cron has an error');
         }
+        list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = $cronArray;
         $cronDayOfWeek = $this->dowNameToNumber($cronDayOfWeek);
         $cronMonth = $this->monthNameToNumber($cronMonth);
         $cronDayOfWeek = $cronDayOfWeek == 7 ? 0 : $cronDayOfWeek;
