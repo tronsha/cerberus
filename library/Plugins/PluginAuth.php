@@ -33,6 +33,9 @@ class PluginAuth extends Plugin
 {
     private $auth = [];
 
+    /**
+     *
+     */
     protected function init()
     {
         $this->irc->addEvent('on311', $this);

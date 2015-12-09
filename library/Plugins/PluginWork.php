@@ -22,12 +22,20 @@ namespace Cerberus\Plugins;
 use Cerberus\Cerberus;
 use Cerberus\Plugin;
 
+/**
+ * Class PluginWork
+ * @package Cerberus\Plugins
+ * @author Stefan Hüsges
+ */
 class PluginWork extends Plugin
 {
     const CHANNEL = '#company';
     const NICK_WORK = 'user^work';
     const NICK_HOME = 'user^home';
 
+    /**
+     *
+     */
     protected function init()
     {
         $this->irc->addCron('0 8 * * 1-5', $this, 'goodmorning');
@@ -35,6 +43,9 @@ class PluginWork extends Plugin
         $this->irc->addCron('30 14 * * 5', $this, 'niceweekend');
     }
 
+    /**
+     * @return array
+     */
     protected function translations()
     {
         $translations = [
@@ -47,12 +58,19 @@ class PluginWork extends Plugin
         return $translations;
     }
 
+    /**
+     * @param array $data
+     * @return bool
+     */
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
         return $returnValue;
     }
 
+    /**
+     *
+     */
     public function goodmorning()
     {
         $this->irc->getActions()->nick(self::NICK_WORK);
@@ -62,6 +80,9 @@ class PluginWork extends Plugin
         }
     }
 
+    /**
+     *
+     */
     public function niceevening()
     {
         if ($this->irc->inChannel(self::CHANNEL)) {
@@ -71,6 +92,9 @@ class PluginWork extends Plugin
         $this->irc->getActions()->nick(self::NICK_HOME);
     }
 
+    /**
+     *
+     */
     public function niceweekend()
     {
         if ($this->irc->inChannel(self::CHANNEL)) {

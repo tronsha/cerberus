@@ -24,7 +24,7 @@ use Cerberus\Plugin;
 
 /**
  * Class PluginPi
- * @package Cerberus
+ * @package Cerberus\Plugins
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
  * @link https://github.com/tronsha/cerberus Project on GitHub

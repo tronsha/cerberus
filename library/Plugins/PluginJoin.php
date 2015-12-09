@@ -21,8 +21,16 @@ namespace Cerberus\Plugins;
 
 use Cerberus\Plugin;
 
+/**
+ * Class PluginJoin
+ * @package Cerberus\Plugins
+ * @author Stefan Hüsges
+ */
 class PluginJoin extends Plugin
 {
+    /**
+     *
+     */
     protected function init()
     {
         $this->irc->addEvent('onPrivmsg', $this);

@@ -21,8 +21,19 @@ namespace Cerberus\Plugins;
 
 use Cerberus\Plugin;
 
+/**
+ * Class PluginTest
+ * @package Cerberus\Plugins
+ * @author Stefan Hüsges
+ *
+ * This is a helper plugin to test functions with PHPUnit
+ *
+ */
 class PluginTest extends Plugin
 {
+    /**
+     *
+     */
     protected function init()
     {
         $this->irc->addEvent('onPrivmsg', $this);

@@ -22,8 +22,16 @@ namespace Cerberus\Plugins;
 use Cerberus\Plugin;
 use Exception;
 
+/**
+ * Class PluginInit
+ * @package Cerberus\Plugins
+ * @author Stefan Hüsges
+ */
 class PluginInit extends Plugin
 {
+    /**
+     *
+     */
     protected function init()
     {
         $this->irc->addEvent('onConnect', $this);
