@@ -149,7 +149,7 @@ class Irc extends Cerberus
     public function __destruct()
     {
         if ($this->init === true) {
-            $this->event->onShutdown();
+            $this->getEvents()->onShutdown();
             if ($this->fp !== false) {
                 fclose($this->fp);
             }
@@ -168,7 +168,7 @@ class Irc extends Cerberus
      */
     public function onError($text)
     {
-        $this->event->onError($text);
+        $this->getEvents()->onError($text);
         return $this->error($text);
     }
 
@@ -367,7 +367,7 @@ class Irc extends Cerberus
         $this->run = true;
         $this->db->cleanupBot();
         $this->preform();
-        $this->event->onConnect();
+        $this->getEvents()->onConnect();
         return $this->run();
     }
 
@@ -544,7 +544,7 @@ class Irc extends Cerberus
                     $this->command($input);
                 }
             }
-            $this->event->onTick();
+            $this->getEvents()->onTick();
             if ($this->nowrite === false && floor($this->getMicrotime() - $this->time['irc_connect']) > 10) {
                 $this->send();
             }
@@ -584,70 +584,70 @@ class Irc extends Cerberus
                 $this->nowrite = false;
                 break;
             case '311':
-                $this->event->on311($rest);
+                $this->getEvents()->on311($rest);
                 break;
             case '318':
-                $this->event->on318();
+                $this->getEvents()->on318();
                 break;
             case '322':
-                $this->event->on322($rest, $text);
+                $this->getEvents()->on322($rest, $text);
                 break;
             case '323':
-                $this->event->on323();
+                $this->getEvents()->on323();
                 break;
             case '324':
-                $this->event->on324();
+                $this->getEvents()->on324();
                 break;
             case '330':
-                $this->event->on330($rest);
+                $this->getEvents()->on330($rest);
                 break;
             case '332':
-                $this->event->on332($rest, $text);
+                $this->getEvents()->on332($rest, $text);
                 break;
             case '353':
-                $this->event->on353($rest, $text);
+                $this->getEvents()->on353($rest, $text);
                 break;
             case '431':
-                $this->event->on431();
+                $this->getEvents()->on431();
                 break;
             case '432':
-                $this->event->on432();
+                $this->getEvents()->on432();
                 break;
             case '433':
-                $this->event->on433();
+                $this->getEvents()->on433();
                 break;
             case '437':
-                $this->event->on437();
+                $this->getEvents()->on437();
                 break;
             case 'PRIVMSG':
-                $this->event->onPrivmsg($nick, $host, $rest, $text);
+                $this->getEvents()->onPrivmsg($nick, $host, $rest, $text);
                 break;
             case 'NOTICE':
-                $this->event->onNotice($nick, $text);
+                $this->getEvents()->onNotice($nick, $text);
                 break;
             case 'JOIN':
-                $this->event->onJoin($nick, ($rest != '' ? $rest : $text));
+                $this->getEvents()->onJoin($nick, ($rest != '' ? $rest : $text));
                 break;
             case 'PART':
-                $this->event->onPart($nick, $rest);
+                $this->getEvents()->onPart($nick, $rest);
                 break;
             case 'QUIT':
-                $this->event->onQuit($nick);
+                $this->getEvents()->onQuit($nick);
                 break;
             case 'KICK':
-                $this->event->onKick($nick, $rest);
+                $this->getEvents()->onKick($nick, $rest);
                 break;
             case 'NICK':
-                $this->event->onNick($nick, $text);
+                $this->getEvents()->onNick($nick, $text);
                 break;
             case 'MODE':
-                $this->event->onMode($rest);
+                $this->getEvents()->onMode($rest);
                 break;
             case 'TOPIC':
-                $this->event->onTopic($rest, $text);
+                $this->getEvents()->onTopic($rest, $text);
                 break;
             case 'INVITE':
-                $this->event->onInvite($text, $host, $rest);
+                $this->getEvents()->onInvite($text, $host, $rest);
                 break;
         }
         $this->db->setLog($all, $command, $this->server['network'], $nick, $rest, $text, 'in');
