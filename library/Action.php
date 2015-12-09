@@ -42,13 +42,21 @@ class Action
     public function __construct(Irc $irc = null, Db $db = null)
     {
         $this->irc = $irc;
-        if ($this->irc !== null) {
-            $this->db = $this->irc->getDB();
-        } elseif ($db !== null) {
-            $this->db = $db;
-        } else {
-            throw new Exception('database is not set');
+        $this->db = $db;
+    }
+
+    /**
+     * @return Db|null
+     * @throws Exception
+     */
+    protected function getDb()
+    {
+        if ($this->irc !== null && $this->irc->getDb() instanceof Db) {
+            return $this->irc->getDb();
+        } elseif ($this->db !== null && $this->db instanceof Db) {
+            return $this->db;
         }
+        throw new Exception('database is not set');
     }
 
     /**
@@ -67,7 +75,7 @@ class Action
      */
     public function privmsg($to, $text)
     {
-        $this->db->setWrite('PRIVMSG ' . $to . ' :' . $text);
+        $this->getDb()->setWrite('PRIVMSG ' . $to . ' :' . $text);
     }
 
     /**
@@ -76,7 +84,7 @@ class Action
      */
     public function me($to, $text)
     {
-        $this->db->setWrite('PRIVMSG ' . $to . ' :' . "\x01" . 'ACTION ' . $text . "\x01");
+        $this->getDb()->setWrite('PRIVMSG ' . $to . ' :' . "\x01" . 'ACTION ' . $text . "\x01");
     }
 
     /**
@@ -85,7 +93,7 @@ class Action
      */
     public function notice($to, $text)
     {
-        $this->db->setWrite('NOTICE ' . $to . ' :' . $text);
+        $this->getDb()->setWrite('NOTICE ' . $to . ' :' . $text);
     }
 
     /**
@@ -93,7 +101,7 @@ class Action
      */
     public function quit($text)
     {
-        $this->db->setWrite('QUIT :' . $text);
+        $this->getDb()->setWrite('QUIT :' . $text);
     }
 
     /**
@@ -101,7 +109,7 @@ class Action
      */
     public function mode($text = null)
     {
-        $this->db->setWrite('MODE' . ($text === null ? '' : ' ' . $text));
+        $this->getDb()->setWrite('MODE' . ($text === null ? '' : ' ' . $text));
     }
 
     /**
@@ -110,7 +118,7 @@ class Action
      */
     public function join($channel)
     {
-        $this->db->setWrite('JOIN ' . $channel);
+        $this->getDb()->setWrite('JOIN ' . $channel);
         return ['action' => 'join', 'channel' => $channel];
     }
 
@@ -120,7 +128,7 @@ class Action
      */
     public function part($channel)
     {
-        $this->db->setWrite('PART ' . $channel);
+        $this->getDb()->setWrite('PART ' . $channel);
         return ['action' => 'part', 'channel' => $channel];
     }
 
@@ -129,7 +137,7 @@ class Action
      */
     public function whois($nick)
     {
-        $this->db->setWrite('WHOIS :' . $nick);
+        $this->getDb()->setWrite('WHOIS :' . $nick);
     }
 
     /**
@@ -140,6 +148,6 @@ class Action
         if ($this->irc !== null) {
             $this->irc->setNick($nick);
         }
-        $this->db->setWrite('NICK :' . $nick);
+        $this->getDb()->setWrite('NICK :' . $nick);
     }
 }
