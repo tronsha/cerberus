@@ -92,11 +92,15 @@ class Cron
      * @param int $month
      * @param int $day_of_week
      * @return bool
+     * @throws Exception
      */
     public function compare($cronString, $minute, $hour, $day_of_month, $month, $day_of_week)
     {
         $cronString = trim($cronString);
         list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = explode(' ', $cronString);
+        if ($cronMinute === null || $cronHour === null || $cronDayOfMonth === null || $cronMonth === null || $cronDayOfWeek === null) {
+            throw new Exception('a cron has an error');
+        }
         $cronDayOfWeek = $this->dowNameToNumber($cronDayOfWeek);
         $cronMonth = $this->monthNameToNumber($cronMonth);
         $cronDayOfWeek = $cronDayOfWeek == 7 ? 0 : $cronDayOfWeek;
