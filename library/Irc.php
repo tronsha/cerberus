@@ -800,7 +800,15 @@ class Irc extends Cerberus
     }
 
     /**
-     * @return Action|null
+     * @return Event|null
+     */
+    public function getEvents()
+    {
+        return $this->event;
+    }
+
+    /**
+     * @return Db|null
      */
     public function getDb()
     {
