@@ -686,9 +686,13 @@ class Irc extends Cerberus
                 }
                 return false;
             }
-        } else {
-            return null;
+        } elseif (empty($channel) === false && empty($user) === false) {
+            if (count($this->getDb()->getUserInChannel($channel, $user)) > 0) {
+                return true;
+            }
+            return false;
         }
+        return null;
     }
 
     /**

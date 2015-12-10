@@ -599,6 +599,28 @@ class Db
     }
 
     /**
+     * @param string $channel
+     * @param string $user
+     */
+    public function getUserInChannel($channel, $user)
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb ->select('*')
+                ->from('channel_user')
+                ->where('username = ? AND channel = ? AND bot_id = ?')
+                ->setParameter(0, $user)
+                ->setParameter(1, $channel)
+                ->setParameter(2, $this->botId)
+                ->execute();
+            $rows = $stmt->fetchAll();
+            return $rows;
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
      * @param string $old
      * @param string $new
      */
