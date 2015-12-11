@@ -48,11 +48,11 @@ class Event
     {
         $this->irc = $irc;
         $this->vars = $this->irc->getVars();
-        $this->minute = (new DateTime())->format('i');
-        $this->hour = (new DateTime())->format('H');
-        $this->day_of_month = (new DateTime())->format('j');
-        $this->month = (new DateTime())->format('n');
-        $this->day_of_week = (new DateTime())->format('w');
+        $this->minute = (int)(new DateTime())->format('i');
+        $this->hour = (int)(new DateTime())->format('G');
+        $this->day_of_month = (int)(new DateTime())->format('j');
+        $this->month = (int)(new DateTime())->format('n');
+        $this->day_of_week = (int)(new DateTime())->format('w');
     }
 
     /**
@@ -94,27 +94,27 @@ class Event
     public function onTick()
     {
         $this->irc->runPluginEvent(__FUNCTION__, []);
-        $minute = (new DateTime())->format('i');
-        if ($minute != $this->minute) {
-            $this->minute = $minute;
-            $this->onMinute();
+        $minute = (int)(new DateTime())->format('i');
+        $hour = (int)(new DateTime())->format('G');
+        $day_of_month = (int)(new DateTime())->format('j');
+        $month = (int)(new DateTime())->format('n');
+        $day_of_week = (int)(new DateTime())->format('w');
+        if ($day_of_week != $this->day_of_week) {
+            $this->day_of_week = $day_of_week;
         }
-        $hour = (new DateTime())->format('H');
+        if ($month != $this->month) {
+            $this->month = $month;
+        }
+        if ($day_of_month != $this->day_of_month) {
+            $this->day_of_month = $day_of_month;
+        }
         if ($hour != $this->hour) {
             $this->hour = $hour;
             $this->onHour();
         }
-        $day_of_month = (new DateTime())->format('j');
-        if ($day_of_month != $this->day_of_month) {
-            $this->day_of_month = $day_of_month;
-        }
-        $month = (new DateTime())->format('n');
-        if ($month != $this->month) {
-            $this->month = $month;
-        }
-        $day_of_week = (new DateTime())->format('w');
-        if ($day_of_week != $this->day_of_week) {
-            $this->day_of_week = $day_of_week;
+        if ($minute != $this->minute) {
+            $this->minute = $minute;
+            $this->onMinute();
         }
     }
 
