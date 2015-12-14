@@ -29,9 +29,9 @@ use Cerberus\Plugin;
  */
 class PluginWork extends Plugin
 {
-    const CHANNEL = '#company';
-    const NICK_WORK = 'user^work';
-    const NICK_HOME = 'user^home';
+    const CHANNEL = '#cerberbot';
+    const NICK_WORK = '';
+    const NICK_HOME = '';
 
     /**
      *
@@ -73,10 +73,14 @@ class PluginWork extends Plugin
      */
     public function goodmorning()
     {
-        $this->irc->getActions()->nick(self::NICK_WORK);
-        $this->irc->getActions()->join(self::CHANNEL);
-        if ($this->irc->inChannel(self::CHANNEL)) {
-            $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Good morning'));
+        if (empty(self::NICK_WORK) === false) {
+            $this->irc->getActions()->nick(self::NICK_WORK);
+        }
+        if (empty(self::CHANNEL) === false) {
+            $this->irc->getActions()->join(self::CHANNEL);
+            if ($this->irc->inChannel(self::CHANNEL)) {
+                $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Good morning'));
+            }
         }
     }
 
@@ -85,11 +89,13 @@ class PluginWork extends Plugin
      */
     public function niceevening()
     {
-        if ($this->irc->inChannel(self::CHANNEL)) {
+        if (empty(self::CHANNEL) === false && $this->irc->inChannel(self::CHANNEL)) {
             $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Have a nice evening'));
             $this->irc->getActions()->part(self::CHANNEL);
         }
-        $this->irc->getActions()->nick(self::NICK_HOME);
+        if (empty(self::NICK_HOME) === false) {
+            $this->irc->getActions()->nick(self::NICK_HOME);
+        }
     }
 
     /**
@@ -97,10 +103,12 @@ class PluginWork extends Plugin
      */
     public function niceweekend()
     {
-        if ($this->irc->inChannel(self::CHANNEL)) {
+        if (empty(self::CHANNEL) === false && $this->irc->inChannel(self::CHANNEL)) {
             $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Nice weekend'));
             $this->irc->getActions()->part(self::CHANNEL);
         }
-        $this->irc->getActions()->nick(self::NICK_HOME);
+        if (empty(self::NICK_HOME) === false) {
+            $this->irc->getActions()->nick(self::NICK_HOME);
+        }
     }
 }
