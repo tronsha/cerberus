@@ -42,8 +42,6 @@ class PluginControl extends Plugin
      */
     public function onTick()
     {
-        $returnValue = parent::onLoad();
 
-        return $returnValue;
     }
 }
