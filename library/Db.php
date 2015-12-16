@@ -198,6 +198,11 @@ class Db
                 ->where('bot_id = ?')
                 ->setParameter(0, ($botId === null ? $this->botId : $botId))
                 ->execute();
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('control')
+                ->where('bot_id = ?')
+                ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
