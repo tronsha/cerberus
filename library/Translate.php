@@ -31,40 +31,47 @@ namespace Cerberus;
 
 class Translate
 {
-    protected $lang;
+    protected $language;
     protected $translations = [];
 
     /**
-     *
+     * Translate constructor.
+     * @param string|null $language
      */
-    public function __construct()
+    public function __construct($language = null)
     {
-        $this->lang = 'en';
+        if ($language !== null) {
+            $this->language = $language;
+        } else {
+            $this->language = 'en';
+        }
     }
 
     /**
      * @param string $text
-     * @param mixed $lang
+     * @param mixed $language
      * @return string
      */
-    public function __($text, $lang = null)
+    public function __($text, $language = null)
     {
-        if ($lang === null) {
-            $lang = $this->lang;
+        if ($language === null) {
+            $language = $this->language;
         }
-        if (isset($this->translations[$lang][$text])) {
-            return $this->translations[$lang][$text];
+        if (isset($this->translations[$language][$text])) {
+            return $this->translations[$language][$text];
         } else {
             return $text;
         }
     }
 
     /**
-     * @param string $lang
+     * @param string $language
      */
-    public function setLang($lang)
+    public function setLanguage($language)
     {
-        $this->lang = $lang;
+        if (empty($language) === false) {
+            $this->language = $language;
+        }
     }
 
     /**
@@ -73,11 +80,11 @@ class Translate
     public function setTranslations($translations) {
         $languages = array_merge(array_keys($this->translations), array_keys($translations));
         $languages = array_unique($languages);
-        foreach ($languages as $lang) {
-            if (array_key_exists($lang, $this->translations) && array_key_exists($lang, $translations)) {
-                $this->translations[$lang] = array_merge($this->translations[$lang], $translations[$lang]);
-            } elseif (array_key_exists($lang, $translations)) {
-                $this->translations[$lang] = $translations[$lang];
+        foreach ($languages as $language) {
+            if (array_key_exists($language, $this->translations) && array_key_exists($language, $translations)) {
+                $this->translations[$language] = array_merge($this->translations[$language], $translations[$language]);
+            } elseif (array_key_exists($language, $translations)) {
+                $this->translations[$language] = $translations[$language];
             }
         }
     }

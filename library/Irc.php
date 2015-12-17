@@ -67,9 +67,9 @@ class Irc extends Cerberus
         $this->bot['nick'] = null;
         $this->server['network'] = null;
         $this->server['password'] = null;
-        $this->config['info'] = ['name' => 'Cerberus'];
         $this->reconnect['channel'] = [];
         $this->loaded['classes'] = [];
+        $this->config['info'] = ['name' => 'Cerberus'];
         $this->config['dbms'] = ['mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite'];
         $this->config['autorejoin'] = false;
         $this->config['ctcp'] = false;
@@ -78,7 +78,7 @@ class Irc extends Cerberus
         $this->config['logfile']['socket'] = false;
         $this->config['logfile']['sql'] = false;
         $this->config['dailylogfile'] = true;
-        $this->translate = new Translate;
+        $this->configClass = new Config($config);
         if (is_array($config)) {
             if (!empty($config['bot']['nick'])) {
                 $this->setNick($config['bot']['nick']);
@@ -92,14 +92,14 @@ class Irc extends Cerberus
             if (isset($config['db'])) {
                 $this->setDB($config['db']);
             }
+            if (!empty($config['info']['version'])) {
+                $this->version['bot'] = $config['info']['version'];
+            }
             if (!empty($config['info']['name'])) {
                 $this->config['info']['name'] = $config['info']['name'];
             }
             if (!empty($config['info']['homepage'])) {
                 $this->config['info']['homepage'] = $config['info']['homepage'];
-            }
-            if (!empty($config['info']['version'])) {
-                $this->version['bot'] = $config['info']['version'];
             }
             if (!empty($config['bot']['channel'])) {
                 $this->config['channel'] = '#' . $config['bot']['channel'];
@@ -134,13 +134,11 @@ class Irc extends Cerberus
             if (isset($config['frontend']['password'])) {
                 $this->config['frontend']['password'] = $config['frontend']['password'];
             }
-            if (isset($config['bot']['lang'])) {
-                $this->translate->setLang($config['bot']['lang']);
-            }
         }
+        $this->translate = new Translate($this->configClass->getLanguage());
         $this->action = new Action($this);
         $this->event = new Event($this);
-        $this->cron = new Cron();
+        $this->cron = new Cron;
     }
 
     /**
