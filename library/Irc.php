@@ -830,9 +830,9 @@ class Irc extends Cerberus
     /**
      * @param string $lang
      */
-    public function setLang($lang)
+    public function setLanguage($lang)
     {
-        $this->translate->setLang($lang);
+        $this->translate->setLanguage($lang);
     }
 
     /**

@@ -104,13 +104,13 @@ class IrcTest extends \PHPUnit_Framework_TestCase
 
     public function testTranslation()
     {
-        $this->irc->setLang('en');
+        $this->irc->setLanguage('en');
         $this->irc->setTranslations(['de' => ['hello' => 'hallo'], 'en' => ['hello' => 'hello']]);
         $this->irc->setTranslations(['de' => ['world' => 'welt'], 'en' => ['world' => 'world']]);
         $this->assertEquals('unknown', $this->irc->__('unknown'));
         $this->assertEquals('hello', $this->irc->__('hello'));
         $this->assertEquals('hallo', $this->irc->__('hello', 'de'));
-        $this->irc->setLang('de');
+        $this->irc->setLanguage('de');
         $this->assertEquals('hallo', $this->irc->__('hello'));
         $this->assertEquals('welt', $this->irc->__('world'));
     }
