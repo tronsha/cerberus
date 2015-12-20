@@ -94,6 +94,6 @@ class Config
 
     public function getLanguage()
     {
-        return $this->language;
+        return isset($this->language) ? $this->language : 'en';
     }
 }
