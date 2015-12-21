@@ -30,6 +30,17 @@ namespace Cerberus;
 
 class Config
 {
+    protected $autorejoin = false;
+    protected $channel = null;
+    protected $ctcp = false;
+    protected $dailylogfile = true;
+    protected $dbms = ['mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite'];
+    protected $frontend = ['url' => '', 'password' => ''];
+    protected $info = ['name' => 'Cerberus', 'homepage' => ''];
+    protected $language;
+    protected $logfiledirectory = '/tmp/';
+    protected $logfile = ['error' => true, 'socket' => false, 'sql' => false];
+    protected $plugins = ['autoload' => []];
 
     /**
      * Config constructor.
@@ -37,15 +48,7 @@ class Config
      */
     public function __construct($config)
     {
-        $this->info = ['name' => 'Cerberus'];
-        $this->dbms = ['mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite'];
-        $this->autorejoin = false;
-        $this->ctcp = false;
         $this->logfiledirectory = Cerberus::getPath() . '/log/';
-        $this->logfile['error'] = true;
-        $this->logfile['socket'] = false;
-        $this->logfile['sql'] = false;
-        $this->dailylogfile = true;
         if (is_array($config)) {
             if (!empty($config['info']['name'])) {
                 $this->info['name'] = $config['info']['name'];
@@ -87,13 +90,18 @@ class Config
                 $this->frontend['password'] = $config['frontend']['password'];
             }
             if (isset($config['bot']['lang'])) {
-                $this->language = $config['bot']['lang'];
+                $this->setLanguage($config['bot']['lang']);
             }
         }
     }
 
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+    }
+
     public function getLanguage()
     {
-        return isset($this->language) ? $this->language : 'en';
+        return $this->language;
     }
 }

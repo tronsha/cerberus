@@ -56,6 +56,7 @@ class Irc extends Cerberus
     protected $action = null;
     protected $translate = null;
     protected $cron = null;
+    protected $configClass = null;
 
     /**
      * @param array|null $config
@@ -135,7 +136,7 @@ class Irc extends Cerberus
                 $this->config['frontend']['password'] = $config['frontend']['password'];
             }
         }
-        $this->translate = new Translate($this->configClass->getLanguage());
+        $this->translate = new Translate($this->getConf()->getLanguage());
         $this->action = new Action($this);
         $this->event = new Event($this);
         $this->cron = new Cron;
@@ -815,6 +816,14 @@ class Irc extends Cerberus
     public function getDb()
     {
         return $this->db;
+    }
+
+    /**
+     * @return Config|null
+     */
+    public function getConf()
+    {
+        return $this->configClass;
     }
 
     /**
