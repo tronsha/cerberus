@@ -45,7 +45,7 @@ class Irc extends Cerberus
     protected $nowrite;
     protected $var = [];
     protected $time = [];
-    protected $version = [];
+//    protected $version = [];
     protected $config = [];
     protected $reconnect = [];
     protected $loaded = [];
@@ -70,7 +70,7 @@ class Irc extends Cerberus
         $this->server['password'] = null;
         $this->reconnect['channel'] = [];
         $this->loaded['classes'] = [];
-        $this->config['info'] = ['name' => 'Cerberus'];
+//        $this->config['info'] = ['name' => 'Cerberus'];
         $this->config['dbms'] = ['mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite'];
         $this->config['autorejoin'] = false;
         $this->config['ctcp'] = false;
@@ -93,15 +93,15 @@ class Irc extends Cerberus
             if (isset($config['db'])) {
                 $this->setDB($config['db']);
             }
-            if (!empty($config['info']['version'])) {
-                $this->version['bot'] = $config['info']['version'];
-            }
-            if (!empty($config['info']['name'])) {
-                $this->config['info']['name'] = $config['info']['name'];
-            }
-            if (!empty($config['info']['homepage'])) {
-                $this->config['info']['homepage'] = $config['info']['homepage'];
-            }
+//            if (!empty($config['info']['version'])) {
+//                $this->version['bot'] = $config['info']['version'];
+//            }
+//            if (!empty($config['info']['name'])) {
+//                $this->config['info']['name'] = $config['info']['name'];
+//            }
+//            if (!empty($config['info']['homepage'])) {
+//                $this->config['info']['homepage'] = $config['info']['homepage'];
+//            }
             if (!empty($config['bot']['channel'])) {
                 $this->config['channel'] = '#' . $config['bot']['channel'];
             }
@@ -176,7 +176,7 @@ class Irc extends Cerberus
      */
     public function getVars()
     {
-        return ['config' => $this->config, 'version' => $this->version, 'var' => $this->var, 'time' => $this->time];
+        return ['config' => $this->config, 'version' => $this->getConf()->getVersion(), 'var' => $this->var, 'time' => $this->time];
     }
 
     /**
@@ -271,17 +271,25 @@ class Irc extends Cerberus
         }
         $this->dbConnect();
         $this->getDb()->createBot($this->bot['pid'], $this->bot['nick']);
-        if (isset($this->version['bot']) === false) {
-            $this->version['php'] = phpversion();
-            $this->version['os'] = php_uname('s') . ' ' . php_uname('r');
-            $this->version['bot'] = 'PHP ' . $this->version['php'] . ' - ' . $this->version['os'];
+        if ($this->getConf()->getVersion('bot') === null) {
+            $this->getConf()->setVersion('php', phpversion());
+            $this->getConf()->setVersion('os', php_uname('s') . ' ' . php_uname('r'));
+            $this->getConf()->setVersion('bot', 'PHP ' . $this->getConf()->getVersion('php') . ' - ' . $this->getConf()->getVersion('os'));
+//            $this->version['php'] = phpversion();
+//            $this->version['os'] = php_uname('s') . ' ' . php_uname('r');
+//            $this->version['bot'] = 'PHP ' . $this->version['php'] . ' - ' . $this->version['os'];
             if ($this->dbms == 'mysql' || $this->dbms == 'pg') {
-                $this->version['sql'] = $this->getDb()->getDbVersion();
-                $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
+                $this->getConf()->setVersion('sql', $this->getDb()->getDbVersion());
+                $this->getConf()->setVersion('bot', $this->getConf()->getVersion('bot') . ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->getConf()->getVersion('sql'));
+//                $this->version['sql'] = $this->getDb()->getDbVersion();
+//                $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
             } elseif ($this->dbms == 'sqlite') {
                 $version = SQLite3::version();
-                $this->version['sql'] = $version['versionString'];
-                $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
+                $this->getConf()->setVersion('sql', $version['versionString']);
+                $this->getConf()->setVersion('bot', $this->getConf()->getVersion('bot') . ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->getConf()->getVersion('sql'));
+//                $version = SQLite3::version();
+//                $this->version['sql'] = $version['versionString'];
+//                $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
             }
         }
         if (is_array($this->config['plugins']['autoload']) === true) {
@@ -359,7 +367,8 @@ class Irc extends Cerberus
         if ($this->bot['nick'] === null) {
             $this->setNick();
         }
-        $this->write('USER PHP' . str_replace('.', '', phpversion()) . ' * * :' . $this->config['info']['name']);
+        $this->write('USER PHP' . str_replace('.', '', phpversion()) . ' * * :' . $this->getConf()->getName());
+//        $this->write('USER PHP' . str_replace('.', '', phpversion()) . ' * * :' . $this->config['info']['name']);
         $this->write('NICK ' . $this->bot['nick']);
         $this->lastping = time();
         $this->nowrite = true;

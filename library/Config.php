@@ -41,6 +41,7 @@ class Config
     protected $logfiledirectory = '/tmp/';
     protected $logfile = ['error' => true, 'socket' => false, 'sql' => false];
     protected $plugins = ['autoload' => []];
+    protected $version = ['bot' => null, 'os' => null, 'php' => null, 'sql' => null];
 
     /**
      * Config constructor.
@@ -50,11 +51,14 @@ class Config
     {
         $this->logfiledirectory = Cerberus::getPath() . '/log/';
         if (is_array($config)) {
+            if (!empty($config['info']['version'])) {
+                $this->setVersion('bot', $config['info']['version']);
+            }
             if (!empty($config['info']['name'])) {
-                $this->info['name'] = $config['info']['name'];
+                $this->setName($config['info']['name']);
             }
             if (!empty($config['info']['homepage'])) {
-                $this->info['homepage'] = $config['info']['homepage'];
+                $this->setHomepage($config['info']['homepage']);
             }
             if (!empty($config['bot']['channel'])) {
                 $this->channel = '#' . $config['bot']['channel'];
@@ -93,6 +97,30 @@ class Config
                 $this->setLanguage($config['bot']['lang']);
             }
         }
+    }
+
+    public function setVersion($var, $version) {
+        $this->version[$var] = $version;
+    }
+
+    public function getVersion($var = null) {
+        return $var === null ? $this->version : $this->version[$var];
+    }
+
+    public function setName($name) {
+        $this->info['name'] = $name;
+    }
+
+    public function getName() {
+        return $this->info['name'];
+    }
+
+    public function setHomepage($homepage) {
+        $this->info['homepage'] = $homepage;
+    }
+
+    public function getHomepage() {
+        return $this->info['homepage'];
     }
 
     public function setLanguage($language)

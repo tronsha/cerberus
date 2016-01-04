@@ -262,15 +262,13 @@ class Event
                     $send = 'PING' . $matches[2];
                     break;
                 case 'VERSION':
-                    $send = 'VERSION ' . $this->vars['version']['bot'];
+                    $send = 'VERSION ' . $this->irc->getConf()->getVersion('bot');
                     break;
                 case 'TIME':
                     $send = 'TIME ' . date('D M d H:i:s Y T');
                     break;
                 case 'FINGER':
-                    $send = 'FINGER ' . $this->vars['config']['info']['name'] . (isset($this->vars['config']['info']['homepage']) ? ' (' . $this->vars['config']['info']['homepage'] . ')' : '') . ' Idle ' . round(
-                            $this->irc->getMicrotime() - $this->vars['time']['irc_connect']
-                        ) . ' seconds';
+                    $send = 'FINGER ' . $this->irc->getConf()->getName() . (empty($this->irc->getConf()->getHomepage()) === false ? ' (' . $this->irc->getConf()->getHomepage() . ')' : '') . ' Idle ' . round($this->irc->getMicrotime() - $this->vars['time']['irc_connect']) . ' seconds';
                     break;
                 case 'SOURCE':
                     $send = 'SOURCE https://github.com/tronsha/cerberus';
