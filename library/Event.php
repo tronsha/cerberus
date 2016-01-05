@@ -68,8 +68,7 @@ class Event
      */
     public function onConnect()
     {
-        $this->vars = $this->irc->getVars();
-        $this->irc->runPluginEvent(__FUNCTION__, $this->vars['config']);
+        $this->irc->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -248,7 +247,7 @@ class Event
     {
         $this->vars = $this->irc->getVars();
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
-            if ($this->vars['config']['ctcp'] === false) {
+            if ($this->irc->getConf()->getCtcp() === false) {
                 return null;
             }
             $send = '';
@@ -395,7 +394,7 @@ class Event
         list($channel, $nick) = explode(' ', $rest);
         $me = $nick == $this->vars['var']['me'] ? true : false;
         $this->onPart($nick, $channel);
-        if ($this->vars['config']['autorejoin'] === true && $me === true) {
+        if ($this->irc->getConf()->getAutorejoin() === true && $me === true) {
             $this->irc->getActions()->join($channel);
         }
         $this->irc->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer]);

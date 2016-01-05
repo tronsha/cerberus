@@ -35,7 +35,7 @@ class Config
     protected $ctcp = false;
     protected $dailylogfile = true;
     protected $dbms = ['mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite'];
-    protected $frontend = ['url' => '', 'password' => ''];
+    protected $frontend = ['url' => null, 'password' => null];
     protected $info = ['name' => 'Cerberus', 'homepage' => ''];
     protected $language;
     protected $logfiledirectory = '/tmp/';
@@ -61,13 +61,13 @@ class Config
                 $this->setHomepage($config['info']['homepage']);
             }
             if (!empty($config['bot']['channel'])) {
-                $this->channel = '#' . $config['bot']['channel'];
+                $this->setChannel('#' . $config['bot']['channel']);
             }
             if (isset($config['bot']['autorejoin'])) {
-                $this->autorejoin = $config['bot']['autorejoin'] == 1 ? true : false;
+                $this->setAutorejoin($config['bot']['autorejoin'] == 1 ? true : false);
             }
             if (isset($config['bot']['ctcp'])) {
-                $this->ctcp = $config['bot']['ctcp'] == 1 ? true : false;
+                $this->setCtcp($config['bot']['ctcp'] == 1 ? true : false);
             }
             if (!empty($config['log']['directory']) && is_dir($config['log']['directory'])) {
                 $this->logfiledirectory = $config['log']['directory'];
@@ -85,13 +85,13 @@ class Config
                 $this->dailylogfile = $config['log']['dailylogfile'] == 1 ? true : false;
             }
             if (isset($config['plugins']['autoload'])) {
-                $this->plugins['autoload'] = explode(',', $config['plugins']['autoload']);
+                $this->setPluginsAutoload($config['plugins']['autoload']);
             }
             if (isset($config['frontend']['url'])) {
-                $this->frontend['url'] = $config['frontend']['url'];
+                $this->setFrontendUrl($config['frontend']['url']);
             }
             if (isset($config['frontend']['password'])) {
-                $this->frontend['password'] = $config['frontend']['password'];
+                $this->setFrontendPassword($config['frontend']['password']);
             }
             if (isset($config['bot']['lang'])) {
                 $this->setLanguage($config['bot']['lang']);
@@ -99,28 +99,97 @@ class Config
         }
     }
 
-    public function setVersion($var, $version) {
+    public function setVersion($var, $version)
+    {
         $this->version[$var] = $version;
     }
 
-    public function getVersion($var = null) {
+    public function getVersion($var = null)
+    {
         return $var === null ? $this->version : $this->version[$var];
     }
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->info['name'] = $name;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->info['name'];
     }
 
-    public function setHomepage($homepage) {
+    public function setHomepage($homepage)
+    {
         $this->info['homepage'] = $homepage;
     }
 
-    public function getHomepage() {
+    public function getHomepage()
+    {
         return $this->info['homepage'];
+    }
+
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+    }
+
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    public function setAutorejoin($autorejoin)
+    {
+        $this->autorejoin = $autorejoin;
+    }
+
+    public function getAutorejoin()
+    {
+        return $this->autorejoin;
+    }
+
+    public function setCtcp($ctcp)
+    {
+        $this->ctcp = $ctcp;
+    }
+
+    public function getCtcp()
+    {
+        return $this->ctcp;
+    }
+
+    public function setFrontendUrl($url)
+    {
+        $this->frontend['url'] = $url;
+    }
+
+    public function getFrontendUrl()
+    {
+        return $this->frontend['url'];
+    }
+
+    public function setFrontendPassword($password)
+    {
+        $this->frontend['password'] = $password;
+    }
+
+    public function getFrontendPassword()
+    {
+        return $this->frontend['password'];
+    }
+
+    public function setPluginsAutoload($data)
+    {
+        if (is_array($data)) {
+            $this->plugins['autoload'] = $data;
+        } else {
+            $this->plugins['autoload'] = explode(',', $data);
+        }
+    }
+
+    public function getPluginsAutoload() {
+        return $this->plugins['autoload'];
     }
 
     public function setLanguage($language)
@@ -131,5 +200,10 @@ class Config
     public function getLanguage()
     {
         return $this->language;
+    }
+
+    public function getDbms($dbms = null)
+    {
+        return $dbms === null ? $this->dbms : $this->dbms[$dbms];
     }
 }
