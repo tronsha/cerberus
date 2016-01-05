@@ -45,8 +45,7 @@ class Irc extends Cerberus
     protected $nowrite;
     protected $var = [];
     protected $time = [];
-//    protected $version = [];
-    protected $config = [];
+    protected $config = null;
     protected $reconnect = [];
     protected $loaded = [];
     protected $pluginevents = [];
@@ -56,7 +55,6 @@ class Irc extends Cerberus
     protected $action = null;
     protected $translate = null;
     protected $cron = null;
-    protected $configClass = null;
 
     /**
      * @param array|null $config
@@ -70,16 +68,7 @@ class Irc extends Cerberus
         $this->server['password'] = null;
         $this->reconnect['channel'] = [];
         $this->loaded['classes'] = [];
-//        $this->config['info'] = ['name' => 'Cerberus'];
-//        $this->config['dbms'] = ['mysql' => 'MySQL', 'pg' => 'PostgreSQL', 'sqlite' => 'SQLite'];
-//        $this->config['autorejoin'] = false;
-//        $this->config['ctcp'] = false;
-        $this->config['logfiledirectory'] = $this->getPath() . '/log/';
-        $this->config['logfile']['error'] = true;
-        $this->config['logfile']['socket'] = false;
-        $this->config['logfile']['sql'] = false;
-        $this->config['dailylogfile'] = true;
-        $this->configClass = new Config($config);
+        $this->config = new Config($config);
         if (is_array($config)) {
             if (!empty($config['bot']['nick'])) {
                 $this->setNick($config['bot']['nick']);
@@ -93,48 +82,6 @@ class Irc extends Cerberus
             if (isset($config['db'])) {
                 $this->setDB($config['db']);
             }
-//            if (!empty($config['info']['version'])) {
-//                $this->version['bot'] = $config['info']['version'];
-//            }
-//            if (!empty($config['info']['name'])) {
-//                $this->config['info']['name'] = $config['info']['name'];
-//            }
-//            if (!empty($config['info']['homepage'])) {
-//                $this->config['info']['homepage'] = $config['info']['homepage'];
-//            }
-//            if (!empty($config['bot']['channel'])) {
-//                $this->config['channel'] = '#' . $config['bot']['channel'];
-//            }
-//            if (isset($config['bot']['autorejoin'])) {
-//                $this->config['autorejoin'] = $config['bot']['autorejoin'] == 1 ? true : false;
-//            }
-//            if (isset($config['bot']['ctcp'])) {
-//                $this->config['ctcp'] = $config['bot']['ctcp'] == 1 ? true : false;
-//            }
-            if (!empty($config['log']['directory']) && is_dir($config['log']['directory'])) {
-                $this->config['logfiledirectory'] = $config['log']['directory'];
-            }
-            if (isset($config['log']['error'])) {
-                $this->config['logfile']['error'] = $config['log']['error'] == 1 ? true : false;
-            }
-            if (isset($config['log']['socket'])) {
-                $this->config['logfile']['socket'] = $config['log']['socket'] == 1 ? true : false;
-            }
-            if (isset($config['log']['sql'])) {
-                $this->config['logfile']['sql'] = $config['log']['sql'] == 1 ? true : false;
-            }
-            if (isset($config['log']['dailylogfile'])) {
-                $this->config['dailylogfile'] = $config['log']['dailylogfile'] == 1 ? true : false;
-            }
-//            if (isset($config['plugins']['autoload'])) {
-//                $this->config['plugins']['autoload'] = explode(',', $config['plugins']['autoload']);
-//            }
-//            if (isset($config['frontend']['url'])) {
-//                $this->config['frontend']['url'] = $config['frontend']['url'];
-//            }
-//            if (isset($config['frontend']['password'])) {
-//                $this->config['frontend']['password'] = $config['frontend']['password'];
-//            }
         }
         $this->translate = new Translate($this->getConf()->getLanguage());
         $this->action = new Action($this);
@@ -176,7 +123,7 @@ class Irc extends Cerberus
      */
     public function getVars()
     {
-        return ['config' => $this->config, 'version' => $this->getConf()->getVersion(), 'var' => $this->var, 'time' => $this->time];
+        return ['var' => $this->var, 'time' => $this->time];
     }
 
     /**
@@ -275,21 +222,13 @@ class Irc extends Cerberus
             $this->getConf()->setVersion('php', phpversion());
             $this->getConf()->setVersion('os', php_uname('s') . ' ' . php_uname('r'));
             $this->getConf()->setVersion('bot', 'PHP ' . $this->getConf()->getVersion('php') . ' - ' . $this->getConf()->getVersion('os'));
-//            $this->version['php'] = phpversion();
-//            $this->version['os'] = php_uname('s') . ' ' . php_uname('r');
-//            $this->version['bot'] = 'PHP ' . $this->version['php'] . ' - ' . $this->version['os'];
             if ($this->dbms == 'mysql' || $this->dbms == 'pg') {
                 $this->getConf()->setVersion('sql', $this->getDb()->getDbVersion());
                 $this->getConf()->setVersion('bot', $this->getConf()->getVersion('bot') . ' - ' . $this->getConf()->getDbms($this->dbms) . ' ' . $this->getConf()->getVersion('sql'));
-//                $this->version['sql'] = $this->getDb()->getDbVersion();
-//                $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
             } elseif ($this->dbms == 'sqlite') {
                 $version = SQLite3::version();
                 $this->getConf()->setVersion('sql', $version['versionString']);
                 $this->getConf()->setVersion('bot', $this->getConf()->getVersion('bot') . ' - ' . $this->getConf()->getDbms($this->dbms) . ' ' . $this->getConf()->getVersion('sql'));
-//                $version = SQLite3::version();
-//                $this->version['sql'] = $version['versionString'];
-//                $this->version['bot'] .= ' - ' . $this->config['dbms'][$this->dbms] . ' ' . $this->version['sql'];
             }
         }
         if (is_array($this->getConf()->getPluginsAutoload()) === true) {
@@ -368,7 +307,6 @@ class Irc extends Cerberus
             $this->setNick();
         }
         $this->write('USER PHP' . str_replace('.', '', phpversion()) . ' * * :' . $this->getConf()->getName());
-//        $this->write('USER PHP' . str_replace('.', '', phpversion()) . ' * * :' . $this->config['info']['name']);
         $this->write('NICK ' . $this->bot['nick']);
         $this->lastping = time();
         $this->nowrite = true;
@@ -430,17 +368,17 @@ class Irc extends Cerberus
      */
     protected function log($text, $type)
     {
-        if ($this->config['logfile'][$type] !== true) {
+        if ($this->getConf()->getLogfile($type) !== true) {
             return null;
         }
 
-        if ($this->config['dailylogfile'] === true) {
+        if ($this->getConf()->getDailylogfile() === true) {
             $file = $type . '_log_' . date("Ymd", time()) . '.txt';
         } else {
             $file = $type . '_log.txt';
         }
 
-        $handle = @fopen(realpath($this->config['logfiledirectory']) . '/' . $file, 'a+');
+        $handle = @fopen(realpath($this->getConf()->getLogfiledirectory()) . '/' . $file, 'a+');
         if ($handle !== false) {
             fputs($handle, date("d.m.Y H:i:s", time()) . ' >>>> ' . $text . PHP_EOL);
             fflush($handle);
@@ -832,7 +770,7 @@ class Irc extends Cerberus
      */
     public function getConf()
     {
-        return $this->configClass;
+        return $this->config;
     }
 
     /**

@@ -73,13 +73,13 @@ class Config
                 $this->logfiledirectory = $config['log']['directory'];
             }
             if (isset($config['log']['error'])) {
-                $this->logfile['error'] = $config['log']['error'] == 1 ? true : false;
+                $this->setLogfile('error', $config['log']['error'] == 1 ? true : false);
             }
             if (isset($config['log']['socket'])) {
-                $this->logfile['socket'] = $config['log']['socket'] == 1 ? true : false;
+                $this->setLogfile('socket', $config['log']['socket'] == 1 ? true : false);
             }
             if (isset($config['log']['sql'])) {
-                $this->logfile['sql'] = $config['log']['sql'] == 1 ? true : false;
+                $this->setLogfile('sql', $config['log']['sql'] == 1 ? true : false);
             }
             if (isset($config['log']['dailylogfile'])) {
                 $this->dailylogfile = $config['log']['dailylogfile'] == 1 ? true : false;
@@ -200,6 +200,36 @@ class Config
     public function getLanguage()
     {
         return $this->language;
+    }
+
+    public function setLogfile($var, $value)
+    {
+        $this->logfile[$var] = $value;
+    }
+
+    public function getLogfile($var)
+    {
+        return $var === null ? $this->logfile : $this->logfile[$var];
+    }
+
+    public function setLogfiledirectory($directory)
+    {
+        $this->logfiledirectory = $directory;
+    }
+
+    public function getLogfiledirectory()
+    {
+        return $this->logfiledirectory;
+    }
+
+    public function setDailylogfile($value)
+    {
+        $this->dailylogfile = $value;
+    }
+
+    public function getDailylogfile()
+    {
+        return $this->dailylogfile;
     }
 
     public function getDbms($dbms = null)
