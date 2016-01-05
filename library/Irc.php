@@ -149,7 +149,7 @@ class Irc extends Cerberus
     {
         if ($this->init === true) {
             $this->getEvents()->onShutdown();
-            if ($this->fp !== false) {
+            if (is_resource($this->fp) === true) {
                 fclose($this->fp);
             }
             $this->getDb()->cleanupBot();
