@@ -69,8 +69,8 @@ class Config
             if (isset($config['bot']['ctcp'])) {
                 $this->setCtcp($config['bot']['ctcp'] == 1 ? true : false);
             }
-            if (!empty($config['log']['directory']) && is_dir($config['log']['directory'])) {
-                $this->logfiledirectory = $config['log']['directory'];
+            if (!empty($config['log']['directory'])) {
+                $this->setLogfiledirectory($config['log']['directory']);
             }
             if (isset($config['log']['error'])) {
                 $this->setLogfile('error', $config['log']['error'] == 1 ? true : false);
@@ -82,7 +82,7 @@ class Config
                 $this->setLogfile('sql', $config['log']['sql'] == 1 ? true : false);
             }
             if (isset($config['log']['dailylogfile'])) {
-                $this->dailylogfile = $config['log']['dailylogfile'] == 1 ? true : false;
+                $this->setDailylogfile($config['log']['dailylogfile'] == 1 ? true : false);
             }
             if (isset($config['plugins']['autoload'])) {
                 $this->setPluginsAutoload($config['plugins']['autoload']);
@@ -188,7 +188,8 @@ class Config
         }
     }
 
-    public function getPluginsAutoload() {
+    public function getPluginsAutoload()
+    {
         return $this->plugins['autoload'];
     }
 
@@ -214,7 +215,9 @@ class Config
 
     public function setLogfiledirectory($directory)
     {
-        $this->logfiledirectory = $directory;
+        if (is_dir($directory) === true) {
+            $this->logfiledirectory = $directory;
+        }
     }
 
     public function getLogfiledirectory()
