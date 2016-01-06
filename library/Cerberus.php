@@ -62,7 +62,7 @@ class Cerberus
      */
     public function run()
     {
-        $irc = new Irc(self::getConfig());
+        $irc = new Irc(self::loadConfig());
         $irc->connect();
         return $irc;
     }
@@ -71,7 +71,7 @@ class Cerberus
      * @return array
      * @throws Exception
      */
-    public static function getConfig()
+    public static function loadConfig()
     {
         if (file_exists(self::getPath() . '/config.ini') === false) {
             throw new Exception('File Not Found: ' . self::getPath() . '/config.ini');

@@ -70,7 +70,7 @@ if (file_exists('../vendor/bin/phpunit') === true) {
     chdir(__DIR__);
 }
 
-$config = Cerberus::getConfig();
+$config = Cerberus::loadConfig();
 
 if ($config['bot']['autostart']) {
     $db = new Db($config['db']);
