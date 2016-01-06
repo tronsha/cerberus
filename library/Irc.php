@@ -83,7 +83,7 @@ class Irc extends Cerberus
                 $this->setDB($config['db']);
             }
         }
-        $this->translate = new Translate($this->getConf()->getLanguage());
+        $this->translate = new Translate($this->getConfig()->getLanguage());
         $this->action = new Action($this);
         $this->event = new Event($this);
         $this->cron = new Cron;
@@ -218,20 +218,20 @@ class Irc extends Cerberus
         }
         $this->dbConnect();
         $this->getDb()->createBot($this->bot['pid'], $this->bot['nick']);
-        if ($this->getConf()->getVersion('bot') === null) {
-            $this->getConf()->setVersion('php', phpversion());
-            $this->getConf()->setVersion('os', php_uname('s') . ' ' . php_uname('r'));
-            $this->getConf()->setVersion('bot', 'PHP ' . $this->getConf()->getVersion('php') . ' - ' . $this->getConf()->getVersion('os'));
+        if ($this->getConfig()->getVersion('bot') === null) {
+            $this->getConfig()->setVersion('php', phpversion());
+            $this->getConfig()->setVersion('os', php_uname('s') . ' ' . php_uname('r'));
+            $this->getConfig()->setVersion('bot', 'PHP ' . $this->getConfig()->getVersion('php') . ' - ' . $this->getConfig()->getVersion('os'));
             if ($this->dbms == 'mysql' || $this->dbms == 'pg') {
-                $this->getConf()->setVersion('sql', $this->getDb()->getDbVersion());
-                $this->getConf()->setVersion('bot', $this->getConf()->getVersion('bot') . ' - ' . $this->getConf()->getDbms($this->dbms) . ' ' . $this->getConf()->getVersion('sql'));
+                $this->getConfig()->setVersion('sql', $this->getDb()->getDbVersion());
+                $this->getConfig()->setVersion('bot', $this->getConfig()->getVersion('bot') . ' - ' . $this->getConfig()->getDbms($this->dbms) . ' ' . $this->getConfig()->getVersion('sql'));
             } elseif ($this->dbms == 'sqlite') {
                 $version = SQLite3::version();
-                $this->getConf()->setVersion('sql', $version['versionString']);
-                $this->getConf()->setVersion('bot', $this->getConf()->getVersion('bot') . ' - ' . $this->getConf()->getDbms($this->dbms) . ' ' . $this->getConf()->getVersion('sql'));
+                $this->getConfig()->setVersion('sql', $version['versionString']);
+                $this->getConfig()->setVersion('bot', $this->getConfig()->getVersion('bot') . ' - ' . $this->getConfig()->getDbms($this->dbms) . ' ' . $this->getConfig()->getVersion('sql'));
             }
         }
-        if (is_array($this->getConf()->getPluginsAutoload()) === true) {
+        if (is_array($this->getConfig()->getPluginsAutoload()) === true) {
             $this->autoloadPlugins();
         }
         $this->init = true;
@@ -306,7 +306,7 @@ class Irc extends Cerberus
         if ($this->bot['nick'] === null) {
             $this->setNick();
         }
-        $this->write('USER PHP' . str_replace('.', '', phpversion()) . ' * * :' . $this->getConf()->getName());
+        $this->write('USER PHP' . str_replace('.', '', phpversion()) . ' * * :' . $this->getConfig()->getName());
         $this->write('NICK ' . $this->bot['nick']);
         $this->lastping = time();
         $this->nowrite = true;
@@ -368,17 +368,17 @@ class Irc extends Cerberus
      */
     protected function log($text, $type)
     {
-        if ($this->getConf()->getLogfile($type) !== true) {
+        if ($this->getConfig()->getLogfile($type) !== true) {
             return null;
         }
 
-        if ($this->getConf()->getDailylogfile() === true) {
+        if ($this->getConfig()->getDailylogfile() === true) {
             $file = $type . '_log_' . date("Ymd", time()) . '.txt';
         } else {
             $file = $type . '_log.txt';
         }
 
-        $handle = @fopen(realpath($this->getConf()->getLogfiledirectory()) . '/' . $file, 'a+');
+        $handle = @fopen(realpath($this->getConfig()->getLogfiledirectory()) . '/' . $file, 'a+');
         if ($handle !== false) {
             fputs($handle, date("d.m.Y H:i:s", time()) . ' >>>> ' . $text . PHP_EOL);
             fflush($handle);
@@ -684,7 +684,7 @@ class Irc extends Cerberus
     public function autoloadPlugins()
     {
         $this->loadPlugin('auth');
-        foreach ($this->getConf()->getPluginsAutoload() as $plugin) {
+        foreach ($this->getConfig()->getPluginsAutoload() as $plugin) {
             $this->loadPlugin($plugin);
         }
     }
@@ -768,7 +768,7 @@ class Irc extends Cerberus
     /**
      * @return Config|null
      */
-    public function getConf()
+    public function getConfig()
     {
         return $this->config;
     }

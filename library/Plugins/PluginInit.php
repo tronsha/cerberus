@@ -54,10 +54,10 @@ class PluginInit extends Plugin
      */
     public function onConnect($data)
     {
-        if ($this->irc->getConf()->getFrontendUrl() !== null) {
-            $url = trim($this->irc->getConf()->getFrontendUrl(), " \t\n\r\0\x0B/") . '/sethost.php';
-            if ($this->irc->getConf()->getFrontendPassword() !== null) {
-                $url .= '?pw=' . md5($this->irc->getConf()->getFrontendPassword());
+        if ($this->irc->getConfig()->getFrontendUrl() !== null) {
+            $url = trim($this->irc->getConfig()->getFrontendUrl(), " \t\n\r\0\x0B/") . '/sethost.php';
+            if ($this->irc->getConfig()->getFrontendPassword() !== null) {
+                $url .= '?pw=' . md5($this->irc->getConfig()->getFrontendPassword());
             }
             try {
                 file_get_contents($url);

@@ -247,7 +247,7 @@ class Event
     {
         $this->vars = $this->irc->getVars();
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
-            if ($this->irc->getConf()->getCtcp() === false) {
+            if ($this->irc->getConfig()->getCtcp() === false) {
                 return null;
             }
             $send = '';
@@ -261,13 +261,13 @@ class Event
                     $send = 'PING' . $matches[2];
                     break;
                 case 'VERSION':
-                    $send = 'VERSION ' . $this->irc->getConf()->getVersion('bot');
+                    $send = 'VERSION ' . $this->irc->getConfig()->getVersion('bot');
                     break;
                 case 'TIME':
                     $send = 'TIME ' . date('D M d H:i:s Y T');
                     break;
                 case 'FINGER':
-                    $send = 'FINGER ' . $this->irc->getConf()->getName() . (empty($this->irc->getConf()->getHomepage()) === false ? ' (' . $this->irc->getConf()->getHomepage() . ')' : '') . ' Idle ' . round($this->irc->getMicrotime() - $this->vars['time']['irc_connect']) . ' seconds';
+                    $send = 'FINGER ' . $this->irc->getConfig()->getName() . (empty($this->irc->getConfig()->getHomepage()) === false ? ' (' . $this->irc->getConfig()->getHomepage() . ')' : '') . ' Idle ' . round($this->irc->getMicrotime() - $this->vars['time']['irc_connect']) . ' seconds';
                     break;
                 case 'SOURCE':
                     $send = 'SOURCE https://github.com/tronsha/cerberus';
@@ -394,7 +394,7 @@ class Event
         list($channel, $nick) = explode(' ', $rest);
         $me = $nick == $this->vars['var']['me'] ? true : false;
         $this->onPart($nick, $channel);
-        if ($this->irc->getConf()->getAutorejoin() === true && $me === true) {
+        if ($this->irc->getConfig()->getAutorejoin() === true && $me === true) {
             $this->irc->getActions()->join($channel);
         }
         $this->irc->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer]);

@@ -220,7 +220,7 @@ class PluginPi extends Plugin
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '!temp' && $data['channel'] == $this->irc->getConf()->getChannel()) {
+        if ($command == '!temp' && $data['channel'] == $this->irc->getConfig()->getChannel()) {
             $this->privmsgTemp($data['channel']);
         }
         $this->blink(self::LED_BLUE);
@@ -255,7 +255,7 @@ class PluginPi extends Plugin
      */
     public function privmsgCpuTemp($channel = null)
     {
-        $channel = $channel === null ? $this->irc->getConf()->getChannel() : $channel;
+        $channel = $channel === null ? $this->irc->getConfig()->getChannel() : $channel;
         $this->irc->getActions()->privmsg($channel, $this->getCpuTempCelsius());
     }
 
@@ -264,7 +264,7 @@ class PluginPi extends Plugin
      */
     public function privmsgTemp($channel = null)
     {
-        $channel = $channel === null ? $this->irc->getConf()->getChannel() : $channel;
+        $channel = $channel === null ? $this->irc->getConfig()->getChannel() : $channel;
         $this->irc->getActions()->privmsg($channel, $this->getTempCelsius());
     }
 }
