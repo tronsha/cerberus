@@ -34,6 +34,10 @@ Change to the cerberus directory:
 
     cd cerberus
 
+Download the Composer:
+
+    curl -s http://getcomposer.org/installer | php
+
 Then, use the `install` command:
 
     php composer.phar install
