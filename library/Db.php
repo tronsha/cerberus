@@ -709,6 +709,31 @@ class Db
     }
 
     /**
+     * @param string $command
+     * @param string $data
+     */
+    public function setControl($command, $data)
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->insert('control')
+                ->values(
+                    [
+                        'command' => '?',
+                        'data' => '?',
+                        'bot_id' => '?'
+                    ]
+                )
+                ->setParameter(0, $command)
+                ->setParameter(1, $data)
+                ->setParameter(2, $this->botId)
+                ->execute();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
      * @return array
      */
     public function getControl()
