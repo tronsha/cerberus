@@ -70,6 +70,15 @@ class Action
     }
 
     /**
+     * @param string $command
+     * @param string $param
+     */
+    public function control($command, $param)
+    {
+        $this->getDb()->addControl($command, $param);
+    }
+
+    /**
      * @param string $to
      * @param string $text
      */
