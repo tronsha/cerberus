@@ -42,6 +42,25 @@ class PluginControl extends Plugin
      */
     public function onTick()
     {
+        $result = $this->irc->getDb()->getControl();
+        $this->irc->getDb()->unsetControl($result['id']);
+        if (empty($result) === false) {
+            switch ($result['command']) {
+                case 'load':
+                    $this->load($result['data']);
+                    break;
+            }
+        }
+    }
 
+    /**
+     * @param string $data
+     */
+    protected function load($data)
+    {
+        $plugins = preg_split('/[, ]+/', $data);
+        foreach ($plugins as $plugin) {
+            $this->irc->loadPlugin($plugin);
+        }
     }
 }

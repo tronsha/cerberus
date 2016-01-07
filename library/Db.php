@@ -707,4 +707,41 @@ class Db
             $this->error($e->getMessage());
         }
     }
+
+    /**
+     * @return array
+     */
+    public function getControl()
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('id', 'command', 'data')
+                ->from('control')
+                ->where('bot_id = ?')
+                ->orderBy('id', 'ASC')
+                ->setMaxResults(1)
+                ->setParameter(0, $this->botId)
+                ->execute();
+            return $stmt->fetch();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
+     * @param int $id
+     */
+    public function unsetControl($id)
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('control')
+                ->where('id = ?')
+                ->setParameter(0, $id)
+                ->execute();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
 }
