@@ -75,7 +75,7 @@ class Action
      */
     public function privmsg($to, $text)
     {
-        $this->getDb()->setWrite('PRIVMSG ' . $to . ' :' . $text);
+        $this->getDb()->addWrite('PRIVMSG ' . $to . ' :' . $text);
     }
 
     /**
@@ -84,7 +84,7 @@ class Action
      */
     public function me($to, $text)
     {
-        $this->getDb()->setWrite('PRIVMSG ' . $to . ' :' . "\x01" . 'ACTION ' . $text . "\x01");
+        $this->getDb()->addWrite('PRIVMSG ' . $to . ' :' . "\x01" . 'ACTION ' . $text . "\x01");
     }
 
     /**
@@ -93,7 +93,7 @@ class Action
      */
     public function notice($to, $text)
     {
-        $this->getDb()->setWrite('NOTICE ' . $to . ' :' . $text);
+        $this->getDb()->addWrite('NOTICE ' . $to . ' :' . $text);
     }
 
     /**
@@ -101,7 +101,7 @@ class Action
      */
     public function quit($text)
     {
-        $this->getDb()->setWrite('QUIT :' . $text);
+        $this->getDb()->addWrite('QUIT :' . $text);
     }
 
     /**
@@ -109,7 +109,7 @@ class Action
      */
     public function mode($text = null)
     {
-        $this->getDb()->setWrite('MODE' . ($text === null ? '' : ' ' . $text));
+        $this->getDb()->addWrite('MODE' . ($text === null ? '' : ' ' . $text));
     }
 
     /**
@@ -118,7 +118,7 @@ class Action
      */
     public function join($channel)
     {
-        $this->getDb()->setWrite('JOIN ' . $channel);
+        $this->getDb()->addWrite('JOIN ' . $channel);
         return ['action' => 'join', 'channel' => $channel];
     }
 
@@ -128,7 +128,7 @@ class Action
      */
     public function part($channel)
     {
-        $this->getDb()->setWrite('PART ' . $channel);
+        $this->getDb()->addWrite('PART ' . $channel);
         return ['action' => 'part', 'channel' => $channel];
     }
 
@@ -137,7 +137,7 @@ class Action
      */
     public function whois($nick)
     {
-        $this->getDb()->setWrite('WHOIS :' . $nick);
+        $this->getDb()->addWrite('WHOIS :' . $nick);
     }
 
     /**
@@ -148,6 +148,6 @@ class Action
         if ($this->irc !== null) {
             $this->irc->setNick($nick);
         }
-        $this->getDb()->setWrite('NICK :' . $nick);
+        $this->getDb()->addWrite('NICK :' . $nick);
     }
 }

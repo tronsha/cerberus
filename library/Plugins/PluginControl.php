@@ -43,7 +43,7 @@ class PluginControl extends Plugin
     public function onTick()
     {
         $result = $this->irc->getDb()->getControl();
-        $this->irc->getDb()->unsetControl($result['id']);
+        $this->irc->getDb()->removeControl($result['id']);
         if (empty($result) === false) {
             switch ($result['command']) {
                 case 'load':

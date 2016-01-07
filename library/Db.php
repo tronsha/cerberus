@@ -335,7 +335,7 @@ class Db
     /**
      * @param string $text
      */
-    public function setWrite($text)
+    public function addWrite($text)
     {
         try {
             $qb = $this->conn->createQueryBuilder();
@@ -378,7 +378,7 @@ class Db
     /**
      * @param int $id
      */
-    public function unsetWrite($id)
+    public function removeWrite($id)
     {
         try {
             $qb = $this->conn->createQueryBuilder();
@@ -712,7 +712,7 @@ class Db
      * @param string $command
      * @param string $data
      */
-    public function setControl($command, $data)
+    public function addControl($command, $data)
     {
         try {
             $qb = $this->conn->createQueryBuilder();
@@ -757,7 +757,7 @@ class Db
     /**
      * @param int $id
      */
-    public function unsetControl($id)
+    public function removeControl($id)
     {
         try {
             $qb = $this->conn->createQueryBuilder();
