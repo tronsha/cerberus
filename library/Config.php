@@ -1,7 +1,7 @@
 <?php
 
 /*   Cerberus IRCBot
- *   Copyright (C) 2008 - 2015 Stefan Hüsges
+ *   Copyright (C) 2008 - 2016 Stefan Hüsges
  *
  *   This program is free software; you can redistribute it and/or modify it
  *   under the terms of the GNU General Public License as published by the Free
@@ -43,10 +43,6 @@ class Config
     protected $plugins = ['autoload' => []];
     protected $version = ['bot' => null, 'os' => null, 'php' => null, 'sql' => null];
 
-    /**
-     * Config constructor.
-     * @param $config
-     */
     public function __construct($config)
     {
         $this->logfiledirectory = Cerberus::getPath() . '/log/';
