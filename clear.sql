@@ -2,6 +2,7 @@ TRUNCATE TABLE `bot`;
 TRUNCATE TABLE `channel`;
 TRUNCATE TABLE `channel_user`;
 TRUNCATE TABLE `send`;
+TRUNCATE TABLE `control`;
 TRUNCATE TABLE `log`;
 TRUNCATE TABLE `log_privmsg`;
 TRUNCATE TABLE `log_notice`;
