@@ -1,0 +1,29 @@
+{
+  "name": "tronsha/cerberus",
+  "description": "Cerberus IRC Bot",
+  "type": "project",
+  "require": {
+    "php": ">=5.4.0",
+    "ext-mcrypt": "*",
+    "doctrine/dbal": "2.5.*",
+    "symfony/console": "2.8.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.8.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Cerberus\\": "library/",
+      "Hades\\": "public/library/"
+    }
+  },
+  "minimum-stability": "dev",
+  "scripts": {
+    "post-install-cmd": [
+      "Cerberus\\Installer::install"
+    ],
+    "post-create-project-cmd": [
+      "Cerberus\\Installer::install"
+    ]
+  }
+}
