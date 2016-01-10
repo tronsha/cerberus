@@ -82,6 +82,7 @@ class PluginPi extends Plugin
                 $this->irc->addEvent('onPart', $this);
                 $this->irc->addEvent('onQuit', $this);
                 $this->irc->addEvent('onShutdown', $this);
+                $this->irc->addEvent('onControl', $this);
                 $this->irc->addCron('0 * * * *', $this, 'privmsgCpuTemp');
             } else {
                 $this->irc->sysinfo('This Plugin is only for the RaspberryPi with WiringPi.');
@@ -266,5 +267,17 @@ class PluginPi extends Plugin
     {
         $channel = $channel === null ? $this->irc->getConfig()->getChannel() : $channel;
         $this->irc->getActions()->privmsg($channel, $this->getTempCelsius());
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onControl($data)
+    {
+        if ($data['command'] == 'temp') {
+            $this->privmsgTemp();
+        } elseif ($data['command'] == 'cputemp') {
+            $this->privmsgCpuTemp();
+        }
     }
 }

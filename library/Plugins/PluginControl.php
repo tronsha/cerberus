@@ -45,6 +45,7 @@ class PluginControl extends Plugin
         $result = $this->irc->getDb()->getControl();
         $this->irc->getDb()->removeControl($result['id']);
         if (empty($result) === false) {
+            $this->irc->getEvents()->onControl($result['command'], $result['data']);
             switch ($result['command']) {
                 case 'load':
                     $this->load($result['data']);

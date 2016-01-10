@@ -135,6 +135,15 @@ class Event
     }
 
     /**
+     * @param string $command
+     * @param string $data
+     */
+    public function onControl($command, $data)
+    {
+        $this->irc->runPluginEvent(__FUNCTION__, ['command' => $command, 'data' => $data]);
+    }
+
+    /**
      * ERR_NONICKNAMEGIVEN
      * :No nickname given
      */
