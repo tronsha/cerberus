@@ -73,13 +73,15 @@ class PluginWork extends Plugin
      */
     public function goodmorning()
     {
-        if (empty(self::NICK_WORK) === false) {
-            $this->irc->getActions()->nick(self::NICK_WORK);
+        $nickWork = self::NICK_WORK;
+        $channel = self::CHANNEL;
+        if (empty($nickWork) === false) {
+            $this->irc->getActions()->nick($nickWork);
         }
-        if (empty(self::CHANNEL) === false) {
-            $this->irc->getActions()->join(self::CHANNEL);
-            if ($this->irc->inChannel(self::CHANNEL)) {
-                $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Good morning'));
+        if (empty($channel) === false) {
+            $this->irc->getActions()->join($channel);
+            if ($this->irc->inChannel($channel)) {
+                $this->irc->getActions()->privmsg($channel, $this->irc->__('Good morning'));
             }
         }
     }
@@ -89,12 +91,14 @@ class PluginWork extends Plugin
      */
     public function niceevening()
     {
-        if (empty(self::CHANNEL) === false && $this->irc->inChannel(self::CHANNEL)) {
-            $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Have a nice evening'));
-            $this->irc->getActions()->part(self::CHANNEL);
+        $nickHome = self::NICK_HOME;
+        $channel = self::CHANNEL;
+        if (empty($channel) === false && $this->irc->inChannel($channel)) {
+            $this->irc->getActions()->privmsg($channel, $this->irc->__('Have a nice evening'));
+            $this->irc->getActions()->part($channel);
         }
-        if (empty(self::NICK_HOME) === false) {
-            $this->irc->getActions()->nick(self::NICK_HOME);
+        if (empty($nickHome) === false) {
+            $this->irc->getActions()->nick($nickHome);
         }
     }
 
@@ -103,12 +107,14 @@ class PluginWork extends Plugin
      */
     public function niceweekend()
     {
-        if (empty(self::CHANNEL) === false && $this->irc->inChannel(self::CHANNEL)) {
-            $this->irc->getActions()->privmsg(self::CHANNEL, $this->irc->__('Nice weekend'));
-            $this->irc->getActions()->part(self::CHANNEL);
+        $nickHome = self::NICK_HOME;
+        $channel = self::CHANNEL;
+        if (empty($channel) === false && $this->irc->inChannel($channel)) {
+            $this->irc->getActions()->privmsg($channel, $this->irc->__('Nice weekend'));
+            $this->irc->getActions()->part($channel);
         }
-        if (empty(self::NICK_HOME) === false) {
-            $this->irc->getActions()->nick(self::NICK_HOME);
+        if (empty($nickHome) === false) {
+            $this->irc->getActions()->nick($nickHome);
         }
     }
 }

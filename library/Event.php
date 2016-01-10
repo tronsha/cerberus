@@ -267,7 +267,9 @@ class Event
                     $send = 'TIME ' . date('D M d H:i:s Y T');
                     break;
                 case 'FINGER':
-                    $send = 'FINGER ' . $this->irc->getConfig()->getName() . (empty($this->irc->getConfig()->getHomepage()) === false ? ' (' . $this->irc->getConfig()->getHomepage() . ')' : '') . ' Idle ' . round($this->irc->getMicrotime() - $this->vars['time']['irc_connect']) . ' seconds';
+                    $botName = $this->irc->getConfig()->getName();
+                    $botHomepage = $this->irc->getConfig()->getHomepage();
+                    $send = 'FINGER ' . $botName . (empty($botHomepage) === false ? ' (' . $botHomepage . ')' : '') . ' Idle ' . round($this->irc->getMicrotime() - $this->vars['time']['irc_connect']) . ' seconds';
                     break;
                 case 'SOURCE':
                     $send = 'SOURCE https://github.com/tronsha/cerberus';
