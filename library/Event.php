@@ -140,7 +140,8 @@ class Event
      */
     public function onControl($command, $data)
     {
-        $this->irc->runPluginEvent(__FUNCTION__, ['command' => $command, 'data' => $data]);
+        $data['command'] = $command;
+        $this->irc->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**

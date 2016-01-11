@@ -45,21 +45,22 @@ class PluginControl extends Plugin
         $result = $this->irc->getDb()->getControl();
         $this->irc->getDb()->removeControl($result['id']);
         if (empty($result) === false) {
-            $this->irc->getEvents()->onControl($result['command'], $result['data']);
+            $data = json_decode($result['data'], true);
+            $this->irc->getEvents()->onControl($result['command'], $data);
             switch ($result['command']) {
                 case 'load':
-                    $this->load($result['data']);
+                    $this->load($data['param']);
                     break;
             }
         }
     }
 
     /**
-     * @param string $data
+     * @param string $param
      */
-    protected function load($data)
+    protected function load($param)
     {
-        $plugins = preg_split('/[, ]+/', $data);
+        $plugins = preg_split('/[, ]+/', $param);
         foreach ($plugins as $plugin) {
             $this->irc->loadPlugin($plugin);
         }
