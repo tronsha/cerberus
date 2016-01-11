@@ -19,6 +19,8 @@
 
 namespace Cerberus;
 
+use Exception;
+
 /**
  * Class Action
  * @package Cerberus
@@ -55,8 +57,9 @@ class Action
             return $this->irc->getDb();
         } elseif ($this->db !== null && $this->db instanceof Db) {
             return $this->db;
+        } else {
+            throw new Exception('database is not set');
         }
-        throw new Exception('database is not set');
     }
 
     /**

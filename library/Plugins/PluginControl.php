@@ -19,7 +19,6 @@
 
 namespace Cerberus\Plugins;
 
-use Cerberus\Cerberus;
 use Cerberus\Plugin;
 
 /**
