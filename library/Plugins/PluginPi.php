@@ -275,9 +275,9 @@ class PluginPi extends Plugin
     public function onControl($data)
     {
         if ($data['command'] == 'temp') {
-            $this->irc->getActions()->privmsg($data['channel'], $this->privmsgTemp());
+            $this->irc->getActions()->privmsg($data['channel'], $this->getTempCelsius());
         } elseif ($data['command'] == 'cputemp') {
-            $this->irc->getActions()->privmsg($data['channel'], $this->privmsgCpuTemp());
+            $this->irc->getActions()->privmsg($data['channel'], $this->getCpuTempCelsius());
         }
     }
 }
