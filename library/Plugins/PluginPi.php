@@ -282,6 +282,8 @@ class PluginPi extends Plugin
                 case 'cputemp':
                     $this->irc->getActions()->privmsg($data['channel'], $this->getCpuTempCelsius());
                     break;
+                default:
+                    break;
             }
         }
     }
