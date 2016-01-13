@@ -19,12 +19,14 @@
 
 namespace Cerberus;
 
+use Cerberus\Plugins\PluginAuth;
+
 abstract class Plugin extends Cerberus
 {
     /**
      * @var Irc
      */
-    protected $irc;
+    private $irc;
 
     /**
      * @param Irc $irc
@@ -64,6 +66,14 @@ abstract class Plugin extends Cerberus
         }
         $this->irc->setTranslations($this->translations());
         return true;
+    }
+
+    /**
+     * @param PluginAuth $object
+     */
+    protected function registerAuth(PluginAuth $object)
+    {
+        $this->irc->registerAuth($object);
     }
 
     /**

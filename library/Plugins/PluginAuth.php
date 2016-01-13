@@ -52,7 +52,7 @@ class PluginAuth extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
-        $this->irc->registerAuth($this);
+        $this->registerAuth($this);
         return $returnValue;
     }
 
