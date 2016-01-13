@@ -33,7 +33,7 @@ class PluginJoin extends Plugin
      */
     protected function init()
     {
-        $this->irc->addEvent('onPrivmsg', $this);
+        $this->addEvent('onPrivmsg');
     }
 
     /**

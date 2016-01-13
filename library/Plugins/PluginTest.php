@@ -36,11 +36,11 @@ class PluginTest extends Plugin
      */
     protected function init()
     {
-        $this->irc->addEvent('onPrivmsg', $this);
-        $this->irc->addEvent('onNotice', $this);
-        $this->irc->addEvent('onJoin', $this);
-        $this->irc->addEvent('onPart', $this);
-        $this->irc->addEvent('onQuit', $this);
+        $this->addEvent('onPrivmsg');
+        $this->addEvent('onNotice');
+        $this->addEvent('onJoin');
+        $this->addEvent('onPart');
+        $this->addEvent('onQuit');
     }
 
     /**

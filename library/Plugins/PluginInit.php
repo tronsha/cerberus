@@ -34,7 +34,7 @@ class PluginInit extends Plugin
      */
     protected function init()
     {
-        $this->irc->addEvent('onConnect', $this);
+        $this->addEvent('onConnect');
     }
 
     /**

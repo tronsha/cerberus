@@ -742,6 +742,28 @@ class Irc extends Cerberus
     }
 
     /**
+     * @param string $event
+     * @param object $object
+     * @return int
+     */
+    public function removeEvent($event, $object)
+    {
+        $count = 0;
+        $className = get_class($object);
+        if (array_key_exists($event, $this->pluginevents)) {
+            foreach ($this->pluginevents[$event] as $priorityKey => $priorityValue) {
+                foreach ($priorityValue as $key => $eventObject) {
+                    if (get_class($eventObject) == $className) {
+                        unset($this->pluginevents[$event][$priorityKey][$key]);
+                        $count++;
+                    }
+                }
+            }
+        }
+        return $count;
+    }
+
+    /**
      * @return Action|null
      */
     public function getActions()

@@ -38,11 +38,11 @@ class PluginAuth extends Plugin
      */
     protected function init()
     {
-        $this->irc->addEvent('on311', $this);
-        $this->irc->addEvent('on330', $this);
-        $this->irc->addEvent('onPrivmsg', $this);
-        $this->irc->addEvent('onNick', $this);
-        $this->irc->addEvent('onQuit', $this);
+        $this->addEvent('on311');
+        $this->addEvent('on330');
+        $this->addEvent('onPrivmsg');
+        $this->addEvent('onNick');
+        $this->addEvent('onQuit');
     }
 
     /**

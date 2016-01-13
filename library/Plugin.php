@@ -83,4 +83,38 @@ abstract class Plugin extends Cerberus
         $this->irc->setTranslations($this->translations());
         return true;
     }
+
+    /**
+     * @param string $event
+     * @param int $priority
+     */
+    public function addEvent($event, $priority = 5)
+    {
+        $this->irc->addEvent($event, $this, $priority);
+    }
+
+    /**
+     * @param string $event
+     */
+    public function removeEvent($event)
+    {
+        $this->irc->removeEvent($event, $this);
+    }
+
+    /**
+     * @param string $cronString
+     * @param string $method
+     */
+    public function addCron($cronString, $method)
+    {
+        $this->irc->addCron($cronString, $this, $method);
+    }
+
+    /**
+     * @param int $id
+     */
+    public function removeCron($id)
+    {
+        $this->irc->removeCron($id);
+    }
 }

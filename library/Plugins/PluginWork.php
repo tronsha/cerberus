@@ -37,9 +37,9 @@ class PluginWork extends Plugin
      */
     protected function init()
     {
-        $this->irc->addCron('0 8 * * 1-5', $this, 'goodmorning');
-        $this->irc->addCron('0 17 * * 1-4', $this, 'niceevening');
-        $this->irc->addCron('30 14 * * 5', $this, 'niceweekend');
+        $this->addCron('0 8 * * 1-5', 'goodmorning');
+        $this->addCron('0 17 * * 1-4', 'niceevening');
+        $this->addCron('30 14 * * 5', 'niceweekend');
     }
 
     /**

@@ -33,7 +33,7 @@ class PluginControl extends Plugin
      */
     protected function init()
     {
-        $this->irc->addEvent('onTick', $this);
+        $this->addEvent('onTick');
     }
 
     /**

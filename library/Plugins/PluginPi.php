@@ -77,13 +77,13 @@ class PluginPi extends Plugin
                 $this->blink(self::LED_BLUE);
                 $this->blink(self::LED_RED);
                 $this->setIn(self::DHT);
-                $this->irc->addEvent('onPrivmsg', $this);
-                $this->irc->addEvent('onJoin', $this);
-                $this->irc->addEvent('onPart', $this);
-                $this->irc->addEvent('onQuit', $this);
-                $this->irc->addEvent('onShutdown', $this);
-                $this->irc->addEvent('onControl', $this);
-                $this->irc->addCron('0 * * * *', $this, 'privmsgCpuTemp');
+                $this->addEvent('onPrivmsg');
+                $this->addEvent('onJoin');
+                $this->addEvent('onPart');
+                $this->addEvent('onQuit');
+                $this->addEvent('onShutdown');
+                $this->addEvent('onControl');
+                $this->addCron('0 * * * *', 'privmsgCpuTemp');
             } else {
                 $this->irc->sysinfo('This Plugin is only for the RaspberryPi with WiringPi.');
                 $this->irc->sysinfo('http://www.raspberrypi.org');
