@@ -62,7 +62,7 @@ class PluginInit extends Plugin
             try {
                 file_get_contents($url);
             } catch (Exception $e) {
-                $this->irc->error($e->getMessage());
+                $this->error($e->getMessage());
             }
         }
     }

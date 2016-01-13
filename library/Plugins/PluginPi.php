@@ -50,7 +50,6 @@ class PluginPi extends Plugin
     const DHT = 7;
     const LOLDHT = '/home/pi/projects/lol_dht22/loldht';
 
-    protected $vars = null;
     protected $info = [];
 
     /**
@@ -63,7 +62,6 @@ class PluginPi extends Plugin
             $output = implode(' ', $outputArray);
             $pos = strpos($output, 'Raspberry Pi');
             if ($pos !== false) {
-                $this->vars = $this->irc->getVars();
                 $info = substr($output, $pos);
                 preg_match_all('/Type:\s*([^,:]+),\s*Revision:\s*([^,:]+),\s*Memory:\s*([^,:]+),\s*Maker:\s*([^,:]+)\s*$/i', $info, $matches, PREG_SET_ORDER);
                 $this->info['type'] = $matches[0][1];

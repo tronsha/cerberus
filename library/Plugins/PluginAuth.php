@@ -138,7 +138,7 @@ class PluginAuth extends Plugin
      */
     public function on330($data)
     {
-        $authLevel = $this->irc->getAuthLevel($data['auth']);
+        $authLevel = $this->getAuthLevel($data['auth']);
         if ($authLevel == 'admin') {
             $this->auth[$data['nick']]['level'] = self::AUTH_ADMIN;
         } elseif ($authLevel == 'user') {

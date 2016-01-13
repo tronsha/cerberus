@@ -61,7 +61,7 @@ class PluginControl extends Plugin
     {
         $plugins = preg_split('/[, ]+/', $param);
         foreach ($plugins as $plugin) {
-            $this->irc->loadPlugin($plugin);
+            $this->loadPlugin($plugin);
         }
     }
 }

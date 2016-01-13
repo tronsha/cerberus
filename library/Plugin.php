@@ -159,4 +159,32 @@ abstract class Plugin extends Cerberus
     {
         return $this->irc->isAdmin($nick, $host);
     }
+
+    /**
+     * @param string $auth
+     * @return string
+     */
+    protected function getAuthLevel($auth)
+    {
+        return $this->irc->getAuthLevel($auth);
+    }
+
+    /**
+     * @param string $channel
+     * @param string|null $user
+     * @return bool|null
+     */
+    protected function inChannel($channel, $user = null)
+    {
+        return $this->irc->inChannel($channel, $user);
+    }
+
+    /**
+     * @param string $plugin
+     * @param array|null $data
+     */
+    protected function loadPlugin($plugin, $data = null)
+    {
+        $this->irc->loadPlugin($plugin, $data);
+    }
 }

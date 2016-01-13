@@ -651,7 +651,7 @@ class Irc extends Cerberus
 
     /**
      * @param string $auth
-     * @return bool
+     * @return string
      */
     public function getAuthLevel($auth)
     {

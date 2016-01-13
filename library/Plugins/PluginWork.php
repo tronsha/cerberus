@@ -79,7 +79,7 @@ class PluginWork extends Plugin
         }
         if (empty($channel) === false) {
             $this->getActions()->join($channel);
-            if ($this->irc->inChannel($channel)) {
+            if ($this->inChannel($channel)) {
                 $this->getActions()->privmsg($channel, $this->__('Good morning'));
             }
         }
@@ -92,7 +92,7 @@ class PluginWork extends Plugin
     {
         $nickHome = self::NICK_HOME;
         $channel = self::CHANNEL;
-        if (empty($channel) === false && $this->irc->inChannel($channel)) {
+        if (empty($channel) === false && $this->inChannel($channel)) {
             $this->getActions()->privmsg($channel, $this->__('Have a nice evening'));
             $this->getActions()->part($channel);
         }
@@ -108,7 +108,7 @@ class PluginWork extends Plugin
     {
         $nickHome = self::NICK_HOME;
         $channel = self::CHANNEL;
-        if (empty($channel) === false && $this->irc->inChannel($channel)) {
+        if (empty($channel) === false && $this->inChannel($channel)) {
             $this->getActions()->privmsg($channel, $this->__('Nice weekend'));
             $this->getActions()->part($channel);
         }
