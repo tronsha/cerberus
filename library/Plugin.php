@@ -54,6 +54,51 @@ abstract class Plugin extends Cerberus
     protected function shutdown() {}
 
     /**
+     * @param array $data
+     * @return bool
+     */
+    public function onLoad($data)
+    {
+        if (isset($data) === true) {
+            $this->irc->getActions()->notice($data['nick'], 'Load: ' . get_called_class());
+        }
+        $this->irc->setTranslations($this->translations());
+        return true;
+    }
+
+    /**
+     * @return Config|null
+     */
+    protected function getConfig()
+    {
+        return $this->irc->getConfig();
+    }
+
+    /**
+     * @return Db|null
+     */
+    protected function getDb()
+    {
+        return $this->irc->getDb();
+    }
+
+    /**
+     * @return Action|null
+     */
+    protected function getActions()
+    {
+        return $this->irc->getActions();
+    }
+
+    /**
+     * @return Event|null
+     */
+    protected function getEvents()
+    {
+        return $this->irc->getEvents();
+    }
+
+    /**
      * @return array
      */
     protected function translations()
@@ -72,23 +117,10 @@ abstract class Plugin extends Cerberus
     }
 
     /**
-     * @param array $data
-     * @return bool
-     */
-    public function onLoad($data)
-    {
-        if (isset($data) === true) {
-            $this->irc->getActions()->notice($data['nick'], 'Load: ' . get_called_class());
-        }
-        $this->irc->setTranslations($this->translations());
-        return true;
-    }
-
-    /**
      * @param string $event
      * @param int $priority
      */
-    public function addEvent($event, $priority = 5)
+    protected function addEvent($event, $priority = 5)
     {
         $this->irc->addEvent($event, $this, $priority);
     }
@@ -96,7 +128,7 @@ abstract class Plugin extends Cerberus
     /**
      * @param string $event
      */
-    public function removeEvent($event)
+    protected function removeEvent($event)
     {
         $this->irc->removeEvent($event, $this);
     }
@@ -105,7 +137,7 @@ abstract class Plugin extends Cerberus
      * @param string $cronString
      * @param string $method
      */
-    public function addCron($cronString, $method)
+    protected function addCron($cronString, $method)
     {
         $this->irc->addCron($cronString, $this, $method);
     }
@@ -113,8 +145,18 @@ abstract class Plugin extends Cerberus
     /**
      * @param int $id
      */
-    public function removeCron($id)
+    protected function removeCron($id)
     {
         $this->irc->removeCron($id);
+    }
+
+    /**
+     * @param string $nick
+     * @param string $host
+     * @return mixed
+     */
+    protected function isAdmin($nick, $host)
+    {
+        return $this->irc->isAdmin($nick, $host);
     }
 }

@@ -44,7 +44,7 @@ class PluginJoin extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->getActions()->notice($data['nick'], 'New Command: !join [#channel]');
+            $this->getActions()->notice($data['nick'], 'New Command: !join [#channel]');
         }
         return $returnValue;
     }
@@ -55,14 +55,14 @@ class PluginJoin extends Plugin
      */
     public function onPrivmsg($data)
     {
-        if ($this->irc->isAdmin($data['nick'], $data['host']) === false) {
+        if ($this->isAdmin($data['nick'], $data['host']) === false) {
             return false;
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!join') {
             while ($channel = array_shift($splitText)) {
-                $this->irc->getActions()->join($channel);
+                $this->getActions()->join($channel);
             }
             return true;
         }

@@ -75,12 +75,12 @@ class PluginWork extends Plugin
         $nickWork = self::NICK_WORK;
         $channel = self::CHANNEL;
         if (empty($nickWork) === false) {
-            $this->irc->getActions()->nick($nickWork);
+            $this->getActions()->nick($nickWork);
         }
         if (empty($channel) === false) {
-            $this->irc->getActions()->join($channel);
+            $this->getActions()->join($channel);
             if ($this->irc->inChannel($channel)) {
-                $this->irc->getActions()->privmsg($channel, $this->irc->__('Good morning'));
+                $this->getActions()->privmsg($channel, $this->__('Good morning'));
             }
         }
     }
@@ -93,11 +93,11 @@ class PluginWork extends Plugin
         $nickHome = self::NICK_HOME;
         $channel = self::CHANNEL;
         if (empty($channel) === false && $this->irc->inChannel($channel)) {
-            $this->irc->getActions()->privmsg($channel, $this->irc->__('Have a nice evening'));
-            $this->irc->getActions()->part($channel);
+            $this->getActions()->privmsg($channel, $this->__('Have a nice evening'));
+            $this->getActions()->part($channel);
         }
         if (empty($nickHome) === false) {
-            $this->irc->getActions()->nick($nickHome);
+            $this->getActions()->nick($nickHome);
         }
     }
 
@@ -109,11 +109,11 @@ class PluginWork extends Plugin
         $nickHome = self::NICK_HOME;
         $channel = self::CHANNEL;
         if (empty($channel) === false && $this->irc->inChannel($channel)) {
-            $this->irc->getActions()->privmsg($channel, $this->irc->__('Nice weekend'));
-            $this->irc->getActions()->part($channel);
+            $this->getActions()->privmsg($channel, $this->__('Nice weekend'));
+            $this->getActions()->part($channel);
         }
         if (empty($nickHome) === false) {
-            $this->irc->getActions()->nick($nickHome);
+            $this->getActions()->nick($nickHome);
         }
     }
 }

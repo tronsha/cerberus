@@ -85,12 +85,12 @@ class PluginPi extends Plugin
                 $this->addEvent('onControl');
                 $this->addCron('0 * * * *', 'privmsgCpuTemp');
             } else {
-                $this->irc->sysinfo('This Plugin is only for the RaspberryPi with WiringPi.');
-                $this->irc->sysinfo('http://www.raspberrypi.org');
-                $this->irc->sysinfo('http://wiringpi.com');
+                $this->sysinfo('This Plugin is only for the RaspberryPi with WiringPi.');
+                $this->sysinfo('http://www.raspberrypi.org');
+                $this->sysinfo('http://wiringpi.com');
             }
         } else {
-            $this->irc->sysinfo('Can\'t use this Plugin, because "exec" is disabled');
+            $this->sysinfo('Can\'t use this Plugin, because "exec" is disabled');
         }
     }
 
@@ -221,7 +221,7 @@ class PluginPi extends Plugin
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '!temp' && $data['channel'] == $this->irc->getConfig()->getChannel()) {
+        if ($command == '!temp' && $data['channel'] == $this->getConfig()->getChannel()) {
             $this->privmsgTemp($data['channel']);
         }
         $this->blink(self::LED_BLUE);
@@ -256,8 +256,8 @@ class PluginPi extends Plugin
      */
     public function privmsgCpuTemp($channel = null)
     {
-        $channel = $channel === null ? $this->irc->getConfig()->getChannel() : $channel;
-        $this->irc->getActions()->privmsg($channel, $this->getCpuTempCelsius());
+        $channel = $channel === null ? $this->getConfig()->getChannel() : $channel;
+        $this->getActions()->privmsg($channel, $this->getCpuTempCelsius());
     }
 
     /**
@@ -265,8 +265,8 @@ class PluginPi extends Plugin
      */
     public function privmsgTemp($channel = null)
     {
-        $channel = $channel === null ? $this->irc->getConfig()->getChannel() : $channel;
-        $this->irc->getActions()->privmsg($channel, $this->getTempCelsius());
+        $channel = $channel === null ? $this->getConfig()->getChannel() : $channel;
+        $this->getActions()->privmsg($channel, $this->getTempCelsius());
     }
 
     /**
@@ -277,10 +277,10 @@ class PluginPi extends Plugin
         if ($data['command'] == 'pi') {
             switch ($data['param']) {
                 case 'temp':
-                    $this->irc->getActions()->privmsg($data['channel'], $this->getTempCelsius());
+                    $this->getActions()->privmsg($data['channel'], $this->getTempCelsius());
                     break;
                 case 'cputemp':
-                    $this->irc->getActions()->privmsg($data['channel'], $this->getCpuTempCelsius());
+                    $this->getActions()->privmsg($data['channel'], $this->getCpuTempCelsius());
                     break;
                 default:
                     break;

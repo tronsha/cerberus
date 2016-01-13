@@ -44,7 +44,7 @@ class PluginNick extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->getActions()->notice($data['nick'], 'New Command: !nick [name]');
+            $this->getActions()->notice($data['nick'], 'New Command: !nick [name]');
         }
         return $returnValue;
     }
@@ -55,14 +55,14 @@ class PluginNick extends Plugin
      */
     public function onPrivmsg($data)
     {
-        if ($this->irc->isAdmin($data['nick'], $data['host']) === false) {
+        if ($this->isAdmin($data['nick'], $data['host']) === false) {
             return false;
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!nick') {
             $nick = trim(array_shift($splitText));
-            return $this->irc->getActions()->nick($nick);
+            return $this->getActions()->nick($nick);
         }
     }
 }

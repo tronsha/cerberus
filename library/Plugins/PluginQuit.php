@@ -44,7 +44,7 @@ class PluginQuit extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->getActions()->notice($data['nick'], 'New Command: !die');
+            $this->getActions()->notice($data['nick'], 'New Command: !die');
         }
         return $returnValue;
     }
@@ -55,13 +55,13 @@ class PluginQuit extends Plugin
      */
     public function onPrivmsg($data)
     {
-        if ($this->irc->isAdmin($data['nick'], $data['host']) === false) {
+        if ($this->isAdmin($data['nick'], $data['host']) === false) {
             return false;
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         if ($command == '!die') {
-            return $this->irc->getActions()->quit('Client Quit');
+            return $this->getActions()->quit('Client Quit');
         }
     }
 }

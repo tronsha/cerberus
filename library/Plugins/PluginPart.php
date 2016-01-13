@@ -44,7 +44,7 @@ class PluginPart extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->getActions()->notice($data['nick'], 'New Command: !part [#channel]');
+            $this->getActions()->notice($data['nick'], 'New Command: !part [#channel]');
         }
         return $returnValue;
     }
@@ -55,7 +55,7 @@ class PluginPart extends Plugin
      */
     public function onPrivmsg($data)
     {
-        if ($this->irc->isAdmin($data['nick'], $data['host']) === false) {
+        if ($this->isAdmin($data['nick'], $data['host']) === false) {
             return false;
         }
         $splitText = explode(' ', $data['text']);
@@ -64,10 +64,10 @@ class PluginPart extends Plugin
             $channel = trim(array_shift($splitText));
             if (empty($channel) === true) {
                 $channel = $data['channel'];
-                $this->irc->getActions()->part($channel);
+                $this->getActions()->part($channel);
             } else {
                 do {
-                    $this->irc->getActions()->part($channel);
+                    $this->getActions()->part($channel);
                 } while ($channel = array_shift($splitText));
             }
             return true;

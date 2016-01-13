@@ -45,7 +45,7 @@ class PluginCrypt extends Plugin
             $this->mircryption = new Mircryption;
             $this->addEvent('onPrivmsg', 10);
         } else {
-            $this->irc->sysinfo('The mcrypt extension is not available.');
+            $this->sysinfo('The mcrypt extension is not available.');
         }
     }
 
@@ -57,7 +57,7 @@ class PluginCrypt extends Plugin
     {
         $returnValue = parent::onLoad($data);
         if ($data !== null) {
-            $this->irc->getActions()->notice($data['nick'], 'New Command: !cryptkey [#channel] [key]');
+            $this->getActions()->notice($data['nick'], 'New Command: !cryptkey [#channel] [key]');
         }
         return $returnValue;
     }
@@ -72,7 +72,7 @@ class PluginCrypt extends Plugin
         if ($command == '+OK') {
             $key = empty($this->cryptkey[$data['channel']]) ? '123456' : $this->cryptkey[$data['channel']];
             $data['text'] = $this->decodeMircryption(array_shift($splitText), $key);
-        } elseif (strtolower($command) == '!cryptkey' && $this->irc->isAdmin($data['nick'], $data['host'])) {
+        } elseif (strtolower($command) == '!cryptkey' && $this->isAdmin($data['nick'], $data['host'])) {
             $channel = array_shift($splitText);
             $key = array_shift($splitText);
             $this->cryptkey[$channel] = $key;
