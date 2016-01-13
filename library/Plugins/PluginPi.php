@@ -272,8 +272,9 @@ class PluginPi extends Plugin
      */
     public function onControl($data)
     {
+        $param = explode(' ', $data['param']);
         if ($data['command'] == 'pi') {
-            switch ($data['param']) {
+            switch ($param[0]) {
                 case 'temp':
                     $this->getActions()->privmsg($data['channel'], $this->getTempCelsius());
                     break;
