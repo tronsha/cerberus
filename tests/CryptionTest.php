@@ -28,13 +28,22 @@ class MircryptionTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testEncodeDecode()
+    public function testMircryption()
     {
         $text = 'foo';
         $key = 'bar';
-        $mircryption = new Mircryption;
-        $encode = $mircryption->encode($text, $key);
-        $decode = $mircryption->decode($encode, $key);
-        $this->assertEquals($text, $decode);
+        $encoded = Mircryption::encode($text, $key);
+        $decoded = Mircryption::decode($encoded, $key);
+        $this->assertEquals($text, $decoded);
+    }
+
+    public function testCcryption()
+    {
+        $text = 'foo';
+        $key = 'bar';
+        $encoded = Ccryption::encode($text, $key);
+        $decoded = Ccryption::decode($encoded, $key);
+        $this->assertEquals(substr(md5($text), 0, 6), substr($encoded, 0, 6));
+        $this->assertEquals($text, $decoded);
     }
 }
