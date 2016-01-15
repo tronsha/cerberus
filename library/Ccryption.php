@@ -58,7 +58,7 @@ class Ccryption
         $compressedEncodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $hash, $compressed, MCRYPT_MODE_CBC, $iv);
         $compressedEncodedTextIv = $iv . $compressedEncodedText;
         $compressedEncodedTextIv64 = base64_encode($compressedEncodedTextIv);
-        $compressedEncodedTextIv64Md5 = substr($md5, 0, 4) . $compressedEncodedTextIv64;
+        $compressedEncodedTextIv64Md5 = substr($md5, 0, 5) . $compressedEncodedTextIv64;
         return $compressedEncodedTextIv64Md5;
     }
 
@@ -72,13 +72,13 @@ class Ccryption
     public static function decode($text, $key)
     {
         $hash = hash('sha256', $key, true);
-        $checkValue = substr($text, 0, 4);
-        $compressedEncodedTextIv64 = substr($text, 4);
+        $checkValue = substr($text, 0, 5);
+        $compressedEncodedTextIv64 = substr($text, 5);
         $compressedEncodedTextIv = base64_decode($compressedEncodedTextIv64);
         $iv = substr($compressedEncodedTextIv, 0, 8);
         $compressedEncodedText = substr($compressedEncodedTextIv, 8);
         $compressed = mcrypt_decrypt(MCRYPT_BLOWFISH, $hash, $compressedEncodedText, MCRYPT_MODE_CBC, $iv);
         $plaintext = gzuncompress($compressed);
-        return ($checkValue === substr(md5($plaintext), 0, 4)) ? $plaintext : null;
+        return ($checkValue === substr(md5($plaintext), 0, 5)) ? $plaintext : null;
     }
 }
