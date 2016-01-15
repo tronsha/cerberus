@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `command` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `irc` text COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime NOT NULL,
-  `direction` enum('in','out') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'in',
+  `direction` enum('<','>') COLLATE utf8_unicode_ci NOT NULL DEFAULT '<',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `log_privmsg` (
   `nick` varchar(255) NOT NULL,
   `text` text NOT NULL,
   `time` datetime NOT NULL,
+  `direction` enum('<','>') COLLATE utf8_unicode_ci NOT NULL DEFAULT '<',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 

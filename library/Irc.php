@@ -460,7 +460,7 @@ class Irc extends Cerberus
                 $this->bot['nick'],
                 $rest,
                 $text,
-                'out'
+                '>'
             );
         }
     }
@@ -596,7 +596,7 @@ class Irc extends Cerberus
                 $this->getEvents()->onInvite($text, $host, $rest);
                 break;
         }
-        $this->getDb()->setLog($all, $command, $this->server['network'], $nick, $rest, $text, 'in');
+        $this->getDb()->setLog($all, $command, $this->server['network'], $nick, $rest, $text, '<');
     }
 
     /**

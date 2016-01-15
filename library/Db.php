@@ -424,10 +424,10 @@ class Db
                 ->setParameter(5, $direction)
                 ->execute();
             $logId = $this->conn->lastInsertId();
-            if ($direction == 'in') {
+            if ($direction == '<') {
                 switch (strtolower($command)) {
                     case 'privmsg':
-                        $this->log->setPrivmsgLog($rest, $nick, $text, $now, $logId);
+                        $this->log->setPrivmsgLog($rest, $nick, $text, $now, $direction, $logId);
                         break;
                     case 'notice':
                         $this->log->setNoticeLog($rest, $nick, $text, $now, $logId);
@@ -452,10 +452,10 @@ class Db
                         $this->log->setTopicLog($rest, $nick, $text, $now, $logId);
                         break;
                 }
-            } elseif ($direction == 'out') {
+            } elseif ($direction == '>') {
                 switch (strtolower($command)) {
                     case 'privmsg':
-                        $this->log->setPrivmsgLog($rest, $nick, $text, $now, $logId);
+                        $this->log->setPrivmsgLog($rest, $nick, $text, $now, $direction, $logId);
                         break;
                     case 'notice':
                         $this->log->setNoticeLog($rest, $nick, $text, $now, $logId);

@@ -47,10 +47,11 @@ class DbLog
      * @param string $nick
      * @param string $text
      * @param string $time
+     * @param string $direction
      * @param string|null $logId
      * @param string|null $botId
      */
-    public function setPrivmsgLog($channel, $nick, $text, $time, $logId = null, $botId = null)
+    public function setPrivmsgLog($channel, $nick, $text, $time, $direction, $logId = null, $botId = null)
     {
         try {
             $qb = $this->db->getConn()->createQueryBuilder();
@@ -62,7 +63,8 @@ class DbLog
                         'channel' => '?',
                         'nick' => '?',
                         'text' => '?',
-                        'time' => '?'
+                        'time' => '?',
+                        'direction' => '?'
                     ]
                 )
                 ->setParameter(0, $logId)
@@ -71,6 +73,7 @@ class DbLog
                 ->setParameter(3, $nick)
                 ->setParameter(4, $text)
                 ->setParameter(5, $time)
+                ->setParameter(6, $direction)
                 ->execute();
         } catch (Exception $e) {
             $this->db->error($e->getMessage());

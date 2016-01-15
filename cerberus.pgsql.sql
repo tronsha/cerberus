@@ -65,7 +65,7 @@ SELECT setval('"channellist_id_seq"', 1, true);
 
 DROP TABLE IF EXISTS "log";
 DROP TYPE IF EXISTS "log_enum_direction";
-CREATE TYPE "log_enum_direction" as enum('in','out');
+CREATE TYPE "log_enum_direction" as enum('<','>');
 CREATE TABLE "log" (
 	"id" serial NOT NULL ,
 	"bot_id" integer NOT NULL ,
@@ -80,6 +80,8 @@ SELECT setval('"log_id_seq"', 1, true);
 ;
 
 DROP TABLE IF EXISTS "log_privmsg";
+DROP TYPE IF EXISTS "log_privmsg_enum_direction";
+CREATE TYPE "log_privmsg_enum_direction" as enum('<','>');
 CREATE TABLE "log_privmsg" (
 	"id" serial NOT NULL ,
 	"log_id" integer NOT NULL ,
@@ -88,6 +90,7 @@ CREATE TABLE "log_privmsg" (
 	"nick" varchar(255) NOT NULL ,
 	"text" text NOT NULL ,
 	"time" timestamp with time zone NOT NULL ,
+	"direction" log_privmsg_enum_direction NOT NULL ,
 	PRIMARY KEY ("id")
 );
 SELECT setval('"log_privmsg_id_seq"', 1, true);
