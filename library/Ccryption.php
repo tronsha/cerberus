@@ -23,6 +23,7 @@ use Exception;
 
 /**
  * Class Ccryption
+ * compressed and encrypted conversation
  * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/cerberus/ Project Homepage
