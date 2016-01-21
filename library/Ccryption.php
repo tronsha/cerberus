@@ -48,18 +48,19 @@ class Ccryption
      * @return string
      * @link http://php.net/manual/en/function.mcrypt-encrypt.php
      * @link http://php.net/manual/en/function.gzcompress.php
+     * @link http://php.net/manual/en/function.crc32.php
      */
     public static function encode($text, $key)
     {
         $hash = hash('sha256', $key, true);
-        $md5 = md5($text);
+        $crc = hash('crc32b', $text);
         $compressed = gzcompress($text, 9);
         $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC), MCRYPT_RAND);
         $compressedEncodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $hash, $compressed, MCRYPT_MODE_CBC, $iv);
         $compressedEncodedTextIv = $iv . $compressedEncodedText;
         $compressedEncodedTextIv64 = base64_encode($compressedEncodedTextIv);
-        $compressedEncodedTextIv64Md5 = substr($md5, 0, 5) . $compressedEncodedTextIv64;
-        return $compressedEncodedTextIv64Md5;
+        $compressedEncodedTextIv64Crc = $crc . $compressedEncodedTextIv64;
+        return $compressedEncodedTextIv64Crc;
     }
 
     /**
@@ -68,17 +69,18 @@ class Ccryption
      * @return string|null
      * @link http://php.net/manual/en/function.mcrypt-decrypt.php
      * @link http://php.net/manual/en/function.gzuncompress.php
+     * @link http://php.net/manual/en/function.crc32.php
      */
     public static function decode($text, $key)
     {
         $hash = hash('sha256', $key, true);
-        $checkValue = substr($text, 0, 5);
-        $compressedEncodedTextIv64 = substr($text, 5);
+        $checkValue = substr($text, 0, 8);
+        $compressedEncodedTextIv64 = substr($text, 8);
         $compressedEncodedTextIv = base64_decode($compressedEncodedTextIv64);
         $iv = substr($compressedEncodedTextIv, 0, 8);
         $compressedEncodedText = substr($compressedEncodedTextIv, 8);
         $compressed = mcrypt_decrypt(MCRYPT_BLOWFISH, $hash, $compressedEncodedText, MCRYPT_MODE_CBC, $iv);
         $plaintext = gzuncompress($compressed);
-        return ($checkValue === substr(md5($plaintext), 0, 5)) ? $plaintext : null;
+        return ($checkValue === hash('crc32b', $plaintext)) ? $plaintext : null;
     }
 }
