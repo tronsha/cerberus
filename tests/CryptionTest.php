@@ -43,7 +43,7 @@ class MircryptionTest extends \PHPUnit_Framework_TestCase
         $key = 'bar';
         $encoded = Ccryption::encode($text, $key);
         $decoded = Ccryption::decode($encoded, $key);
-        $this->assertEquals(substr(md5($text), 0, 5), substr($encoded, 0, 5));
+        $this->assertEquals(hash('crc32b', $text), substr($encoded, 0, 8));
         $this->assertEquals($text, $decoded);
     }
 }
