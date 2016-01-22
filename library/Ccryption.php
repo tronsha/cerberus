@@ -44,44 +44,43 @@ class Ccryption
     }
 
     /**
-     * @param string $text
+     * @param string $plaintext
      * @param string $key
      * @return string
      * @link http://php.net/manual/en/function.mcrypt-encrypt.php
      * @link http://php.net/manual/en/function.gzcompress.php
      * @link http://php.net/manual/en/function.crc32.php
      */
-    public static function encode($text, $key)
+    public static function encode($plaintext, $key)
     {
-        $hash = hash('sha256', $key, true);
-        $crc = hash('crc32b', $text);
-        $compressed = gzcompress($text, 9);
         $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC), MCRYPT_RAND);
-        $compressedEncodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $hash, $compressed, MCRYPT_MODE_CBC, $iv);
-        $compressedEncodedTextIv = $iv . $compressedEncodedText;
-        $compressedEncodedTextIv64 = base64_encode($compressedEncodedTextIv);
-        $compressedEncodedTextIv64Crc = $crc . $compressedEncodedTextIv64;
-        return $compressedEncodedTextIv64Crc;
+        $crc = hash('crc32b', $plaintext);
+        $hash = hash('sha256', $key, true);
+        $compressedText = gzcompress($plaintext, 9);
+        $compressedEncodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $hash, $compressedText, MCRYPT_MODE_CBC, $iv);
+        $compressedEncodedTextIvCrc = $iv . $compressedEncodedText . $crc;
+        $compressedEncodedTextIvCrc64 = base64_encode($compressedEncodedTextIvCrc);
+        return $compressedEncodedTextIvCrc64;
     }
 
     /**
-     * @param string $text
+     * @param string $compressedEncodedTextIvCrc64
      * @param string $key
      * @return string|null
      * @link http://php.net/manual/en/function.mcrypt-decrypt.php
      * @link http://php.net/manual/en/function.gzuncompress.php
      * @link http://php.net/manual/en/function.crc32.php
      */
-    public static function decode($text, $key)
+    public static function decode($compressedEncodedTextIvCrc64, $key)
     {
         $hash = hash('sha256', $key, true);
-        $checkValue = substr($text, 0, 8);
-        $compressedEncodedTextIv64 = substr($text, 8);
-        $compressedEncodedTextIv = base64_decode($compressedEncodedTextIv64);
-        $iv = substr($compressedEncodedTextIv, 0, 8);
-        $compressedEncodedText = substr($compressedEncodedTextIv, 8);
-        $compressed = mcrypt_decrypt(MCRYPT_BLOWFISH, $hash, $compressedEncodedText, MCRYPT_MODE_CBC, $iv);
-        $plaintext = gzuncompress($compressed);
-        return ($checkValue === hash('crc32b', $plaintext)) ? $plaintext : null;
+        $compressedEncodedTextIvCrc = base64_decode($compressedEncodedTextIvCrc64);
+        $iv = substr($compressedEncodedTextIvCrc, 0, 8);
+        $checkValue = substr($compressedEncodedTextIvCrc, -8);
+        $compressedEncodedText = substr($compressedEncodedTextIvCrc, 8, -8);
+        $compressedText = mcrypt_decrypt(MCRYPT_BLOWFISH, $hash, $compressedEncodedText, MCRYPT_MODE_CBC, $iv);
+        $plaintext = gzuncompress($compressedText);
+        $crc = hash('crc32b', $plaintext);
+        return ($checkValue === $crc) ? $plaintext : null;
     }
 }
