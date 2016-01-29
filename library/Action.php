@@ -162,4 +162,13 @@ class Action
         }
         $this->getDb()->addWrite('NICK :' . $nick);
     }
+
+    /**
+     * @param string $channel
+     * @param string $topic
+     */
+    public function topic($channel, $topic)
+    {
+        $this->getDb()->addWrite('TOPIC ' . $channel . ' :' . $topic);
+    }
 }

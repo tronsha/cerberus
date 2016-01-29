@@ -380,6 +380,15 @@ class Event
     }
 
     /**
+     * ERR_CHANOPRIVSNEEDED
+     * "<channel> :You're not channel operator"
+     * @param string $channel
+     */
+    public function on482($channel) {
+        $this->runPluginEvent(__FUNCTION__, []);
+    }
+
+    /**
      * @param string $channel
      * @param string $topic
      */

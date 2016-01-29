@@ -565,6 +565,9 @@ class Irc extends Cerberus
             case '437':
                 $this->getEvents()->on437();
                 break;
+            case '482':
+                $this->getEvents()->on482($rest);
+                break;
             case 'PRIVMSG':
                 $this->getEvents()->onPrivmsg($nick, $host, $rest, $text);
                 break;
