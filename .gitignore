@@ -1,11 +1,10 @@
+/hades/
+/public/
+/vendor/
 /log/
 /tmp/
-/vendor/
-/public/
-/hades/
 config.ini
-composer.lock
 composer.phar
+composer.lock
 phpunit.phar
 *.zip
-php7
