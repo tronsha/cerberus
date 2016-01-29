@@ -128,7 +128,7 @@ class Event
                 $this->on437();
                 break;
             case '482':
-                $this->on482($rest);
+                $this->on482($rest, $text);
                 break;
         }
     }
@@ -443,9 +443,12 @@ class Event
     /**
      * ERR_CHANOPRIVSNEEDED
      * "<channel> :You're not channel operator"
-     * @param string $channel
+     * @param string $rest
+     * @param string $text
      */
-    public function on482($channel) {
+    public function on482($rest, $text) {
+        list($nick, $channel) = explode(' ', $rest);
+        $this->getDb()->addStatus('482', $text, ['channel' => $channel, 'nick' => $nick]);
         $this->runPluginEvent(__FUNCTION__, []);
     }
 

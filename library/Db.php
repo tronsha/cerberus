@@ -769,4 +769,72 @@ class Db
             $this->error($e->getMessage());
         }
     }
+
+    /**
+     * @param string $command
+     * @param string $text
+     * @param array $data
+     */
+    public function addStatus($command, $text, $data)
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->insert('status')
+                ->values(
+                    [
+                        'command' => '?',
+                        'text' => '?',
+                        'data' => '?',
+                        'bot_id' => '?'
+                    ]
+                )
+                ->setParameter(0, $command)
+                ->setParameter(1, $text)
+                ->setParameter(2, json_encode($data))
+                ->setParameter(3, $this->botId)
+                ->execute();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('id', 'command', 'text', 'data')
+                ->from('status')
+                ->where('bot_id = ?')
+                ->orderBy('id', 'ASC')
+                ->setMaxResults(1)
+                ->setParameter(0, $this->botId)
+                ->execute();
+            $result = $stmt->fetch();
+            $result['data'] = json_decode($result['data']);
+            $this->removeStatus($result['id']);
+            return $result;
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
+     * @param int $id
+     */
+    public function removeStatus($id)
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('status')
+                ->where('id = ?')
+                ->setParameter(0, $id)
+                ->execute();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
 }

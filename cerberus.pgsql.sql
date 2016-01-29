@@ -264,3 +264,15 @@ CREATE TABLE "control" (
 );
 SELECT setval('"control_id_seq"', 1, true);
 ;
+
+DROP TABLE IF EXISTS "status";
+CREATE TABLE "status" (
+	"id" serial NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"command" varchar(255) NOT NULL ,
+	"text" text NOT NULL ,
+	"data" text NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"status_id_seq"', 1, true);
+;
