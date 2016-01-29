@@ -442,7 +442,7 @@ class Event
 
     /**
      * ERR_CHANOPRIVSNEEDED
-     * "<channel> :You're not channel operator"
+     * <channel> :You're not channel operator
      * @param string $rest
      * @param string $text
      */
