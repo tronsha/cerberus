@@ -73,6 +73,67 @@ class Event
     }
 
     /**
+     * @param string $command
+     * @param string $rest
+     * @param string $text
+     */
+    public function rpl($command, $rest, $text)
+    {
+        switch ($command) {
+            case '311':
+                $this->on311($rest);
+                break;
+            case '318':
+                $this->on318();
+                break;
+            case '322':
+                $this->on322($rest, $text);
+                break;
+            case '323':
+                $this->on323();
+                break;
+            case '324':
+                $this->on324();
+                break;
+            case '330':
+                $this->on330($rest);
+                break;
+            case '332':
+                $this->on332($rest, $text);
+                break;
+            case '353':
+                $this->on353($rest, $text);
+                break;
+        }
+    }
+
+    /**
+     * @param string $command
+     * @param string $rest
+     * @param string $text
+     */
+    public function err($command, $rest, $text)
+    {
+        switch ($command) {
+            case '431':
+                $this->on431();
+                break;
+            case '432':
+                $this->on432();
+                break;
+            case '433':
+                $this->on433();
+                break;
+            case '437':
+                $this->on437();
+                break;
+            case '482':
+                $this->on482($rest);
+                break;
+        }
+    }
+
+    /**
      *
      */
     public function onConnect()

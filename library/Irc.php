@@ -525,79 +525,49 @@ class Irc extends Cerberus
         $rest = isset($matches[4]) ? $matches[4] : '';
         $text_ = isset($matches[5]) ? $matches[5] : '';
         $text = trim($text_);
-        switch ($command) {
-            case '001':
-                $this->nowrite = false;
-                break;
-            case '311':
-                $this->getEvents()->on311($rest);
-                break;
-            case '318':
-                $this->getEvents()->on318();
-                break;
-            case '322':
-                $this->getEvents()->on322($rest, $text);
-                break;
-            case '323':
-                $this->getEvents()->on323();
-                break;
-            case '324':
-                $this->getEvents()->on324();
-                break;
-            case '330':
-                $this->getEvents()->on330($rest);
-                break;
-            case '332':
-                $this->getEvents()->on332($rest, $text);
-                break;
-            case '353':
-                $this->getEvents()->on353($rest, $text);
-                break;
-            case '431':
-                $this->getEvents()->on431();
-                break;
-            case '432':
-                $this->getEvents()->on432();
-                break;
-            case '433':
-                $this->getEvents()->on433();
-                break;
-            case '437':
-                $this->getEvents()->on437();
-                break;
-            case '482':
-                $this->getEvents()->on482($rest);
-                break;
-            case 'PRIVMSG':
-                $this->getEvents()->onPrivmsg($nick, $host, $rest, $text);
-                break;
-            case 'NOTICE':
-                $this->getEvents()->onNotice($nick, $text);
-                break;
-            case 'JOIN':
-                $this->getEvents()->onJoin($nick, ($rest != '' ? $rest : $text));
-                break;
-            case 'PART':
-                $this->getEvents()->onPart($nick, $rest);
-                break;
-            case 'QUIT':
-                $this->getEvents()->onQuit($nick);
-                break;
-            case 'KICK':
-                $this->getEvents()->onKick($nick, $rest);
-                break;
-            case 'NICK':
-                $this->getEvents()->onNick($nick, $text);
-                break;
-            case 'MODE':
-                $this->getEvents()->onMode($rest);
-                break;
-            case 'TOPIC':
-                $this->getEvents()->onTopic($rest, $text);
-                break;
-            case 'INVITE':
-                $this->getEvents()->onInvite($text, $host, $rest);
-                break;
+        if (preg_match('/^([2345])[0-9][0-9]$/', $command, $matches)) {
+            if ($matches[1] == 2 || $matches[1] == 3) {
+                $this->getEvents()->rpl($command, $rest, $text);
+            }
+            if ($matches[1] == 4 || $matches[1] == 5) {
+                $this->getEvents()->err($command, $rest, $text);
+            }
+        } else {
+            switch ($command) {
+                case '001':
+                    $this->nowrite = false;
+                    break;
+                case 'PRIVMSG':
+                    $this->getEvents()->onPrivmsg($nick, $host, $rest, $text);
+                    break;
+                case 'NOTICE':
+                    $this->getEvents()->onNotice($nick, $text);
+                    break;
+                case 'JOIN':
+                    $this->getEvents()->onJoin($nick, ($rest != '' ? $rest : $text));
+                    break;
+                case 'PART':
+                    $this->getEvents()->onPart($nick, $rest);
+                    break;
+                case 'QUIT':
+                    $this->getEvents()->onQuit($nick);
+                    break;
+                case 'KICK':
+                    $this->getEvents()->onKick($nick, $rest);
+                    break;
+                case 'NICK':
+                    $this->getEvents()->onNick($nick, $text);
+                    break;
+                case 'MODE':
+                    $this->getEvents()->onMode($rest);
+                    break;
+                case 'TOPIC':
+                    $this->getEvents()->onTopic($rest, $text);
+                    break;
+                case 'INVITE':
+                    $this->getEvents()->onInvite($text, $host, $rest);
+                    break;
+            }
         }
         $this->getDb()->setLog($all, $command, $this->server['network'], $nick, $rest, $text, '<');
     }
