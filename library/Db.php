@@ -799,20 +799,25 @@ class Db
     }
 
     /**
+     * @param mixed|null $command
      * @return mixed
      */
-    public function getStatus()
+    public function getStatus($command = null)
     {
         try {
             $qb = $this->conn->createQueryBuilder();
-            $stmt = $qb
+            $qb
                 ->select('id', 'command', 'text', 'data')
                 ->from('status')
                 ->where('bot_id = ?')
                 ->orderBy('id', 'ASC')
                 ->setMaxResults(1)
-                ->setParameter(0, $this->botId)
-                ->execute();
+                ->setParameter(0, $this->botId);
+            if ($command !== null) {
+                $qb ->andWhere('command = ?')
+                    ->setParameter(1, (string)$command);
+            }
+            $stmt = $qb->execute();
             $result = $stmt->fetch();
             $result['data'] = json_decode($result['data']);
             $this->removeStatus($result['id']);
