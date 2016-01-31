@@ -209,5 +209,6 @@ CREATE TABLE IF NOT EXISTS `status` (
   `command` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `text` text COLLATE utf8_unicode_ci NOT NULL,
   `data` text COLLATE utf8_unicode_ci NOT NULL,
+  `time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;

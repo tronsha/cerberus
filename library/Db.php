@@ -778,6 +778,7 @@ class Db
     public function addStatus($command, $text, $data)
     {
         try {
+            $now = (new DateTime())->format('Y-m-d H:i:s');
             $qb = $this->conn->createQueryBuilder();
             $qb ->insert('status')
                 ->values(
@@ -785,13 +786,15 @@ class Db
                         'command' => '?',
                         'text' => '?',
                         'data' => '?',
+                        'time' => '?',
                         'bot_id' => '?'
                     ]
                 )
                 ->setParameter(0, $command)
                 ->setParameter(1, $text)
                 ->setParameter(2, json_encode($data))
-                ->setParameter(3, $this->botId)
+                ->setParameter(3, $now)
+                ->setParameter(4, $this->botId)
                 ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());

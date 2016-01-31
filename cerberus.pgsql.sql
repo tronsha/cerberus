@@ -272,6 +272,7 @@ CREATE TABLE "status" (
 	"command" varchar(255) NOT NULL ,
 	"text" text NOT NULL ,
 	"data" text NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
 	PRIMARY KEY ("id")
 );
 SELECT setval('"status_id_seq"', 1, true);
