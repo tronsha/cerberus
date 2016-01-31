@@ -810,7 +810,7 @@ class Db
                 ->select('id', 'command', 'text', 'data')
                 ->from('status')
                 ->where('bot_id = ?')
-                ->orderBy('id', 'ASC')
+                ->orderBy('id', 'DESC')
                 ->setMaxResults(1)
                 ->setParameter(0, $this->botId);
             if ($command !== null) {
