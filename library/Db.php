@@ -776,11 +776,11 @@ class Db
     }
 
     /**
-     * @param string $command
+     * @param string $status
      * @param string $text
      * @param array $data
      */
-    public function addStatus($command, $text, $data)
+    public function addStatus($status, $text, $data)
     {
         try {
             $now = (new DateTime())->format('Y-m-d H:i:s');
@@ -788,14 +788,14 @@ class Db
             $qb ->insert('status')
                 ->values(
                     [
-                        'command' => '?',
+                        'status' => '?',
                         'text' => '?',
                         'data' => '?',
                         'time' => '?',
                         'bot_id' => '?'
                     ]
                 )
-                ->setParameter(0, $command)
+                ->setParameter(0, $status)
                 ->setParameter(1, $text)
                 ->setParameter(2, json_encode($data))
                 ->setParameter(3, $now)
@@ -807,24 +807,24 @@ class Db
     }
 
     /**
-     * @param mixed|null $command
+     * @param mixed|null $status
      * @return mixed
      */
-    public function getStatus($command = null)
+    public function getStatus($status = null)
     {
         try {
             $qb = $this->conn->createQueryBuilder();
             $qb
-                ->select('id', 'command', 'text', 'data')
+                ->select('id', 'status', 'text', 'data')
                 ->from('status')
                 ->where('bot_id = ?')
                 ->orderBy('id', 'DESC')
                 ->setMaxResults(1)
                 ->setParameter(0, $this->botId);
-            if ($command !== null) {
+            if ($status !== null) {
                 $qb
-                    ->andWhere('command = ?')
-                    ->setParameter(1, (string)$command);
+                    ->andWhere('status = ?')
+                    ->setParameter(1, (string)$status);
             }
             $stmt = $qb->execute();
             $result = $stmt->fetch();
