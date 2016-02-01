@@ -867,4 +867,46 @@ class Db
             $this->error($e->getMessage());
         }
     }
+
+    /**
+     *
+     */
+    public function cleanupLog()
+    {
+        try {
+            $oneWeekAgo = (new DateTime())->modify('-1 week')->format('Y-m-d H:i:s');
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('log_join')
+                ->where('time <= ?')
+                ->setParameter(0, $oneWeekAgo)
+                ->execute();
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('log_part')
+                ->where('time <= ?')
+                ->setParameter(0, $oneWeekAgo)
+                ->execute();
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('log_quit')
+                ->where('time <= ?')
+                ->setParameter(0, $oneWeekAgo)
+                ->execute();
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('log_kick')
+                ->where('time <= ?')
+                ->setParameter(0, $oneWeekAgo)
+                ->execute();
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('log_nick')
+                ->where('time <= ?')
+                ->setParameter(0, $oneWeekAgo)
+                ->execute();
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('log_topic')
+                ->where('time <= ?')
+                ->setParameter(0, $oneWeekAgo)
+                ->execute();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
 }

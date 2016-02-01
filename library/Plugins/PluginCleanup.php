@@ -33,15 +33,23 @@ class PluginCleanup extends Plugin
      */
     protected function init()
     {
-        $this->addEvent('onMinute');
+        $this->addCron('0 0 * * *', 'cleanupLog');
+        $this->addCron('* * * * *', 'cleanupStatus');
     }
 
     /**
-     * @return bool
+     *
      */
-    public function onMinute()
+    public function cleanupLog()
+    {
+        $this->getDb()->cleanupLog();
+    }
+
+    /**
+     *
+     */
+    public function cleanupStatus()
     {
         $this->getDb()->cleanupStatus();
     }
-
 }
