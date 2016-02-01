@@ -203,6 +203,11 @@ class Db
                 ->where('bot_id = ?')
                 ->setParameter(0, ($botId === null ? $this->botId : $botId))
                 ->execute();
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('status')
+                ->where('bot_id = ?')
+                ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -840,6 +845,23 @@ class Db
             $qb ->delete('status')
                 ->where('id = ?')
                 ->setParameter(0, $id)
+                ->execute();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
+     *
+     */
+    public function cleanupStatus()
+    {
+        try {
+            $oneMinuteAgo = (new DateTime())->modify('-1 minute')->format('Y-m-d H:i:s');
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('status')
+                ->where('time <= ?')
+                ->setParameter(0, $oneMinuteAgo)
                 ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
