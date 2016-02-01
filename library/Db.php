@@ -822,12 +822,17 @@ class Db
                 ->setMaxResults(1)
                 ->setParameter(0, $this->botId);
             if ($command !== null) {
-                $qb ->andWhere('command = ?')
+                $qb
+                    ->andWhere('command = ?')
                     ->setParameter(1, (string)$command);
             }
             $stmt = $qb->execute();
             $result = $stmt->fetch();
+            if (empty($result) === true) {
+                return null;
+            }
             $result['data'] = json_decode($result['data']);
+            $result['type'] = 'status';
             $this->removeStatus($result['id']);
             return $result;
         } catch (Exception $e) {
