@@ -814,17 +814,17 @@ class Db
     {
         try {
             $qb = $this->conn->createQueryBuilder();
-            $qb
-                ->select('id', 'status', 'text', 'data')
-                ->from('status')
-                ->where('bot_id = ?')
-                ->orderBy('id', 'DESC')
-                ->setMaxResults(1)
-                ->setParameter(0, $this->botId);
-            if ($status !== null) {
-                $qb
-                    ->andWhere('status = ?')
-                    ->setParameter(1, (string)$status);
+            $qb->select('id', 'status', 'text', 'data')
+               ->from('status')
+               ->where('bot_id = ?')
+               ->setMaxResults(1)
+               ->setParameter(0, $this->botId);
+            if ($status === null) {
+                $qb->orderBy('id', 'ASC');
+            } else {
+                $qb->orderBy('id', 'DESC')
+                   ->andWhere('status = ?')
+                   ->setParameter(1, (string)$status);
             }
             $stmt = $qb->execute();
             $result = $stmt->fetch();
