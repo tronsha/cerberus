@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `control` (
 CREATE TABLE IF NOT EXISTS `status` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `bot_id` int(11) unsigned NOT NULL DEFAULT '0',
-  `command` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `status` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `text` text COLLATE utf8_unicode_ci NOT NULL,
   `data` text COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime NOT NULL,

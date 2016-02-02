@@ -269,7 +269,7 @@ DROP TABLE IF EXISTS "status";
 CREATE TABLE "status" (
 	"id" serial NOT NULL ,
 	"bot_id" integer NOT NULL ,
-	"command" varchar(255) NOT NULL ,
+	"status" varchar(255) NOT NULL ,
 	"text" text NOT NULL ,
 	"data" text NOT NULL ,
 	"time" timestamp with time zone NOT NULL ,
