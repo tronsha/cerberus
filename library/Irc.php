@@ -523,8 +523,7 @@ class Irc extends Cerberus
         $host = isset($matches[2]) ? $matches[2] : '';
         $command = isset($matches[3]) ? $matches[3] : '';
         $rest = isset($matches[4]) ? $matches[4] : '';
-        $text_ = isset($matches[5]) ? $matches[5] : '';
-        $text = trim($text_);
+        $text = isset($matches[5]) ? $matches[5] : '';
         if (preg_match('/^([2345])[0-9][0-9]$/', $command, $matches)) {
             if ($matches[1] == 2 || $matches[1] == 3) {
                 $this->getEvents()->rpl($command, $rest, $text);
