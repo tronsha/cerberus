@@ -72,16 +72,9 @@ class PluginWork extends Plugin
      */
     public function goodmorning()
     {
-        $nickWork = self::NICK_WORK;
         $channel = self::CHANNEL;
-        if (empty($nickWork) === false) {
-            $this->getActions()->nick($nickWork);
-        }
-        if (empty($channel) === false) {
-            $this->getActions()->join($channel);
-            if ($this->inChannel($channel)) {
-                $this->getActions()->privmsg($channel, $this->__('Good morning'));
-            }
+        if (empty($channel) === false && $this->inChannel($channel)) {
+            $this->getActions()->privmsg($channel, $this->__('Good morning'));
         }
     }
 
@@ -90,14 +83,9 @@ class PluginWork extends Plugin
      */
     public function niceevening()
     {
-        $nickHome = self::NICK_HOME;
         $channel = self::CHANNEL;
         if (empty($channel) === false && $this->inChannel($channel)) {
             $this->getActions()->privmsg($channel, $this->__('Have a nice evening'));
-            $this->getActions()->part($channel);
-        }
-        if (empty($nickHome) === false) {
-            $this->getActions()->nick($nickHome);
         }
     }
 
@@ -106,14 +94,9 @@ class PluginWork extends Plugin
      */
     public function niceweekend()
     {
-        $nickHome = self::NICK_HOME;
         $channel = self::CHANNEL;
         if (empty($channel) === false && $this->inChannel($channel)) {
             $this->getActions()->privmsg($channel, $this->__('Nice weekend'));
-            $this->getActions()->part($channel);
-        }
-        if (empty($nickHome) === false) {
-            $this->getActions()->nick($nickHome);
         }
     }
 }
