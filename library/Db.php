@@ -822,9 +822,14 @@ class Db
             if ($status === null) {
                 $qb->orderBy('id', 'ASC');
             } else {
-                $qb->orderBy('id', 'DESC')
-                   ->andWhere('status = ?')
-                   ->setParameter(1, (string)$status);
+                $qb->orderBy('id', 'DESC');
+                if (is_array($status) === true) {
+                    $status = implode(',', $status);
+                    $qb->andWhere('status IN (?)');
+                } else {
+                    $qb->andWhere('status = ?');
+                }
+                $qb->setParameter(1, (string)$status);
             }
             $stmt = $qb->execute();
             $result = $stmt->fetch();

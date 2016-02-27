@@ -127,6 +127,12 @@ class Event
             case '437':
                 $this->on437();
                 break;
+            case '442':
+                $this->on442();
+                break;
+            case '477':
+                $this->on477();
+                break;
             case '482':
                 $this->on482($rest, $text);
                 break;
@@ -449,6 +455,18 @@ class Event
     public function on482($rest, $text) {
         list($nick, $channel) = explode(' ', $rest);
         $this->getDb()->addStatus('482', $text, ['channel' => $channel, 'nick' => $nick]);
+        $this->runPluginEvent(__FUNCTION__, []);
+    }
+
+    public function on442($rest, $text) {
+        list($nick, $channel) = explode(' ', $rest);
+        $this->getDb()->addStatus('442', $text, ['channel' => $channel, 'nick' => $nick]);
+        $this->runPluginEvent(__FUNCTION__, []);
+    }
+
+    public function on477($rest, $text) {
+        list($nick, $channel) = explode(' ', $rest);
+        $this->getDb()->addStatus('477', $text, ['channel' => $channel, 'nick' => $nick]);
         $this->runPluginEvent(__FUNCTION__, []);
     }
 
