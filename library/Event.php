@@ -458,12 +458,23 @@ class Event
         $this->runPluginEvent(__FUNCTION__, []);
     }
 
+    /**
+     * ERR_NOTONCHANNEL
+     * <channel> :You're not on that channel
+     * @param string $rest
+     * @param string $text
+     */
     public function on442($rest, $text) {
         list($nick, $channel) = explode(' ', $rest);
         $this->getDb()->addStatus('442', $text, ['channel' => $channel, 'nick' => $nick]);
         $this->runPluginEvent(__FUNCTION__, []);
     }
 
+    /**
+     * <channel> :Cannot join channel (+r) - you need to be identified with services
+     * @param string $rest
+     * @param string $text
+     */
     public function on477($rest, $text) {
         list($nick, $channel) = explode(' ', $rest);
         $this->getDb()->addStatus('477', $text, ['channel' => $channel, 'nick' => $nick]);

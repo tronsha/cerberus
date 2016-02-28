@@ -145,6 +145,17 @@ class Irc extends Cerberus
     }
 
     /**
+     * @return string
+     */
+    public function getNetwork()
+    {
+        if (isset($this->server['network']) === false) {
+            return null;
+        }
+        return $this->server['network'];
+    }
+
+    /**
      * @param string $password
      * @return object $this
      */
@@ -209,15 +220,26 @@ class Irc extends Cerberus
     }
 
     /**
+     * @return string
+     */
+    public function getNick()
+    {
+        if (isset($this->bot['nick']) === false) {
+            return null;
+        }
+        return $this->bot['nick'];
+    }
+
+    /**
      * @return bool
      */
     public function init()
     {
-        if (isset($this->server['network']) === false || $this->db === null) {
+        if ($this->getNetwork() === null || $this->db === null) {
             return false;
         }
         $this->dbConnect();
-        $this->getDb()->createBot($this->bot['pid'], $this->bot['nick']);
+        $this->getDb()->createBot($this->bot['pid'], $this->getNick());
         if ($this->getConfig()->getVersion('bot') === null) {
             $this->getConfig()->setVersion('php', phpversion());
             $this->getConfig()->setVersion('os', php_uname('s') . ' ' . php_uname('r'));
@@ -270,11 +292,11 @@ class Irc extends Cerberus
                 return false;
             }
         }
-        $n = $this->getDb()->getServerCount($this->server['network']);
+        $n = $this->getDb()->getServerCount($this->getNetwork());
         $i = 0;
         $repeat = true;
         if ($n == 0) {
-            $this->sysinfo('No ' . $this->server['network'] . ' server');
+            $this->sysinfo('No ' . $this->getNetwork() . ' server');
             return false;
         }
         while ($repeat) {
@@ -303,11 +325,11 @@ class Irc extends Cerberus
         if ($this->server['password'] !== null) {
             $this->write('PASS ' . $this->server['password']);
         }
-        if ($this->bot['nick'] === null) {
+        if ($this->getNick() === null) {
             $this->setNick();
         }
         $this->write('USER PHP' . str_replace('.', '', phpversion()) . ' * * :' . $this->getConfig()->getName());
-        $this->write('NICK ' . $this->bot['nick']);
+        $this->write('NICK ' . $this->getNick());
         $this->lastping = time();
         $this->nowrite = true;
         $this->run = true;
@@ -336,7 +358,7 @@ class Irc extends Cerberus
      */
     protected function preform()
     {
-        $preform = $this->getDb()->getPreform($this->server['network']);
+        $preform = $this->getDb()->getPreform($this->getNetwork());
         foreach ($preform as $command) {
             $this->getDb()->addWrite($command['text']);
             preg_match('/join\s+(#[^\s]+)/i', $command['text'], $matches);
@@ -456,8 +478,8 @@ class Irc extends Cerberus
             $this->getDb()->setLog(
                 $send['text'],
                 $command,
-                $this->server['network'],
-                $this->bot['nick'],
+                $this->getNetwork(),
+                $this->getNick(),
                 $rest,
                 $text,
                 '>'
@@ -568,7 +590,7 @@ class Irc extends Cerberus
                     break;
             }
         }
-        $this->getDb()->setLog($all, $command, $this->server['network'], $nick, $rest, $text, '<');
+        $this->getDb()->setLog($all, $command, $this->getNetwork(), $nick, $rest, $text, '<');
     }
 
     /**
@@ -627,7 +649,7 @@ class Irc extends Cerberus
      */
     public function getAuthLevel($auth)
     {
-        return $this->getDb()->getAuthLevel($this->server['network'], $auth);
+        return $this->getDb()->getAuthLevel($this->getNetwork(), $auth);
     }
 
     /**
