@@ -145,7 +145,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getNetwork()
     {
@@ -220,7 +220,7 @@ class Irc extends Cerberus
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getNick()
     {
