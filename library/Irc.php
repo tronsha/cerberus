@@ -586,7 +586,7 @@ class Irc extends Cerberus
                     $this->getEvents()->onTopic($rest, $text);
                     break;
                 case 'INVITE':
-                    $this->getEvents()->onInvite($text, $host, $rest);
+                    $this->getEvents()->onInvite($nick, $host, $rest, $text);
                     break;
             }
         }

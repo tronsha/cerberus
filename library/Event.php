@@ -115,6 +115,9 @@ class Event
     public function err($command, $rest, $text)
     {
         switch ($command) {
+            case '403':
+                $this->on403($text);
+                break;
             case '431':
                 $this->on431();
                 break;
@@ -471,6 +474,16 @@ class Event
     }
 
     /**
+     * ERR_NOSUCHCHANNEL
+     * <channel name> :No such channel
+     * @param string $text
+     */
+    public function on403($text) {
+        $this->getDb()->addStatus('403', $text, []);
+        $this->runPluginEvent(__FUNCTION__, []);
+    }
+
+    /**
      * <channel> :Cannot join channel (+r) - you need to be identified with services
      * @param string $rest
      * @param string $text
@@ -557,12 +570,14 @@ class Event
     }
 
     /**
-     * @param string $channel
+     * @param string $nick
      * @param string $host
      * @param string $rest
+     * @param string $channel
      */
-    public function onInvite($channel, $host, $rest)
+    public function onInvite($nick, $host, $rest, $channel)
     {
-        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'host' => $host, 'rest' => $rest]);
+        $this->getDb()->addStatus('INVITE', 'User ' . $nick . ' inviting you to channel ' . $channel, ['channel' => $channel, 'nick' => $nick]);
+        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'nick' => $nick, 'host' => $host, 'rest' => $rest]);
     }
 }
