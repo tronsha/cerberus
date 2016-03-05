@@ -131,10 +131,10 @@ class Event
                 $this->on437();
                 break;
             case '442':
-                $this->on442();
+                $this->on442($rest, $text);
                 break;
             case '477':
-                $this->on477();
+                $this->on477($rest, $text);
                 break;
             case '482':
                 $this->on482($rest, $text);
