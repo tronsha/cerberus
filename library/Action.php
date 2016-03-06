@@ -171,4 +171,13 @@ class Action
     {
         $this->getDb()->addWrite('TOPIC ' . $channel . ' :' . $topic);
     }
+
+    /**
+     * @param string $channel
+     * @param string $nick
+     */
+    public function invite($channel, $nick)
+    {
+        $this->getDb()->addWrite('INVITE ' . $nick . ' :' . $channel);
+    }
 }
