@@ -484,7 +484,7 @@ class Event
      */
     public function on443($rest, $text) {
         list($nick, $user, $channel) = explode(' ', $rest);
-        $this->getDb()->addStatus('443', $text, ['channel' => $channel, 'nick' => $nick, 'user' => $user]);
+        $this->getDb()->addStatus('443', $user . ' ' . $text, ['channel' => $channel, 'nick' => $nick, 'user' => $user]);
         $this->runPluginEvent(__FUNCTION__, []);
     }
 
