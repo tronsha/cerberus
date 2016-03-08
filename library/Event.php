@@ -86,6 +86,9 @@ class Event
             case '318':
                 $this->on318();
                 break;
+            case '319':
+                $this->on319();
+                break;
             case '322':
                 $this->on322($rest, $text);
                 break;
@@ -323,6 +326,15 @@ class Event
      * <nick> :End of WHOIS list
      */
     public function on318()
+    {
+        $this->runPluginEvent(__FUNCTION__, []);
+    }
+
+    /**
+     * RPL_WHOISCHANNELS
+     * <nick> :{[@|+]<channel><space>}
+     */
+    public function on319()
     {
         $this->runPluginEvent(__FUNCTION__, []);
     }
