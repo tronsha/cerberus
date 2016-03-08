@@ -19,6 +19,8 @@
 
 namespace Cerberus;
 
+use Cerberus\Events\EventRpl;
+use Cerberus\Events\EventErr;
 use DateTime;
 
 /**
@@ -33,6 +35,8 @@ use DateTime;
 class Event
 {
     protected $irc;
+    protected static $rpl = null;
+    protected static $err = null;
     protected $vars;
     protected $minute = '';
     protected $hour = '';
@@ -53,6 +57,28 @@ class Event
         $this->day_of_month = (int)(new DateTime())->format('j');
         $this->month = (int)(new DateTime())->format('n');
         $this->day_of_week = (int)(new DateTime())->format('w');
+    }
+
+    /**
+     * @return EventRpl|null
+     */
+    protected function getRpl()
+    {
+        if (self::$rpl === null) {
+            self::$rpl = new EventRpl($this->irc);
+        }
+        return self::$rpl;
+    }
+
+    /**
+     * @return EventErr|null
+     */
+    protected function getErr()
+    {
+        if (self::$err === null) {
+            self::$err = new EventErr($this->irc);
+        }
+        return self::$err;
     }
 
     /**
@@ -81,31 +107,31 @@ class Event
     {
         switch ($command) {
             case '311':
-                $this->on311($rest);
+                $this->getRpl()->on311($rest);
                 break;
             case '318':
-                $this->on318();
+                $this->getRpl()->on318();
                 break;
             case '319':
-                $this->on319();
+                $this->getRpl()->on319($text);
                 break;
             case '322':
-                $this->on322($rest, $text);
+                $this->getRpl()->on322($rest, $text);
                 break;
             case '323':
-                $this->on323();
+                $this->getRpl()->on323();
                 break;
             case '324':
-                $this->on324();
+                $this->getRpl()->on324();
                 break;
             case '330':
-                $this->on330($rest);
+                $this->getRpl()->on330($rest);
                 break;
             case '332':
-                $this->on332($rest, $text);
+                $this->getRpl()->on332($rest, $text);
                 break;
             case '353':
-                $this->on353($rest, $text);
+                $this->getRpl()->on353($rest, $text);
                 break;
         }
     }
@@ -119,31 +145,31 @@ class Event
     {
         switch ($command) {
             case '403':
-                $this->on403($text);
+                $this->getErr()->on403($text);
                 break;
             case '431':
-                $this->on431();
+                $this->getErr()->on431();
                 break;
             case '432':
-                $this->on432();
+                $this->getErr()->on432();
                 break;
             case '433':
-                $this->on433();
+                $this->getErr()->on433();
                 break;
             case '437':
-                $this->on437();
+                $this->getErr()->on437();
                 break;
             case '442':
-                $this->on442($rest, $text);
+                $this->getErr()->on442($rest, $text);
                 break;
             case '443':
-                $this->on443($rest, $text);
+                $this->getErr()->on443($rest, $text);
                 break;
             case '477':
-                $this->on477($rest, $text);
+                $this->getErr()->on477($rest, $text);
                 break;
             case '482':
-                $this->on482($rest, $text);
+                $this->getErr()->on482($rest, $text);
                 break;
         }
     }
@@ -227,116 +253,6 @@ class Event
     {
         $data['command'] = $command;
         $this->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
-     * ERR_NONICKNAMEGIVEN
-     * :No nickname given
-     */
-    public function on431()
-    {
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * ERR_ERRONEUSNICKNAME
-     * <nick> :Erroneous nickname
-     */
-    public function on432()
-    {
-        $this->irc->otherNick();
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * ERR_NICKNAMEINUSE
-     * <nick> :Nickname is already in use
-     */
-    public function on433()
-    {
-        $this->irc->otherNick();
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * ERR_UNAVAILRESOURCE
-     * <nick/channel> :Nick/channel is temporarily unavailable
-     */
-    public function on437()
-    {
-        $this->irc->otherNick();
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * RPL_LIST
-     * <channel> <# visible> :<topic>
-     * @param string $rest
-     * @param string $text
-     */
-    public function on322($rest, $text)
-    {
-        $this->runPluginEvent(__FUNCTION__, ['rest' => $rest, 'text' => $text]);
-    }
-
-    /**
-     * RPL_LISTEND
-     * :End of LIST
-     */
-    public function on323()
-    {
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * RPL_CHANNELMODEIS
-     * <channel> <mode> <mode params>
-     */
-    public function on324()
-    {
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * RPL_WHOISUSER
-     * <nick> <user> <host> * :<real name>
-     * @param string $rest
-     */
-    public function on311($rest)
-    {
-        list($me, $nick, $user, $host) = explode(' ', $rest);
-        unset($me);
-        $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'host' => $user . '@' . $host]);
-    }
-
-    /**
-     * RPL_WHOISACCOUNT
-     * :is logged in as
-     * @param string $rest
-     */
-    public function on330($rest)
-    {
-        list($me, $nick, $auth) = explode(' ', $rest);
-        unset($me);
-        $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'auth' => $auth]);
-    }
-
-    /**
-     * RPL_ENDOFWHOIS
-     * <nick> :End of WHOIS list
-     */
-    public function on318()
-    {
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * RPL_WHOISCHANNELS
-     * <nick> :{[@|+]<channel><space>}
-     */
-    public function on319()
-    {
-        $this->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -430,95 +346,6 @@ class Event
         }
         $this->getDb()->changeNick($nick, $text);
         $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
-    }
-
-    /**
-     * RPL_NAMREPLY
-     * @param string $rest
-     * @param string $text
-     */
-    public function on353($rest, $text)
-    {
-        list($me, $dummy, $channel) = explode(' ', $rest);
-        unset($me);
-        unset($dummy);
-        $user_array = explode(' ', $text);
-        foreach ($user_array as $user) {
-            preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
-            $this->getDb()->addUserToChannel($channel, $matches[2], $matches[1]);
-        }
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * RPL_TOPIC
-     * <channel> :<topic>
-     * @param string $rest
-     * @param string $text
-     */
-    public function on332($rest, $text)
-    {
-        list($me, $channel) = explode(' ', $rest);
-        unset($me);
-        $this->onTopic($channel, $text);
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * ERR_CHANOPRIVSNEEDED
-     * <channel> :You're not channel operator
-     * @param string $rest
-     * @param string $text
-     */
-    public function on482($rest, $text) {
-        list($nick, $channel) = explode(' ', $rest);
-        $this->getDb()->addStatus('482', $text, ['channel' => $channel, 'nick' => $nick]);
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * ERR_NOTONCHANNEL
-     * <channel> :You're not on that channel
-     * @param string $rest
-     * @param string $text
-     */
-    public function on442($rest, $text) {
-        list($nick, $channel) = explode(' ', $rest);
-        $this->getDb()->addStatus('442', $text, ['channel' => $channel, 'nick' => $nick]);
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * ERR_USERONCHANNEL
-     * <user> <channel> :is already on channel
-     * @param string $rest
-     * @param string $text
-     */
-    public function on443($rest, $text) {
-        list($nick, $user, $channel) = explode(' ', $rest);
-        $this->getDb()->addStatus('443', $user . ' ' . $text, ['channel' => $channel, 'nick' => $nick, 'user' => $user]);
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * ERR_NOSUCHCHANNEL
-     * <channel name> :No such channel
-     * @param string $text
-     */
-    public function on403($text) {
-        $this->getDb()->addStatus('403', $text, []);
-        $this->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
-     * <channel> :Cannot join channel (+r) - you need to be identified with services
-     * @param string $rest
-     * @param string $text
-     */
-    public function on477($rest, $text) {
-        list($nick, $channel) = explode(' ', $rest);
-        $this->getDb()->addStatus('477', $text, ['channel' => $channel, 'nick' => $nick]);
-        $this->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
