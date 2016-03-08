@@ -37,14 +37,12 @@ SELECT setval('"channel_id_seq"', 1, true);
 ;
 
 DROP TABLE IF EXISTS "channel_user";
-DROP TYPE IF EXISTS "channel_user_enum_mode";
-CREATE TYPE "channel_user_enum_mode" as enum('','+','@');
 CREATE TABLE "channel_user" (
 	"id" serial NOT NULL ,
 	"bot_id" integer NOT NULL ,
 	"channel" varchar(255) NOT NULL ,
 	"username" varchar(255) NOT NULL ,
-	"mode" channel_user_enum_mode NOT NULL ,
+	"mode" varchar(255) NOT NULL ,
 	PRIMARY KEY ("id")
 );
 SELECT setval('"channel_user_id_seq"', 1, true);

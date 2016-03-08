@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `channel_user` (
   `bot_id` int(11) NOT NULL,
   `channel` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `mode` enum('','+','@') COLLATE utf8_unicode_ci NOT NULL,
+  `mode` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 

@@ -564,10 +564,13 @@ class Db
     /**
      * @param string $channel
      * @param string $user
-     * @param string $mode
+     * @param string|array $mode
      */
     public function addUserToChannel($channel, $user, $mode = '')
     {
+        if (is_array($mode) === false) {
+            $mode = [$mode];
+        }
         try {
             $qb = $this->conn->createQueryBuilder();
             $qb ->insert('channel_user')
@@ -580,7 +583,7 @@ class Db
                     ]
                 )
                 ->setParameter(0, $user)
-                ->setParameter(1, $mode)
+                ->setParameter(1, json_encode($mode))
                 ->setParameter(2, $channel)
                 ->setParameter(3, $this->botId)
                 ->execute();
