@@ -133,6 +133,9 @@ class Event
             case '442':
                 $this->on442($rest, $text);
                 break;
+            case '443':
+                $this->on443($rest, $text);
+                break;
             case '477':
                 $this->on477($rest, $text);
                 break;
@@ -470,6 +473,18 @@ class Event
     public function on442($rest, $text) {
         list($nick, $channel) = explode(' ', $rest);
         $this->getDb()->addStatus('442', $text, ['channel' => $channel, 'nick' => $nick]);
+        $this->runPluginEvent(__FUNCTION__, []);
+    }
+
+    /**
+     * ERR_USERONCHANNEL
+     * <user> <channel> :is already on channel
+     * @param string $rest
+     * @param string $text
+     */
+    public function on443($rest, $text) {
+        list($nick, $user, $channel) = explode(' ', $rest);
+        $this->getDb()->addStatus('443', $text, ['channel' => $channel, 'nick' => $nick, 'user' => $user]);
         $this->runPluginEvent(__FUNCTION__, []);
     }
 
