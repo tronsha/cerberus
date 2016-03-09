@@ -574,7 +574,7 @@ class Irc extends Cerberus
                     $this->getEvents()->onQuit($nick);
                     break;
                 case 'KICK':
-                    $this->getEvents()->onKick($nick, $rest);
+                    $this->getEvents()->onKick($nick, $rest, $text);
                     break;
                 case 'NICK':
                     $this->getEvents()->onNick($nick, $text);

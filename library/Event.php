@@ -377,8 +377,9 @@ class Event
     /**
      * @param string $bouncer
      * @param string $rest
+     * @param string $text
      */
-    public function onKick($bouncer, $rest)
+    public function onKick($bouncer, $rest, $text)
     {
         $this->vars = $this->irc->getVars();
         list($channel, $nick) = explode(' ', $rest);
@@ -387,7 +388,10 @@ class Event
         if ($this->irc->getConfig()->getAutorejoin() === true && $me === true) {
             $this->irc->getActions()->join($channel);
         }
-        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer]);
+        if ($me === true) {
+            $this->getDb()->addStatus('KICK', 'User ' . $bouncer . ' kicked you from channel ' . $channel . ' (' . $text . ')', ['channel' => $channel, 'nick' => $nick]);
+        }
+        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer, 'comment' => $text]);
     }
 
     /**
