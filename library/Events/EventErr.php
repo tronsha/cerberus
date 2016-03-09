@@ -103,6 +103,18 @@ class EventErr extends Event
     }
 
     /**
+     * ERR_BADCHANNELKEY
+     * <channel> :Cannot join channel (+k)
+     * @param string $rest
+     * @param string $text
+     */
+    public function on475($rest, $text) {
+        list($nick, $channel) = explode(' ', $rest);
+        $this->getDb()->addStatus('475', $text, ['channel' => $channel, 'nick' => $nick]);
+        $this->runPluginEvent(__FUNCTION__, []);
+    }
+
+    /**
      * <channel> :Cannot join channel (+r) - you need to be identified with services
      * @param string $rest
      * @param string $text
