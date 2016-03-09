@@ -35,8 +35,8 @@ use DateTime;
 class Event
 {
     protected $irc;
-    protected static $rpl = null;
-    protected static $err = null;
+    protected $rpl = null;
+    protected $err = null;
     protected $vars;
     protected $minute = '';
     protected $hour = '';
@@ -64,10 +64,10 @@ class Event
      */
     protected function getRpl()
     {
-        if (self::$rpl === null) {
-            self::$rpl = new EventRpl($this->irc);
+        if ($this->rpl === null) {
+            $this->rpl = new EventRpl($this->irc);
         }
-        return self::$rpl;
+        return $this->rpl;
     }
 
     /**
@@ -75,10 +75,10 @@ class Event
      */
     protected function getErr()
     {
-        if (self::$err === null) {
-            self::$err = new EventErr($this->irc);
+        if ($this->err === null) {
+            $this->err = new EventErr($this->irc);
         }
-        return self::$err;
+        return $this->err;
     }
 
     /**
