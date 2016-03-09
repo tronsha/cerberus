@@ -131,7 +131,10 @@ class Action
     public function join($channel)
     {
         $this->getDb()->addWrite('JOIN ' . $channel);
-        return ['action' => 'join', 'channel' => $channel];
+        $exploded = explode(' ', trim($channel));
+        $channel = explode(',', $exploded[0]);
+        $password = isset($exploded[1]) === true ? explode(',', $exploded[1]) : [];
+        return ['action' => 'join', 'channel' => $channel, 'password' => $password];
     }
 
     /**
@@ -141,7 +144,10 @@ class Action
     public function part($channel)
     {
         $this->getDb()->addWrite('PART ' . $channel);
-        return ['action' => 'part', 'channel' => $channel];
+        $exploded = explode(' ', trim($channel), 2);
+        $channel = explode(',', $exploded[0]);
+        $message = isset($exploded[1]) === true ? $exploded[1] : '';
+        return ['action' => 'part', 'channel' => $channel, 'message' => $message];
     }
 
     /**
