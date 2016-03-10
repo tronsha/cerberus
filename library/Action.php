@@ -186,4 +186,17 @@ class Action
     {
         $this->getDb()->addWrite('INVITE ' . $nick . ' :' . $channel);
     }
+
+    /**
+     * @param string $channel
+     * @param string|null $nick
+     */
+    public function op($channel, $nick = null)
+    {
+        if ($nick === null) {
+            $this->privmsg('chanserv', 'OP ' . $channel);
+        } else {
+            $this->getDb()->addWrite('MODE ' . $channel . ' +o ' . $nick);
+        }
+    }
 }
