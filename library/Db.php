@@ -258,6 +258,28 @@ class Db
     }
 
     /**
+     * @return string
+     */
+    public function getServerName()
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('network')
+                ->from('network', 'n')
+                ->innerJoin('n', 'server', 's', 's.network_id = n.id')
+                ->innerJoin('s', 'bot', 'b', 'b.server_id = s.id')
+                ->where('b.id = ?')
+                ->setParameter(0, $this->botId)
+                ->execute();
+            $row = $stmt->fetch();
+            return $row['network'];
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
      * @link https://freenode.net/irc_servers.shtml
      * @link https://www.quakenet.org/servers
      * @param array $server

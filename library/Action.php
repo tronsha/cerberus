@@ -190,11 +190,17 @@ class Action
     /**
      * @param string $channel
      * @param string|null $nick
+     * @link https://www.quakenet.org/help/q-commands/op
      */
     public function op($channel, $nick = null)
     {
+        if ($this->getDb()->getServerName() === 'quakenet') {
+            $master = 'Q';
+        } else {
+            $master = 'chanserv';
+        }
         if ($nick === null) {
-            $this->privmsg('chanserv', 'OP ' . $channel);
+            $this->privmsg($master, 'OP ' . $channel);
         } else {
             $this->mode($channel . ' +o ' . $nick);
         }
