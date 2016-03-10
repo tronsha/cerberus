@@ -196,7 +196,7 @@ class Action
         if ($nick === null) {
             $this->privmsg('chanserv', 'OP ' . $channel);
         } else {
-            $this->getDb()->addWrite('MODE ' . $channel . ' +o ' . $nick);
+            $this->mode($channel . ' +o ' . $nick);
         }
     }
 }
