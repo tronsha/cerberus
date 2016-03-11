@@ -205,4 +205,13 @@ class Action
             $this->mode($channel . ' +o ' . $nick);
         }
     }
+
+    /**
+     * @param string $channel
+     * @param string|null $nick
+     */
+    public function deop($channel, $nick = null)
+    {
+        $this->mode($channel . ' -o ' . $nick);
+    }
 }
