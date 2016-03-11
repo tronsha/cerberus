@@ -84,44 +84,54 @@ class Action
     /**
      * @param string $to
      * @param string $text
+     * @return array
      */
     public function privmsg($to, $text)
     {
         $this->getDb()->addWrite('PRIVMSG ' . $to . ' :' . $text);
+        return ['action' => 'privmsg', 'to' => $to, 'text' => $text];
     }
 
     /**
      * @param string $to
      * @param string $text
+     * @return array
      */
     public function me($to, $text)
     {
         $this->getDb()->addWrite('PRIVMSG ' . $to . ' :' . "\x01" . 'ACTION ' . $text . "\x01");
+        return ['action' => 'me', 'to' => $to, 'text' => $text];
     }
 
     /**
      * @param string $to
      * @param string $text
+     * @return array
      */
     public function notice($to, $text)
     {
         $this->getDb()->addWrite('NOTICE ' . $to . ' :' . $text);
+        return ['action' => 'notice', 'to' => $to, 'text' => $text];
     }
 
     /**
      * @param string $text
+     * @return array
      */
     public function quit($text)
     {
         $this->getDb()->addWrite('QUIT :' . $text);
+        return ['action' => 'quit', 'text' => $text];
     }
 
     /**
      * @param string|null $text
+     * @return array
      */
     public function mode($text = null)
     {
         $this->getDb()->addWrite('MODE' . ($text === null ? '' : ' ' . $text));
+        return ['action' => 'mode', 'text' => $text];
     }
 
     /**
@@ -144,22 +154,23 @@ class Action
     public function part($channel)
     {
         $this->getDb()->addWrite('PART ' . $channel);
-        $exploded = explode(' ', trim($channel), 2);
-        $channel = explode(',', $exploded[0]);
-        $message = isset($exploded[1]) === true ? $exploded[1] : '';
-        return ['action' => 'part', 'channel' => $channel, 'message' => $message];
+        $channel = explode(',', $channel);
+        return ['action' => 'part', 'channel' => $channel];
     }
 
     /**
      * @param string $nick
+     * @return array
      */
     public function whois($nick)
     {
         $this->getDb()->addWrite('WHOIS :' . $nick);
+        return ['action' => 'whois', 'nick' => $nick];
     }
 
     /**
      * @param string $nick
+     * @return array
      */
     public function nick($nick)
     {
@@ -167,29 +178,35 @@ class Action
             $this->irc->setNick($nick);
         }
         $this->getDb()->addWrite('NICK :' . $nick);
+        return ['action' => 'nick', 'nick' => $nick];
     }
 
     /**
      * @param string $channel
      * @param string $topic
+     * @return array
      */
     public function topic($channel, $topic)
     {
         $this->getDb()->addWrite('TOPIC ' . $channel . ' :' . $topic);
+        return ['action' => 'topic', 'channel' => $channel, 'topic' => $topic];
     }
 
     /**
      * @param string $channel
      * @param string $nick
+     * @return array
      */
     public function invite($channel, $nick)
     {
         $this->getDb()->addWrite('INVITE ' . $nick . ' :' . $channel);
+        return ['action' => 'invite', 'channel' => $channel, 'nick' => $nick];
     }
 
     /**
      * @param string $channel
      * @param string|null $nick
+     * @return array
      * @link https://www.quakenet.org/help/q-commands/op
      */
     public function op($channel, $nick = null)
@@ -204,14 +221,17 @@ class Action
         } else {
             $this->mode($channel . ' +o ' . $nick);
         }
+        return ['action' => 'op', 'channel' => $channel, 'nick' => $nick];
     }
 
     /**
      * @param string $channel
      * @param string|null $nick
+     * @return array
      */
     public function deop($channel, $nick = null)
     {
         $this->mode($channel . ' -o ' . $nick);
+        return ['action' => 'deop', 'channel' => $channel, 'nick' => $nick];
     }
 }
