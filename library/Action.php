@@ -234,4 +234,16 @@ class Action
         $this->mode($channel . ' -o ' . $nick);
         return ['action' => 'deop', 'channel' => $channel, 'nick' => $nick];
     }
+
+    /**
+     * @param string $channel
+     * @param string $user
+     * @param string|null $comment
+     * @return array
+     */
+    public function kick($channel, $user, $comment = null)
+    {
+        $this->getDb()->addWrite('KICK ' . $channel . ' ' . $user . ' :' . $comment);
+        return ['action' => 'kick', 'channel' => $channel, 'user' => $user, 'comment' => $comment];
+    }
 }
