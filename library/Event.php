@@ -144,6 +144,9 @@ class Event
     public function err($command, $rest, $text)
     {
         switch ($command) {
+            case '401':
+                $this->getErr()->on401($text);
+                break;
             case '403':
                 $this->getErr()->on403($text);
                 break;

@@ -30,6 +30,16 @@ use Cerberus\Event;
 class EventErr extends Event
 {
     /**
+     * ERR_NOSUCHNICK
+     * <nickname> :No such nick/channel
+     * @param string $text
+     */
+    public function on401($text) {
+        $this->getDb()->addStatus('401', $text, []);
+        $this->runPluginEvent(__FUNCTION__, []);
+    }
+
+    /**
      * ERR_NOSUCHCHANNEL
      * <channel name> :No such channel
      * @param string $text
