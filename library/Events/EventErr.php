@@ -34,7 +34,8 @@ class EventErr extends Event
      * <nickname> :No such nick/channel
      * @param string $text
      */
-    public function on401($text) {
+    public function on401($text)
+    {
         $this->getDb()->addStatus('401', $text, []);
         $this->runPluginEvent(__FUNCTION__, []);
     }
@@ -44,7 +45,8 @@ class EventErr extends Event
      * <channel name> :No such channel
      * @param string $text
      */
-    public function on403($text) {
+    public function on403($text)
+    {
         $this->getDb()->addStatus('403', $text, []);
         $this->runPluginEvent(__FUNCTION__, []);
     }
@@ -94,7 +96,8 @@ class EventErr extends Event
      * @param string $rest
      * @param string $text
      */
-    public function on442($rest, $text) {
+    public function on442($rest, $text)
+    {
         list($nick, $channel) = explode(' ', $rest);
         $this->getDb()->addStatus('442', $text, ['channel' => $channel, 'nick' => $nick]);
         $this->runPluginEvent(__FUNCTION__, []);
@@ -106,7 +109,8 @@ class EventErr extends Event
      * @param string $rest
      * @param string $text
      */
-    public function on443($rest, $text) {
+    public function on443($rest, $text)
+    {
         list($nick, $user, $channel) = explode(' ', $rest);
         $this->getDb()->addStatus('443', $user . ' ' . $text, ['channel' => $channel, 'nick' => $nick, 'user' => $user]);
         $this->runPluginEvent(__FUNCTION__, []);
@@ -118,7 +122,8 @@ class EventErr extends Event
      * @param string $rest
      * @param string $text
      */
-    public function on475($rest, $text) {
+    public function on475($rest, $text)
+    {
         list($nick, $channel) = explode(' ', $rest);
         $this->getDb()->addStatus('475', $text, ['channel' => $channel, 'nick' => $nick]);
         $this->runPluginEvent(__FUNCTION__, []);
@@ -129,7 +134,8 @@ class EventErr extends Event
      * @param string $rest
      * @param string $text
      */
-    public function on477($rest, $text) {
+    public function on477($rest, $text)
+    {
         list($nick, $channel) = explode(' ', $rest);
         $this->getDb()->addStatus('477', $text, ['channel' => $channel, 'nick' => $nick]);
         $this->runPluginEvent(__FUNCTION__, []);
@@ -141,7 +147,8 @@ class EventErr extends Event
      * @param string $rest
      * @param string $text
      */
-    public function on482($rest, $text) {
+    public function on482($rest, $text)
+    {
         list($nick, $channel) = explode(' ', $rest);
         $this->getDb()->addStatus('482', $text, ['channel' => $channel, 'nick' => $nick]);
         $this->runPluginEvent(__FUNCTION__, []);
