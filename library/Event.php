@@ -151,13 +151,13 @@ class Event
                 $this->getErr()->on403($text);
                 break;
             case '431':
-                $this->getErr()->on431();
+                $this->getErr()->on431($text);
                 break;
             case '432':
-                $this->getErr()->on432();
+                $this->getErr()->on432($text);
                 break;
             case '433':
-                $this->getErr()->on433();
+                $this->getErr()->on433($text);
                 break;
             case '437':
                 $this->getErr()->on437();

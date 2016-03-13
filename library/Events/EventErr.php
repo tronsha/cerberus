@@ -54,29 +54,35 @@ class EventErr extends Event
     /**
      * ERR_NONICKNAMEGIVEN
      * :No nickname given
+     * @param string $text
      */
-    public function on431()
+    public function on431($text)
     {
+        $this->getDb()->addStatus('431', $text, []);
         $this->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
      * ERR_ERRONEUSNICKNAME
      * <nick> :Erroneous nickname
+     * @param string $text
      */
-    public function on432()
+    public function on432($text)
     {
         $this->irc->otherNick();
+        $this->getDb()->addStatus('432', $text, []);
         $this->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
      * ERR_NICKNAMEINUSE
      * <nick> :Nickname is already in use
+     * @param string $text
      */
-    public function on433()
+    public function on433($text)
     {
         $this->irc->otherNick();
+        $this->getDb()->addStatus('433', $text, []);
         $this->runPluginEvent(__FUNCTION__, []);
     }
 
