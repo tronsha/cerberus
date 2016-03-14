@@ -389,15 +389,17 @@ class Event
     {
         $this->vars = $this->irc->getVars();
         list($channel, $nick) = explode(' ', $rest);
-        $me = $nick == $this->vars['var']['me'] ? true : false;
-        $this->onPart($nick, $channel);
-        if ($this->irc->getConfig()->getAutorejoin() === true && $me === true) {
-            $this->irc->getActions()->join($channel);
-        }
-        if ($me === true) {
-            $this->getDb()->addStatus('KICK', 'User ' . $bouncer . ' kicked you from channel ' . $channel . ' (' . $text . ')', ['channel' => $channel, 'nick' => $nick]);
-        }
+        $me = ($nick == $this->vars['var']['me']) ? true : false;
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer, 'comment' => $text]);
+        if ($me === true) {
+            $this->getDb()->removeChannel($channel);
+            $this->getDb()->addStatus('KICK', 'User ' . $bouncer . ' kicked you from channel ' . $channel . ' (' . $text . ')', ['channel' => $channel, 'nick' => $nick]);
+            if ($this->irc->getConfig()->getAutorejoin() === true) {
+                $this->irc->getActions()->join($channel);
+            }
+        } else {
+            $this->getDb()->removeUserFromChannel($channel, $nick);
+        }
     }
 
     /**
@@ -407,7 +409,7 @@ class Event
     public function onPart($nick, $channel)
     {
         $this->vars = $this->irc->getVars();
-        $me = $nick == $this->vars['var']['me'] ? true : false;
+        $me = ($nick == $this->vars['var']['me']) ? true : false;
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick]);
         if ($me === true) {
             $this->getDb()->removeChannel($channel);
