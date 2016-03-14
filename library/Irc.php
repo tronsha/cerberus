@@ -265,11 +265,11 @@ class Irc extends Cerberus
      */
     public static function randomNick()
     {
-        $consonant = 'bcdfghjklmnpqrstvwxyz';
-        $vowel = 'aeiou';
+        $consonant = str_split('bcdfghjklmnpqrstvwxyz');
+        $vowel = str_split('aeiou');
         $nick = '';
         for ($i = 0; $i < 3; $i++) {
-            $nick .= $consonant{mt_rand(0, 20)} . $vowel{mt_rand(0, 4)};
+            $nick .= $consonant[mt_rand(0, 20)] . $vowel[mt_rand(0, 4)];
         }
         return ucfirst($nick);
     }
@@ -502,8 +502,7 @@ class Irc extends Cerberus
                 if ($input{0} != ':') {
                     if (strpos(strtoupper($input), 'PING') !== false) {
                         $this->lastping = time();
-                        $output = $input;
-                        $output{1} = 'O';
+                        $output = str_replace('PING', 'PONG', $input);
                         $this->write($output);
                         unset($output);
                         $this->getDb()->setPing();
