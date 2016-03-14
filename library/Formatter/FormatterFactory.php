@@ -32,14 +32,16 @@ class FormatterFactory
     /**
      * @return FormatterConsole
      */
-    public static function console() {
+    public static function console()
+    {
         return new FormatterConsole;
     }
 
     /**
      * @return FormatterHtml
      */
-    public static function html() {
+    public static function html()
+    {
         return new FormatterHtml;
     }
 }

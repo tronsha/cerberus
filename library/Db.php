@@ -99,7 +99,7 @@ class Db
      */
     public function error($error)
     {
-        if($this->irc !== null) {
+        if ($this->irc !== null) {
             $this->irc->sqlError($error);
         } else {
             echo $error;

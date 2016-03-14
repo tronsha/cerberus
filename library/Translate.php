@@ -77,7 +77,8 @@ class Translate
     /**
      * @param array $translations
      */
-    public function setTranslations($translations) {
+    public function setTranslations($translations)
+    {
         $languages = array_merge(array_keys($this->translations), array_keys($translations));
         $languages = array_unique($languages);
         foreach ($languages as $language) {

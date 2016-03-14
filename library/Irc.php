@@ -3,17 +3,17 @@
 /*   Cerberus IRCBot
  *   Copyright (C) 2008 - 2016 Stefan Hüsges
  *
- *   This program is free software; you can redistribute it and/or modify it 
- *   under the terms of the GNU General Public License as published by the Free 
- *   Software Foundation; either version 3 of the License, or (at your option) 
+ *   This program is free software; you can redistribute it and/or modify it
+ *   under the terms of the GNU General Public License as published by the Free
+ *   Software Foundation; either version 3 of the License, or (at your option)
  *   any later version.
  *
  *   This program is distributed in the hope that it will be useful, but
- *   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
- *   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ *   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  *   for more details.
  *
- *   You should have received a copy of the GNU General Public License along 
+ *   You should have received a copy of the GNU General Public License along
  *   with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -173,26 +173,26 @@ class Irc extends Cerberus
     public function setDB($config)
     {
         switch (strtolower($config['driver'])) {
-            case "pdo_mysql" :
-            case "drizzle_pdo_mysql" :
-            case "mysqli" :
+            case "pdo_mysql":
+            case "drizzle_pdo_mysql":
+            case "mysqli":
                 $this->dbms = "mysql";
                 break;
-            case "pdo_sqlite" :
+            case "pdo_sqlite":
                 $this->dbms = "sqlite";
                 break;
-            case "pdo_pgsql" :
+            case "pdo_pgsql":
                 $this->dbms = "pg";
                 break;
-            case "pdo_oci" :
-            case "oci8" :
+            case "pdo_oci":
+            case "oci8":
                 $this->dbms = "oracle";
                 break;
-            case "pdo_sqlsrv" :
-            case "sqlsrv" :
+            case "pdo_sqlsrv":
+            case "sqlsrv":
                 $this->dbms = "mssql";
                 break;
-            case "sqlanywhere" :
+            case "sqlanywhere":
                 $this->dbms = "sqlanywhere";
                 break;
             default:

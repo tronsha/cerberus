@@ -44,7 +44,7 @@ if (is_dir('../.git') === true) {
     exec('git pull', $output);
     $console = Cerberus::getConsole();
     $console->writeln('<comment>git pull</comment>');
-    foreach($output as $line) {
+    foreach ($output as $line) {
         $console->writeln('<info>' . $line . '</info>');
     }
     unset($output);
