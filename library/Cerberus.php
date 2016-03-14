@@ -158,7 +158,7 @@ class Cerberus
             $blacklist = ini_get('suhosin.executor.func.blacklist');
             if ($disable . $blacklist) {
                 $array = preg_split('/,\s*/', $disable . ',' . $blacklist);
-                if (in_array('exec', $array)) {
+                if (in_array('exec', $array, true)) {
                     $available = false;
                 }
             }

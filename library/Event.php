@@ -19,8 +19,8 @@
 
 namespace Cerberus;
 
-use Cerberus\Events\EventRpl;
 use Cerberus\Events\EventErr;
+use Cerberus\Events\EventRpl;
 use DateTime;
 
 /**
@@ -215,20 +215,20 @@ class Event
         $day_of_month = (int)(new DateTime())->format('j');
         $month = (int)(new DateTime())->format('n');
         $day_of_week = (int)(new DateTime())->format('w');
-        if ($day_of_week != $this->day_of_week) {
+        if ($day_of_week !== $this->day_of_week) {
             $this->day_of_week = $day_of_week;
         }
-        if ($month != $this->month) {
+        if ($month !== $this->month) {
             $this->month = $month;
         }
-        if ($day_of_month != $this->day_of_month) {
+        if ($day_of_month !== $this->day_of_month) {
             $this->day_of_month = $day_of_month;
         }
-        if ($hour != $this->hour) {
+        if ($hour !== $this->hour) {
             $this->hour = $hour;
             $this->onHour();
         }
-        if ($minute != $this->minute) {
+        if ($minute !== $this->minute) {
             $this->minute = $minute;
             $this->onMinute();
         }
@@ -347,7 +347,7 @@ class Event
     public function onNick($nick, $text)
     {
         $this->vars = $this->irc->getVars();
-        if ($nick == $this->vars['var']['me']) {
+        if ($nick === $this->vars['var']['me']) {
             $this->irc->setNick($text);
         }
         $this->getDb()->changeNick($nick, $text);
@@ -371,7 +371,7 @@ class Event
     public function onJoin($nick, $channel)
     {
         $this->vars = $this->irc->getVars();
-        if ($nick == $this->vars['var']['me']) {
+        if ($nick === $this->vars['var']['me']) {
             $this->getDb()->addChannel($channel);
             $this->irc->getActions()->mode($channel);
         } else {
@@ -389,7 +389,7 @@ class Event
     {
         $this->vars = $this->irc->getVars();
         list($channel, $nick) = explode(' ', $rest);
-        $me = ($nick == $this->vars['var']['me']) ? true : false;
+        $me = ($nick === $this->vars['var']['me']) ? true : false;
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer, 'comment' => $text]);
         if ($me === true) {
             $this->getDb()->removeChannel($channel);
@@ -409,7 +409,7 @@ class Event
     public function onPart($nick, $channel)
     {
         $this->vars = $this->irc->getVars();
-        $me = ($nick == $this->vars['var']['me']) ? true : false;
+        $me = ($nick === $this->vars['var']['me']) ? true : false;
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick]);
         if ($me === true) {
             $this->getDb()->removeChannel($channel);

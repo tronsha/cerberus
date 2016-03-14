@@ -74,7 +74,7 @@ class Ccryption
     public static function decode($compressedEncodedTextIvCrc64, $key)
     {
         $hash = hash('sha256', $key, true);
-        $compressedEncodedTextIvCrc = base64_decode($compressedEncodedTextIvCrc64);
+        $compressedEncodedTextIvCrc = base64_decode($compressedEncodedTextIvCrc64, true);
         $iv = substr($compressedEncodedTextIvCrc, 0, 8);
         $checkValue = substr($compressedEncodedTextIvCrc, -8);
         $compressedEncodedText = substr($compressedEncodedTextIvCrc, 8, -8);

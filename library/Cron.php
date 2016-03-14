@@ -100,42 +100,42 @@ class Cron
     {
         $cronString = trim($cronString);
         $cronArray = explode(' ', $cronString);
-        if (count($cronArray) != 5) {
+        if (count($cronArray) !== 5) {
             throw new Exception('a cron has an error');
         }
         list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = $cronArray;
         $cronDayOfWeek = $this->dowNameToNumber($cronDayOfWeek);
         $cronMonth = $this->monthNameToNumber($cronMonth);
-        $cronDayOfWeek = $cronDayOfWeek == 7 ? 0 : $cronDayOfWeek;
-        $cronMinute = $cronMinute != '*' ? $this->prepare($cronMinute, 0, 59) : $cronMinute;
-        $cronHour = $cronHour != '*' ? $this->prepare($cronHour, 0, 23) : $cronHour;
-        $cronDayOfMonth = $cronDayOfMonth != '*' ? $this->prepare($cronDayOfMonth, 1, 31) : $cronDayOfMonth;
-        $cronMonth = $cronMonth != '*' ? $this->prepare($cronMonth, 1, 12) : $cronMonth;
-        $cronDayOfWeek = $cronDayOfWeek != '*' ? $this->prepare($cronDayOfWeek, 0, 6) : $cronDayOfWeek;
+        $cronDayOfWeek = intval($cronDayOfWeek) === 7 ? 0 : $cronDayOfWeek;
+        $cronMinute = $cronMinute !== '*' ? $this->prepare($cronMinute, 0, 59) : $cronMinute;
+        $cronHour = $cronHour !== '*' ? $this->prepare($cronHour, 0, 23) : $cronHour;
+        $cronDayOfMonth = $cronDayOfMonth !== '*' ? $this->prepare($cronDayOfMonth, 1, 31) : $cronDayOfMonth;
+        $cronMonth = $cronMonth !== '*' ? $this->prepare($cronMonth, 1, 12) : $cronMonth;
+        $cronDayOfWeek = $cronDayOfWeek !== '*' ? $this->prepare($cronDayOfWeek, 0, 6) : $cronDayOfWeek;
         if (
             (
-                $cronMinute == '*' || in_array($minute, $cronMinute) === true
+                $cronMinute === '*' || in_array($minute, $cronMinute, true) === true
             ) && (
-                $cronHour == '*' || in_array($hour, $cronHour) === true
+                $cronHour === '*' || in_array($hour, $cronHour, true) === true
             ) && (
-                $cronMonth == '*' || in_array($month, $cronMonth) === true
+                $cronMonth === '*' || in_array($month, $cronMonth, true) === true
             ) && (
                 (
                     (
-                        $cronDayOfMonth == '*' || in_array($day_of_month, $cronDayOfMonth) === true
+                        $cronDayOfMonth === '*' || in_array($day_of_month, $cronDayOfMonth, true) === true
                     ) && (
-                        $cronDayOfWeek == '*' || in_array($day_of_week, $cronDayOfWeek) === true
+                        $cronDayOfWeek === '*' || in_array($day_of_week, $cronDayOfWeek, true) === true
                     )
                 ) || (
                     (
-                        $cronDayOfMonth != '*'
+                        $cronDayOfMonth !== '*'
                     ) && (
-                        $cronDayOfWeek != '*'
+                        $cronDayOfWeek !== '*'
                     ) && (
                         (
-                            in_array($day_of_month, $cronDayOfMonth) === true
+                            in_array($day_of_month, $cronDayOfMonth, true) === true
                         ) || (
-                            in_array($day_of_week, $cronDayOfWeek) === true
+                            in_array($day_of_week, $cronDayOfWeek, true) === true
                         )
                     )
                 )
@@ -166,7 +166,7 @@ class Cron
             if (strpos($string, '/') !== false) {
                 list($value, $steps) = explode('/', $string);
             }
-            if ($value == '*') {
+            if ($value === '*') {
                 $value = $a . '-' . $b;
             }
             if (strpos($value, '-') !== false) {
@@ -174,7 +174,7 @@ class Cron
                 $min = (int)$min;
                 $max = (int)$max;
                 for ($i = $min, $j = 0; $i <= $max; $i++, $j++) {
-                    if ($j % $steps == 0) {
+                    if ($j % $steps === 0) {
                         $array[] = $i;
                     }
                 }

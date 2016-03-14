@@ -60,7 +60,7 @@ class PluginJoin extends Plugin
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '!join') {
+        if ($command === '!join') {
             while ($channel = array_shift($splitText)) {
                 $this->getActions()->join($channel);
             }

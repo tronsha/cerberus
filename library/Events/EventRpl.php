@@ -122,8 +122,7 @@ class EventRpl extends Event
     public function on353($rest, $text)
     {
         list($me, $dummy, $channel) = explode(' ', $rest);
-        unset($me);
-        unset($dummy);
+        unset($me, $dummy);
         $user_array = explode(' ', $text);
         foreach ($user_array as $user) {
             preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);

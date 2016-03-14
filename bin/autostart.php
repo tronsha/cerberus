@@ -82,12 +82,12 @@ if ($config['bot']['autostart']) {
         $pidList = [];
         foreach ($output as $line) {
             $data = explode(' ', trim(preg_replace('/[ ]+/', ' ', $line)));
-            if ($data[3] == 'php') {
+            if ($data[3] === 'php') {
                 $pidList[] = $data[0];
             }
         }
         foreach ($bots as $bot) {
-            if (in_array($bot['pid'], $pidList) === true) {
+            if (in_array($bot['pid'], $pidList, true) === true) {
                 $botCount++;
                 Cerberus::sysinfo('Bot ' . $bot['id'] . ' is running. PID: ' . $bot['pid']);
             } else {
@@ -97,7 +97,7 @@ if ($config['bot']['autostart']) {
             }
         }
     }
-    if ($botCount == 0) {
+    if ($botCount === 0) {
         Cerberus::sysinfo('start a new bot.');
         if (is_dir($config['log']['directory']) === false) {
             mkdir($config['log']['directory']);

@@ -53,7 +53,7 @@ class Mircryption
     public static function decode($text, $key)
     {
         $encodedTextIvBase64 = str_replace('*', '', $text);
-        $encodedTextIv = base64_decode($encodedTextIvBase64);
+        $encodedTextIv = base64_decode($encodedTextIvBase64, true);
         $iv = substr($encodedTextIv, 0, 8);
         $encodedText = substr($encodedTextIv, 8);
         $plaintext = mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv);

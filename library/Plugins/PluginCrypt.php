@@ -19,8 +19,8 @@
 
 namespace Cerberus\Plugins;
 
-use Cerberus\Plugin;
 use Cerberus\Mircryption;
+use Cerberus\Plugin;
 
 /**
  * Class PluginCrypt
@@ -69,10 +69,10 @@ class PluginCrypt extends Plugin
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '+OK') {
+        if ($command === '+OK') {
             $key = empty($this->cryptkey[$data['channel']]) ? '123456' : $this->cryptkey[$data['channel']];
             $data['text'] = $this->decodeMircryption(array_shift($splitText), $key);
-        } elseif (strtolower($command) == '!cryptkey' && $this->isAdmin($data['nick'], $data['host'])) {
+        } elseif (strtolower($command) === '!cryptkey' && $this->isAdmin($data['nick'], $data['host'])) {
             $channel = array_shift($splitText);
             $key = array_shift($splitText);
             $this->cryptkey[$channel] = $key;

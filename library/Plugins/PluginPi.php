@@ -219,7 +219,7 @@ class PluginPi extends Plugin
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '!temp' && $data['channel'] == $this->getConfig()->getChannel()) {
+        if ($command === '!temp' && $data['channel'] === $this->getConfig()->getChannel()) {
             $this->privmsgTemp($data['channel']);
         }
         $this->blink(self::LED_BLUE);
@@ -273,7 +273,7 @@ class PluginPi extends Plugin
     public function onControl($data)
     {
         $param = explode(' ', $data['param']);
-        if ($data['command'] == 'pi') {
+        if ($data['command'] === 'pi') {
             switch ($param[0]) {
                 case 'temp':
                     $this->getActions()->privmsg($data['channel'], $this->getTempCelsius());

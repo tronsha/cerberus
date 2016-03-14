@@ -82,7 +82,7 @@ class FormatterHtml extends Formatter
             if ($bg !== null) {
                 $this->bg = $bg;
             }
-            if ($this->bg != '') {
+            if ($this->bg !== '') {
                 $fgbg[] = 'background-color: ' . $this->matchColor($this->bg);
             }
             if ($this->open === true) {

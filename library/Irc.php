@@ -20,8 +20,8 @@
 namespace Cerberus;
 
 use Cerberus\Plugins\PluginAuth;
-use SQLite3;
 use Exception;
+use SQLite3;
 
 /**
  * Class Irc
@@ -244,10 +244,10 @@ class Irc extends Cerberus
             $this->getConfig()->setVersion('php', phpversion());
             $this->getConfig()->setVersion('os', php_uname('s') . ' ' . php_uname('r'));
             $this->getConfig()->setVersion('bot', 'PHP ' . $this->getConfig()->getVersion('php') . ' - ' . $this->getConfig()->getVersion('os'));
-            if ($this->dbms == 'mysql' || $this->dbms == 'pg') {
+            if ($this->dbms === 'mysql' || $this->dbms === 'pg') {
                 $this->getConfig()->setVersion('sql', $this->getDb()->getDbVersion());
                 $this->getConfig()->setVersion('bot', $this->getConfig()->getVersion('bot') . ' - ' . $this->getConfig()->getDbms($this->dbms) . ' ' . $this->getConfig()->getVersion('sql'));
-            } elseif ($this->dbms == 'sqlite') {
+            } elseif ($this->dbms === 'sqlite') {
                 $version = SQLite3::version();
                 $this->getConfig()->setVersion('sql', $version['versionString']);
                 $this->getConfig()->setVersion('bot', $this->getConfig()->getVersion('bot') . ' - ' . $this->getConfig()->getDbms($this->dbms) . ' ' . $this->getConfig()->getVersion('sql'));
@@ -295,7 +295,7 @@ class Irc extends Cerberus
         $n = $this->getDb()->getServerCount($this->getNetwork());
         $i = 0;
         $repeat = true;
-        if ($n == 0) {
+        if ($n === 0) {
             $this->sysinfo('No ' . $this->getNetwork() . ' server');
             return false;
         }
@@ -316,7 +316,7 @@ class Irc extends Cerberus
                 $this->sysinfo('Connection success');
                 $repeat = false;
             }
-            if ($i == $n) {
+            if ($i === $n) {
                 $this->sysinfo('All attempts failed');
                 return false;
             }
@@ -414,14 +414,14 @@ class Irc extends Cerberus
     protected function write($text)
     {
         $output = trim($text);
-        if (substr($output, -1) == '\\') {
+        if (substr($output, -1) === '\\') {
             $output .= ' ';
         }
         $this->getConsole()->writeln($this->getConsole()->prepare($output, true, null, true, true, 0));
         fwrite($this->fp, $output . PHP_EOL);
         preg_match("/^([^ ]+).*?$/i", $text, $matches);
         $command = isset($matches[1]) ? $matches[1] : '';
-        if (strtolower($command) == 'quit') {
+        if (strtolower($command) === 'quit') {
             $this->run = false;
         }
     }
@@ -438,8 +438,8 @@ class Irc extends Cerberus
             $this->error($e->getMessage());
         }
         $text = trim($input);
-        if ($text != '') {
-            if (substr($text, -1) == '\\') {
+        if ($text !== '') {
+            if (substr($text, -1) === '\\') {
                 $text .= ' ';
             }
             $this->log($text, 'socket');
@@ -455,7 +455,7 @@ class Irc extends Cerberus
     {
         $send = $this->getDb()->getWrite();
         if ($send !== false) {
-            if ($send['text'] != '') {
+            if ($send['text'] !== '') {
                 preg_match_all("/\%([a-z0-9_]*)/i", $send['text'], $array, PREG_PATTERN_ORDER);
                 foreach ($array[1] as $value) {
                     if (array_key_exists($value, $this->var)) {
@@ -494,12 +494,12 @@ class Irc extends Cerberus
     {
         while (!feof($this->fp)) {
             $input = $this->read();
-            if (trim($input) != '') {
+            if (trim($input) !== '') {
                 if ($this->getDb()->ping() === false) {
                     $this->getDb()->close();
                     $this->getDb()->connect();
                 }
-                if ($input{0} != ':') {
+                if ($input{0} !== ':') {
                     if (strpos(strtoupper($input), 'PING') !== false) {
                         $this->lastping = time();
                         $output = str_replace('PING', 'PONG', $input);
@@ -546,10 +546,10 @@ class Irc extends Cerberus
         $rest = isset($matches[4]) ? $matches[4] : '';
         $text = isset($matches[5]) ? $matches[5] : '';
         if (preg_match('/^([2345])[0-9][0-9]$/', $command, $matches)) {
-            if ($matches[1] == 2 || $matches[1] == 3) {
+            if ($matches[1] === 2 || $matches[1] === 3) {
                 $this->getEvents()->rpl($command, $rest, $text);
             }
-            if ($matches[1] == 4 || $matches[1] == 5) {
+            if ($matches[1] === 4 || $matches[1] === 5) {
                 $this->getEvents()->err($command, $rest, $text);
             }
         } else {
@@ -564,7 +564,7 @@ class Irc extends Cerberus
                     $this->getEvents()->onNotice($nick, $text);
                     break;
                 case 'JOIN':
-                    $this->getEvents()->onJoin($nick, ($rest != '' ? $rest : $text));
+                    $this->getEvents()->onJoin($nick, ($rest !== '' ? $rest : $text));
                     break;
                 case 'PART':
                     $this->getEvents()->onPart($nick, $rest);
@@ -752,7 +752,7 @@ class Irc extends Cerberus
         if (array_key_exists($event, $this->pluginevents)) {
             foreach ($this->pluginevents[$event] as $priorityKey => $priorityValue) {
                 foreach ($priorityValue as $key => $eventObject) {
-                    if (get_class($eventObject) == $className) {
+                    if (get_class($eventObject) === $className) {
                         unset($this->pluginevents[$event][$priorityKey][$key]);
                         $count++;
                     }

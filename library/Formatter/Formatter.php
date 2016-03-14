@@ -69,7 +69,7 @@ abstract class Formatter
      */
     public function color($output)
     {
-        if ($this->type != 'HTML' && $this->type != 'CONSOLE') {
+        if ($this->type !== 'HTML' && $this->type !== 'CONSOLE') {
             throw new Exception('Type must be HTML or Console.');
         }
         $coloredOutput = '';

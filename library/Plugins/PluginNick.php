@@ -60,7 +60,7 @@ class PluginNick extends Plugin
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '!nick') {
+        if ($command === '!nick') {
             $nick = trim(array_shift($splitText));
             return $this->getActions()->nick($nick);
         }

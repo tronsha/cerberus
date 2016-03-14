@@ -63,7 +63,7 @@ class Installer
             $io->write('<comment>The config file exists.</comment>');
             $update = $io->ask('<question>Create a new config? (y/n):</question> ');
         }
-        if ($update == 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
+        if ($update === 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
             $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
             $io->write('<options=bold>IRC</options=bold>');
             $botname = $io->ask('Nickname: ');
@@ -99,7 +99,7 @@ class Installer
             $db = DriverManager::getConnection($config['db']);
             $sm = $db->getSchemaManager();
             $list = $sm->listDatabases();
-            if (in_array($dbname, $list) === false) {
+            if (in_array($dbname, $list, true) === false) {
                 $io->write('<info>Create database</info>');
                 $sm->createDatabase($dbname);
             }

@@ -20,9 +20,9 @@
 namespace Cerberus;
 
 use Cerberus\Db\DbLog;
+use DateTime;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Version;
-use DateTime;
 use Exception;
 
 /**
@@ -451,7 +451,7 @@ class Db
                 ->setParameter(5, $direction)
                 ->execute();
             $logId = $this->conn->lastInsertId();
-            if ($direction == '<') {
+            if ($direction === '<') {
                 switch (strtolower($command)) {
                     case 'privmsg':
                         $this->log->setPrivmsgLog($rest, $nick, $text, $now, $direction, $logId);
@@ -479,7 +479,7 @@ class Db
                         $this->log->setTopicLog($rest, $nick, $text, $now, $logId);
                         break;
                 }
-            } elseif ($direction == '>') {
+            } elseif ($direction === '>') {
                 switch (strtolower($command)) {
                     case 'privmsg':
                         $this->log->setPrivmsgLog($rest, $nick, $text, $now, $direction, $logId);

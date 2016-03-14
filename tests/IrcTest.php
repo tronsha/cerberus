@@ -75,12 +75,12 @@ class IrcTest extends \PHPUnit_Framework_TestCase
 
     public function testRandomNick()
     {
-        $this->assertEquals(6, strlen($this->irc->randomNick()));
+        $this->assertSame(6, strlen($this->irc->randomNick()));
     }
 
     public function testSysinfo()
     {
-        $this->assertEquals(
+        $this->assertSame(
             '<info>**** Connection to server lost ****</info>',
             $this->irc->sysinfo('Connection to server lost')
         );
@@ -88,7 +88,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
 
     public function testError()
     {
-        $this->assertEquals(
+        $this->assertSame(
             '<error>Some Error</error>',
             $this->irc->error('Some Error')
         );
@@ -99,7 +99,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT * FROM bot WHERE id = 1';
         $stmt = $this->db->query($sql);
         $row = $stmt->fetch();
-        $this->assertEquals(self::$config['bot']['nick'], $row['nick']);
+        $this->assertSame(self::$config['bot']['nick'], $row['nick']);
     }
 
     public function testTranslation()
@@ -107,12 +107,12 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->irc->setLanguage('en');
         $this->irc->setTranslations(['de' => ['hello' => 'hallo'], 'en' => ['hello' => 'hello']]);
         $this->irc->setTranslations(['de' => ['world' => 'welt'], 'en' => ['world' => 'world']]);
-        $this->assertEquals('unknown', $this->irc->__('unknown'));
-        $this->assertEquals('hello', $this->irc->__('hello'));
-        $this->assertEquals('hallo', $this->irc->__('hello', 'de'));
+        $this->assertSame('unknown', $this->irc->__('unknown'));
+        $this->assertSame('hello', $this->irc->__('hello'));
+        $this->assertSame('hallo', $this->irc->__('hello', 'de'));
         $this->irc->setLanguage('de');
-        $this->assertEquals('hallo', $this->irc->__('hello'));
-        $this->assertEquals('welt', $this->irc->__('world'));
+        $this->assertSame('hallo', $this->irc->__('hello'));
+        $this->assertSame('welt', $this->irc->__('world'));
     }
 
     public function testCommandPrivmsg()

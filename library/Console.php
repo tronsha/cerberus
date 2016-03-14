@@ -19,11 +19,11 @@
 
 namespace Cerberus;
 
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Formatter\OutputFormatter;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Cerberus\Formatter\FormatterFactory;
 use Exception;
+use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Class Console
@@ -93,7 +93,7 @@ class Console
      */
     public function prepare($text, $escape = true, $length = null, $break = true, $wordwrap = true, $offset = 0)
     {
-        if (isset($this->param) && is_array($this->param) && in_array('-noconsole', $this->param)) {
+        if (isset($this->param) && is_array($this->param) && in_array('-noconsole', $this->param, true)) {
             return $escape ? $this->escape($text) : $text;
         }
 
@@ -103,7 +103,7 @@ class Console
         $text = $formatter->color($text);
 
         if ($length === false) {
-            $text .= (substr($text, -1) == '\\') ? ' ' : '';
+            $text .= (substr($text, -1) === '\\') ? ' ' : '';
 
             return $escape ? $this->escape($text) : $text;
         }
@@ -119,7 +119,7 @@ class Console
         }
         $length = $length - $offset;
         if ($this->len($text) <= $length) {
-            $text .= (substr($text, -1) == '\\') ? ' ' : '';
+            $text .= (substr($text, -1) === '\\') ? ' ' : '';
 
             return $escape ? $this->escape($text) : $text;
         }
@@ -138,7 +138,7 @@ class Console
             }
         }
         $text = utf8_encode($text);
-        $text .= (substr($text, -1) == '\\') ? ' ' : '';
+        $text .= (substr($text, -1) === '\\') ? ' ' : '';
 
         return $escape ? $this->escape($text) : $text;
     }
@@ -205,7 +205,7 @@ class Console
         $len = strlen($text);
         for ($i = 0; $i < $len; $i++) {
             $output .= $this->count($text[$i], $count, $ignore);
-            if ($count == $length) {
+            if ($count === $length) {
                 $count = 0;
                 $output .= $end;
             }
@@ -231,7 +231,7 @@ class Console
         $len = strlen($text);
         for ($i = 0; $i < $len; $i++) {
             $output .= $this->count($text[$i], $count, $ignore);
-            if ($count == $length) {
+            if ($count === $length) {
                 break;
             }
         }

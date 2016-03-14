@@ -60,7 +60,7 @@ class PluginQuit extends Plugin
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '!die') {
+        if ($command === '!die') {
             return $this->getActions()->quit('Client Quit');
         }
     }

@@ -60,7 +60,7 @@ class PluginPart extends Plugin
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command == '!part') {
+        if ($command === '!part') {
             $channel = trim(array_shift($splitText));
             if (empty($channel) === true) {
                 $channel = $data['channel'];
