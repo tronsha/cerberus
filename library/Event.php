@@ -434,14 +434,13 @@ class Event
     }
 
     /**
+     * @param string $user
      * @param string $nick
-     * @param string $host
-     * @param string $rest
      * @param string $channel
      */
-    public function onInvite($nick, $host, $rest, $channel)
+    public function onInvite($user, $nick, $channel)
     {
-        $this->getDb()->addStatus('INVITE', 'User ' . $nick . ' inviting you to channel ' . $channel, ['channel' => $channel, 'nick' => $nick]);
-        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'nick' => $nick, 'host' => $host, 'rest' => $rest]);
+        $this->getDb()->addStatus('INVITE', 'User ' . $user . ' inviting you to channel ' . $channel, ['channel' => $channel, 'user' => $user, 'nick' => $nick]);
+        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'user' => $user, 'nick' => $nick]);
     }
 }

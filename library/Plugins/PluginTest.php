@@ -41,6 +41,9 @@ class PluginTest extends Plugin
         $this->addEvent('onJoin');
         $this->addEvent('onPart');
         $this->addEvent('onQuit');
+        $this->addEvent('onTopic');
+        $this->addEvent('onKick');
+        $this->addEvent('onInvite');
     }
 
     /**
@@ -100,6 +103,30 @@ class PluginTest extends Plugin
      * @param array $data
      */
     public function onQuit($data)
+    {
+        $this->doEcho($data);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onTopic($data)
+    {
+        $this->doEcho($data);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onKick($data)
+    {
+        $this->doEcho($data);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onInvite($data)
     {
         $this->doEcho($data);
     }

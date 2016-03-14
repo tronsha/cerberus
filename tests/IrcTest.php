@@ -159,4 +159,33 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
+
+    public function testCommandTopic()
+    {
+        $input = ':foo!~bar@127.0.0.1 TOPIC #cerberbot :bar';
+        $array = ['channel' => '#cerberbot', 'topic' => 'bar'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
+
+    public function testCommandKick()
+    {
+        $input = ':foo!~bar@127.0.0.1 KICK #cerberbot Noob :goodbye';
+        $array1 = ['channel' => '#cerberbot', 'nick' => 'Noob', 'me' => false];
+        $array2 = ['channel' => '#cerberbot', 'me' => false, 'nick' => 'Noob', 'bouncer' => 'foo', 'comment' => 'goodbye'];
+        ksort($array1);
+        ksort($array2);
+        $this->expectOutputString(serialize($array1) . serialize($array2));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
+
+    public function testCommandInvite()
+    {
+        $input = ':foo!~bar@127.0.0.1 INVITE Neo :#cerberbot';
+        $array = ['channel' => '#cerberbot', 'nick' => 'Neo', 'user' => 'foo'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }
