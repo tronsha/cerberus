@@ -65,8 +65,8 @@ abstract class Formatter
 
     /**
      * @param string $output
-     * @return string
      * @throws Exception
+     * @return string
      */
     public function color($output)
     {

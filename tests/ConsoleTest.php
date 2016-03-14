@@ -131,8 +131,8 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
 
     public function testCut()
     {
-        $this->assertSame('foo', substr("foobar", 0, 3));
-        $this->assertSame('foo', $this->invokeMethod($this->console, 'cut', "foobar", 3));
+        $this->assertSame('foo', substr('foobar', 0, 3));
+        $this->assertSame('foo', $this->invokeMethod($this->console, 'cut', 'foobar', 3));
         $this->assertSame("\033[1", substr("\033[1mfoobar\033[0m", 0, 3));
         $this->assertSame("\033[1mfoo", $this->invokeMethod($this->console, 'cut', "\033[1mfoobar\033[0m", 3));
         $this->assertSame("\033[1mfoobar", $this->invokeMethod($this->console, 'cut', "\033[1mfoobar\033[0m", 6));
@@ -141,36 +141,36 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
 
     public function testWordwrap()
     {
-        $this->assertSame("foo bar\nbaz", wordwrap("foo bar baz", 10, "\n"));
+        $this->assertSame("foo bar\nbaz", wordwrap('foo bar baz', 10, "\n"));
         $this->assertSame("foo\n\033[1mbar\nbaz", wordwrap("foo \033[1mbar baz", 10, "\n"));
-        $this->assertSame("foo bar\nbaz", $this->invokeMethod($this->console, 'wordwrap', "foo bar baz", 10));
+        $this->assertSame("foo bar\nbaz", $this->invokeMethod($this->console, 'wordwrap', 'foo bar baz', 10));
         $this->assertSame("foo \033[1mbar\nbaz", $this->invokeMethod($this->console, 'wordwrap', "foo \033[1mbar baz", 10));
     }
 
     public function testSplit()
     {
-        $this->assertSame("foo b\nar ba\nz\n", chunk_split("foo bar baz", 5, "\n"));
+        $this->assertSame("foo b\nar ba\nz\n", chunk_split('foo bar baz', 5, "\n"));
         $this->assertSame("foo \033\n[1mba\nr baz\n", chunk_split("foo \033[1mbar baz", 5, "\n"));
-        $this->assertSame("foo b\nar ba\nz", $this->invokeMethod($this->console, 'split', "foo bar baz", 5));
+        $this->assertSame("foo b\nar ba\nz", $this->invokeMethod($this->console, 'split', 'foo bar baz', 5));
         $this->assertSame("foo \033[1mb\nar ba\nz", $this->invokeMethod($this->console, 'split', "foo \033[1mbar baz", 5));
     }
 
     public function testException()
     {
         try {
-            $this->invokeMethod($this->console, 'wordwrap', "foo", -1);
+            $this->invokeMethod($this->console, 'wordwrap', 'foo', -1);
         } catch (\Exception $e) {
-            $this->assertSame("Length cannot be negative or null.", $e->getMessage());
+            $this->assertSame('Length cannot be negative or null.', $e->getMessage());
         }
         try {
-            $this->invokeMethod($this->console, 'split', "foo", -1);
+            $this->invokeMethod($this->console, 'split', 'foo', -1);
         } catch (\Exception $e) {
-            $this->assertSame("Length cannot be negative or null.", $e->getMessage());
+            $this->assertSame('Length cannot be negative or null.', $e->getMessage());
         }
         try {
-            $this->invokeMethod($this->console, 'cut', "foo", -1);
+            $this->invokeMethod($this->console, 'cut', 'foo', -1);
         } catch (\Exception $e) {
-            $this->assertSame("Length cannot be negative or null.", $e->getMessage());
+            $this->assertSame('Length cannot be negative or null.', $e->getMessage());
         }
     }
 }

@@ -94,8 +94,8 @@ class Cron
      * @param int $day_of_month
      * @param int $month
      * @param int $day_of_week
-     * @return bool
      * @throws Exception
+     * @return bool
      */
     public function compare($cronString, $minute, $hour, $day_of_month, $month, $day_of_week)
     {

@@ -78,8 +78,8 @@ class Db
     }
 
     /**
-     * @return \Doctrine\DBAL\Connection
      * @throws \Doctrine\DBAL\DBALException
+     * @return \Doctrine\DBAL\Connection
      */
     public function connect()
     {
@@ -93,7 +93,6 @@ class Db
     {
         return $this->conn->close();
     }
-
 
     /**
      * @param string $error

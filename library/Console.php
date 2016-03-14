@@ -159,8 +159,8 @@ class Console
      * @param string $text
      * @param int $length
      * @param string $break
-     * @return string
      * @throws Exception
+     * @return string
      */
     protected function wordwrap($text, $length = 80, $break = PHP_EOL)
     {
@@ -192,8 +192,8 @@ class Console
      * @param string $text
      * @param int $length
      * @param string $end
-     * @return string
      * @throws Exception
+     * @return string
      */
     protected function split($text, $length = 80, $end = PHP_EOL)
     {
@@ -218,8 +218,8 @@ class Console
     /**
      * @param string $text
      * @param int $length
-     * @return string
      * @throws Exception
+     * @return string
      */
     protected function cut($text, $length)
     {

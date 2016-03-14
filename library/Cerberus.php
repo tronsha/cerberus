@@ -69,8 +69,8 @@ class Cerberus
     }
 
     /**
-     * @return array
      * @throws Exception
+     * @return array
      */
     public static function loadConfig()
     {
@@ -128,7 +128,7 @@ class Cerberus
     {
         if (version_compare(phpversion(), '5.0', '<') === true) {
             try {
-                list($usec, $sec) = explode(" ", microtime());
+                list($usec, $sec) = explode(' ', microtime());
                 return ((float)$usec + (float)$sec);
             } catch (Exception $e) {
                 self::error($e->getMessage());

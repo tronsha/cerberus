@@ -174,27 +174,27 @@ class Irc extends Cerberus
     public function setDB($config)
     {
         switch (strtolower($config['driver'])) {
-            case "pdo_mysql":
-            case "drizzle_pdo_mysql":
-            case "mysqli":
-                $this->dbms = "mysql";
+            case 'pdo_mysql':
+            case 'drizzle_pdo_mysql':
+            case 'mysqli':
+                $this->dbms = 'mysql';
                 break;
-            case "pdo_sqlite":
-                $this->dbms = "sqlite";
+            case 'pdo_sqlite':
+                $this->dbms = 'sqlite';
                 break;
-            case "pdo_pgsql":
-                $this->dbms = "pg";
+            case 'pdo_pgsql':
+                $this->dbms = 'pg';
                 break;
-            case "pdo_oci":
-            case "oci8":
-                $this->dbms = "oracle";
+            case 'pdo_oci':
+            case 'oci8':
+                $this->dbms = 'oracle';
                 break;
-            case "pdo_sqlsrv":
-            case "sqlsrv":
-                $this->dbms = "mssql";
+            case 'pdo_sqlsrv':
+            case 'sqlsrv':
+                $this->dbms = 'mssql';
                 break;
-            case "sqlanywhere":
-                $this->dbms = "sqlanywhere";
+            case 'sqlanywhere':
+                $this->dbms = 'sqlanywhere';
                 break;
             default:
                 return false;
@@ -396,14 +396,14 @@ class Irc extends Cerberus
         }
 
         if ($this->getConfig()->getDailylogfile() === true) {
-            $file = $type . '_log_' . date("Ymd", time()) . '.txt';
+            $file = $type . '_log_' . date('Ymd', time()) . '.txt';
         } else {
             $file = $type . '_log.txt';
         }
 
         $handle = @fopen(realpath($this->getConfig()->getLogfiledirectory()) . '/' . $file, 'a+');
         if ($handle !== false) {
-            fputs($handle, date("d.m.Y H:i:s", time()) . ' >>>> ' . $text . PHP_EOL);
+            fwrite($handle, date('d.m.Y H:i:s', time()) . ' >>>> ' . $text . PHP_EOL);
             fflush($handle);
             fclose($handle);
         }
@@ -420,7 +420,7 @@ class Irc extends Cerberus
         }
         $this->getConsole()->writeln($this->getConsole()->prepare($output, true, null, true, true, 0));
         fwrite($this->fp, $output . PHP_EOL);
-        preg_match("/^([^ ]+).*?$/i", $text, $matches);
+        preg_match('/^([^ ]+).*?$/i', $text, $matches);
         $command = isset($matches[1]) ? $matches[1] : '';
         if (strtolower($command) === 'quit') {
             $this->run = false;
@@ -462,7 +462,7 @@ class Irc extends Cerberus
                     if (array_key_exists($value, $this->var)) {
                         $send['text'] = preg_replace(
                             '/%' . $value . '(\s|$)/i',
-                            $this->var[$value] . "\\1",
+                            $this->var[$value] . '\\1',
                             $send['text']
                         );
                     }

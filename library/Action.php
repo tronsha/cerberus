@@ -49,8 +49,8 @@ class Action
     }
 
     /**
-     * @return Db|null
      * @throws Exception
+     * @return Db|null
      */
     protected function getDb()
     {
