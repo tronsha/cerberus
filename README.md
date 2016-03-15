@@ -56,6 +56,7 @@ Then, use the `install` command:
 
 * [Doctrine Database Abstraction Layer 2.5.*][6]
 * [Symfony Console Component 3.0.*][7]
+* [Symfony Translation Component 3.0.*][11]
 
 ## Creator
 
@@ -84,4 +85,4 @@ Then, use the `install` command:
 [8]: https://github.com/symfony/symfony/pull/13607
 [9]: https://tools.ietf.org/html/rfc1459
 [10]: https://tools.ietf.org/html/rfc2810
-
+[11]: http://symfony.com/components/Translation

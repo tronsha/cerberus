@@ -20,20 +20,24 @@
 
 namespace Cerberus;
 
+use Symfony\Component\Translation\Loader\ArrayLoader;
+use Symfony\Component\Translation\Translator;
+
 /**
  * Class Translate
  * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/cerberus/ Project Homepage
  * @link https://github.com/tronsha/Cerberus Project on GitHub
+ * @link http://symfony.com/components/Translation
  * @link http://www.loc.gov/standards/iso639-2/php/English_list.php
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
 
 class Translate
 {
+    protected $translator;
     protected $language;
-    protected $translations = [];
 
     /**
      * Translate constructor.
@@ -46,23 +50,36 @@ class Translate
         } else {
             $this->language = 'en';
         }
+        $this->translator = new Translator($this->language);
+        $this->translator->addLoader('array', new ArrayLoader());
     }
 
     /**
      * @param string $text
-     * @param mixed $language
+     * @param string|null $language
+     * @param array $array
      * @return string
      */
-    public function __($text, $language = null)
+    public function __($text, $language = null, $array = [])
     {
-        if ($language === null) {
-            $language = $this->language;
+        if ($language !== null) {
+            $this->translator->setLocale($language);
         }
-        if (isset($this->translations[$language][$text])) {
-            return $this->translations[$language][$text];
-        } else {
-            return $text;
+        $text = $this->translator->trans($text, $array);
+        if ($language !== null) {
+            $this->translator->setLocale($this->language);
         }
+        return $text;
+    }
+
+    /**
+     * Alias for __ without language attribute
+     * @param string $text
+     * @param array $array
+     */
+    public function trans($text, $array = [])
+    {
+        $this->__($text, null, $array);
     }
 
     /**
@@ -72,7 +89,25 @@ class Translate
     {
         if (empty($language) === false) {
             $this->language = $language;
+            $this->translator->setLocale($language);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
+     * Alias from setLanguage
+     * @param string $locale
+     */
+    public function setLocale($locale)
+    {
+        $this->setLanguage($locale);
     }
 
     /**
@@ -80,14 +115,27 @@ class Translate
      */
     public function setTranslations($translations)
     {
-        $languages = array_merge(array_keys($this->translations), array_keys($translations));
-        $languages = array_unique($languages);
-        foreach ($languages as $language) {
-            if (array_key_exists($language, $this->translations) && array_key_exists($language, $translations)) {
-                $this->translations[$language] = array_merge($this->translations[$language], $translations[$language]);
-            } elseif (array_key_exists($language, $translations)) {
-                $this->translations[$language] = $translations[$language];
-            }
+        foreach ($translations as $locale => $resource) {
+            $this->addResource('array', $resource, $locale);
         }
+    }
+
+    /**
+     * @param string $format
+     * @param array $resource
+     * @param string $locale
+     * @param null $domain
+     */
+    public function addResource($format = 'array', $resource = [], $locale = 'en', $domain = null)
+    {
+        $this->translator->addResource($format, $resource, $locale, $domain);
+    }
+
+    /**
+     * @return Translator
+     */
+    public function getTranslator()
+    {
+        return $this->translator;
     }
 }
