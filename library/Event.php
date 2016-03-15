@@ -63,10 +63,10 @@ class Event
     /**
      * @return EventRpl|null
      */
-    protected function getRpl()
+    public function getRpl()
     {
         if ($this->rpl === null) {
-            $this->rpl = new EventRpl($this->irc);
+            $this->rpl = new EventRpl($this->irc, $this);
         }
         return $this->rpl;
     }
@@ -74,10 +74,10 @@ class Event
     /**
      * @return EventErr|null
      */
-    protected function getErr()
+    public function getErr()
     {
         if ($this->err === null) {
-            $this->err = new EventErr($this->irc);
+            $this->err = new EventErr($this->irc, $this);
         }
         return $this->err;
     }
@@ -85,7 +85,7 @@ class Event
     /**
      * @return Db
      */
-    protected function getDb()
+    public function getDb()
     {
         return $this->irc->getDb();
     }
@@ -94,7 +94,7 @@ class Event
      * @param string $event
      * @param array $data
      */
-    protected function runPluginEvent($event, $data)
+    public function runPluginEvent($event, $data)
     {
         $this->irc->runPluginEvent($event, $data);
     }

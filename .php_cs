@@ -31,6 +31,7 @@ return PhpCsFixer\Config::create()
         'no_duplicate_semicolons' => true,
         'no_leading_import_slash' => true,
         'no_leading_namespace_whitespace' => true,
+        'no_unused_imports' => true,
         'no_useless_return' => true,
         'no_short_echo_tag' => true,
         'ordered_imports' => true,

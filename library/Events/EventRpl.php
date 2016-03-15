@@ -21,6 +21,7 @@
 namespace Cerberus\Events;
 
 use Cerberus\Event;
+use Cerberus\Irc;
 
 /**
  * Class EventRpl
@@ -28,8 +29,22 @@ use Cerberus\Event;
  * @author Stefan Hüsges
  * @link http://tools.ietf.org/html/rfc2812
  */
-class EventRpl extends Event
+class EventRpl
 {
+    protected $irc = null;
+    protected $event = null;
+
+    /**
+     * EventRpl constructor.
+     * @param Irc $irc
+     * @param Event $event
+     */
+    public function __construct(Irc $irc, Event $event)
+    {
+        $this->irc = $irc;
+        $this->event = $event;
+    }
+
     /**
      * RPL_WHOISUSER
      * <nick> <user> <host> * :<real name>
@@ -39,7 +54,7 @@ class EventRpl extends Event
     {
         list($me, $nick, $user, $host) = explode(' ', $rest);
         unset($me);
-        $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'host' => $user . '@' . $host]);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'host' => $user . '@' . $host]);
     }
 
     /**
@@ -48,7 +63,7 @@ class EventRpl extends Event
      */
     public function on318()
     {
-        $this->runPluginEvent(__FUNCTION__, []);
+        $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -57,7 +72,7 @@ class EventRpl extends Event
      */
     public function on319($text)
     {
-        $this->runPluginEvent(__FUNCTION__, ['text' => $text]);
+        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
     }
 
     /**
@@ -68,7 +83,7 @@ class EventRpl extends Event
      */
     public function on322($rest, $text)
     {
-        $this->runPluginEvent(__FUNCTION__, ['rest' => $rest, 'text' => $text]);
+        $this->event->runPluginEvent(__FUNCTION__, ['rest' => $rest, 'text' => $text]);
     }
 
     /**
@@ -77,7 +92,7 @@ class EventRpl extends Event
      */
     public function on323()
     {
-        $this->runPluginEvent(__FUNCTION__, []);
+        $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -86,7 +101,7 @@ class EventRpl extends Event
      */
     public function on324()
     {
-        $this->runPluginEvent(__FUNCTION__, []);
+        $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -98,7 +113,7 @@ class EventRpl extends Event
     {
         list($me, $nick, $auth) = explode(' ', $rest);
         unset($me);
-        $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'auth' => $auth]);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'auth' => $auth]);
     }
 
     /**
@@ -111,8 +126,8 @@ class EventRpl extends Event
     {
         list($me, $channel) = explode(' ', $rest);
         unset($me);
-        $this->onTopic($channel, $text);
-        $this->runPluginEvent(__FUNCTION__, []);
+        $this->event->onTopic($channel, $text);
+        $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
     /**
@@ -127,8 +142,8 @@ class EventRpl extends Event
         $user_array = explode(' ', $text);
         foreach ($user_array as $user) {
             preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
-            $this->getDb()->addUserToChannel($channel, $matches[2], $matches[1]);
+            $this->event->getDb()->addUserToChannel($channel, $matches[2], $matches[1]);
         }
-        $this->runPluginEvent(__FUNCTION__, []);
+        $this->event->runPluginEvent(__FUNCTION__, []);
     }
 }
