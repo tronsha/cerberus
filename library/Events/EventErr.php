@@ -172,7 +172,7 @@ class EventErr
     public function on482($rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('482', $text, ['channel' => $channel, 'nick' => $nick]);
+        $this->event->getDb()->addStatus('482', $this->irc->__($text), ['channel' => $channel, 'nick' => $nick]);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 }

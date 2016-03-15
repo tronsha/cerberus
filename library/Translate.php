@@ -21,6 +21,7 @@
 namespace Cerberus;
 
 use Symfony\Component\Translation\Loader\ArrayLoader;
+use Symfony\Component\Translation\Loader\PhpFileLoader;
 use Symfony\Component\Translation\Translator;
 
 /**
@@ -52,6 +53,11 @@ class Translate
         }
         $this->translator = new Translator($this->language);
         $this->translator->addLoader('array', new ArrayLoader());
+        $translationsFile = Cerberus::getPath() . '/resources/translations/' . $this->language . '.php';
+        if (file_exists($translationsFile) === true) {
+            $this->translator->addLoader('phpfile', new PhpFileLoader());
+            $this->addResource('phpfile', $translationsFile, $this->language);
+        }
     }
 
     /**
