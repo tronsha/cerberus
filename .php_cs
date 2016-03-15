@@ -38,6 +38,7 @@ return PhpCsFixer\Config::create()
         'php_unit_construct' => true,
         'php_unit_dedicate_assert' => true,
         'php_unit_strict' => true,
+        'print_to_echo' => true,
         'short_array_syntax' => true,
         'single_quote' => true,
         'standardize_not_equals' => true,
