@@ -52,7 +52,7 @@ class EventErr
      */
     public function on401($text)
     {
-        $this->event->getDb()->addStatus('401', $text, []);
+        $this->event->getDb()->addStatus('401', $this->irc->__($text), []);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
@@ -63,7 +63,7 @@ class EventErr
      */
     public function on403($text)
     {
-        $this->event->getDb()->addStatus('403', $text, []);
+        $this->event->getDb()->addStatus('403', $this->irc->__($text), []);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
@@ -74,7 +74,7 @@ class EventErr
      */
     public function on431($text)
     {
-        $this->event->getDb()->addStatus('431', $text, []);
+        $this->event->getDb()->addStatus('431', $this->irc->__($text), []);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
@@ -86,7 +86,7 @@ class EventErr
     public function on432($text)
     {
         $this->irc->otherNick();
-        $this->event->getDb()->addStatus('432', $text, []);
+        $this->event->getDb()->addStatus('432', $this->irc->__($text), []);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
@@ -98,7 +98,7 @@ class EventErr
     public function on433($text)
     {
         $this->irc->otherNick();
-        $this->event->getDb()->addStatus('433', $text, []);
+        $this->event->getDb()->addStatus('433', $this->irc->__($text), []);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
@@ -121,7 +121,7 @@ class EventErr
     public function on442($rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('442', $text, ['channel' => $channel, 'nick' => $nick]);
+        $this->event->getDb()->addStatus('442', $this->irc->__($text), ['channel' => $channel, 'nick' => $nick]);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
@@ -134,7 +134,7 @@ class EventErr
     public function on443($rest, $text)
     {
         list($nick, $user, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('443', $user . ' ' . $text, ['channel' => $channel, 'nick' => $nick, 'user' => $user]);
+        $this->event->getDb()->addStatus('443', $this->irc->__('%user% ' . $text, ['%user%' => $user]), ['channel' => $channel, 'nick' => $nick, 'user' => $user]);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
@@ -147,7 +147,7 @@ class EventErr
     public function on475($rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('475', $text, ['channel' => $channel, 'nick' => $nick]);
+        $this->event->getDb()->addStatus('475', $this->irc->__($text), ['channel' => $channel, 'nick' => $nick]);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 
@@ -159,7 +159,7 @@ class EventErr
     public function on477($rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('477', $text, ['channel' => $channel, 'nick' => $nick]);
+        $this->event->getDb()->addStatus('477', $this->irc->__($text), ['channel' => $channel, 'nick' => $nick]);
         $this->event->runPluginEvent(__FUNCTION__, []);
     }
 

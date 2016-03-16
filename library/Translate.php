@@ -62,11 +62,11 @@ class Translate
 
     /**
      * @param string $text
-     * @param string|null $language
      * @param array $array
+     * @param string|null $language
      * @return string
      */
-    public function __($text, $language = null, $array = [])
+    public function __($text, $array = [], $language = null)
     {
         if ($language !== null) {
             $this->translator->setLocale($language);

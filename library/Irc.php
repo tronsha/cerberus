@@ -798,13 +798,13 @@ class Irc extends Cerberus
 
     /**
      * @param string $text
-     * @param mixed $lang
      * @param array $array
+     * @param mixed $lang
      * @return string
      */
-    public function __($text, $lang = null, $array = [])
+    public function __($text, $array = [], $lang = null)
     {
-        return $this->translate->__($text, $lang, $array);
+        return $this->translate->__($text, $array, $lang);
     }
 
     /**
