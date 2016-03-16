@@ -53,10 +53,10 @@ class Translate
         }
         $this->translator = new Translator($this->language);
         $this->translator->addLoader('array', new ArrayLoader());
+        $this->translator->addLoader('file', new PhpFileLoader());
         $translationsFile = Cerberus::getPath() . '/resources/translations/' . $this->language . '.php';
         if (file_exists($translationsFile) === true) {
-            $this->translator->addLoader('phpfile', new PhpFileLoader());
-            $this->addResource('phpfile', $translationsFile, $this->language);
+            $this->addResource('file', $translationsFile, $this->language);
         }
     }
 
