@@ -65,6 +65,9 @@ class Translate
      */
     public function __($text, $array = [], $language = null)
     {
+        if (empty($array) === true) {
+            $array = [];
+        }
         if ($language !== null) {
             $this->translator->setLocale($language);
         }
