@@ -54,10 +54,7 @@ class Translate
         $this->translator = new Translator($this->language);
         $this->translator->addLoader('array', new ArrayLoader());
         $this->translator->addLoader('file', new PhpFileLoader());
-        $translationsFile = Cerberus::getPath() . '/resources/translations/' . $this->language . '.php';
-        if (file_exists($translationsFile) === true) {
-            $this->addResource('file', $translationsFile, $this->language);
-        }
+        $this->loadTranslationFile('status');
     }
 
     /**
@@ -143,5 +140,16 @@ class Translate
     public function getTranslator()
     {
         return $this->translator;
+    }
+
+    /**
+     * @param string $file
+     */
+    public function loadTranslationFile($file)
+    {
+        $translationsFileStatus = Cerberus::getPath() . '/resources/translations/' . $this->language . '/' . $file . '.php';
+        if (file_exists($translationsFileStatus) === true) {
+            $this->addResource('file', $translationsFileStatus, $this->language);
+        }
     }
 }
