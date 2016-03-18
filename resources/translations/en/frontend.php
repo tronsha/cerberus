@@ -19,8 +19,8 @@
  */
 
 return [
-    'Login' => 'Login',
-    'Username' => 'Username',
-    'Password' => 'Password',
-    'Submit' => 'Submit',
+    'login' => 'Login',
+    'username' => 'Username',
+    'dassword' => 'Password',
+    'submit' => 'Submit',
 ];

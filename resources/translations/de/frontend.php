@@ -19,8 +19,8 @@
  */
 
 return [
-    'Login' => 'Anmelden',
-    'Username' => 'Benutzer',
-    'Password' => 'Passwort',
-    'Submit' => 'Senden',
+    'login' => 'Anmelden',
+    'username' => 'Benutzer',
+    'password' => 'Passwort',
+    'submit' => 'Senden',
 ];
