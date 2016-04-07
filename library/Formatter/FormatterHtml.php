@@ -71,26 +71,26 @@ class FormatterHtml extends Formatter
     }
 
     /**
-     * @param int|null $fg
-     * @param int|null $bg
+     * @param int|null $fontColor
+     * @param int|null $backgroundColor
      * @return string
      */
-    protected function getColor($fg = null, $bg = null)
+    protected function getColor($fontColor = null, $backgroundColor = null)
     {
-        $fgbg = [];
-        if ($fg !== null) {
-            $fgbg[] = 'color: ' . $this->matchColor($fg);
-            if ($bg !== null) {
-                $this->bg = $bg;
+        $colorArray = [];
+        if ($fontColor !== null) {
+            $colorArray[] = 'color: ' . $this->matchColor($fontColor);
+            if ($backgroundColor !== null) {
+                $this->bg = $backgroundColor;
             }
             if ($this->bg !== '') {
-                $fgbg[] = 'background-color: ' . $this->matchColor($this->bg);
+                $colorArray[] = 'background-color: ' . $this->matchColor($this->bg);
             }
             if ($this->open === true) {
-                return '</span><span style="' . implode('; ', $fgbg) . ';">';
+                return '</span><span style="' . implode('; ', $colorArray) . ';">';
             }
             $this->open = true;
-            return '<span style="' . implode('; ', $fgbg) . ';">';
+            return '<span style="' . implode('; ', $colorArray) . ';">';
         }
         if ($this->open === true) {
             $this->bg = '';

@@ -67,20 +67,20 @@ class FormatterConsole extends Formatter
     }
 
     /**
-     * @param int|null $fg
-     * @param int|null $bg
+     * @param int|null $fontColor
+     * @param int|null $backgroundColor
      * @return string
      */
-    protected function getColor($fg = null, $bg = null)
+    protected function getColor($fontColor = null, $backgroundColor = null)
     {
-        $fgbg = [];
-        if ($fg !== null) {
-            $fgbg[] = '38;5;' . $this->matchColor($fg);
-            if ($bg !== null) {
-                $fgbg[] = '48;5;' . $this->matchColor($bg);
+        $colorArray = [];
+        if ($fontColor !== null) {
+            $colorArray[] = '38;5;' . $this->matchColor($fontColor);
+            if ($backgroundColor !== null) {
+                $colorArray[] = '48;5;' . $this->matchColor($backgroundColor);
             }
 
-            return "\033[" . implode(';', $fgbg) . 'm';
+            return "\033[" . implode(';', $colorArray) . 'm';
         }
 
         return "\033[39;49m";
