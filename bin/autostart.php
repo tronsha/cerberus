@@ -100,7 +100,7 @@ if ($config['bot']['autostart']) {
     }
     if ($botCount === 0) {
         Cerberus::sysinfo('start a new bot.');
-        $logDirectory = rtrim(trim($config['log']['directory']), "/");
+        $logDirectory = rtrim(trim($config['log']['directory']), '/');
         if (is_dir($logDirectory) === false) {
             mkdir($logDirectory);
         }
