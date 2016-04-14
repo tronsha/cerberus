@@ -213,7 +213,7 @@ class Config
     public function setLogfiledirectory($directory)
     {
         if (is_dir($directory) === true) {
-            $this->logfiledirectory = $directory;
+            $this->logfiledirectory = realpath($directory);
         }
     }
 
