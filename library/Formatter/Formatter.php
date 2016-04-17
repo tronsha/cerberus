@@ -74,32 +74,32 @@ abstract class Formatter
             throw new Exception('Type must be HTML or Console.');
         }
         $coloredOutput = '';
-        $xx = $fg = $bg = '';
+        $colorType = $fontColor = $backgroundColor = '';
         $reset = false;
         foreach (str_split($output) as $char) {
             if ($char === "\x03") {
-                $xx = 'fg';
-            } elseif ($xx === 'fg' && (strlen($fg) === 0 || strlen($fg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
-                $fg .= $char;
-            } elseif ($xx === 'fg' && (strlen($fg) === 1 || strlen($fg) === 2) && $char === ',') {
-                $xx = 'bg';
-            } elseif ($xx === 'bg' && (strlen($bg) === 0 || strlen($bg) === 1) && ord($char) >= 48 && ord($char) <= 57) {
-                $bg .= $char;
-            } elseif ($xx === 'fg' || $xx === 'bg') {
-                if ($bg !== '') {
-                    $coloredOutput .= $this->getColor($fg, $bg);
+                $colorType = 'font';
+            } elseif ($colorType === 'font' && (strlen($fontColor) === 0 || strlen($fontColor) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+                $fontColor .= $char;
+            } elseif ($colorType === 'font' && (strlen($fontColor) === 1 || strlen($fontColor) === 2) && $char === ',') {
+                $colorType = 'background';
+            } elseif ($colorType === 'background' && (strlen($backgroundColor) === 0 || strlen($backgroundColor) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+                $backgroundColor .= $char;
+            } elseif ($colorType === 'font' || $colorType === 'background') {
+                if ($backgroundColor !== '') {
+                    $coloredOutput .= $this->getColor($fontColor, $backgroundColor);
                     $reset = true;
-                } elseif ($fg !== '') {
-                    $coloredOutput .= $this->getColor($fg);
+                } elseif ($fontColor !== '') {
+                    $coloredOutput .= $this->getColor($fontColor);
                     $reset = true;
                 } else {
                     $coloredOutput .= $this->getColor();
                     $reset = false;
                 }
-                if ($xx === 'bg' && $bg === '') {
+                if ($colorType === 'background' && $backgroundColor === '') {
                     $coloredOutput .= ',';
                 }
-                $xx = $fg = $bg = '';
+                $colorType = $fontColor = $backgroundColor = '';
                 $coloredOutput .= $char;
             } else {
                 $coloredOutput .= $char;
