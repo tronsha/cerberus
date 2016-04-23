@@ -718,6 +718,7 @@ class Irc extends Cerberus
     /**
      * @param string $event
      * @param array $data
+     * @throws Exception
      */
     public function runPluginEvent($event, $data)
     {
@@ -725,7 +726,11 @@ class Irc extends Cerberus
             for ($priority = 10; $priority > 0; $priority--) {
                 if (array_key_exists($priority, $this->pluginevents[$event])) {
                     foreach ($this->pluginevents[$event][$priority] as $pluginClass) {
-                        $pluginClass->$event($data);
+                        if (method_exists($pluginClass, $event) === true) {
+                            $pluginClass->$event($data);
+                        } else {
+                            throw new Exception('The Class ' . get_class($pluginClass) . ' has not the method ' . $event . '.');
+                        }
                     }
                 }
             }
