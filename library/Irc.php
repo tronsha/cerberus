@@ -741,9 +741,13 @@ class Irc extends Cerberus
      * @param string $event
      * @param object $object
      * @param int $priority
+     * @throws Exception
      */
     public function addPluginEvent($event, $object, $priority = 5)
     {
+        if (in_array($event, $this->getEvents()->getEventList(), true) === false) {
+            throw new Exception('The event ' . $event . ' not exists.');
+        }
         $this->pluginevents[$event][$priority][] = $object;
     }
 

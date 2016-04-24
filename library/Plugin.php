@@ -21,6 +21,7 @@
 namespace Cerberus;
 
 use Cerberus\Plugins\PluginAuth;
+use Exception;
 
 abstract class Plugin extends Cerberus
 {
@@ -135,7 +136,14 @@ abstract class Plugin extends Cerberus
      */
     protected function addEvent($event, $priority = 5)
     {
-        $this->irc->addPluginEvent($event, $this, $priority);
+        try {
+            if (in_array($event, get_class_methods($this), true) === false) {
+                throw new Exception('The method ' . $event . ' not exists in the class.');
+            }
+            $this->irc->addPluginEvent($event, $this, $priority);
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
     }
 
     /**
