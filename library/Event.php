@@ -32,10 +32,10 @@ use DateTime;
  * @link https://github.com/tronsha/Cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-
 class Event
 {
     protected $irc;
+    protected $list = null;
     protected $rpl = null;
     protected $err = null;
     protected $vars;
@@ -88,6 +88,27 @@ class Event
     public function getDb()
     {
         return $this->irc->getDb();
+    }
+
+    /**
+     * @return array
+     */
+    public function getEventList()
+    {
+        if ($this->list !== null) {
+            return $this->list;
+        }
+        $listThis = get_class_methods($this);
+        $listRpl = get_class_methods($this->getRpl());
+        $listErr = get_class_methods($this->getErr());
+        $list = array_merge($listThis, $listRpl, $listErr);
+        foreach ($list as $key => $value) {
+            if (substr($value, 0, 2) !== 'on') {
+                unset($list[$key]);
+            }
+        }
+        $this->list = $list;
+        return $this->list;
     }
 
     /**
