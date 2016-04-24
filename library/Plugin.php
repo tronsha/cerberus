@@ -135,7 +135,7 @@ abstract class Plugin extends Cerberus
      */
     protected function addEvent($event, $priority = 5)
     {
-        $this->irc->addEvent($event, $this, $priority);
+        $this->irc->addPluginEvent($event, $this, $priority);
     }
 
     /**
@@ -143,7 +143,7 @@ abstract class Plugin extends Cerberus
      */
     protected function removeEvent($event)
     {
-        $this->irc->removeEvent($event, $this);
+        $this->irc->removePluginEvent($event, $this);
     }
 
     /**

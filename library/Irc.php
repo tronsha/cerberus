@@ -742,7 +742,7 @@ class Irc extends Cerberus
      * @param object $object
      * @param int $priority
      */
-    public function addEvent($event, $object, $priority = 5)
+    public function addPluginEvent($event, $object, $priority = 5)
     {
         $this->pluginevents[$event][$priority][] = $object;
     }
@@ -752,7 +752,7 @@ class Irc extends Cerberus
      * @param object $object
      * @return int
      */
-    public function removeEvent($event, $object)
+    public function removePluginEvent($event, $object)
     {
         $count = 0;
         $className = get_class($object);
