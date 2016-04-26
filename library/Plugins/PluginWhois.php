@@ -104,7 +104,11 @@ class PluginWhois extends Plugin
                 $output .= 'Realname: ' . $this->cache[$nick][311]['realname'] . '<br>' . PHP_EOL;
             }
             if (isset($this->cache[$nick][317]['idle']) === true) {
-                $output .= 'Idle: ' . $this->cache[$nick][317]['idle'] . '<br>' . PHP_EOL;
+                $time = $this->cache[$nick][317]['idle'];
+                $h = ($time-($time%3600))/3600;
+                $m = (($time-($time%60))%3600)/60;
+                $s = $time%60;
+                $output .= 'Idle: ' . $h . 'h ' . $m . 'm ' . $s . 's' . '<br>' . PHP_EOL;
             }
             if (isset($this->cache[$nick][317]['signon']) === true) {
                 $output .= 'Signon: ' . date('H:i:s Y-m-d', $this->cache[$nick][317]['signon']) . '<br>' . PHP_EOL;
