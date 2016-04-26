@@ -179,16 +179,19 @@ class Event
                 $this->getErr()->on401($rest, $text);
                 break;
             case '403':
-                $this->getErr()->on403($text);
+                $this->getErr()->on403($rest, $text);
+                break;
+            case '404':
+                $this->getErr()->on404($rest, $text);
                 break;
             case '431':
-                $this->getErr()->on431($text);
+                $this->getErr()->on431($rest, $text);
                 break;
             case '432':
-                $this->getErr()->on432($text);
+                $this->getErr()->on432($rest, $text);
                 break;
             case '433':
-                $this->getErr()->on433($text);
+                $this->getErr()->on433($rest, $text);
                 break;
             case '437':
                 $this->getErr()->on437();
@@ -198,6 +201,9 @@ class Event
                 break;
             case '443':
                 $this->getErr()->on443($rest, $text);
+                break;
+            case '470':
+                $this->getErr()->on470($rest, $text);
                 break;
             case '475':
                 $this->getErr()->on475($rest, $text);

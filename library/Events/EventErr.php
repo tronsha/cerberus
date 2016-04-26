@@ -55,54 +55,85 @@ class EventErr
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);
-        $this->event->getDb()->addStatus('401', $this->irc->__($text), []);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
+        $data = ['nick' => $nick, 'text' => $text];
+        $this->event->getDb()->addStatus('401', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**
      * ERR_NOSUCHCHANNEL
      * <channel name> :No such channel
+     * @param string $rest
      * @param string $text
      */
-    public function on403($text)
+    public function on403($rest, $text)
     {
-        $this->event->getDb()->addStatus('403', $this->irc->__($text), []);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        list($me, $channel) = explode(' ', $rest);
+        unset($me);
+        $data = ['channel' => $channel, 'text' => $text];
+        $this->event->getDb()->addStatus('403', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
+    }
+
+    /**
+     * ERR_CANNOTSENDTOCHAN
+     * <channel name> :Cannot send to channel
+     * @param string $rest
+     * @param string $text
+     */
+    public function on404($rest, $text)
+    {
+        list($me, $channel) = explode(' ', $rest);
+        unset($me);
+        $data = ['channel' => $channel, 'text' => $text];
+        $this->event->getDb()->addStatus('404', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**
      * ERR_NONICKNAMEGIVEN
      * :No nickname given
+     * @param string $rest
      * @param string $text
      */
-    public function on431($text)
+    public function on431($rest, $text)
     {
-        $this->event->getDb()->addStatus('431', $this->irc->__($text), []);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        unset($rest);
+        $data = ['text' => $text];
+        $this->event->getDb()->addStatus('431', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**
      * ERR_ERRONEUSNICKNAME
      * <nick> :Erroneous nickname
+     * @param string $rest
      * @param string $text
      */
-    public function on432($text)
+    public function on432($rest, $text)
     {
+        list($me, $nick) = explode(' ', $rest);
+        unset($me);
+        $data = ['nick' => $nick, 'text' => $text];
         $this->irc->otherNick();
-        $this->event->getDb()->addStatus('432', $this->irc->__($text), []);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $this->event->getDb()->addStatus('432', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**
      * ERR_NICKNAMEINUSE
      * <nick> :Nickname is already in use
+     * @param string $rest
      * @param string $text
      */
-    public function on433($text)
+    public function on433($rest, $text)
     {
+        list($me, $nick) = explode(' ', $rest);
+        unset($me);
+        $data = ['nick' => $nick, 'text' => $text];
         $this->irc->otherNick();
-        $this->event->getDb()->addStatus('433', $this->irc->__($text), []);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $this->event->getDb()->addStatus('433', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**
@@ -124,8 +155,9 @@ class EventErr
     public function on442($rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('442', $this->irc->__($text), ['channel' => $channel, 'nick' => $nick]);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
+        $this->event->getDb()->addStatus('442', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**
@@ -137,8 +169,23 @@ class EventErr
     public function on443($rest, $text)
     {
         list($nick, $user, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('443', $this->irc->__('%user% ' . $text, ['%user%' => $user]), ['channel' => $channel, 'nick' => $nick, 'user' => $user]);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $data = ['channel' => $channel, 'nick' => $nick, 'user' => $user, 'text' => $text];
+        $this->event->getDb()->addStatus('443', $this->irc->__('%user% ' . $text, ['%user%' => $user]), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
+    }
+
+    /**
+     * <channel> <forwarding> :Forwarding to another channel
+     * @param string $rest
+     * @param string $text
+     */
+    public function on470($rest, $text)
+    {
+        list($me, $channel, $forwarding) = explode(' ', $rest);
+        unset($me);
+        $data = ['channel' => $channel, 'forwarding' => $forwarding, 'text' => $text];
+        $this->event->getDb()->addStatus('470', $this->irc->__($text . ': %channel%', ['%channel%' => $forwarding]), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**
@@ -150,8 +197,9 @@ class EventErr
     public function on475($rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('475', $this->irc->__($text), ['channel' => $channel, 'nick' => $nick]);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
+        $this->event->getDb()->addStatus('475', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**
@@ -162,8 +210,9 @@ class EventErr
     public function on477($rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('477', $this->irc->__($text), ['channel' => $channel, 'nick' => $nick]);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
+        $this->event->getDb()->addStatus('477', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**
@@ -175,7 +224,8 @@ class EventErr
     public function on482($rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
-        $this->event->getDb()->addStatus('482', $this->irc->__($text), ['channel' => $channel, 'nick' => $nick]);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
+        $this->event->getDb()->addStatus('482', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 }
