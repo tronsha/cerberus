@@ -189,6 +189,48 @@ class EventErr
     }
 
     /**
+     * ERR_CHANNELISFULL
+     * <channel> :Cannot join channel (+l)
+     * @param string $rest
+     * @param string $text
+     */
+    public function on471($rest, $text)
+    {
+        list($nick, $channel) = explode(' ', $rest);
+        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
+        $this->event->getDb()->addStatus('471', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
+    }
+
+    /**
+     * ERR_INVITEONLYCHAN
+     * <channel> :Cannot join channel (+i)
+     * @param string $rest
+     * @param string $text
+     */
+    public function on473($rest, $text)
+    {
+        list($nick, $channel) = explode(' ', $rest);
+        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
+        $this->event->getDb()->addStatus('473', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
+    }
+
+    /**
+     * ERR_BANNEDFROMCHAN
+     * <channel> :Cannot join channel (+b)
+     * @param string $rest
+     * @param string $text
+     */
+    public function on474($rest, $text)
+    {
+        list($nick, $channel) = explode(' ', $rest);
+        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
+        $this->event->getDb()->addStatus('474', $this->irc->__($text), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
+    }
+
+    /**
      * ERR_BADCHANNELKEY
      * <channel> :Cannot join channel (+k)
      * @param string $rest

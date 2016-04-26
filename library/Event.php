@@ -205,6 +205,15 @@ class Event
             case '470':
                 $this->getErr()->on470($rest, $text);
                 break;
+            case '471':
+                $this->getErr()->on471($rest, $text);
+                break;
+            case '473':
+                $this->getErr()->on473($rest, $text);
+                break;
+            case '474':
+                $this->getErr()->on474($rest, $text);
+                break;
             case '475':
                 $this->getErr()->on475($rest, $text);
                 break;
