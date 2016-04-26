@@ -98,10 +98,10 @@ class PluginWhois extends Plugin
     public function on318($data)
     {
         $nick = $data['nick'];
-        if (isset($this->cache[$data['nick']][401]) === false) {
+        if (isset($this->cache[$nick][401]) === false) {
             $output = 'Nick: ' . $nick . '<br>' . PHP_EOL;
-            if (isset($this->cache[$data['nick']][311]['realname']) === true) {
-                $output .= 'Realname: ' . $this->cache[$data['nick']][311]['realname'] . '<br>' . PHP_EOL;
+            if (isset($this->cache[$nick][311]['realname']) === true) {
+                $output .= 'Realname: ' . $this->cache[$nick][311]['realname'] . '<br>' . PHP_EOL;
             }
             if (isset($this->cache[$nick][317]['idle']) === true) {
                 $output .= 'Idle: ' . $this->cache[$nick][317]['idle'] . '<br>' . PHP_EOL;
