@@ -176,7 +176,7 @@ class Event
     {
         switch ($command) {
             case '401':
-                $this->getErr()->on401($text);
+                $this->getErr()->on401($rest, $text);
                 break;
             case '403':
                 $this->getErr()->on403($text);

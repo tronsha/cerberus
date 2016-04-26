@@ -48,12 +48,15 @@ class EventErr
     /**
      * ERR_NOSUCHNICK
      * <nickname> :No such nick/channel
+     * @param string $rest
      * @param string $text
      */
-    public function on401($text)
+    public function on401($rest, $text)
     {
+        list($me, $nick) = explode(' ', $rest);
+        unset($me);
         $this->event->getDb()->addStatus('401', $this->irc->__($text), []);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
     }
 
     /**

@@ -43,6 +43,7 @@ class PluginWhois extends Plugin
         $this->addEvent('on317');
         $this->addEvent('on330');
         $this->addEvent('on318');
+        $this->addEvent('on401');
     }
 
     /**
@@ -97,20 +98,22 @@ class PluginWhois extends Plugin
     public function on318($data)
     {
         $nick = $data['nick'];
-        $output = 'Nick: ' . $nick . '<br>' . PHP_EOL;
-        if (isset($this->cache[$data['nick']][311]['realname']) === true) {
-            $output .= 'Realname: ' . $this->cache[$data['nick']][311]['realname'] . '<br>' . PHP_EOL;
+        if (isset($this->cache[$data['nick']][401]) === false) {
+            $output = 'Nick: ' . $nick . '<br>' . PHP_EOL;
+            if (isset($this->cache[$data['nick']][311]['realname']) === true) {
+                $output .= 'Realname: ' . $this->cache[$data['nick']][311]['realname'] . '<br>' . PHP_EOL;
+            }
+            if (isset($this->cache[$nick][317]['idle']) === true) {
+                $output .= 'Idle: ' . $this->cache[$nick][317]['idle'] . '<br>' . PHP_EOL;
+            }
+            if (isset($this->cache[$nick][317]['signon']) === true) {
+                $output .= 'Signon: ' . date('H:i:s Y-m-d', $this->cache[$nick][317]['signon']) . '<br>' . PHP_EOL;
+            }
+            if (isset($this->cache[$nick][319]['channel']) === true) {
+                $output .= 'Channel: ' . $this->cache[$nick][319]['channel'] . '<br>' . PHP_EOL;
+            }
+            $this->getDb()->addStatus('WHOIS', $output, []);
         }
-        if (isset($this->cache[$nick][317]['idle']) === true) {
-            $output .= 'Idle: ' . $this->cache[$nick][317]['idle'] . '<br>' . PHP_EOL;
-        }
-        if (isset($this->cache[$nick][317]['signon']) === true) {
-            $output .= 'Signon: ' . date('H:i:s Y-m-d', $this->cache[$nick][317]['signon']) . '<br>' . PHP_EOL;
-        }
-        if (isset($this->cache[$nick][319]['channel']) === true) {
-            $output .= 'Channel: ' . $this->cache[$nick][319]['channel'] . '<br>' . PHP_EOL;
-        }
-        $this->getDb()->addStatus('WHOIS', $output, []);
     }
 
     /**
@@ -135,5 +138,14 @@ class PluginWhois extends Plugin
      */
     public function on378($data)
     {
+    }
+
+    /**
+     * ERR_NOSUCHNICK
+     * @param array $data
+     */
+    public function on401($data)
+    {
+        $this->cache[$data['nick']][401] = $data['text'];
     }
 }
