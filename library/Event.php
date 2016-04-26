@@ -129,13 +129,19 @@ class Event
     {
         switch ($command) {
             case '311':
-                $this->getRpl()->on311($rest);
+                $this->getRpl()->on311($rest, $text);
+                break;
+            case '312':
+                $this->getRpl()->on312($rest, $text);
+                break;
+            case '317':
+                $this->getRpl()->on317($rest, $text);
                 break;
             case '318':
-                $this->getRpl()->on318();
+                $this->getRpl()->on318($rest, $text);
                 break;
             case '319':
-                $this->getRpl()->on319($text);
+                $this->getRpl()->on319($rest, $text);
                 break;
             case '322':
                 $this->getRpl()->on322($rest, $text);
@@ -147,13 +153,16 @@ class Event
                 $this->getRpl()->on324();
                 break;
             case '330':
-                $this->getRpl()->on330($rest);
+                $this->getRpl()->on330($rest, $text);
                 break;
             case '332':
                 $this->getRpl()->on332($rest, $text);
                 break;
             case '353':
                 $this->getRpl()->on353($rest, $text);
+                break;
+            case '378':
+                $this->getRpl()->on378($rest, $text);
                 break;
         }
     }

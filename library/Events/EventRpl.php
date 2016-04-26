@@ -49,30 +49,70 @@ class EventRpl
      * RPL_WHOISUSER
      * <nick> <user> <host> * :<real name>
      * @param string $rest
+     * @param string $text
      */
-    public function on311($rest)
+    public function on311($rest, $text)
     {
         list($me, $nick, $user, $host) = explode(' ', $rest);
         unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'host' => $user . '@' . $host]);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'host' => $user . '@' . $host, 'realname' => $text]);
+    }
+
+    /**
+     * RPL_WHOISSERVER
+     * <nick> <server> :<server info>
+     * @param string $rest
+     * @param string $text
+     */
+    public function on312($rest, $text)
+    {
+        list($me, $nick, $server) = explode(' ', $rest);
+        unset($me);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'server' => $server, 'serverinfo' => $text]);
+    }
+
+    /**
+     * RPL_WHOISIDLE
+     * <nick> <integer> :seconds idle
+     * @param string $rest
+     * @param string $text
+     */
+    public function on317($rest, $text)
+    {
+        $keys = explode(',', $text);
+        $values = explode(' ', $rest);
+        array_shift($values);
+        $nick = array_shift($values);
+        $keys = array_map('trim', $keys);
+        $values = array_map('trim', $values);
+        $data = array_combine($keys, $values);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'list' => $data]);
     }
 
     /**
      * RPL_ENDOFWHOIS
      * <nick> :End of WHOIS list
+     * @param string $rest
+     * @param string $text
      */
-    public function on318()
+    public function on318($rest, $text)
     {
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        list($me, $nick) = explode(' ', $rest);
+        unset($me);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
     }
 
     /**
      * RPL_WHOISCHANNELS
      * <nick> :{[@|+]<channel><space>}
+     * @param string $rest
+     * @param string $text
      */
-    public function on319($text)
+    public function on319($rest, $text)
     {
-        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
+        list($me, $nick) = explode(' ', $rest);
+        unset($me);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
     }
 
     /**
@@ -108,12 +148,13 @@ class EventRpl
      * RPL_WHOISACCOUNT
      * :is logged in as
      * @param string $rest
+     * @param string $text
      */
-    public function on330($rest)
+    public function on330($rest, $text)
     {
         list($me, $nick, $auth) = explode(' ', $rest);
         unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'auth' => $auth]);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'auth' => $auth, 'text' => $text]);
     }
 
     /**
@@ -145,5 +186,16 @@ class EventRpl
             $this->event->getDb()->addUserToChannel($channel, $matches[2], $matches[1]);
         }
         $this->event->runPluginEvent(__FUNCTION__, []);
+    }
+
+    /**
+     * @param string $rest
+     * @param string $text
+     */
+    public function on378($rest, $text)
+    {
+        list($me, $nick) = explode(' ', $rest);
+        unset($me);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
     }
 }

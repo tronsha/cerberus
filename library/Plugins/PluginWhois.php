@@ -29,11 +29,19 @@ use Cerberus\Plugin;
  */
 class PluginWhois extends Plugin
 {
+    private $cache = [];
+
     /**
      * @link https://www.alien.net.au/irc/irc2numerics.html IRC/2 Numeric List
      */
     protected function init()
     {
+        $this->addEvent('on311');
+        $this->addEvent('on319');
+        $this->addEvent('on312');
+        $this->addEvent('on378');
+        $this->addEvent('on317');
+        $this->addEvent('on330');
         $this->addEvent('on318');
     }
 
@@ -50,9 +58,82 @@ class PluginWhois extends Plugin
     }
 
     /**
+     * RPL_WHOISUSER
+     * @param array $data
+     */
+    public function on311($data)
+    {
+        $this->cache[$data['nick']]['time'] = time();
+        $this->cache[$data['nick']][311]['host'] = $data['host'];
+        $this->cache[$data['nick']][311]['realname'] = $data['realname'];
+    }
+
+    /**
+     * RPL_WHOISSERVER
+     * @param array $data
+     */
+    public function on312($data)
+    {
+    }
+
+    /**
+     * RPL_WHOISIDLE
+     * @param array $data
+     */
+    public function on317($data)
+    {
+        if (isset($data['list']['seconds idle']) === true) {
+            $this->cache[$data['nick']][317]['idle'] = $data['list']['seconds idle'];
+        }
+        if (isset($data['list']['seconds idle']) === true) {
+            $this->cache[$data['nick']][317]['signon'] = $data['list']['signon time'];
+        }
+    }
+
+    /**
+     * RPL_ENDOFWHOIS
      * @param array $data
      */
     public function on318($data)
+    {
+        $nick = $data['nick'];
+        $output = 'Nick: ' . $nick . '<br>' . PHP_EOL;
+        if (isset($this->cache[$data['nick']][311]['realname']) === true) {
+            $output .= 'Realname: ' . $this->cache[$data['nick']][311]['realname'] . '<br>' . PHP_EOL;
+        }
+        if (isset($this->cache[$nick][317]['idle']) === true) {
+            $output .= 'Idle: ' . $this->cache[$nick][317]['idle'] . '<br>' . PHP_EOL;
+        }
+        if (isset($this->cache[$nick][317]['signon']) === true) {
+            $output .= 'Signon: ' . date('H:i:s Y-m-d', $this->cache[$nick][317]['signon']) . '<br>' . PHP_EOL;
+        }
+        if (isset($this->cache[$nick][319]['channel']) === true) {
+            $output .= 'Channel: ' . $this->cache[$nick][319]['channel'] . '<br>' . PHP_EOL;
+        }
+        $this->getDb()->addStatus('WHOIS', $output, []);
+    }
+
+    /**
+     * RPL_WHOISCHANNELS
+     * @param array $data
+     */
+    public function on319($data)
+    {
+        $this->cache[$data['nick']][319]['channel'] = $data['text'];
+    }
+
+    /**
+     * RPL_WHOISACCOUNT
+     * @param array $data
+     */
+    public function on330($data)
+    {
+    }
+
+    /**
+     * @param array $data
+     */
+    public function on378($data)
     {
     }
 }
