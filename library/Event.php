@@ -128,6 +128,9 @@ class Event
     public function rpl($command, $rest, $text)
     {
         switch ($command) {
+            case '301':
+                $this->getRpl()->on301($rest, $text);
+                break;
             case '311':
                 $this->getRpl()->on311($rest, $text);
                 break;
@@ -163,6 +166,9 @@ class Event
                 break;
             case '378':
                 $this->getRpl()->on378($rest, $text);
+                break;
+            case '671':
+                $this->getRpl()->on671($rest, $text);
                 break;
         }
     }

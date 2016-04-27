@@ -47,6 +47,19 @@ class EventRpl
 
     /**
      * RPL_WHOISUSER
+     * <nick> :<away message>
+     * @param string $rest
+     * @param string $text
+     */
+    public function on301($rest, $text)
+    {
+        list($me, $nick) = explode(' ', $rest);
+        unset($me);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
+    }
+
+    /**
+     * RPL_WHOISUSER
      * <nick> <user> <host> * :<real name>
      * @param string $rest
      * @param string $text
@@ -193,6 +206,17 @@ class EventRpl
      * @param string $text
      */
     public function on378($rest, $text)
+    {
+        list($me, $nick) = explode(' ', $rest);
+        unset($me);
+        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
+    }
+
+    /**
+     * @param string $rest
+     * @param string $text
+     */
+    public function on671($rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);

@@ -44,6 +44,8 @@ class PluginWhois extends Plugin
         $this->addEvent('on330');
         $this->addEvent('on318');
         $this->addEvent('on401');
+        $this->addEvent('on301');
+        $this->addEvent('on671');
     }
 
     /**
@@ -56,6 +58,14 @@ class PluginWhois extends Plugin
         if ($data !== null) {
         }
         return $returnValue;
+    }
+
+    /**
+     * RPL_AWAY
+     * @param array $data
+     */
+    public function on301($data)
+    {
     }
 
     /**
@@ -151,5 +161,13 @@ class PluginWhois extends Plugin
     public function on401($data)
     {
         $this->cache[$data['nick']][401] = $data['text'];
+    }
+
+    /**
+     * RPL_WHOISSECURE
+     * @param array $data
+     */
+    public function on671($data)
+    {
     }
 }
