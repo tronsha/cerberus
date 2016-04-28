@@ -3,7 +3,7 @@ Cerberus
 
 Cerberus is an IRC bot written for PHP
 
-Version: 1.5 Development
+Version: 1.5
 
 [![Build Status](https://travis-ci.org/tronsha/cerberus.svg?branch=master)](https://travis-ci.org/tronsha/cerberus)
 
