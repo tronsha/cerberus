@@ -12,4 +12,4 @@
 - PHPUnit 5.3
 
 [Unreleased]: https://github.com/tronsha/cerberus/compare/v1.5.0...HEAD
-[1.5.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v1.4.1...v1.5.0
+[1.5.0]: https://github.com/tronsha/cerberus/compare/v1.4.1...v1.5.0
