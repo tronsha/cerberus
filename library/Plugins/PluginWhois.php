@@ -113,6 +113,10 @@ class PluginWhois extends Plugin
             if (isset($this->cache[$nick][311]['realname']) === true) {
                 $output .= 'Realname: ' . $this->cache[$nick][311]['realname'] . '<br>' . PHP_EOL;
             }
+            if (isset($this->cache[$nick][311]['host']) === true) {
+                $hostArray = explode('@', $this->cache[$nick][311]['host']);
+                $output .= 'Host: ' . $hostArray[1] . '<br>' . PHP_EOL;
+            }
             if (isset($this->cache[$nick][317]['idle']) === true) {
                 $time = $this->cache[$nick][317]['idle'];
                 $d = ($time-($time%86400))/86400;
