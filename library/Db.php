@@ -577,7 +577,7 @@ class Db
     public function removeUser($user)
     {
         try {
-            $this->removeUserFromChannel('%', $user);
+            $this->removeUserFromChannel(null, $user);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -618,16 +618,25 @@ class Db
      * @param string $channel
      * @param string $user
      */
-    public function removeUserFromChannel($channel, $user = '%')
+    public function removeUserFromChannel($channel, $user = null)
     {
         try {
+            $paramCount = 0;
             $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('channel_user')
-                ->where('username LIKE ? AND channel LIKE ? AND bot_id = ?')
-                ->setParameter(0, $user)
-                ->setParameter(1, $channel)
-                ->setParameter(2, $this->botId)
-                ->execute();
+            $qb->delete('channel_user');
+            $qb->where('bot_id = ?');
+            $qb->setParameter($paramCount, $this->botId);
+            if ($channel !== null) {
+                $paramCount++;
+                $qb->andWhere('channel = ?');
+                $qb->setParameter($paramCount, $channel);
+            }
+            if ($user !== null) {
+                $paramCount++;
+                $qb->andWhere('username = ?');
+                $qb->setParameter($paramCount, $user);
+            }
+            $qb->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
