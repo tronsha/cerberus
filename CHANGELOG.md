@@ -1,5 +1,10 @@
 # Change Log
 
+## [Unreleased]
+
+### Fixed
+- removeUserFromChannel if username contains backslashes
+
 ## [1.5.0]
 
 ### Added
