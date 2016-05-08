@@ -615,8 +615,8 @@ class Db
     }
 
     /**
-     * @param string $channel
-     * @param string $user
+     * @param string|null $channel
+     * @param string|null $user
      */
     public function removeUserFromChannel($channel, $user = null)
     {
