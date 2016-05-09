@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- Tests for Database Functions
+
 ### Fixed
 - removeUserFromChannel if username contains backslashes
 
