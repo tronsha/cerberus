@@ -6,7 +6,8 @@
 - Tests for Database Functions
 
 ### Fixed
-- removeUserFromChannel if username contains backslashes
+- Db removeUserFromChannel: if username contains backslashes
+- Irc connect: $n was a string
 
 ## [1.5.0]
 

@@ -294,7 +294,7 @@ class Irc extends Cerberus
                 return false;
             }
         }
-        $n = $this->getDb()->getServerCount($this->getNetwork());
+        $n = intval($this->getDb()->getServerCount($this->getNetwork()));
         $i = 0;
         $repeat = true;
         if ($n === 0) {
