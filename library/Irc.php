@@ -305,7 +305,7 @@ class Irc extends Cerberus
             $this->server = $this->getDb()->getServerData($this->server, $i);
             $this->sysinfo('Try to connect to ' . $this->server['host'] . ':' . $this->server['port']);
             try {
-                $this->fp = fsockopen(($this->server['ip']), $this->server['port'], $errno, $errstr);
+                $this->fp = fsockopen($this->server['ip'], $this->server['port'], $errno, $errstr);
             } catch (Exception $e) {
                 $this->error($e->getMessage());
             }
