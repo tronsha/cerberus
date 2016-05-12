@@ -29,6 +29,11 @@ class CronTest extends \PHPUnit_Framework_TestCase
         $this->cron = new Cron();
     }
 
+    protected function tearDown()
+    {
+        unset($this->cron);
+    }
+
     public function testCompare()
     {
         $this->assertTrue($this->cron->compare('* * * * *', 15, 12, 1, 1, 0));
@@ -89,5 +94,45 @@ class CronTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->cron->compare('0 12 * JAN-JUN *', 0, 12, 1, 1, 0));
         $this->assertFalse($this->cron->compare('0 12 * JUL-DEC *', 0, 12, 1, 1, 0));
+    }
+
+    public function testAdd()
+    {
+        $id = $this->cron->add('* * * * *', 'foo', 'bar');
+        $this->assertSame(1, $id);
+    }
+
+    public function testRemove()
+    {
+        $id = $this->cron->add('* * * * *', 'foo', 'bar');
+        $this->assertFalse($this->cron->remove($id + 1));
+        $this->assertTrue($this->cron->remove($id));
+        $this->assertFalse($this->cron->remove($id));
+    }
+
+    public function testException()
+    {
+        try {
+            $this->assertFalse($this->cron->compare('* * * *', 0, 0, 0, 0, 0));
+        } catch (\Exception $e) {
+            $this->assertSame('a cron has an error', $e->getMessage());
+        }
+        try {
+            $this->assertFalse($this->cron->compare('* * * * * *', 0, 0, 0, 0, 0));
+        } catch (\Exception $e) {
+            $this->assertSame('a cron has an error', $e->getMessage());
+        }
+    }
+
+    public function testRun()
+    {
+        $this->expectOutputString('test');
+        $this->cron->add('0 0 0 0 0', $this, 'output');
+        $this->cron->run(0, 0, 0, 0, 0);
+    }
+
+    public function output()
+    {
+        echo 'test';
     }
 }
