@@ -31,6 +31,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass()
     {
+        ini_set('zend.enable_gc', 0);
         date_default_timezone_set('Europe/Berlin');
         self::$config = parse_ini_file(Cerberus::getPath() . '/config.ini', true);
         self::$database = self::$config['testdb']['dbname'];
