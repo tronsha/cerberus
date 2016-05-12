@@ -20,5 +20,5 @@
 
 return [
     'You\'re not a channel operator' => 'Du bist kein Channel-Operator',
-    '%user% is already on channel' => '%user%  ist bereits im Channel',
+    '%user% is already on channel' => '%user% ist bereits im Channel',
 ];
