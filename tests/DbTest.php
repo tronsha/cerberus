@@ -74,6 +74,14 @@ class DbTest extends \PHPUnit_Framework_TestCase
         return $method->invokeArgs($object, $parameters);
     }
 
+    public function testWrite()
+    {
+        $db = $this->irc->getDb();
+        $db->addWrite('JOIN #test');
+        $result = $db->getWrite();
+        $this->assertSame('JOIN #test', $result['text']);
+    }
+
     public function testUserInChannel()
     {
         $db = $this->irc->getDb();
