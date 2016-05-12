@@ -82,10 +82,11 @@ class Translate
      * Alias for __ without language attribute
      * @param string $text
      * @param array $array
+     * @return string
      */
     public function trans($text, $array = [])
     {
-        $this->__($text, null, $array);
+        return $this->__($text, $array);
     }
 
     /**
