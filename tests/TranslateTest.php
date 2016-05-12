@@ -60,5 +60,4 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
         $this->translate->setLocale('de');
         $this->assertSame('de', $this->translate->getLanguage());
     }
-
 }
