@@ -34,7 +34,7 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
         unset($this->translate);
     }
 
-    public function testGettranslator()
+    public function testGetTranslator()
     {
         $translator = $this->translate->getTranslator();
         $this->assertInstanceOf('Symfony\Component\Translation\Translator', $translator);
@@ -50,12 +50,12 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('hallo john', $this->translate->trans('hello mrx', ['%var%' => 'john']));
     }
 
-    public function testGetlanguage()
+    public function testGetLanguage()
     {
         $this->assertSame('en', $this->translate->getLanguage());
     }
 
-    public function testSetlocale()
+    public function testSetLocale()
     {
         $this->translate->setLocale('de');
         $this->assertSame('de', $this->translate->getLanguage());
