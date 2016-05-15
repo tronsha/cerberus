@@ -7,6 +7,7 @@
 
 ### Fixed
 - Db removeUserFromChannel: if username contains backslashes
+- Db addWrite: added return value
 - Irc connect: $n was a string
 - Translate trans: works now
 

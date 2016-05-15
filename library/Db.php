@@ -361,6 +361,7 @@ class Db
 
     /**
      * @param string $text
+     * @return int
      */
     public function addWrite($text)
     {
@@ -376,6 +377,7 @@ class Db
                 ->setParameter(0, $text)
                 ->setParameter(1, $this->botId)
                 ->execute();
+            return intval($this->conn->lastInsertId());
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }

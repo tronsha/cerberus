@@ -83,6 +83,14 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('JOIN #test', $result['text']);
     }
 
+    public function testRemoveWrite()
+    {
+        $db = $this->irc->getDb();
+        $id = $db->addWrite('PRIVMSG #test :test');
+        $db->removeWrite($id);
+        $this->assertFalse($db->getWrite());
+    }
+
     public function testUserInChannel()
     {
         $db = $this->irc->getDb();
