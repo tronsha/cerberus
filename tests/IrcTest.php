@@ -188,4 +188,13 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
+
+    public function testCommandNick()
+    {
+        $input = ':old!~bar@127.0.0.1 NICK :new';
+        $array = ['nick' => 'old', 'text' => 'new'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }
