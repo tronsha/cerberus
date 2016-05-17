@@ -693,6 +693,7 @@ class Irc extends Cerberus
     /**
      * @param string $name
      * @param array|null $data
+     * @return bool
      */
     public function loadPlugin($name, $data = null)
     {
@@ -702,16 +703,20 @@ class Irc extends Cerberus
             if (array_key_exists($pluginClass, $this->loaded['classes']) === false) {
                 $plugin = new $pluginClass($this);
                 if (is_subclass_of($pluginClass, 'Cerberus\\Plugin') === true) {
-                    $this->sysinfo('Load Plugin: ' . $name);
                     $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
+                    $this->sysinfo('Load Plugin: ' . $name);
+                    return true;
                 } else {
                     $this->sysinfo($name . ' isn\'t a PluginClass.');
+                    return false;
                 }
             } else {
                 $this->sysinfo('Plugin "' . $name . '" is already loaded.');
+                return false;
             }
         } else {
             $this->sysinfo($name . ' don\'t exists.');
+            return false;
         }
     }
 

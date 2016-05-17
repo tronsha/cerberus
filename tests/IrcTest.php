@@ -117,6 +117,12 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('welt', $this->irc->__('world'));
     }
 
+    public function testLoadPlugin()
+    {
+        $this->assertFalse($this->irc->loadPlugin('join'));
+        $this->assertFalse($this->irc->loadPlugin('foo'));
+    }
+
     public function testCommandPrivmsg()
     {
         $input = ':foo!~bar@127.0.0.1 PRIVMSG #cerberbot :Humpty Dumpty sat on a wall, Humpty Dumpty had a great fall, All the King’s horses and all the King’s men, Couldn’t put Humpty together again.';
