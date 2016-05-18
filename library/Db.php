@@ -96,6 +96,7 @@ class Db
 
     /**
      * @param string $error
+     * @return false
      */
     public function error($error)
     {
@@ -104,6 +105,7 @@ class Db
         } else {
             echo $error;
         }
+        return false;
     }
 
     /**
@@ -122,8 +124,29 @@ class Db
     }
 
     /**
+     * @param string|null $dbName
+     * @throws Exception
+     * @return int
+     */
+    public function lastInsertId($dbName = null)
+    {
+        $lastInsertId = $this->conn->lastInsertId();
+        if ($lastInsertId === false && $dbName !== null) {
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('MAX(id) AS id')
+                ->from($dbName)
+                ->execute();
+            $row = $stmt->fetch();
+            $lastInsertId = $row['id'];
+        }
+        return intval($lastInsertId);
+    }
+
+    /**
      * @param int $pid
      * @param string $nick
+     * @return int|false
      */
     public function createBot($pid, $nick)
     {
@@ -142,18 +165,10 @@ class Db
                 ->setParameter(1, $now)
                 ->setParameter(2, $nick)
                 ->execute();
-            $this->botId = $this->conn->lastInsertId();
-            if ($this->botId === false && $this->config['driver'] === 'pdo_pgsql') {
-                $qb = $this->conn->createQueryBuilder();
-                $stmt = $qb
-                    ->select('MAX(id) AS id')
-                    ->from('bot')
-                    ->execute();
-                $row = $stmt->fetch();
-                $this->botId = $row['id'];
-            }
+            $this->botId = $this->lastInsertId('bot');
+            return $this->botId;
         } catch (Exception $e) {
-            $this->error($e->getMessage());
+            return $this->error($e->getMessage());
         }
     }
 
@@ -377,7 +392,7 @@ class Db
                 ->setParameter(0, $text)
                 ->setParameter(1, $this->botId)
                 ->execute();
-            return intval($this->conn->lastInsertId());
+            return $this->lastInsertId();
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -452,7 +467,7 @@ class Db
                 ->setParameter(4, $now)
                 ->setParameter(5, $direction)
                 ->execute();
-            $logId = $this->conn->lastInsertId();
+            $logId = $this->lastInsertId();
             if ($direction === '<') {
                 switch (strtolower($command)) {
                     case 'privmsg':

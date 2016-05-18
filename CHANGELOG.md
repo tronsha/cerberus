@@ -4,6 +4,7 @@
 
 ### Added
 - Tests for Database Functions
+- Db lastInsertId
 
 ### Fixed
 - Db removeUserFromChannel: if username contains backslashes
