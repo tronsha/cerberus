@@ -392,7 +392,7 @@ class Db
                 ->setParameter(0, $text)
                 ->setParameter(1, $this->botId)
                 ->execute();
-            return $this->lastInsertId();
+            return $this->lastInsertId('send');
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -467,7 +467,7 @@ class Db
                 ->setParameter(4, $now)
                 ->setParameter(5, $direction)
                 ->execute();
-            $logId = $this->lastInsertId();
+            $logId = $this->lastInsertId('log');
             if ($direction === '<') {
                 switch (strtolower($command)) {
                     case 'privmsg':
