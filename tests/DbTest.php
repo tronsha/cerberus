@@ -109,4 +109,13 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $user = $db->getUserInChannel('#test', 'foo\\\\bar');
         $this->assertEmpty($user);
     }
+
+    public function testShutdownBot()
+    {
+        $db = $this->irc->getDb();
+        $id = $db->getBotId();
+        $this->assertCount(1, $db->getActiveBotList());
+        $db->shutdownBot($id);
+        $this->assertEmpty($db->getActiveBotList());
+    }
 }
