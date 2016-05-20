@@ -150,10 +150,30 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->invokeMethod($this->irc, 'command', $input);
     }
 
+    public function testCommandJoinMe()
+    {
+        $this->irc->setNick('foo');
+        $input = ':foo!~bar@127.0.0.1 JOIN #cerberbot';
+        $array = ['nick' => 'foo', 'channel' => '#cerberbot'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
+
     public function testCommandPart()
     {
         $input = ':foo!~bar@127.0.0.1 PART #cerberbot';
         $array = ['channel' => '#cerberbot', 'nick' => 'foo', 'me' => false];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
+
+    public function testCommandPartMe()
+    {
+        $this->irc->setNick('foo');
+        $input = ':foo!~bar@127.0.0.1 PART #cerberbot';
+        $array = ['channel' => '#cerberbot', 'nick' => 'foo', 'me' => true];
         ksort($array);
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
@@ -186,6 +206,19 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->invokeMethod($this->irc, 'command', $input);
     }
 
+    public function testCommandKickMeAutorejoin()
+    {
+        $this->irc->getConfig()->setAutorejoin(true);
+        $this->irc->setNick('Noob');
+        $input = ':foo!~bar@127.0.0.1 KICK #cerberbot Noob :goodbye';
+        $array = ['channel' => '#cerberbot', 'me' => true, 'nick' => 'Noob', 'bouncer' => 'foo', 'comment' => 'goodbye'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $result = $this->irc->getDb()->getWrite();
+        $this->assertSame('JOIN #cerberbot', $result['text']);
+    }
+
     public function testCommandInvite()
     {
         $input = ':foo!~bar@127.0.0.1 INVITE Neo :#cerberbot';
@@ -202,5 +235,16 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         ksort($array);
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
+    }
+
+    public function testCommandNickMe()
+    {
+        $this->irc->setNick('old');
+        $input = ':old!~bar@127.0.0.1 NICK :new';
+        $array = ['nick' => 'old', 'text' => 'new'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $this->assertSame('new', $this->irc->getNick());
     }
 }
