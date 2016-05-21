@@ -625,8 +625,8 @@ class Irc extends Cerberus
                 if ($value['channel'] === $channel) {
                     return true;
                 }
-                return false;
             }
+            return false;
         } elseif (empty($channel) === false && empty($user) === false) {
             if (count($this->getDb()->getUserInChannel($channel, $user)) > 0) {
                 return true;

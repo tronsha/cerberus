@@ -123,6 +123,17 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->irc->loadPlugin('foo'));
     }
 
+    public function testInChannel()
+    {
+        $this->assertNull($this->irc->inChannel('', ''));
+        $this->assertFalse($this->irc->inChannel('#cerberbot'));
+        $this->irc->getDb()->addChannel('#cerberbot');
+        $this->assertTrue($this->irc->inChannel('#cerberbot'));
+        $this->assertFalse($this->irc->inChannel('#cerberbot', 'foo'));
+        $this->irc->getDb()->addUserToChannel('#cerberbot', 'foo');
+        $this->assertTrue($this->irc->inChannel('#cerberbot'));
+    }
+
     public function testCommandPrivmsg()
     {
         $input = ':foo!~bar@127.0.0.1 PRIVMSG #cerberbot :Humpty Dumpty sat on a wall, Humpty Dumpty had a great fall, All the King’s horses and all the King’s men, Couldn’t put Humpty together again.';
