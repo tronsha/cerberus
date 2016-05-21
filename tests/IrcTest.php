@@ -131,7 +131,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->irc->inChannel('#cerberbot'));
         $this->assertFalse($this->irc->inChannel('#cerberbot', 'foo'));
         $this->irc->getDb()->addUserToChannel('#cerberbot', 'foo');
-        $this->assertTrue($this->irc->inChannel('#cerberbot'));
+        $this->assertTrue($this->irc->inChannel('#cerberbot', 'foo'));
     }
 
     public function testCommandPrivmsg()
