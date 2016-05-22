@@ -258,4 +258,46 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->invokeMethod($this->irc, 'command', $input);
         $this->assertSame('new', $this->irc->getNick());
     }
+
+    public function testPluginEvent()
+    {
+        $this->expectOutputString('onmode');
+        $this->irc->addPluginEvent('onMode', $this);
+        $this->irc->runPluginEvent('onMode', []);
+    }
+
+    public function testRemovePluginEvent()
+    {
+        $this->expectOutputString('');
+        $this->irc->addPluginEvent('onMode', $this);
+        $this->assertSame(0, $this->irc->removePluginEvent('onMode', new \stdClass()));
+        $this->assertSame(1, $this->irc->removePluginEvent('onMode', $this));
+        $this->assertSame(0, $this->irc->removePluginEvent('onMode', $this));
+        $this->irc->runPluginEvent('onMode', []);
+    }
+
+    public function testPluginEventClassHasNotTheMethod()
+    {
+        $this->expectOutputString(serialize([]));
+        $this->irc->addPluginEvent('onNotice', $this);
+        try {
+            $this->irc->runPluginEvent('onNotice', []);
+        } catch (\Exception $e) {
+            $this->assertSame('The Class Cerberus\IrcTest has not the method onNotice.', $e->getMessage());
+        }
+    }
+
+    public function testPluginEventNotExists()
+    {
+        try {
+            $this->irc->addPluginEvent('foo', $this);
+        } catch (\Exception $e) {
+            $this->assertSame('The event foo not exists.', $e->getMessage());
+        }
+    }
+
+    public function onMode()
+    {
+        echo 'onmode';
+    }
 }
