@@ -49,7 +49,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $driver = str_replace('pdo_', '', self::$config['testdb']['driver']);
         $sqlFile = file_get_contents(Cerberus::getPath() . '/cerberus.' . $driver . '.sql');
         $sqlArray = explode(';', $sqlFile);
-        foreach($sqlArray as $sqlCommand) {
+        foreach ($sqlArray as $sqlCommand) {
             $sqlCommand = trim($sqlCommand);
             if (empty($sqlCommand) === false) {
                 $this->db->query($sqlCommand . ';');
