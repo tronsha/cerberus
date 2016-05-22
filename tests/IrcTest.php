@@ -104,12 +104,10 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testCreateBot()
+    public function testGetActiveBotList()
     {
-        $sql = 'SELECT * FROM bot WHERE id = 1';
-        $stmt = $this->db->query($sql);
-        $row = $stmt->fetch();
-        $this->assertSame(self::$config['bot']['nick'], $row['nick']);
+        $list = $this->irc->getDb()->getActiveBotList();
+        $this->assertSame(self::$config['bot']['nick'], $list[0]['nick']);
     }
 
     public function testTranslation()
