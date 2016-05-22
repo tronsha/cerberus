@@ -47,7 +47,14 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         self::$config['testdb']['dbname'] = self::$database;
         $this->db = DriverManager::getConnection(self::$config['testdb']);
         $driver = str_replace('pdo_', '', self::$config['testdb']['driver']);
-        $this->db->query(file_get_contents(Cerberus::getPath() . '/cerberus.' . $driver . '.sql'));
+        $sqlFile = file_get_contents(Cerberus::getPath() . '/cerberus.' . $driver . '.sql');
+        $sqlArray = explode(';', $sqlFile);
+        foreach($sqlArray as $sqlCommand) {
+            $sqlCommand = trim($sqlCommand);
+            if (empty($sqlCommand) === false) {
+                $this->db->query($sqlCommand . ';');
+            }
+        }
         self::$config['db'] = self::$config['testdb'];
         $this->irc = new Irc(self::$config);
         $this->irc->getConsole()->output(false);
