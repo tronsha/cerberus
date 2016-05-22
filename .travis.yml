@@ -11,6 +11,7 @@ matrix:
 
 services:
   - mysql
+  - postgresql
 
 cache:
   directories:
@@ -25,8 +26,10 @@ install:
 
 before_script:
   - mkdir -p "$HOME/.php-cs-fixer"
-  - cp config.travis.ini config.ini
 
 script:
   - vendor/bin/php-cs-fixer fix --cache-file "$HOME/.php-cs-fixer/.php_cs.cache" --dry-run --diff --verbose
+  - cat config.travis.mysql.ini > config.ini
+  - phpunit
+  - cat config.travis.pgsql.ini > config.ini
   - phpunit
