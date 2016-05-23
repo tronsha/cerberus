@@ -46,7 +46,7 @@ class Installer
         $io->write(str_repeat('-', 80));
         self::createConfig($event);
         $io->write(str_repeat('-', 80));
-        self::installMysqlDb($event);
+        self::installDb($event);
         $io->write(str_repeat('-', 80));
         self::runPhpUnit($event);
         $io->write(str_repeat('-', 80));
@@ -72,14 +72,27 @@ class Installer
             $botchannel = $io->ask('Channel: ');
             $config = str_replace('{botchannel}', $botchannel ? trim($botchannel, " \t\n\r\0\x0B#") : 'cerberbot', $config);
             $io->write('<options=bold>Database</options=bold>');
+            $driver = $io->ask('<fg=red>M</fg=red>ySQL or <fg=red>P</fg=red>ostgreSQL: ');
+            $driver = strtolower($driver) === 'p' ? 'pdo_pgsql' : 'pdo_mysql';
+            $config = str_replace('{driver}', $driver, $config);
             $dbhost = $io->ask('Host (<fg=cyan>localhost</fg=cyan>): ');
             $config = str_replace('{dbhost}', $dbhost ? $dbhost : 'localhost', $config);
-            $dbport = $io->ask('Port (<fg=cyan>3306</fg=cyan>): ');
-            $config = str_replace('{dbport}', $dbport ? $dbport : '3306', $config);
+            if ($driver === 'pdo_pgsql') {
+                $dbport = $io->ask('Port (<fg=cyan>5432</fg=cyan>): ');
+                $config = str_replace('{dbport}', $dbport ? $dbport : '5432', $config);
+            } else {
+                $dbport = $io->ask('Port (<fg=cyan>3306</fg=cyan>): ');
+                $config = str_replace('{dbport}', $dbport ? $dbport : '3306', $config);
+            }
             $dbname = $io->ask('Name (<fg=cyan>cerberus</fg=cyan>): ');
             $config = str_replace('{dbname}', $dbname ? $dbname : 'cerberus', $config);
-            $dbuser = $io->ask('User (<fg=cyan>root</fg=cyan>): ');
-            $config = str_replace('{dbuser}', $dbuser ? $dbuser : 'root', $config);
+            if ($driver === 'pdo_pgsql') {
+                $dbuser = $io->ask('User (<fg=cyan>postgres</fg=cyan>): ');
+                $config = str_replace('{dbuser}', $dbuser ? $dbuser : 'postgres', $config);
+            } else {
+                $dbuser = $io->ask('User (<fg=cyan>root</fg=cyan>): ');
+                $config = str_replace('{dbuser}', $dbuser ? $dbuser : 'root', $config);
+            }
             $dbpass = $io->ask('Password: ');
             $config = str_replace('{dbpassword}', $dbpass ? $dbpass : '', $config);
             $io->write('<info>Writing config file</info>');
@@ -90,7 +103,7 @@ class Installer
     /**
      * @param Event $event
      */
-    protected static function installMysqlDb(Event $event)
+    protected static function installDb(Event $event)
     {
         $io = $event->getIO();
         try {
@@ -108,7 +121,15 @@ class Installer
             $config['db']['dbname'] = $dbname;
             $db = DriverManager::getConnection($config['db']);
             $io->write('<info>Create database tables</info>');
-            $db->query(file_get_contents(Cerberus::getPath() . '/cerberus.mysql.sql'));
+            $driver = str_replace('pdo_', '', $config['db']['driver']);
+            $sqlFile = file_get_contents(Cerberus::getPath() . '/cerberus.' . $driver . '.sql');
+            $sqlArray = explode(';', $sqlFile);
+            foreach ($sqlArray as $sqlCommand) {
+                $sqlCommand = trim($sqlCommand);
+                if (empty($sqlCommand) === false) {
+                    $db->query($sqlCommand . ';');
+                }
+            }
             $db->close();
         } catch (Exception $e) {
             $io->write('<error>' . $e->getMessage() . '</error>');
