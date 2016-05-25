@@ -302,8 +302,23 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testCron()
+    {
+        $this->expectOutputString('test');
+        $cronId = $this->irc->addCron('* * * * *', $this, 'output');
+        $this->irc->runCron(0, 12, 1, 1, 1);
+        $this->assertTrue($this->irc->removeCron($cronId));
+        $this->assertFalse($this->irc->removeCron($cronId));
+        $this->irc->runCron(0, 12, 1, 1, 1);
+    }
+
     public function onMode()
     {
         echo 'onmode';
+    }
+
+    public function output()
+    {
+        echo 'test';
     }
 }
