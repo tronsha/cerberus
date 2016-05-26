@@ -126,4 +126,12 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->shutdownBot($id);
         $this->assertEmpty($db->getActiveBotList());
     }
+
+    public function testCleanupBot()
+    {
+        $db = $this->irc->getDb();
+        $db->addWrite('PRIVMSG #test :test');
+        $db->cleanupBot();
+        $this->assertFalse($db->getWrite());
+    }
 }
