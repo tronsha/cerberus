@@ -550,6 +550,7 @@ class Db
 
     /**
      * @param string $channel
+     * @return int
      */
     public function addChannel($channel)
     {
@@ -565,6 +566,7 @@ class Db
                 ->setParameter(0, $channel)
                 ->setParameter(1, $this->botId)
                 ->execute();
+            return $this->lastInsertId('channel');
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -604,6 +606,7 @@ class Db
      * @param string $channel
      * @param string $user
      * @param string|array $mode
+     * @return int
      */
     public function addUserToChannel($channel, $user, $mode = '')
     {
@@ -626,6 +629,7 @@ class Db
                 ->setParameter(2, $channel)
                 ->setParameter(3, $this->botId)
                 ->execute();
+            return $this->lastInsertId('channel_user');
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -767,6 +771,7 @@ class Db
     /**
      * @param string $command
      * @param string $data
+     * @return int
      */
     public function addControl($command, $data)
     {
@@ -784,6 +789,7 @@ class Db
                 ->setParameter(1, $data)
                 ->setParameter(2, $this->botId)
                 ->execute();
+            return $this->lastInsertId('control');
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -830,6 +836,7 @@ class Db
      * @param string $status
      * @param string $text
      * @param array $data
+     * @return int
      */
     public function addStatus($status, $text, $data)
     {
@@ -852,6 +859,7 @@ class Db
                 ->setParameter(3, $now)
                 ->setParameter(4, $this->botId)
                 ->execute();
+                return $this->lastInsertId('status');
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
