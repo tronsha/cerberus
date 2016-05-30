@@ -99,6 +99,14 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($db->getWrite());
     }
 
+    public function testRemoveControl()
+    {
+        $db = $this->irc->getDb();
+        $id = $db->addControl('foo', 'bar');
+        $db->removeControl($id);
+        $this->assertFalse($db->getControl());
+    }
+
     public function testUserInChannel()
     {
         $db = $this->irc->getDb();
