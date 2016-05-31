@@ -107,6 +107,45 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($db->getControl());
     }
 
+    public function testAddStatus()
+    {
+        $db = $this->irc->getDb();
+        $db->addStatus('foo', 'foo', []);
+        $db->addStatus('bar', 'bar', []);
+        $db->addStatus('baz', 'baz', []);
+        $status = $db->getStatus();
+        $this->assertSame('foo', $status['text']);
+        $status = $db->getStatus();
+        $this->assertSame('bar', $status['text']);
+        $status = $db->getStatus();
+        $this->assertSame('baz', $status['text']);
+        $this->assertNull($db->getStatus());
+    }
+
+    public function testGetStatus()
+    {
+        $db = $this->irc->getDb();
+        $db->addStatus('foo', 'foo', []);
+        $db->addStatus('bar', 'bar', []);
+        $db->addStatus('baz', 'baz', []);
+        $status = $db->getStatus('bar');
+        $this->assertSame('bar', $status['text']);
+        $this->assertNull($db->getStatus('bar'));
+    }
+
+    public function testRemoveStatus()
+    {
+        $db = $this->irc->getDb();
+        $id = $db->addStatus('foo', 'foo', []);
+        $db->removeStatus($id);
+        $id = $db->addStatus('bar', 'bar', []);
+        $db->removeStatus($id);
+        $db->addStatus('baz', 'baz', []);
+        $status = $db->getStatus();
+        $this->assertSame('baz', $status['text']);
+        $this->assertNull($db->getStatus());
+    }
+
     public function testUserInChannel()
     {
         $db = $this->irc->getDb();
