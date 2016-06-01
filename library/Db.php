@@ -859,7 +859,7 @@ class Db
                 ->setParameter(3, $now)
                 ->setParameter(4, $this->botId)
                 ->execute();
-                return $this->lastInsertId('status');
+            return $this->lastInsertId('status');
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
@@ -883,12 +883,14 @@ class Db
             } else {
                 $qb->orderBy('id', 'DESC');
                 if (is_array($status) === true) {
-                    $status = implode(',', $status);
-                    $qb->andWhere('status IN (?)');
+                    foreach ($status as &$value) {
+                        $value =  '\'' . $value . '\'';
+                    }
+                    $qb->andWhere($qb->expr()->in('status', $status));
                 } else {
                     $qb->andWhere('status = ?');
+                    $qb->setParameter(1, $status);
                 }
-                $qb->setParameter(1, (string)$status);
             }
             $stmt = $qb->execute();
             $result = $stmt->fetch();

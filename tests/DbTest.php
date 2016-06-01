@@ -131,6 +131,11 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $status = $db->getStatus('bar');
         $this->assertSame('bar', $status['text']);
         $this->assertNull($db->getStatus('bar'));
+        $status = $db->getStatus(['foo', 'baz']);
+        $this->assertSame('baz', $status['text']);
+        $status = $db->getStatus(['foo', 'baz']);
+        $this->assertSame('foo', $status['text']);
+        $this->assertNull($db->getStatus(['foo', 'baz']));
     }
 
     public function testRemoveStatus()

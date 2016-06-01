@@ -3,15 +3,23 @@
 ## [Unreleased]
 
 ### Added
-- Tests for Database Functions
 - Db lastInsertId
+- Installer: ask driver (mysql, postgresql)
+- Tests for Database Functions
 
 ### Fixed
 - Db removeUserFromChannel: if username contains backslashes
-- Db addWrite: added return value
+- Db addWrite: added missing return value
+- Db getStatus: if status parameter is an array
 - Irc connect: $n was a string
 - Irc inChannel: wrong return position
 - Translate trans: works now
+
+### Changed
+- Db addChannel: added return value
+- Db addUserToChannel: added return value
+- Db addControl: added return value
+- Db addStatus: added return value
 
 ## [1.5.0]
 
