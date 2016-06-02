@@ -28,7 +28,7 @@ return PhpCsFixer\Config::create()
         'include' => true,
         'method_separation' => true,
         'no_alias_functions' => true,
-        'no_duplicate_semicolons' => true,
+        'no_empty_statement' => true,
         'no_leading_import_slash' => true,
         'no_leading_namespace_whitespace' => true,
         'no_unused_imports' => true,
