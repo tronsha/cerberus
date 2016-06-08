@@ -83,6 +83,12 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         return $method->invokeArgs($object, $parameters);
     }
 
+    public function testSetNick()
+    {
+        $this->assertSame('foo', $this->irc->setNick('foo'));
+        $this->assertSame(6, strlen($this->irc->setNick()));
+    }
+
     public function testRandomNick()
     {
         $this->assertSame(6, strlen($this->irc->randomNick()));
