@@ -92,4 +92,14 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('foo', $result['command']);
         $this->assertSame('bar', $result['data']);
     }
+
+    public function testPrivmsg()
+    {
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $return = $actions->privmsg('#channel', 'text');
+        $result = $db->getWrite();
+        $this->assertSame('PRIVMSG #channel :text', $result['text']);
+        $this->assertSame(['action' => 'privmsg', 'to' => '#channel', 'text' => 'text'], $return);
+    }
 }
