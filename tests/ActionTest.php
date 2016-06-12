@@ -109,7 +109,17 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $db = $this->irc->getDb();
         $return = $actions->me('#channel', 'text');
         $result = $db->getWrite();
-        $this->assertSame('PRIVMSG #channel :' . "\x01" . 'ACTION text'. "\x01", $result['text']);
+        $this->assertSame('PRIVMSG #channel :' . "\x01" . 'ACTION text' . "\x01", $result['text']);
         $this->assertSame(['action' => 'me', 'to' => '#channel', 'text' => 'text'], $return);
+    }
+
+    public function testNotice()
+    {
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $return = $actions->notice('#channel', 'text');
+        $result = $db->getWrite();
+        $this->assertSame('NOTICE #channel :text', $result['text']);
+        $this->assertSame(['action' => 'notice', 'to' => '#channel', 'text' => 'text'], $return);
     }
 }
