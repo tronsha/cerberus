@@ -46,6 +46,7 @@ return PhpCsFixer\Config::create()
         'strict_comparison' => true,
         'strict_param' => true,
         'whitespace_after_comma_in_array' => true,
+        'concat_with_spaces' => true,
     ))
     ->finder(
         PhpCsFixer\Finder::create()
