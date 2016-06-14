@@ -132,4 +132,14 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('QUIT :text', $result['text']);
         $this->assertSame(['action' => 'quit', 'text' => 'text'], $return);
     }
+
+    public function testMode()
+    {
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $return = $actions->mode('#channel');
+        $result = $db->getWrite();
+        $this->assertSame('MODE #channel', $result['text']);
+        $this->assertSame(['action' => 'mode', 'text' => '#channel'], $return);
+    }
 }
