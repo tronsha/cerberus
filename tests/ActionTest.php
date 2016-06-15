@@ -142,4 +142,14 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('MODE #channel', $result['text']);
         $this->assertSame(['action' => 'mode', 'text' => '#channel'], $return);
     }
+
+    public function testJoin()
+    {
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $return = $actions->join('#channel');
+        $result = $db->getWrite();
+        $this->assertSame('JOIN #channel', $result['text']);
+        $this->assertSame(['action' => 'join', 'channel' => ['#channel'], 'password' => []], $return);
+    }
 }
