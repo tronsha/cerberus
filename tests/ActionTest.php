@@ -162,4 +162,14 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('PART #channel', $result['text']);
         $this->assertSame(['action' => 'part', 'channel' => ['#channel']], $return);
     }
+
+    public function testWhois()
+    {
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $return = $actions->whois('user');
+        $result = $db->getWrite();
+        $this->assertSame('WHOIS :user', $result['text']);
+        $this->assertSame(['action' => 'whois', 'nick' => 'user'], $return);
+    }
 }
