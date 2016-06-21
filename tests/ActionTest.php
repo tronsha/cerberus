@@ -192,4 +192,14 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('TOPIC #channel :topic', $result['text']);
         $this->assertSame(['action' => 'topic', 'channel' => '#channel', 'topic' => 'topic'], $return);
     }
+
+    public function testInvite()
+    {
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $return = $actions->invite('#channel', 'user');
+        $result = $db->getWrite();
+        $this->assertSame('INVITE user :#channel', $result['text']);
+        $this->assertSame(['action' => 'invite', 'channel' => '#channel', 'nick' => 'user'], $return);
+    }
 }
