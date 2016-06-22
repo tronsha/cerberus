@@ -419,7 +419,8 @@ class Irc extends Cerberus
         if (substr($output, -1) === '\\') {
             $output .= ' ';
         }
-        $this->getConsole()->writeln($this->getConsole()->prepare($output, true, null, true, true, 0));
+        $outputConsole = strpos($output, 'PRIVMSG NickServ :IDENTIFY') === 0 ? preg_replace('/\S/', '*', $output) : $output;
+        $this->getConsole()->writeln($this->getConsole()->prepare($outputConsole, true, null, true, true, 0));
         fwrite($this->fp, $output . PHP_EOL);
         preg_match('/^([^ ]+).*?$/i', $text, $matches);
         $command = isset($matches[1]) ? $matches[1] : '';
