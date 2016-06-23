@@ -137,25 +137,25 @@ class Action
 
     /**
      * @param string|array $channel
-     * @param string|array|null $password
+     * @param string|array|null $key
      * @return array
      */
-    public function join($channel, $password = null)
+    public function join($channel, $key = null)
     {
         if (is_array($channel) === true) {
             $channel = implode(',', $channel);
         }
-        if ($password !== null) {
-            if (is_array($password) === true) {
-                $password = implode(',', $password);
+        if ($key !== null) {
+            if (is_array($key) === true) {
+                $key = implode(',', $key);
             }
-            $channel = $channel . ' ' . $password;
+            $channel = $channel . ' ' . $key;
         }
         $this->getDb()->addWrite('JOIN ' . $channel);
         $exploded = explode(' ', trim($channel));
         $channel = explode(',', $exploded[0]);
-        $password = isset($exploded[1]) === true ? explode(',', $exploded[1]) : [];
-        return ['action' => 'join', 'channel' => $channel, 'password' => $password];
+        $key = isset($exploded[1]) === true ? explode(',', $exploded[1]) : [];
+        return ['action' => 'join', 'channel' => $channel, 'key' => $key];
     }
 
     /**
