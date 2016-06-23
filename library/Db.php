@@ -55,13 +55,6 @@ class Db
     }
 
     /**
-     *
-     */
-    public function __destruct()
-    {
-    }
-
-    /**
      * @return \Doctrine\DBAL\Connection
      */
     public function getConn()
@@ -116,11 +109,7 @@ class Db
      */
     public function ping()
     {
-        if (Version::compare('2.5') >= 0) {
-            return $this->conn->ping();
-        } else {
-            return true;
-        }
+        return Version::compare('2.5') >= 0 ? $this->conn->ping() : true;
     }
 
     /**
