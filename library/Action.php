@@ -142,13 +142,9 @@ class Action
      */
     public function join($channel, $key = null)
     {
-        if (is_array($channel) === true) {
-            $channel = implode(',', $channel);
-        }
+        $channel = is_array($channel) === true ? implode(',', $channel) : $channel;
         if ($key !== null) {
-            if (is_array($key) === true) {
-                $key = implode(',', $key);
-            }
+            $key = is_array($key) === true ? implode(',', $key) : $key;
             $channel = $channel . ' ' . $key;
         }
         $this->getDb()->addWrite('JOIN ' . $channel);
