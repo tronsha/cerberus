@@ -222,4 +222,14 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('PRIVMSG chanserv :OP #channel', $result['text']);
         $this->assertSame(['action' => 'op', 'channel' => '#channel', 'nick' => null], $return);
     }
+
+    public function testDeop()
+    {
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $return = $actions->deop('#channel', 'user');
+        $result = $db->getWrite();
+        $this->assertSame('MODE #channel -o user', $result['text']);
+        $this->assertSame(['action' => 'deop', 'channel' => '#channel', 'nick' => 'user'], $return);
+    }
 }
