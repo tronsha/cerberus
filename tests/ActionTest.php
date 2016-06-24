@@ -232,4 +232,14 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('MODE #channel -o user', $result['text']);
         $this->assertSame(['action' => 'deop', 'channel' => '#channel', 'nick' => 'user'], $return);
     }
+
+    public function testKick()
+    {
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $return = $actions->kick('#channel', 'user');
+        $result = $db->getWrite();
+        $this->assertSame('KICK #channel user :', $result['text']);
+        $this->assertSame(['action' => 'kick', 'channel' => '#channel', 'user' => 'user', 'comment' => null], $return);
+    }
 }
