@@ -151,6 +151,26 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $result = $db->getWrite();
         $this->assertSame('JOIN #channel', $result['text']);
         $this->assertSame(['action' => 'join', 'channel' => ['#channel'], 'key' => []], $return);
+        $db->removeWrite($result['id']);
+        $return = $actions->join(['#channel1', '#channel2']);
+        $result = $db->getWrite();
+        $this->assertSame('JOIN #channel1,#channel2', $result['text']);
+        $this->assertSame(['action' => 'join', 'channel' => ['#channel1', '#channel2'], 'key' => []], $return);
+    }
+
+    public function testJoinKey()
+    {
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $return = $actions->join('#channel', 'key');
+        $result = $db->getWrite();
+        $this->assertSame('JOIN #channel key', $result['text']);
+        $this->assertSame(['action' => 'join', 'channel' => ['#channel'], 'key' => ['key']], $return);
+        $db->removeWrite($result['id']);
+        $return = $actions->join(['#channel1', '#channel2'], ['key1', 'key2']);
+        $result = $db->getWrite();
+        $this->assertSame('JOIN #channel1,#channel2 key1,key2', $result['text']);
+        $this->assertSame(['action' => 'join', 'channel' => ['#channel1', '#channel2'], 'key' => ['key1', 'key2']], $return);
     }
 
     public function testPart()
