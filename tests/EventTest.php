@@ -211,7 +211,16 @@ class EventTest extends \PHPUnit_Framework_TestCase
     public function testMode()
     {
         $input = ':foo!~bar@127.0.0.1 MODE #cerberbot +s';
-        $array = ['channel' => '#cerberbot', 'mode' => '+s', 'param' => null];
+        $array = ['channel' => '#cerberbot', 'mode' => '+s', 'param' => null, 'text' => null];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
+
+    public function testModeTwo()
+    {
+        $input = ':Cerberus MODE Cerberus :+i';
+        $array = ['channel' => 'Cerberus', 'mode' => null, 'param' => null, 'text' => '+i'];
         ksort($array);
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);

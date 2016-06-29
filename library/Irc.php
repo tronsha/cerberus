@@ -582,7 +582,7 @@ class Irc extends Cerberus
                     $this->getEvents()->onNick($nick, $text);
                     break;
                 case 'MODE':
-                    $this->getEvents()->onMode($rest);
+                    $this->getEvents()->onMode($rest, $text);
                     break;
                 case 'TOPIC':
                     $this->getEvents()->onTopic($rest, $text);

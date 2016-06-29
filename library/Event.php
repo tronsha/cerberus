@@ -483,12 +483,13 @@ class Event
     }
 
     /**
-     * @param string $data
+     * @param string $rest
+     * @param string $text
      */
-    public function onMode($data)
+    public function onMode($rest, $text)
     {
-        $params = explode(' ', $data);
-        $this->runPluginEvent(__FUNCTION__, ['channel' => $params[0], 'mode' => $params[1], 'param' => isset($params[2]) ? $params[2] : null]);
+        $params = explode(' ', $rest);
+        $this->runPluginEvent(__FUNCTION__, ['channel' => $params[0], 'mode' => isset($params[1]) ? $params[1] : null, 'param' => isset($params[2]) ? $params[2] : null, 'text' => empty($text) ? null : $text]);
     }
 
     /**
