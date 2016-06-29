@@ -207,4 +207,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->invokeMethod($this->irc, 'command', $input);
         $this->assertSame('new', $this->irc->getNick());
     }
+
+    public function testMode()
+    {
+        $input = ':foo!~bar@127.0.0.1 MODE #cerberbot +s';
+        $array = ['channel' => '#cerberbot', 'mode' => '+s', 'param' => null];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }

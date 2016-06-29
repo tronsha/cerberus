@@ -483,11 +483,12 @@ class Event
     }
 
     /**
-     * @param string $mode
+     * @param string $data
      */
-    public function onMode($mode)
+    public function onMode($data)
     {
-        $this->runPluginEvent(__FUNCTION__, ['mode' => $mode]);
+        $params = explode(' ', $data);
+        $this->runPluginEvent(__FUNCTION__, ['channel' => $params[0], 'mode' => $params[1], 'param' => isset($params[2]) ? $params[2] : null]);
     }
 
     /**
@@ -499,5 +500,13 @@ class Event
     {
         $this->getDb()->addStatus('INVITE', 'User ' . $user . ' inviting you to channel ' . $channel, ['channel' => $channel, 'user' => $user, 'nick' => $nick]);
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'user' => $user, 'nick' => $nick]);
+    }
+
+    /**
+     *
+     */
+    public function onTest()
+    {
+        $this->runPluginEvent(__FUNCTION__, []);
     }
 }

@@ -148,19 +148,19 @@ class IrcTest extends \PHPUnit_Framework_TestCase
 
     public function testPluginEvent()
     {
-        $this->expectOutputString('onmode');
-        $this->irc->addPluginEvent('onMode', $this);
-        $this->irc->runPluginEvent('onMode', []);
+        $this->expectOutputString('ontest');
+        $this->irc->addPluginEvent('onTest', $this);
+        $this->irc->runPluginEvent('onTest', []);
     }
 
     public function testRemovePluginEvent()
     {
         $this->expectOutputString('');
-        $this->irc->addPluginEvent('onMode', $this);
-        $this->assertSame(0, $this->irc->removePluginEvent('onMode', new \stdClass()));
-        $this->assertSame(1, $this->irc->removePluginEvent('onMode', $this));
-        $this->assertSame(0, $this->irc->removePluginEvent('onMode', $this));
-        $this->irc->runPluginEvent('onMode', []);
+        $this->irc->addPluginEvent('onTest', $this);
+        $this->assertSame(0, $this->irc->removePluginEvent('onTest', new \stdClass()));
+        $this->assertSame(1, $this->irc->removePluginEvent('onTest', $this));
+        $this->assertSame(0, $this->irc->removePluginEvent('onTest', $this));
+        $this->irc->runPluginEvent('onTest', []);
     }
 
     public function testPluginEventClassHasNotTheMethod()
@@ -193,9 +193,9 @@ class IrcTest extends \PHPUnit_Framework_TestCase
         $this->irc->runCron(0, 12, 1, 1, 1);
     }
 
-    public function onMode()
+    public function onTest()
     {
-        echo 'onmode';
+        echo 'ontest';
     }
 
     public function output()
