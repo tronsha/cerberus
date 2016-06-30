@@ -225,4 +225,14 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
+
+    public function testPrivmsgActionTime()
+    {
+        $this->irc->getConfig()->setCtcp(true);
+        $input = ':foo!~bar@127.0.0.1 PRIVMSG cerberus :' . "\x01" . 'TIME' . "\x01";
+        $this->invokeMethod($this->irc, 'command', $input);
+        $time = date('D M d H:i:s Y T');
+        $result = $this->irc->getDb()->getWrite();
+        $this->assertSame('NOTICE foo :' . "\x01" . 'TIME ' . $time . "\x01" . '', $result['text']);
+    }
 }
