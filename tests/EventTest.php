@@ -226,6 +226,15 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->invokeMethod($this->irc, 'command', $input);
     }
 
+    public function testPrivmsgActionClientinfo()
+    {
+        $this->irc->getConfig()->setCtcp(true);
+        $input = ':foo!~bar@127.0.0.1 PRIVMSG cerberus :' . "\x01" . 'CLIENTINFO' . "\x01";
+        $this->invokeMethod($this->irc, 'command', $input);
+        $result = $this->irc->getDb()->getWrite();
+        $this->assertSame('NOTICE foo :' . "\x01" . 'CLIENTINFO PING VERSION TIME FINGER SOURCE CLIENTINFO' . "\x01", $result['text']);
+    }
+
     public function testPrivmsgActionTime()
     {
         $this->irc->getConfig()->setCtcp(true);
@@ -233,6 +242,6 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->invokeMethod($this->irc, 'command', $input);
         $time = date('D M d H:i:s Y T');
         $result = $this->irc->getDb()->getWrite();
-        $this->assertSame('NOTICE foo :' . "\x01" . 'TIME ' . $time . "\x01" . '', $result['text']);
+        $this->assertSame('NOTICE foo :' . "\x01" . 'TIME ' . $time . "\x01", $result['text']);
     }
 }
