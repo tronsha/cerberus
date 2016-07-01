@@ -239,9 +239,14 @@ class EventTest extends \PHPUnit_Framework_TestCase
     {
         $this->irc->getConfig()->setCtcp(true);
         $input = ':foo!~bar@127.0.0.1 PRIVMSG cerberus :' . "\x01" . 'TIME' . "\x01";
+        $timeStart = time();
         $this->invokeMethod($this->irc, 'command', $input);
-        $time = date('D M d H:i:s Y T');
+        $timeStop = time();
+        $values = [];
+        for ($time = $timeStart; $time <= $timeStop; $time++) {
+            $values[] = 'NOTICE foo :' . "\x01" . 'TIME ' . date('D M d H:i:s Y T', $time) . "\x01";
+        }
         $result = $this->irc->getDb()->getWrite();
-        $this->assertSame('NOTICE foo :' . "\x01" . 'TIME ' . $time . "\x01", $result['text']);
+        $this->assertContains($result['text'], $values);
     }
 }
