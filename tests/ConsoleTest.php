@@ -117,7 +117,7 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($output, $this->console->prepare($input, false, 80));
 
         $input = '0123456789\\';
-        $output = '01234' . PHP_EOL . '56789' .  PHP_EOL . '\\ ';
+        $output = '01234' . PHP_EOL . '56789' . PHP_EOL . '\\ ';
         $this->assertSame($output, $this->console->prepare($input, false, 5, true, false));
     }
 
