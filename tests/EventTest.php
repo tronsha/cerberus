@@ -235,6 +235,15 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('NOTICE foo :' . "\x01" . 'CLIENTINFO PING VERSION TIME FINGER SOURCE CLIENTINFO' . "\x01", $result['text']);
     }
 
+    public function testPrivmsgActionPing()
+    {
+        $this->irc->getConfig()->setCtcp(true);
+        $input = ':foo!~bar@127.0.0.1 PRIVMSG cerberus :' . "\x01" . 'PING 1467554714.293876' . "\x01";
+        $this->invokeMethod($this->irc, 'command', $input);
+        $result = $this->irc->getDb()->getWrite();
+        $this->assertSame('NOTICE foo :' . "\x01" . 'PING 1467554714.293876' . "\x01", $result['text']);
+    }
+
     public function testPrivmsgActionTime()
     {
         $this->irc->getConfig()->setCtcp(true);

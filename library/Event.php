@@ -339,7 +339,7 @@ class Event
                     $send = 'CLIENTINFO PING VERSION TIME FINGER SOURCE CLIENTINFO';
                     break;
                 case 'PING':
-                    $send = 'PING' . $matches[2];
+                    $send = 'PING' . (isset($matches[2]) ? $matches[2] : '');
                     break;
                 case 'VERSION':
                     $send = 'VERSION ' . $this->irc->getConfig()->getVersion('bot');
