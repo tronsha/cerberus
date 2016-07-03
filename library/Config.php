@@ -61,25 +61,25 @@ class Config
                 $this->setChannel('#' . $config['bot']['channel']);
             }
             if (isset($config['bot']['autorejoin'])) {
-                $this->setAutorejoin($config['bot']['autorejoin'] === 1 ? true : false);
+                $this->setAutorejoin(intval($config['bot']['autorejoin']) === 1 ? true : false);
             }
             if (isset($config['bot']['ctcp'])) {
-                $this->setCtcp($config['bot']['ctcp'] === 1 ? true : false);
+                $this->setCtcp(intval($config['bot']['ctcp']) === 1 ? true : false);
             }
             if (!empty($config['log']['directory'])) {
                 $this->setLogfiledirectory($config['log']['directory']);
             }
             if (isset($config['log']['error'])) {
-                $this->setLogfile('error', $config['log']['error'] === 1 ? true : false);
+                $this->setLogfile('error', intval($config['log']['error']) === 1 ? true : false);
             }
             if (isset($config['log']['socket'])) {
-                $this->setLogfile('socket', $config['log']['socket'] === 1 ? true : false);
+                $this->setLogfile('socket', intval($config['log']['socket']) === 1 ? true : false);
             }
             if (isset($config['log']['sql'])) {
-                $this->setLogfile('sql', $config['log']['sql'] === 1 ? true : false);
+                $this->setLogfile('sql', intval($config['log']['sql']) === 1 ? true : false);
             }
             if (isset($config['log']['dailylogfile'])) {
-                $this->setDailylogfile($config['log']['dailylogfile'] === 1 ? true : false);
+                $this->setDailylogfile(intval($config['log']['dailylogfile']) === 1 ? true : false);
             }
             if (isset($config['plugins']['autoload'])) {
                 $this->setPluginsAutoload($config['plugins']['autoload']);

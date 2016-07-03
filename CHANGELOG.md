@@ -14,6 +14,7 @@
 - Irc connect: $n was a string
 - Irc inChannel: wrong return position
 - Translate trans: works now
+- Config ctcp: works now
 
 ### Changed
 - Db addChannel: added return value
