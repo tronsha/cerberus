@@ -258,4 +258,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $result = $this->irc->getDb()->getWrite();
         $this->assertContains($result['text'], $values);
     }
+
+    public function testPrivmsgActionSource()
+    {
+        $this->irc->getConfig()->setCtcp(true);
+        $input = ':foo!~bar@127.0.0.1 PRIVMSG cerberus :' . "\x01" . 'SOURCE' . "\x01";
+        $this->invokeMethod($this->irc, 'command', $input);
+        $result = $this->irc->getDb()->getWrite();
+        $this->assertSame('NOTICE foo :' . "\x01" . 'SOURCE https://github.com/tronsha/cerberus' . "\x01", $result['text']);
+    }
 }
