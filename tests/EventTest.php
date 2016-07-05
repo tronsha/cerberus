@@ -267,4 +267,14 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $result = $this->irc->getDb()->getWrite();
         $this->assertSame('NOTICE foo :' . "\x01" . 'SOURCE https://github.com/tronsha/cerberus' . "\x01", $result['text']);
     }
+
+    public function testPrivmsgActionVersion()
+    {
+        $this->irc->getConfig()->setCtcp(true);
+        $this->irc->getConfig()->setVersion('bot', 'PHP 5.6 - Linux 3.18 - MySQL 5.5');
+        $input = ':foo!~bar@127.0.0.1 PRIVMSG cerberus :' . "\x01" . 'VERSION' . "\x01";
+        $this->invokeMethod($this->irc, 'command', $input);
+        $result = $this->irc->getDb()->getWrite();
+        $this->assertSame('NOTICE foo :' . "\x01" . 'VERSION PHP 5.6 - Linux 3.18 - MySQL 5.5' . "\x01", $result['text']);
+    }
 }
