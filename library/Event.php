@@ -350,7 +350,7 @@ class Event
                 case 'FINGER':
                     $botName = $this->irc->getConfig()->getName();
                     $botHomepage = $this->irc->getConfig()->getHomepage();
-                    $send = 'FINGER ' . $botName . (empty($botHomepage) === false ? ' (' . $botHomepage . ')' : '') . ' Idle ' . round($this->irc->getMicrotime() - $this->vars['time']['irc_connect']) . ' seconds';
+                    $send = 'FINGER ' . $botName . (empty($botHomepage) === false ? ' (' . $botHomepage . ')' : '') . ' Idle ' . (isset($this->vars['time']['irc_connect']) ? round($this->irc->getMicrotime() - $this->vars['time']['irc_connect']) : 0) . ' seconds';
                     break;
                 case 'SOURCE':
                     $send = 'SOURCE https://github.com/tronsha/cerberus';

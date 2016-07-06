@@ -277,4 +277,15 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $result = $this->irc->getDb()->getWrite();
         $this->assertSame('NOTICE foo :' . "\x01" . 'VERSION PHP 5.6 - Linux 3.18 - MySQL 5.5' . "\x01", $result['text']);
     }
+
+    public function testPrivmsgActionFinger()
+    {
+        $this->irc->getConfig()->setCtcp(true);
+        $this->irc->getConfig()->setName('Cerberus');
+        $this->irc->getConfig()->setHomepage('http://www.example.org');
+        $input = ':foo!~bar@127.0.0.1 PRIVMSG cerberus :' . "\x01" . 'FINGER' . "\x01";
+        $this->invokeMethod($this->irc, 'command', $input);
+        $result = $this->irc->getDb()->getWrite();
+        $this->assertSame('NOTICE foo :' . "\x01" . 'FINGER Cerberus (http://www.example.org) Idle 0 seconds' . "\x01", $result['text']);
+    }
 }
