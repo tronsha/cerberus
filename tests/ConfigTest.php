@@ -39,4 +39,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setName('foo');
         $this->assertSame('foo', $this->config->getName());
     }
+
+    public function testHomepage()
+    {
+        $this->config->setHomepage('http://www.example.org');
+        $this->assertSame('http://www.example.org', $this->config->getHomepage());
+    }
 }
