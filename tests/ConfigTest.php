@@ -45,4 +45,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setHomepage('http://www.example.org');
         $this->assertSame('http://www.example.org', $this->config->getHomepage());
     }
+
+    public function testChannel()
+    {
+        $this->config->setChannel('#foo');
+        $this->assertSame('#foo', $this->config->getChannel());
+    }
 }
