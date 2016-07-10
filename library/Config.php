@@ -138,7 +138,7 @@ class Config
 
     public function setAutorejoin($autorejoin)
     {
-        $this->autorejoin = $autorejoin;
+        $this->autorejoin = boolval($autorejoin);
     }
 
     public function getAutorejoin()
