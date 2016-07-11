@@ -45,4 +45,34 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setHomepage('http://www.example.org');
         $this->assertSame('http://www.example.org', $this->config->getHomepage());
     }
+
+    public function testChannel()
+    {
+        $this->config->setChannel('#foo');
+        $this->assertSame('#foo', $this->config->getChannel());
+    }
+
+    public function testAutorejoin()
+    {
+        $this->config->setAutorejoin(true);
+        $this->assertTrue($this->config->getAutorejoin());
+        $this->config->setAutorejoin(false);
+        $this->assertFalse($this->config->getAutorejoin());
+        $this->config->setAutorejoin(1);
+        $this->assertTrue($this->config->getAutorejoin());
+        $this->config->setAutorejoin(0);
+        $this->assertFalse($this->config->getAutorejoin());
+    }
+
+    public function testCtcp()
+    {
+        $this->config->setCtcp(true);
+        $this->assertTrue($this->config->getCtcp());
+        $this->config->setCtcp(false);
+        $this->assertFalse($this->config->getCtcp());
+        $this->config->setCtcp(1);
+        $this->assertTrue($this->config->getCtcp());
+        $this->config->setCtcp(0);
+        $this->assertFalse($this->config->getCtcp());
+    }
 }

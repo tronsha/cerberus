@@ -138,7 +138,7 @@ class Config
 
     public function setAutorejoin($autorejoin)
     {
-        $this->autorejoin = $autorejoin;
+        $this->autorejoin = boolval($autorejoin);
     }
 
     public function getAutorejoin()
@@ -148,7 +148,7 @@ class Config
 
     public function setCtcp($ctcp)
     {
-        $this->ctcp = $ctcp;
+        $this->ctcp = boolval($ctcp);
     }
 
     public function getCtcp()
