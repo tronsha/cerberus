@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `channel` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `bot_id` int(11) NOT NULL,
   `channel` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `topic` text COLLATE utf8_unicode_ci NOT NULL,
+  `topic` text COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
