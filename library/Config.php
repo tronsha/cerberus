@@ -148,7 +148,7 @@ class Config
 
     public function setCtcp($ctcp)
     {
-        $this->ctcp = $ctcp;
+        $this->ctcp = boolval($ctcp);
     }
 
     public function getCtcp()

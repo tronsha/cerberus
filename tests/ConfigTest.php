@@ -63,4 +63,16 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setAutorejoin(0);
         $this->assertFalse($this->config->getAutorejoin());
     }
+
+    public function testCtcp()
+    {
+        $this->config->setCtcp(true);
+        $this->assertTrue($this->config->getCtcp());
+        $this->config->setCtcp(false);
+        $this->assertFalse($this->config->getCtcp());
+        $this->config->setCtcp(1);
+        $this->assertTrue($this->config->getCtcp());
+        $this->config->setCtcp(0);
+        $this->assertFalse($this->config->getCtcp());
+    }
 }
