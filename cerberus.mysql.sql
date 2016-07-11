@@ -2,7 +2,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 CREATE TABLE IF NOT EXISTS `bot` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `server_id` int(11) unsigned NOT NULL,
+  `server_id` int(11) unsigned DEFAULT NULL,
   `pid` int(11) unsigned NOT NULL,
   `nick` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `start` datetime DEFAULT NULL,
