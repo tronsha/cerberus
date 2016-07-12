@@ -75,4 +75,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setCtcp(0);
         $this->assertFalse($this->config->getCtcp());
     }
+
+    public function testFrontendUrl()
+    {
+        $this->config->setFrontendUrl('http://127.0.0.1/cerberus/');
+        $this->assertSame('http://127.0.0.1/cerberus/', $this->config->getFrontendUrl());
+    }
 }
