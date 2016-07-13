@@ -81,4 +81,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setFrontendUrl('http://127.0.0.1/cerberus/');
         $this->assertSame('http://127.0.0.1/cerberus/', $this->config->getFrontendUrl());
     }
+
+    public function testFrontendPassword()
+    {
+        $this->config->setFrontendPassword('password');
+        $this->assertSame('password', $this->config->getFrontendPassword());
+    }
 }
