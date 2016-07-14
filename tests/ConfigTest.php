@@ -87,4 +87,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setFrontendPassword('password');
         $this->assertSame('password', $this->config->getFrontendPassword());
     }
+
+    public function testPluginsAutoload()
+    {
+        $this->config->setPluginsAutoload('foo,bar');
+        $this->assertSame(['foo', 'bar'], $this->config->getPluginsAutoload());
+        $this->config->setPluginsAutoload(['foo', 'baz']);
+        $this->assertSame(['foo', 'baz'], $this->config->getPluginsAutoload());
+    }
 }
