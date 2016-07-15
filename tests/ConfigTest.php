@@ -95,4 +95,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setPluginsAutoload(['foo', 'baz']);
         $this->assertSame(['foo', 'baz'], $this->config->getPluginsAutoload());
     }
+
+    public function testLanguage()
+    {
+        $this->config->setLanguage('de');
+        $this->assertSame('de', $this->config->getLanguage());
+    }
 }
