@@ -138,7 +138,7 @@ class Config
 
     public function setAutorejoin($autorejoin)
     {
-        $this->autorejoin = boolval($autorejoin);
+        $this->autorejoin = Cerberus::boolval($autorejoin);
     }
 
     public function getAutorejoin()
@@ -148,7 +148,7 @@ class Config
 
     public function setCtcp($ctcp)
     {
-        $this->ctcp = boolval($ctcp);
+        $this->ctcp = Cerberus::boolval($ctcp);
     }
 
     public function getCtcp()

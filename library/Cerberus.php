@@ -140,6 +140,19 @@ class Cerberus
     }
 
     /**
+     * @param mixed $var
+     * @return bool
+     */
+    public static function boolval($var)
+    {
+        if (function_exists('boolval') === true) {
+            return boolval($var);
+        } else {
+            return (bool)$var;
+        }
+    }
+
+    /**
      * @param int $milliSeconds
      */
     public static function msleep($milliSeconds)
