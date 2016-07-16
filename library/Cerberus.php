@@ -145,11 +145,7 @@ class Cerberus
      */
     public static function boolval($var)
     {
-        if (function_exists('boolval') === true) {
-            return boolval($var);
-        } else {
-            return (bool)$var;
-        }
+        return (bool)$var;
     }
 
     /**
@@ -179,5 +175,12 @@ class Cerberus
             }
         }
         return $available;
+    }
+}
+
+if (function_exists('boolval') === false) {
+    function boolval($var)
+    {
+        return Cerberus::boolval($var);
     }
 }
