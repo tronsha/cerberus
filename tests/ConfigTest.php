@@ -101,4 +101,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setLanguage('de');
         $this->assertSame('de', $this->config->getLanguage());
     }
+
+    public function testLogfile()
+    {
+        $this->config->setLogfile('error', true);
+        $this->assertTrue($this->config->getLogfile('error'));
+        $this->config->setLogfile('error', false);
+        $this->assertFalse($this->config->getLogfile('error'));
+    }
 }

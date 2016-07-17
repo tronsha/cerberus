@@ -202,7 +202,7 @@ class Config
 
     public function setLogfile($var, $value)
     {
-        $this->logfile[$var] = $value;
+        $this->logfile[$var] = boolval($value);
     }
 
     public function getLogfile($var)
