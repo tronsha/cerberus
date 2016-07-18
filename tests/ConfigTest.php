@@ -109,4 +109,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setLogfile('error', false);
         $this->assertFalse($this->config->getLogfile('error'));
     }
+
+    public function testLogfiledirectory()
+    {
+        $this->config->setLogfiledirectory('./log/');
+        $this->assertSame(realpath('./log/'), $this->config->getLogfiledirectory());
+    }
 }
