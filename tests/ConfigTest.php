@@ -34,6 +34,19 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         unset($this->config);
     }
 
+    public function testVersion()
+    {
+        $this->config->setVersion('bot', 'Cerberus 6000');
+        $this->config->setVersion('os', 'Linux');
+        $this->config->setVersion('php', 'PHP 7.0.0');
+        $this->config->setVersion('sql', 'MySQL 5.5');
+        $this->assertSame('Cerberus 6000', $this->config->getVersion('bot'));
+        $this->assertSame('Linux', $this->config->getVersion('os'));
+        $this->assertSame('PHP 7.0.0', $this->config->getVersion('php'));
+        $this->assertSame('MySQL 5.5', $this->config->getVersion('sql'));
+        $this->assertSame(['bot' => 'Cerberus 6000', 'os' => 'Linux', 'php' => 'PHP 7.0.0', 'sql' => 'MySQL 5.5'], $this->config->getVersion());
+    }
+
     public function testName()
     {
         $this->config->setName('foo');
