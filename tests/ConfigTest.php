@@ -115,4 +115,16 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->setLogfiledirectory('./log/');
         $this->assertSame(realpath('./log/'), $this->config->getLogfiledirectory());
     }
+
+    public function testDailylogfile()
+    {
+        $this->config->setDailylogfile(true);
+        $this->assertTrue($this->config->getDailylogfile());
+        $this->config->setDailylogfile(false);
+        $this->assertFalse($this->config->getDailylogfile());
+        $this->config->setDailylogfile(1);
+        $this->assertTrue($this->config->getDailylogfile());
+        $this->config->setDailylogfile(0);
+        $this->assertFalse($this->config->getDailylogfile());
+    }
 }

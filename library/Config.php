@@ -224,7 +224,7 @@ class Config
 
     public function setDailylogfile($value)
     {
-        $this->dailylogfile = $value;
+        $this->dailylogfile = boolval($value);
     }
 
     public function getDailylogfile()
