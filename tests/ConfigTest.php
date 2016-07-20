@@ -34,6 +34,24 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         unset($this->config);
     }
 
+    public function testConstruct()
+    {
+        $config = [];
+        $config['info']['version'] = '6000';
+        $config['info']['name'] = 'Cerberus';
+        $config['info']['homepage'] = 'http://www.example.org';
+        $config['bot']['channel'] = 'cerberbot';
+        $config['bot']['autorejoin'] = '0';
+        $config['bot']['ctcp'] = '1';
+        $this->config = new Config($config);
+        $this->assertSame('6000', $this->config->getVersion('bot'));
+        $this->assertSame('Cerberus', $this->config->getName());
+        $this->assertSame('http://www.example.org', $this->config->getHomepage());
+        $this->assertSame('#cerberbot', $this->config->getChannel());
+        $this->assertFalse($this->config->getAutorejoin());
+        $this->assertTrue($this->config->getCtcp());
+    }
+
     public function testVersion()
     {
         $this->config->setVersion('bot', 'Cerberus 6000');
