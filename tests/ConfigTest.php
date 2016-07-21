@@ -43,6 +43,15 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $config['bot']['channel'] = 'cerberbot';
         $config['bot']['autorejoin'] = '0';
         $config['bot']['ctcp'] = '1';
+        $config['log']['directory'] = __DIR__;
+        $config['log']['error'] = '1';
+        $config['log']['socket'] = '0';
+        $config['log']['sql'] = '0';
+        $config['log']['dailylogfile'] = '1';
+        $config['plugins']['autoload'] = 'join,part,quit';
+        $config['frontend']['url'] = 'http://127.0.0.1/chat/';
+        $config['frontend']['password'] = 'password';
+        $config['bot']['lang'] = 'de';
         $this->config = new Config($config);
         $this->assertSame('6000', $this->config->getVersion('bot'));
         $this->assertSame('Cerberus', $this->config->getName());
@@ -50,6 +59,15 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('#cerberbot', $this->config->getChannel());
         $this->assertFalse($this->config->getAutorejoin());
         $this->assertTrue($this->config->getCtcp());
+        $this->assertSame(realpath(__DIR__), $this->config->getLogfiledirectory());
+        $this->assertTrue($this->config->getLogfile('error'));
+        $this->assertFalse($this->config->getLogfile('socket'));
+        $this->assertFalse($this->config->getLogfile('sql'));
+        $this->assertTrue($this->config->getDailylogfile());
+        $this->assertSame(['join', 'part', 'quit'], $this->config->getPluginsAutoload());
+        $this->assertSame('http://127.0.0.1/chat/', $this->config->getFrontendUrl());
+        $this->assertSame('password', $this->config->getFrontendPassword());
+        $this->assertSame('de', $this->config->getLanguage());
     }
 
     public function testVersion()
