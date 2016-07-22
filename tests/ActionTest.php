@@ -243,6 +243,22 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(['action' => 'op', 'channel' => '#channel', 'nick' => null], $return);
     }
 
+    public function testOpMeQuakenet()
+    {
+        self::$config['irc']['network'] = 'quakenet';
+        $this->irc = new Irc(self::$config);
+        $this->irc->getConsole()->output(false);
+        $this->irc->init();
+        $this->invokeMethod($this->irc, 'loadPlugin', 'test');
+        $actions = $this->irc->getActions();
+        $db = $this->irc->getDb();
+        $db->getServerData($this->irc->getServer());
+        $return = $actions->op('#channel');
+        $result = $db->getWrite();
+        $this->assertSame('PRIVMSG Q :OP #channel', $result['text']);
+        $this->assertSame(['action' => 'op', 'channel' => '#channel', 'nick' => null], $return);
+    }
+
     public function testDeop()
     {
         $actions = $this->irc->getActions();

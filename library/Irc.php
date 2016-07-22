@@ -158,6 +158,14 @@ class Irc extends Cerberus
     }
 
     /**
+     * @return mixed
+     */
+    public function getServer()
+    {
+        return $this->server;
+    }
+
+    /**
      * @param string $password
      * @return object $this
      */
