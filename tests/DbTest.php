@@ -83,6 +83,12 @@ class DbTest extends \PHPUnit_Framework_TestCase
         return $method->invokeArgs($object, $parameters);
     }
 
+    public function testPing()
+    {
+        $db = $this->irc->getDb();
+        $this->assertTrue($db->ping());
+    }
+
     public function testWrite()
     {
         $db = $this->irc->getDb();
