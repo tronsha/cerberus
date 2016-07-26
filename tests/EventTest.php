@@ -296,5 +296,9 @@ class EventTest extends \PHPUnit_Framework_TestCase
         ksort($array);
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('401', $status['status']);
+        $this->assertSame('No such nick/channel', $status['text']);
     }
 }
