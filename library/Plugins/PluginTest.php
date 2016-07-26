@@ -47,6 +47,7 @@ class PluginTest extends Plugin
         $this->addEvent('onInvite');
         $this->addEvent('onNick');
         $this->addEvent('onMode');
+        $this->addEvent('on401');
     }
 
     /**
@@ -146,6 +147,14 @@ class PluginTest extends Plugin
      * @param array $data
      */
     public function onMode($data)
+    {
+        $this->doEcho($data);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function on401($data)
     {
         $this->doEcho($data);
     }

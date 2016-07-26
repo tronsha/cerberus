@@ -288,4 +288,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $result = $this->irc->getDb()->getWrite();
         $this->assertSame('NOTICE foo :' . "\x01" . 'FINGER Cerberus (http://www.example.org) Idle 0 seconds' . "\x01", $result['text']);
     }
+
+    public function test401()
+    {
+        $input = ':foo!~bar@127.0.0.1 401 Cerberus nobody :No such nick/channel';
+        $array = ['nick' => 'nobody', 'text' => 'No such nick/channel'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }
