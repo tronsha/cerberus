@@ -301,4 +301,17 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('401', $status['status']);
         $this->assertSame('No such nick/channel', $status['text']);
     }
+
+    public function test403()
+    {
+        $input = ':foo!~bar@127.0.0.1 403 Cerberus foo :No such channel';
+        $array = ['channel' => 'foo', 'text' => 'No such channel'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('403', $status['status']);
+        $this->assertSame('No such channel', $status['text']);
+    }
 }
