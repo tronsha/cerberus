@@ -49,6 +49,7 @@ class PluginTest extends Plugin
         $this->addEvent('onMode');
         $this->addEvent('on401');
         $this->addEvent('on403');
+        $this->addEvent('on404');
     }
 
     /**
@@ -164,6 +165,14 @@ class PluginTest extends Plugin
      * @param array $data
      */
     public function on403($data)
+    {
+        $this->doEcho($data);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function on404($data)
     {
         $this->doEcho($data);
     }
