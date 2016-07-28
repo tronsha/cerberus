@@ -37,19 +37,19 @@ class PluginTest extends Plugin
      */
     protected function init()
     {
-        $this->addEvent('onPrivmsg');
-        $this->addEvent('onNotice');
-        $this->addEvent('onJoin');
-        $this->addEvent('onPart');
-        $this->addEvent('onQuit');
-        $this->addEvent('onTopic');
-        $this->addEvent('onKick');
-        $this->addEvent('onInvite');
-        $this->addEvent('onNick');
-        $this->addEvent('onMode');
-        $this->addEvent('on401');
-        $this->addEvent('on403');
-        $this->addEvent('on404');
+        $this->addEvent('onPrivmsg', 'doEcho');
+        $this->addEvent('onNotice', 'doEcho');
+        $this->addEvent('onJoin', 'doEcho');
+        $this->addEvent('onPart', 'doEcho');
+        $this->addEvent('onQuit', 'doEcho');
+        $this->addEvent('onTopic', 'doEcho');
+        $this->addEvent('onKick', 'doEcho');
+        $this->addEvent('onInvite', 'doEcho');
+        $this->addEvent('onNick', 'doEcho');
+        $this->addEvent('onMode', 'doEcho');
+        $this->addEvent('on401', 'doEcho');
+        $this->addEvent('on403', 'doEcho');
+        $this->addEvent('on404', 'doEcho');
     }
 
     /**
@@ -67,113 +67,9 @@ class PluginTest extends Plugin
     /**
      * @param array $data
      */
-    protected function doEcho($data)
+    public function doEcho($data)
     {
         ksort($data);
         echo serialize($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onPrivmsg($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onNotice($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onJoin($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onPart($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onQuit($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onTopic($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onKick($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onInvite($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onNick($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function onMode($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function on401($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function on403($data)
-    {
-        $this->doEcho($data);
-    }
-
-    /**
-     * @param array $data
-     */
-    public function on404($data)
-    {
-        $this->doEcho($data);
     }
 }

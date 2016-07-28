@@ -739,11 +739,13 @@ class Irc extends Cerberus
         if (array_key_exists($event, $this->pluginevents)) {
             for ($priority = 10; $priority > 0; $priority--) {
                 if (array_key_exists($priority, $this->pluginevents[$event])) {
-                    foreach ($this->pluginevents[$event][$priority] as $pluginClass) {
-                        if (method_exists($pluginClass, $event) === true) {
-                            $pluginClass->$event($data);
+                    foreach ($this->pluginevents[$event][$priority] as $pluginArray) {
+                        $pluginObject = $pluginArray['object'];
+                        $pluginMethod = $pluginArray['method'];
+                        if (method_exists($pluginObject, $pluginMethod) === true) {
+                            $pluginObject->$pluginMethod($data);
                         } else {
-                            throw new Exception('The Class ' . get_class($pluginClass) . ' has not the method ' . $event . '.');
+                            throw new Exception('The Class ' . get_class($pluginObject) . ' has not the method ' . $pluginMethod . '.');
                         }
                     }
                 }
@@ -754,15 +756,18 @@ class Irc extends Cerberus
     /**
      * @param string $event
      * @param object $object
+     * @param string|null $method
      * @param int $priority
      * @throws Exception
      */
-    public function addPluginEvent($event, $object, $priority = 5)
+    public function addPluginEvent($event, $object, $method = null, $priority = 5)
     {
         if (in_array($event, $this->getEvents()->getEventList(), true) === false) {
             throw new Exception('The event ' . $event . ' not exists.');
         }
-        $this->pluginevents[$event][$priority][] = $object;
+        $method = ($method === null ? $event : $method);
+        $pluginArray = ['object' => $object, 'method' => $method];
+        $this->pluginevents[$event][$priority][] = $pluginArray;
     }
 
     /**
@@ -776,8 +781,8 @@ class Irc extends Cerberus
         $className = get_class($object);
         if (array_key_exists($event, $this->pluginevents)) {
             foreach ($this->pluginevents[$event] as $priorityKey => $priorityValue) {
-                foreach ($priorityValue as $key => $eventObject) {
-                    if (get_class($eventObject) === $className) {
+                foreach ($priorityValue as $key => $pluginArray) {
+                    if (get_class($pluginArray['object']) === $className) {
                         unset($this->pluginevents[$event][$priorityKey][$key]);
                         $count++;
                     }

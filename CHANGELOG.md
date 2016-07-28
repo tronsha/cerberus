@@ -21,6 +21,7 @@
 - Db addUserToChannel: added return value
 - Db addControl: added return value
 - Db addStatus: added return value
+- Irc addPluginEvent: added method param
 
 ## [1.5.0]
 

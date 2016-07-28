@@ -44,7 +44,7 @@ class PluginCrypt extends Plugin
     {
         if (extension_loaded('mcrypt')) {
             $this->mircryption = new Mircryption;
-            $this->addEvent('onPrivmsg', 10);
+            $this->addEvent('onPrivmsg', null, 10);
         } else {
             $this->sysinfo('The mcrypt extension is not available.');
         }

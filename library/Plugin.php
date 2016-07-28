@@ -132,15 +132,17 @@ abstract class Plugin extends Cerberus
 
     /**
      * @param string $event
+     * @param string|null $method
      * @param int $priority
      */
-    protected function addEvent($event, $priority = 5)
+    protected function addEvent($event, $method = null, $priority = 5)
     {
         try {
-            if (in_array($event, get_class_methods($this), true) === false) {
-                throw new Exception('The method ' . $event . ' not exists in the class.');
+            $method = ($method === null ? $event : $method);
+            if (in_array($method, get_class_methods($this), true) === false) {
+                throw new Exception('The method ' . $method . ' not exists in the class.');
             }
-            $this->irc->addPluginEvent($event, $this, $priority);
+            $this->irc->addPluginEvent($event, $this, $method, $priority);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
