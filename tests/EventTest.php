@@ -291,7 +291,7 @@ class EventTest extends \PHPUnit_Framework_TestCase
 
     public function test401()
     {
-        $input = ':foo!~bar@127.0.0.1 401 Cerberus nobody :No such nick/channel';
+        $input = ':orwell.freenode.net 401 Cerberus nobody :No such nick/channel';
         $array = ['nick' => 'nobody', 'text' => 'No such nick/channel'];
         ksort($array);
         $this->expectOutputString(serialize($array));
@@ -304,7 +304,7 @@ class EventTest extends \PHPUnit_Framework_TestCase
 
     public function test403()
     {
-        $input = ':foo!~bar@127.0.0.1 403 Cerberus foo :No such channel';
+        $input = ':orwell.freenode.net 403 Cerberus foo :No such channel';
         $array = ['channel' => 'foo', 'text' => 'No such channel'];
         ksort($array);
         $this->expectOutputString(serialize($array));
@@ -317,7 +317,7 @@ class EventTest extends \PHPUnit_Framework_TestCase
 
     public function test404()
     {
-        $input = ':foo!~bar@127.0.0.1 404 Cerberus #foo :Cannot send to channel';
+        $input = ':orwell.freenode.net 404 Cerberus #foo :Cannot send to channel';
         $array = ['channel' => '#foo', 'text' => 'Cannot send to channel'];
         ksort($array);
         $this->expectOutputString(serialize($array));
@@ -326,5 +326,18 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $status = $db->getStatus();
         $this->assertSame('404', $status['status']);
         $this->assertSame('Cannot send to channel', $status['text']);
+    }
+
+    public function test431()
+    {
+        $input = ':orwell.freenode.net 431 Cerberus :No nickname given';
+        $array = ['text' => 'No nickname given'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('431', $status['status']);
+        $this->assertSame('No nickname given', $status['text']);
     }
 }

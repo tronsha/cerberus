@@ -50,6 +50,7 @@ class PluginTest extends Plugin
         $this->addEvent('on401', 'doEcho');
         $this->addEvent('on403', 'doEcho');
         $this->addEvent('on404', 'doEcho');
+        $this->addEvent('on431', 'doEcho');
     }
 
     /**
