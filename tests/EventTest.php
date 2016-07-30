@@ -340,4 +340,17 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('431', $status['status']);
         $this->assertSame('No nickname given', $status['text']);
     }
+
+    public function test432()
+    {
+        $input = ':orwell.freenode.net 432 Cerberus #foo :Erroneous Nickname';
+        $array = ['nick' => '#foo', 'text' => 'Erroneous Nickname'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('432', $status['status']);
+        $this->assertSame('Erroneous Nickname', $status['text']);
+    }
 }
