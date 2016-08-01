@@ -366,4 +366,17 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('433', $status['status']);
         $this->assertSame('Nickname is already in use', $status['text']);
     }
+
+    public function test442()
+    {
+        $input = ':orwell.freenode.net 442 Cerberus #foo :You\'re not on that channel';
+        $array = ['channel' => '#foo', 'nick' => 'Cerberus', 'text' => 'You\'re not on that channel'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('442', $status['status']);
+        $this->assertSame('You\'re not on that channel', $status['text']);
+    }
 }
