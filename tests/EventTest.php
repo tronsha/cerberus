@@ -379,4 +379,18 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('442', $status['status']);
         $this->assertSame('You\'re not on that channel', $status['text']);
     }
+
+    public function test443()
+    {
+        $this->irc->getTranslate()->setLanguage('en');
+        $input = ':orwell.freenode.net 443 Cerberus foo #cerberbot :is already on channel';
+        $array = ['channel' => '#cerberbot', 'nick' => 'Cerberus', 'user' => 'foo', 'text' => 'is already on channel'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('443', $status['status']);
+        $this->assertSame('foo is already on channel', $status['text']);
+    }
 }

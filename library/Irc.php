@@ -827,6 +827,14 @@ class Irc extends Cerberus
     }
 
     /**
+     * @return Translate|null
+     */
+    public function getTranslate()
+    {
+        return $this->translate;
+    }
+
+    /**
      * @param string $text
      * @param array $array
      * @param mixed $lang
