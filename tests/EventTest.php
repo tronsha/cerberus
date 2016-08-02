@@ -382,7 +382,7 @@ class EventTest extends \PHPUnit_Framework_TestCase
 
     public function test443()
     {
-        $this->irc->getTranslate()->setLanguage('en');
+        $this->irc->setLanguage('en');
         $input = ':orwell.freenode.net 443 Cerberus foo #cerberbot :is already on channel';
         $array = ['channel' => '#cerberbot', 'nick' => 'Cerberus', 'user' => 'foo', 'text' => 'is already on channel'];
         ksort($array);
