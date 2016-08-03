@@ -57,6 +57,7 @@ class EventTest extends \PHPUnit_Framework_TestCase
         }
         self::$config['db'] = self::$config['testdb'];
         $this->irc = new Irc(self::$config);
+        $this->irc->setLanguage('en');
         $this->irc->getConsole()->output(false);
         $this->irc->init();
         $this->invokeMethod($this->irc, 'loadPlugin', 'test');
@@ -382,7 +383,6 @@ class EventTest extends \PHPUnit_Framework_TestCase
 
     public function test443()
     {
-        $this->irc->setLanguage('en');
         $input = ':orwell.freenode.net 443 Cerberus foo #cerberbot :is already on channel';
         $array = ['channel' => '#cerberbot', 'nick' => 'Cerberus', 'user' => 'foo', 'text' => 'is already on channel'];
         ksort($array);
@@ -392,5 +392,18 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $status = $db->getStatus();
         $this->assertSame('443', $status['status']);
         $this->assertSame('foo is already on channel', $status['text']);
+    }
+
+    public function test470()
+    {
+        $input = ':orwell.freenode.net 470 Cerberus #linux ##linux :Forwarding to another channel';
+        $array = ['channel' => '#linux', 'forwarding' => '##linux', 'text' => 'Forwarding to another channel'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('470', $status['status']);
+        $this->assertSame('Forwarding to another channel: ##linux', $status['text']);
     }
 }
