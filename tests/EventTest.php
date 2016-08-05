@@ -176,6 +176,9 @@ class EventTest extends \PHPUnit_Framework_TestCase
         ksort($array);
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
+        $status = $this->irc->getDb()->getStatus();
+        $this->assertSame('KICK', $status['status']);
+        $this->assertSame('User foo kicked you from channel #cerberbot (goodbye)', $status['text']);
         $result = $this->irc->getDb()->getWrite();
         $this->assertSame('JOIN #cerberbot', $result['text']);
     }
