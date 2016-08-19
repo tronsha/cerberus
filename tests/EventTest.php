@@ -435,4 +435,17 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('473', $status['status']);
         $this->assertSame('Cannot join channel (+i) - you must be invited', $status['text']);
     }
+
+    public function test474()
+    {
+        $input = ':orwell.freenode.net 474 Cerberus #cerberbot :Cannot join channel (+b) - you are banned';
+        $array = ['channel' => '#cerberbot', 'nick' => 'Cerberus', 'text' => 'Cannot join channel (+b) - you are banned'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('474', $status['status']);
+        $this->assertSame('Cannot join channel (+b) - you are banned', $status['text']);
+    }
 }
