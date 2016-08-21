@@ -461,4 +461,17 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('475', $status['status']);
         $this->assertSame('Cannot join channel (+k) - bad key', $status['text']);
     }
+
+    public function test477()
+    {
+        $input = ':orwell.freenode.net 477 Cerberus #cerberbot :Cannot join channel (+r) - you need to be identified with services';
+        $array = ['channel' => '#cerberbot', 'nick' => 'Cerberus', 'text' => 'Cannot join channel (+r) - you need to be identified with services'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('477', $status['status']);
+        $this->assertSame('Cannot join channel (+r) - you need to be identified with services', $status['text']);
+    }
 }
