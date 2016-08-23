@@ -338,7 +338,7 @@ class Irc extends Cerberus
         if ($this->getNick() === null) {
             $this->setNick();
         }
-        $this->write('USER PHP' . preg_replace('/[^a-z0-9]/i', '', phpversion()) . ' * * :' . $this->getConfig()->getName());
+        $this->write('USER cerberus * * :' . $this->getConfig()->getName());
         $this->write('NICK ' . $this->getNick());
         $this->lastping = time();
         $this->nowrite = true;
