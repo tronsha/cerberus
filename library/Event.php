@@ -131,6 +131,12 @@ class Event
             case '301':
                 $this->getRpl()->on301($rest, $text);
                 break;
+            case '305':
+                $this->getRpl()->on305($rest, $text);
+                break;
+            case '306':
+                $this->getRpl()->on306($rest, $text);
+                break;
             case '311':
                 $this->getRpl()->on311($rest, $text);
                 break;

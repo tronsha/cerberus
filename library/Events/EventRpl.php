@@ -46,7 +46,7 @@ class EventRpl
     }
 
     /**
-     * RPL_WHOISUSER
+     * RPL_AWAY
      * <nick> :<away message>
      * @param string $rest
      * @param string $text
@@ -56,6 +56,30 @@ class EventRpl
         list($me, $nick) = explode(' ', $rest);
         unset($me);
         $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
+    }
+
+    /**
+     * RPL_UNAWAY
+     * :You are no longer marked as being away
+     * @param string $rest
+     * @param string $text
+     */
+    public function on305($rest, $text)
+    {
+        unset($rest);
+        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
+    }
+
+    /**
+     * RPL_NOWAWAY
+     * :You have been marked as being away
+     * @param string $rest
+     * @param string $text
+     */
+    public function on306($rest, $text)
+    {
+        unset($rest);
+        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
     }
 
     /**
