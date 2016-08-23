@@ -487,4 +487,17 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('479', $status['status']);
         $this->assertSame('Illegal channel name', $status['text']);
     }
+
+    public function test482()
+    {
+        $input = ':orwell.freenode.net 482 Cerberus #cerberbot :You\'re not channel operator';
+        $array = ['channel' => '#cerberbot', 'nick' => 'Cerberus', 'text' => 'You\'re not channel operator'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('482', $status['status']);
+        $this->assertSame('You\'re not channel operator', $status['text']);
+    }
 }
