@@ -214,6 +214,9 @@ class Event
             case '443':
                 $this->getErr()->on443($rest, $text);
                 break;
+            case '468':
+                $this->getErr()->on468($rest, $text);
+                break;
             case '470':
                 $this->getErr()->on470($rest, $text);
                 break;
