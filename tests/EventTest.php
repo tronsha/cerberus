@@ -503,15 +503,15 @@ class EventTest extends \PHPUnit_Framework_TestCase
 
     public function test301()
     {
-        $input = ':orwell.freenode.net 301 Cerberus foo :bar';
-        $array = ['user' => 'foo', 'text' => 'bar'];
+        $input = ':orwell.freenode.net 301 Cerberus John :I\'m off to see the wizard.';
+        $array = ['user' => 'John', 'text' => 'I\'m off to see the wizard.'];
         ksort($array);
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
         $db = $this->irc->getDb();
         $status = $db->getStatus();
         $this->assertSame('301', $status['status']);
-        $this->assertSame('foo is away: bar', $status['text']);
+        $this->assertSame('John is away: I\'m off to see the wizard.', $status['text']);
     }
 
     public function test305()
