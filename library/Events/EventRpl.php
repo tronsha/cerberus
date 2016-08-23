@@ -53,9 +53,11 @@ class EventRpl
      */
     public function on301($rest, $text)
     {
-        list($me, $nick) = explode(' ', $rest);
+        list($me, $user) = explode(' ', $rest);
         unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
+        $data = ['user' => $user, 'text' => $text];
+        $this->event->getDb()->addStatus('301', $this->irc->__('%user% is away: %text%', ['%user%' => $user, '%text%' => $text]), $data);
+        $this->event->runPluginEvent(__FUNCTION__, $data);
     }
 
     /**

@@ -501,6 +501,19 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('You\'re not channel operator', $status['text']);
     }
 
+    public function test301()
+    {
+        $input = ':orwell.freenode.net 301 Cerberus foo :bar';
+        $array = ['user' => 'foo', 'text' => 'bar'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('301', $status['status']);
+        $this->assertSame('foo is away: bar', $status['text']);
+    }
+
     public function test305()
     {
         $input = ':orwell.freenode.net 305 Cerberus :You are no longer marked as being away';
