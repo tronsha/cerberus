@@ -67,6 +67,7 @@ class PluginTest extends Plugin
         $this->addEvent('on305', 'doEcho');
         $this->addEvent('on306', 'doEcho');
         $this->addEvent('on311', 'doEcho');
+        $this->addEvent('on312', 'doEcho');
     }
 
     /**
