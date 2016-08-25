@@ -55,9 +55,7 @@ class EventRpl
     {
         list($me, $user) = explode(' ', $rest);
         unset($me);
-        $data = ['user' => $user, 'text' => $text];
-        $this->event->getDb()->addStatus('301', $this->irc->__('%user% is away: %text%', ['%user%' => $user, '%text%' => $text]), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
+        $this->event->runPluginEvent(__FUNCTION__, ['user' => $user, 'text' => $text]);
     }
 
     /**
