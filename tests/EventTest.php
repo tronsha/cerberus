@@ -545,4 +545,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
+
+    public function test317()
+    {
+        $input = ':orwell.freenode.net 317 Cerberus foo 44645 1471885603 :seconds idle, signon time';
+        $array = ['nick' => 'foo', 'list' => ['seconds idle' => '44645', 'signon time' => '1471885603']];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }
