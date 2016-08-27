@@ -554,4 +554,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
+
+    public function test318()
+    {
+        $input = ':orwell.freenode.net 318 Cerberus foo :End of /WHOIS list.';
+        $array =  ['nick' => 'foo', 'text' => 'End of /WHOIS list.'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }
