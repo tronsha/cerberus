@@ -620,8 +620,13 @@ class Irc extends Cerberus
     /**
      *
      */
-    public function channellist()
+    public function channelList()
     {
+        if ($this->loadPlugin('list') === true) {
+            $this->getActions()->channelList();
+            return true;
+        }
+        return false;
     }
 
     /**

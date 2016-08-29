@@ -257,7 +257,7 @@ class Action
     /**
      * @throws Exception
      */
-    public function getList()
+    public function channelList()
     {
         $this->getDb()->addWrite('LIST');
     }
