@@ -253,4 +253,12 @@ class Action
         $this->getDb()->addWrite('KICK ' . $channel . ' ' . $user . ' :' . $comment);
         return ['action' => 'kick', 'channel' => $channel, 'user' => $user, 'comment' => $comment];
     }
+
+    /**
+     * @throws Exception
+     */
+    public function getList()
+    {
+        $this->getDb()->addWrite('LIST');
+    }
 }
