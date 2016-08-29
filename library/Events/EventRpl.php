@@ -160,7 +160,9 @@ class EventRpl
      */
     public function on322($rest, $text)
     {
-        $this->event->runPluginEvent(__FUNCTION__, ['rest' => $rest, 'text' => $text]);
+        list($me, $channel, $usercount) = explode(' ', $rest);
+        unset($me);
+        $this->event->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'usercount' => $usercount, 'topic' => $text]);
     }
 
     /**
