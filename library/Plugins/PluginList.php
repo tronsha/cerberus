@@ -35,6 +35,7 @@ class PluginList extends Plugin
     protected function init()
     {
         $this->addEvent('on322');
+        $this->addEvent('on323');
     }
 
     /**
