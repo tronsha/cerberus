@@ -169,9 +169,10 @@ class EventRpl
      * RPL_LISTEND
      * :End of LIST
      */
-    public function on323()
+    public function on323($rest, $text)
     {
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        unset($rest);
+        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
     }
 
     /**
