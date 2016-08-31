@@ -159,7 +159,7 @@ class Event
                 $this->getRpl()->on323($rest, $text);
                 break;
             case '324':
-                $this->getRpl()->on324();
+                $this->getRpl()->on324($rest, $text);
                 break;
             case '330':
                 $this->getRpl()->on330($rest, $text);

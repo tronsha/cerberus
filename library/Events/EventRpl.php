@@ -168,6 +168,8 @@ class EventRpl
     /**
      * RPL_LISTEND
      * :End of LIST
+     * @param string $rest
+     * @param string $text
      */
     public function on323($rest, $text)
     {
@@ -178,10 +180,17 @@ class EventRpl
     /**
      * RPL_CHANNELMODEIS
      * <channel> <mode> <mode params>
+     * @param string $rest
+     * @param string $text
      */
-    public function on324()
+    public function on324($rest, $text)
     {
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        unset($text);
+        $list = explode(' ', $rest, 4);
+        $channel = empty($list[1]) === false ? $list[1] : '';
+        $mode = empty($list[2]) === false ? $list[2] : '';
+        $params = empty($list[3]) === false ? explode(' ', $list[3]) : [];
+        $this->event->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'mode' => $mode, 'params' => $params]);
     }
 
     /**

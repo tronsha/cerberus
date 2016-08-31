@@ -590,4 +590,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
+
+    public function test324()
+    {
+        $input = ':orwell.freenode.net 324 Cerberus #cerberbot +nstlk 1337 password';
+        $array =  ['channel' => '#cerberbot', 'mode' => '+nstlk', 'params' => ['1337', 'password']];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }
