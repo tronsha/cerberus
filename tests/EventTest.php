@@ -599,4 +599,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
+
+    public function test330()
+    {
+        $input = ':orwell.freenode.net 330 Cerberus Foo Foobar :is logged in as';
+        $array =  ['nick' => 'Foo', 'auth' => 'Foobar', 'text' => 'is logged in as'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }
