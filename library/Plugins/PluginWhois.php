@@ -74,9 +74,9 @@ class PluginWhois extends Plugin
      */
     public function on311($data)
     {
-        $this->cache[$data['nick']]['time'] = time();
-        $this->cache[$data['nick']][311]['host'] = $data['host'];
-        $this->cache[$data['nick']][311]['realname'] = $data['realname'];
+        $this->cache[strtolower($data['nick'])]['time'] = time();
+        $this->cache[strtolower($data['nick'])][311]['host'] = $data['host'];
+        $this->cache[strtolower($data['nick'])][311]['realname'] = $data['realname'];
     }
 
     /**
@@ -94,10 +94,10 @@ class PluginWhois extends Plugin
     public function on317($data)
     {
         if (isset($data['list']['seconds idle']) === true) {
-            $this->cache[$data['nick']][317]['idle'] = $data['list']['seconds idle'];
+            $this->cache[strtolower($data['nick'])][317]['idle'] = $data['list']['seconds idle'];
         }
         if (isset($data['list']['seconds idle']) === true) {
-            $this->cache[$data['nick']][317]['signon'] = $data['list']['signon time'];
+            $this->cache[strtolower($data['nick'])][317]['signon'] = $data['list']['signon time'];
         }
     }
 
@@ -107,9 +107,9 @@ class PluginWhois extends Plugin
      */
     public function on318($data)
     {
-        $nick = $data['nick'];
+        $nick = strtolower($data['nick']);
         if (isset($this->cache[$nick][401]) === false) {
-            $output = 'Nick: ' . $nick . '<br>' . PHP_EOL;
+            $output = 'Nick: ' . $data['nick'] . '<br>' . PHP_EOL;
             if (isset($this->cache[$nick][311]['realname']) === true) {
                 $output .= 'Realname: ' . $this->cache[$nick][311]['realname'] . '<br>' . PHP_EOL;
             }
@@ -141,7 +141,7 @@ class PluginWhois extends Plugin
      */
     public function on319($data)
     {
-        $this->cache[$data['nick']][319]['channel'] = $data['text'];
+        $this->cache[strtolower($data['nick'])][319]['channel'] = $data['text'];
     }
 
     /**
@@ -165,7 +165,7 @@ class PluginWhois extends Plugin
      */
     public function on401($data)
     {
-        $this->cache[$data['nick']][401] = $data['text'];
+        $this->cache[strtolower($data['nick'])][401] = $data['text'];
     }
 
     /**
