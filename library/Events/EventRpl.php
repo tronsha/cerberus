@@ -210,14 +210,14 @@ class EventRpl
      * RPL_TOPIC
      * <channel> :<topic>
      * @param string $rest
-     * @param string $text
+     * @param string $topic
      */
-    public function on332($rest, $text)
+    public function on332($rest, $topic)
     {
         list($me, $channel) = explode(' ', $rest);
         unset($me);
-        $this->event->onTopic($channel, $text);
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $this->event->getDb()->setChannelTopic($channel, $topic);
+        $this->event->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'topic' => $topic]);
     }
 
     /**
