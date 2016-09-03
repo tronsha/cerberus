@@ -234,7 +234,7 @@ class EventRpl
             preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
             $this->event->getDb()->addUserToChannel($channel, $matches[2], $matches[1]);
         }
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        $this->event->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'user' => $user_array]);
     }
 
     /**
