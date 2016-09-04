@@ -625,5 +625,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         ksort($array);
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $result = $db->getUserInChannel('#cerberbot', 'foo');
+        $this->assertSame('foo', $result[0]['username']);
+        $this->assertSame(['@'], json_decode($result[0]['mode']));
+        $result = $db->getUserInChannel('#cerberbot', 'bar');
+        $this->assertSame('bar', $result[0]['username']);
+        $result = $db->getUserInChannel('#cerberbot', 'baz');
+        $this->assertSame([], $result);
     }
 }
