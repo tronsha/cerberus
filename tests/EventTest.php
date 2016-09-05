@@ -634,4 +634,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $result = $db->getUserInChannel('#cerberbot', 'baz');
         $this->assertSame([], $result);
     }
+
+    public function test378()
+    {
+        $input = ':orwell.freenode.net 378 Cerberus Cerberus :is connecting from *@localhost 127.0.0.1';
+        $array =  ['nick' => 'Cerberus', 'text' => 'is connecting from *@localhost 127.0.0.1'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }
