@@ -643,4 +643,13 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);
     }
+
+    public function test671()
+    {
+        $input = ':orwell.freenode.net 671 Cerberus foo :is using a secure connection';
+        $array =  ['nick' => 'foo', 'text' => 'is using a secure connection'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
 }

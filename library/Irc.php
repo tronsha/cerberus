@@ -558,7 +558,7 @@ class Irc extends Cerberus
         $command = isset($matches[3]) ? $matches[3] : '';
         $rest = isset($matches[4]) ? $matches[4] : '';
         $text = isset($matches[5]) ? $matches[5] : '';
-        if (preg_match('/^([2345])[0-9][0-9]$/', $command, $matches)) {
+        if (preg_match('/^([23456])[0-9][0-9]$/', $command, $matches)) {
             if (intval($matches[1]) === 2 || intval($matches[1]) === 3 || intval($matches[1]) === 6) {
                 $this->getEvents()->rpl($command, $rest, $text);
             }
