@@ -260,5 +260,6 @@ class Action
     public function channelList()
     {
         $this->getDb()->addWrite('LIST');
+        return ['action' => 'list'];
     }
 }
