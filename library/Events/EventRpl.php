@@ -46,13 +46,16 @@ class EventRpl
     }
 
     /**
+     * RPL_TRYAGAIN
      * LIST :This command could not be completed because it has been used recently, and is rate-limited.
      * @param string $rest
      * @param string $text
      */
     public function on263($rest, $text)
     {
-        $this->event->runPluginEvent(__FUNCTION__, []);
+        list($me, $command) = explode(' ', $rest);
+        unset($me);
+        $this->event->runPluginEvent(__FUNCTION__, ['command' => $command, 'text' => $text]);
     }
 
     /**
