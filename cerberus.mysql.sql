@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `channellist` (
   `usercount` int(11) unsigned NOT NULL,
   `topic` text COLLATE utf8_unicode_ci NOT NULL,
   `time` datetime NOT NULL,
+  `bot_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 

@@ -56,6 +56,7 @@ CREATE TABLE "channellist" (
 	"usercount" integer NOT NULL ,
 	"topic" text NOT NULL ,
 	"time" timestamp with time zone NOT NULL ,
+	"bot_id" integer NOT NULL ,
 	PRIMARY KEY ("id")
 );
 SELECT setval('"channellist_id_seq"', 1, true);

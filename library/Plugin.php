@@ -113,6 +113,14 @@ abstract class Plugin extends Cerberus
     }
 
     /**
+     * @return string
+     */
+    protected function getNetwork()
+    {
+        return $this->irc->getNetwork();
+    }
+
+    /**
      * @return array
      */
     protected function translations()

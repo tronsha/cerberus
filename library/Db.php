@@ -969,4 +969,55 @@ class Db
             $this->error($e->getMessage());
         }
     }
+
+    /**
+     */
+    public function clearChannellist()
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->delete('channellist')
+                ->where('bot_id = ?')
+                ->setParameter(0, $this->botId)
+                ->execute();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
+
+    /**
+     * @param string $network
+     * @param string $channel
+     * @param int $usercount
+     * @param string $topic
+     * @return int
+     */
+    public function addChannelToChannellist($network, $channel, $usercount, $topic)
+    {
+        try {
+            $now = (new DateTime())->format('Y-m-d H:i:s');
+            $qb = $this->conn->createQueryBuilder();
+            $qb ->insert('channellist')
+                ->values(
+                    [
+                        'network' => '?',
+                        'channel' => '?',
+                        'usercount' => '?',
+                        'topic' => '?',
+                        'time' => '?',
+                        'bot_id' => '?'
+                    ]
+                )
+                ->setParameter(0, $network)
+                ->setParameter(1, $channel)
+                ->setParameter(2, $usercount)
+                ->setParameter(3, $topic)
+                ->setParameter(4, $now)
+                ->setParameter(5, $this->botId)
+                ->execute();
+            return $this->lastInsertId('channellist');
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
 }

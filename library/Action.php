@@ -255,10 +255,11 @@ class Action
     }
 
     /**
-     * @throws Exception
+     * @return array
      */
     public function channelList()
     {
+        $this->getDb()->clearChannellist();
         $this->getDb()->addWrite('LIST');
         return ['action' => 'list'];
     }

@@ -54,6 +54,9 @@ class PluginList extends Plugin
      */
     public function on322($data)
     {
+        $network = $this->getNetwork();
+        $db = $this->getDb();
+        $db->addChannelToChannellist($network, $data['channel'], $data['usercount'], $data['topic']);
     }
 
     /**
