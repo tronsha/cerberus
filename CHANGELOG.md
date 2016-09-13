@@ -3,9 +3,15 @@
 ## [Unreleased]
 
 ### Added
+- Plugin List
+- Action channelList
+- Event on263
 - Db lastInsertId
+- Db clearChannellist
+- Db addChannelToChannellist
 - Installer: ask driver (mysql, postgresql)
 - Tests for Database Functions
+- Tests for Events
 
 ### Fixed
 - Db removeUserFromChannel: if username contains backslashes
@@ -15,6 +21,7 @@
 - Irc inChannel: wrong return position
 - Translate trans: works now
 - Config ctcp: works now
+- MySQL 5.7
 
 ### Changed
 - Db addChannel: added return value
