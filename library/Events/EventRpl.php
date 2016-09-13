@@ -46,6 +46,16 @@ class EventRpl
     }
 
     /**
+     * LIST :This command could not be completed because it has been used recently, and is rate-limited.
+     * @param string $rest
+     * @param string $text
+     */
+    public function on263($rest, $text)
+    {
+        $this->event->runPluginEvent(__FUNCTION__, []);
+    }
+
+    /**
      * RPL_AWAY
      * <nick> :<away message>
      * @param string $rest
