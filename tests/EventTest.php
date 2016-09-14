@@ -501,6 +501,15 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('You\'re not channel operator', $status['text']);
     }
 
+    public function test263()
+    {
+        $input = ':orwell.freenode.net 263 Cerberus LIST :This command could not be completed because it has been used recently, and is rate-limited.';
+        $array = ['command' => 'LIST', 'text' => 'This command could not be completed because it has been used recently, and is rate-limited.'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
+
     public function test301()
     {
         $input = ':orwell.freenode.net 301 Cerberus John :I\'m off to see the wizard.';
