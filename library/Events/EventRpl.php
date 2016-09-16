@@ -166,6 +166,18 @@ class EventRpl
     }
 
     /**
+     * RPL_LISTSTART
+     * Channel :Users  Name
+     * @param string $rest
+     * @param string $text
+     */
+    public function on321($rest, $text)
+    {
+        unset($rest);
+        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
+    }
+
+    /**
      * RPL_LIST
      * <channel> <# visible> :<topic>
      * @param string $rest

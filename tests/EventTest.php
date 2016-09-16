@@ -582,6 +582,15 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->invokeMethod($this->irc, 'command', $input);
     }
 
+    public function test321()
+    {
+        $input = ':orwell.freenode.net 321 Cerberus Channel :Users  Name';
+        $array =  ['text' => 'Users  Name'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+    }
+
     public function test322()
     {
         $input = ':orwell.freenode.net 322 Cerberus #cerberbot 5 :https://github.com/tronsha/cerberus';
@@ -593,8 +602,8 @@ class EventTest extends \PHPUnit_Framework_TestCase
 
     public function test323()
     {
-        $input = ':orwell.freenode.net 323 Cerberus ::End of /LIST';
-        $array =  ['text' => ':End of /LIST'];
+        $input = ':orwell.freenode.net 323 Cerberus :End of /LIST';
+        $array =  ['text' => 'End of /LIST'];
         ksort($array);
         $this->expectOutputString(serialize($array));
         $this->invokeMethod($this->irc, 'command', $input);

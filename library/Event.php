@@ -155,6 +155,9 @@ class Event
             case '319':
                 $this->getRpl()->on319($rest, $text);
                 break;
+            case '321':
+                $this->getRpl()->on321($rest, $text);
+                break;
             case '322':
                 $this->getRpl()->on322($rest, $text);
                 break;

@@ -34,6 +34,7 @@ class PluginList extends Plugin
      */
     protected function init()
     {
+        $this->addEvent('on321');
         $this->addEvent('on322');
         $this->addEvent('on323');
     }
@@ -52,11 +53,20 @@ class PluginList extends Plugin
      * @param array $data
      * @return bool
      */
+    public function on321($data)
+    {
+        unset($data);
+        return $this->getDb()->clearChannellist();
+    }
+
+    /**
+     * @param array $data
+     * @return bool
+     */
     public function on322($data)
     {
         $network = $this->getNetwork();
-        $db = $this->getDb();
-        $db->addChannelToChannellist($network, $data['channel'], $data['usercount'], $data['topic']);
+        return $this->getDb()->addChannelToChannellist($network, $data['channel'], $data['usercount'], $data['topic']);
     }
 
     /**
@@ -65,5 +75,6 @@ class PluginList extends Plugin
      */
     public function on323($data)
     {
+        unset($data);
     }
 }
