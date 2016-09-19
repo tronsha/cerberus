@@ -75,6 +75,6 @@ class PluginList extends Plugin
      */
     public function on323($data)
     {
-        unset($data);
+        return $this->getDb()->addStatus('323', $data['text'], $data);
     }
 }
