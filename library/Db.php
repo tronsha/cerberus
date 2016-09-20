@@ -1020,4 +1020,26 @@ class Db
             $this->error($e->getMessage());
         }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getChannellist()
+    {
+        try {
+            $qb = $this->conn->createQueryBuilder();
+            $stmt = $qb
+                ->select('*')
+                ->from('channellist')
+                ->where('bot_id = ?')
+//                ->setMaxResults(100)
+                ->setParameter(0, $this->botId)
+                ->orderBy('usercount', 'DESC')
+                ->execute();
+            $row = $stmt->fetch();
+            return $row;
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
+    }
 }
