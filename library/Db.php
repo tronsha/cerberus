@@ -1029,14 +1029,14 @@ class Db
         try {
             $qb = $this->conn->createQueryBuilder();
             $stmt = $qb
-                ->select('*')
+                ->select('channel', 'topic', 'usercount')
                 ->from('channellist')
                 ->where('bot_id = ?')
-//                ->setMaxResults(100)
+                ->setMaxResults(10000)
                 ->setParameter(0, $this->botId)
                 ->orderBy('usercount', 'DESC')
                 ->execute();
-            $row = $stmt->fetch();
+            $row = $stmt->fetchAll();
             return $row;
         } catch (Exception $e) {
             $this->error($e->getMessage());
