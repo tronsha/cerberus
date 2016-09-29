@@ -66,7 +66,7 @@ class Console
      */
     public function writeln($output = '')
     {
-        if ($this->return) {
+        if ($this->return === true) {
             return $output;
         }
         $this->output->writeln($output);
@@ -264,12 +264,12 @@ class Console
     /**
      * @param bool $output
      */
-    public function output($output)
+    public function setOutputPrint($output)
     {
-        if ($output) {
-            $this->return = false;
-        } else {
+        if ($output === false) {
             $this->return = true;
+        } else {
+            $this->return = false;
         }
     }
 }
