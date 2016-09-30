@@ -262,14 +262,18 @@ class Console
     }
 
     /**
-     * @param bool $output
+     *
      */
-    public function setOutputPrint($output)
+    public function enableOutput()
     {
-        if ($output === false) {
-            $this->return = true;
-        } else {
-            $this->return = false;
-        }
+        $this->return = false;
+    }
+
+    /**
+     *
+     */
+    public function disableOutput()
+    {
+        $this->return = true;
     }
 }

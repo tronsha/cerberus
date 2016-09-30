@@ -57,7 +57,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
         }
         self::$config['db'] = self::$config['testdb'];
         $this->irc = new Irc(self::$config);
-        $this->irc->getConsole()->setOutputPrint(false);
+        $this->irc->getConsole()->disableOutput();
         $this->irc->init();
         $this->invokeMethod($this->irc, 'loadPlugin', 'test');
     }
@@ -247,7 +247,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase
     {
         self::$config['irc']['network'] = 'quakenet';
         $this->irc = new Irc(self::$config);
-        $this->irc->getConsole()->setOutputPrint(false);
+        $this->irc->getConsole()->disableOutput();
         $this->irc->init();
         $this->invokeMethod($this->irc, 'loadPlugin', 'test');
         $actions = $this->irc->getActions();
