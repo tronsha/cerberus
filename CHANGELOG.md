@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.6.0]
 
 ### Added
 - Plugin List
@@ -41,5 +41,6 @@
 ### Changed
 - PHPUnit 5.3
 
-[Unreleased]: https://github.com/tronsha/cerberus/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/tronsha/cerberus/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/tronsha/cerberus/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/tronsha/cerberus/compare/v1.4.1...v1.5.0

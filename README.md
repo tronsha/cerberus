@@ -73,6 +73,10 @@ Then, use the `install` command:
 ## License
 [![GNU General Public License](http://www.gnu.org/graphics/gplv3-127x51.png)][4]
 
+## Links
+
+* [Comparison of Internet Relay Chat bots][12]
+
 [1]: http://www.mpcx.net
 [2]: https://github.com/tronsha
 [3]: https://github.com/axhm3a
@@ -84,3 +88,4 @@ Then, use the `install` command:
 [9]: https://tools.ietf.org/html/rfc1459
 [10]: https://tools.ietf.org/html/rfc2810
 [11]: http://symfony.com/components/Translation
+[12]: https://en.wikipedia.org/wiki/Comparison_of_Internet_Relay_Chat_bots
