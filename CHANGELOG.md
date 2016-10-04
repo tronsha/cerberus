@@ -7,6 +7,9 @@
 ### Fixed
 
 ### Changed
+- Symfony Console 3.1
+- Symfony Translation 3.1
+- PHPUnit 5.5
 
 ## [1.6.0]
 
