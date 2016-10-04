@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+
+### Fixed
+
+### Changed
+
 ## [1.6.0]
 
 ### Added
