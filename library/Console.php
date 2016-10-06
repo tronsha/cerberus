@@ -159,10 +159,11 @@ class Console
      * @param string $text
      * @param int $length
      * @param string $break
+     * @param bool $cut
      * @throws Exception
      * @return string
      */
-    protected function wordwrap($text, $length = 80, $break = PHP_EOL)
+    protected function wordwrap($text, $length = 80, $break = PHP_EOL, $cut = true)
     {
         if ($length < 1) {
             throw new Exception('Length cannot be negative or null.');
@@ -177,6 +178,15 @@ class Console
             if (($count + $wordLength) <= $length) {
                 $count += $wordLength + 1;
                 $output[$lineCount] .= $word . ' ';
+            } elseif ($cut === true && $wordLength > $length) {
+                $wordArray = explode(' ', $this->split($word, $length, ' '));
+                foreach ($wordArray as $word) {
+                    $wordLength = $this->len($word);
+                    $output[$lineCount] = trim($output[$lineCount]);
+                    $lineCount++;
+                    $count = $wordLength + 1;
+                    $output[$lineCount] = $word . ' ';
+                }
             } else {
                 $output[$lineCount] = trim($output[$lineCount]);
                 $lineCount++;
