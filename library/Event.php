@@ -202,6 +202,9 @@ class Event
             case '404':
                 $this->getErr()->on404($rest, $text);
                 break;
+            case '412':
+                $this->getErr()->on412($rest, $text);
+                break;
             case '431':
                 $this->getErr()->on431($rest, $text);
                 break;
