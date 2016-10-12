@@ -332,6 +332,19 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Cannot send to channel', $status['text']);
     }
 
+    public function test412()
+    {
+        $input = ':orwell.freenode.net 412 Cerberus :No text to send';
+        $array = ['text' => 'No text to send'];
+        ksort($array);
+        $this->expectOutputString(serialize($array));
+        $this->invokeMethod($this->irc, 'command', $input);
+        $db = $this->irc->getDb();
+        $status = $db->getStatus();
+        $this->assertSame('412', $status['status']);
+        $this->assertSame('No text to send', $status['text']);
+    }
+
     public function test431()
     {
         $input = ':orwell.freenode.net 431 Cerberus :No nickname given';
