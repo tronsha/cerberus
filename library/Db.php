@@ -188,12 +188,6 @@ class Db
     {
         try {
             $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('send')
-                ->where('bot_id = ?')
-                ->andWhere('priority != 10')
-                ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                ->execute();
-            $qb = $this->conn->createQueryBuilder();
             $qb ->delete('channel')
                 ->where('bot_id = ?')
                 ->setParameter(0, ($botId === null ? $this->botId : $botId))
