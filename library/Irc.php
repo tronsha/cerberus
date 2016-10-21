@@ -370,7 +370,7 @@ class Irc extends Cerberus
     {
         $preform = $this->getDb()->getPreform($this->getNetwork());
         foreach ($preform as $command) {
-            $this->getDb()->addWrite($command['text']);
+            $this->getDb()->addWrite($command['text'], $command['priority']);
             preg_match('/^join\s+(#[^\s]+)/i', $command['text'], $matches);
             if (isset($matches[1])) {
                 unset($matches[0]);

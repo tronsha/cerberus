@@ -190,6 +190,7 @@ class Db
             $qb = $this->conn->createQueryBuilder();
             $qb ->delete('send')
                 ->where('bot_id = ?')
+                ->andWhere('priority != 10')
                 ->setParameter(0, ($botId === null ? $this->botId : $botId))
                 ->execute();
             $qb = $this->conn->createQueryBuilder();
@@ -350,7 +351,7 @@ class Db
         try {
             $qb = $this->conn->createQueryBuilder();
             $stmt = $qb
-                ->select('text')
+                ->select('text, priority')
                 ->from('preform')
                 ->where('network = ?')
                 ->orderBy('priority', 'DESC')
@@ -365,9 +366,10 @@ class Db
 
     /**
      * @param string $text
+     * @param int $priority
      * @return int
      */
-    public function addWrite($text)
+    public function addWrite($text, $priority = 50)
     {
         try {
             $qb = $this->conn->createQueryBuilder();
@@ -375,11 +377,13 @@ class Db
                 ->values(
                     [
                         'text' => '?',
+                        'priority' => '?',
                         'bot_id' => '?'
                     ]
                 )
                 ->setParameter(0, $text)
-                ->setParameter(1, $this->botId)
+                ->setParameter(1, $priority)
+                ->setParameter(2, $this->botId)
                 ->execute();
             return $this->lastInsertId('send');
         } catch (Exception $e) {
@@ -398,7 +402,8 @@ class Db
                 ->select('id', 'text')
                 ->from('send')
                 ->where('bot_id = ?')
-                ->orderBy('id', 'ASC')
+                ->orderBy('priority', 'DESC')
+                ->addOrderBy('id', 'ASC')
                 ->setMaxResults(1)
                 ->setParameter(0, $this->botId)
                 ->execute();

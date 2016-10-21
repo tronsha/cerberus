@@ -85,11 +85,12 @@ class Action
     /**
      * @param string $to
      * @param string $text
+     * @param int $priority
      * @return array
      */
-    public function privmsg($to, $text)
+    public function privmsg($to, $text, $priority = 40)
     {
-        $this->getDb()->addWrite('PRIVMSG ' . $to . ' :' . $text);
+        $this->getDb()->addWrite('PRIVMSG ' . $to . ' :' . $text, $priority);
         return ['action' => 'privmsg', 'to' => $to, 'text' => $text];
     }
 

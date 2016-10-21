@@ -221,6 +221,7 @@ CREATE TABLE "send" (
 	"id" serial NOT NULL ,
 	"bot_id" integer NOT NULL ,
 	"text" text NOT NULL ,
+	"priority" integer NOT NULL ,
 	PRIMARY KEY ("id")
 );
 SELECT setval('"send_id_seq"', 1, true);
