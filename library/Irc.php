@@ -466,6 +466,11 @@ class Irc extends Cerberus
      */
     protected function send()
     {
+        static $lastSend;
+        if (time() === $lastSend) {
+            return;
+        }
+        $lastSend = time();
         $send = $this->getDb()->getWrite();
         if ($send !== false) {
             if ($send['text'] !== '') {
