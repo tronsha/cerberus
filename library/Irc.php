@@ -467,10 +467,9 @@ class Irc extends Cerberus
     protected function send()
     {
         static $lastSend;
-        if (time() === $lastSend) {
+        if (($this->getMicrotime() - $lastSend) < 1.0) {
             return;
         }
-        $lastSend = time();
         $send = $this->getDb()->getWrite();
         if ($send !== false) {
             if ($send['text'] !== '') {
@@ -487,12 +486,10 @@ class Irc extends Cerberus
                 $this->write($send['text']);
             }
             $this->getDb()->removeWrite($send['id']);
-
             preg_match("/^([^\ ]+)(?:\ ([^\:].*?))?(?:\ \:(.*?))?(?:\r)?$/i", $send['text'], $matches);
             $command = isset($matches[1]) ? $matches[1] : '';
             $rest = isset($matches[2]) ? $matches[2] : '';
             $text = isset($matches[3]) ? $matches[3] : '';
-
             $this->getDb()->setLog(
                 $send['text'],
                 $command,
@@ -502,6 +499,7 @@ class Irc extends Cerberus
                 $text,
                 '>'
             );
+            $lastSend = $this->getMicrotime();
         }
     }
 
