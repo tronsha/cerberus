@@ -183,30 +183,46 @@ class Db
 
     /**
      * @param int|null $botId
+     * @param array $exclude
      */
-    public function cleanupBot($botId = null)
+    public function cleanupBot($botId = null, $exclude = [])
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('channel')
-                ->where('bot_id = ?')
-                ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                ->execute();
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('channel_user')
-                ->where('bot_id = ?')
-                ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                ->execute();
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('control')
-                ->where('bot_id = ?')
-                ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                ->execute();
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('status')
-                ->where('bot_id = ?')
-                ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                ->execute();
+            if (in_array('send', $exclude, true) === false) {
+                $qb = $this->conn->createQueryBuilder();
+                $qb ->delete('send')
+                    ->where('bot_id = ?')
+                    ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                    ->execute();
+            }
+            if (in_array('channel', $exclude, true) === false) {
+                $qb = $this->conn->createQueryBuilder();
+                $qb->delete('channel')
+                   ->where('bot_id = ?')
+                   ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                   ->execute();
+            }
+            if (in_array('channel_user', $exclude, true) === false) {
+                $qb = $this->conn->createQueryBuilder();
+                $qb->delete('channel_user')
+                   ->where('bot_id = ?')
+                   ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                   ->execute();
+            }
+            if (in_array('control', $exclude, true) === false) {
+                $qb = $this->conn->createQueryBuilder();
+                $qb->delete('control')
+                   ->where('bot_id = ?')
+                   ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                   ->execute();
+            }
+            if (in_array('status', $exclude, true) === false) {
+                $qb = $this->conn->createQueryBuilder();
+                $qb->delete('status')
+                   ->where('bot_id = ?')
+                   ->setParameter(0, ($botId === null ? $this->botId : $botId))
+                   ->execute();
+            }
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }

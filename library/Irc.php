@@ -343,7 +343,7 @@ class Irc extends Cerberus
         $this->lastping = time();
         $this->nowrite = true;
         $this->run = true;
-        $this->getDb()->cleanupBot();
+        $this->getDb()->cleanupBot(null, ['send']);
         $this->preform();
         $this->getEvents()->onConnect();
         return $this->run();
