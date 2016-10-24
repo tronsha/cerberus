@@ -467,7 +467,7 @@ class Irc extends Cerberus
     protected function send()
     {
         static $lastSend;
-        if (($this->getMicrotime() - $lastSend) < 1.0) {
+        if (($this->getMicrotime() - $lastSend) < 2.0) {
             return;
         }
         $send = $this->getDb()->getWrite();
