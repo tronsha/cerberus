@@ -39,16 +39,16 @@ return PhpCsFixer\Config::create()
         'php_unit_construct' => true,
         'php_unit_dedicate_assert' => true,
         'php_unit_strict' => true,
-        'print_to_echo' => true,
-        'short_array_syntax' => true,
+        'no_mixed_echo_print' => ['use' => 'echo'],
+        'array_syntax' => ['syntax' => 'short'],
         'single_quote' => true,
         'standardize_not_equals' => true,
         'strict_comparison' => true,
         'strict_param' => true,
         'whitespace_after_comma_in_array' => true,
-        'concat_with_spaces' => true,
+        'concat_space' => ['spacing' => 'one'],
     ))
-    ->finder(
+    ->setFinder(
         PhpCsFixer\Finder::create()
             ->exclude('vendor')
             ->in(__DIR__)
