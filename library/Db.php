@@ -450,69 +450,7 @@ class Db
      */
     public function setLog($irc, $command, $network, $nick, $rest, $text, $direction)
     {
-        try {
-            $now = (new DateTime())->format('Y-m-d H:i:s');
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->insert('log')
-                ->values(
-                    [
-                        'bot_id' => '?',
-                        'network' => '?',
-                        'command' => '?',
-                        'irc' => '?',
-                        'time' => '?',
-                        'direction' => '?'
-                    ]
-                )
-                ->setParameter(0, $this->botId)
-                ->setParameter(1, $network)
-                ->setParameter(2, $command)
-                ->setParameter(3, $irc)
-                ->setParameter(4, $now)
-                ->setParameter(5, $direction)
-                ->execute();
-            $logId = $this->lastInsertId('log');
-            if ($direction === '<') {
-                switch (strtolower($command)) {
-                    case 'privmsg':
-                        $this->log->setPrivmsgLog($rest, $nick, $text, $now, $direction, $logId);
-                        break;
-                    case 'notice':
-                        $this->log->setNoticeLog($rest, $nick, $text, $now, $logId);
-                        break;
-                    case 'join':
-                        $this->log->setJoinLog($rest, $nick, $now, $logId);
-                        break;
-                    case 'part':
-                        $this->log->setPartLog($rest, $nick, $text, $now, $logId);
-                        break;
-                    case 'quit':
-                        $this->log->setQuitLog($nick, $text, $now, $logId);
-                        break;
-                    case 'kick':
-                        list($channel, $kicked) = explode(' ', $rest);
-                        $this->log->setKickLog($channel, $nick, $kicked, $text, $now, $logId);
-                        break;
-                    case 'nick':
-                        $this->log->setNickLog($nick, $text, $now, $logId);
-                        break;
-                    case 'topic':
-                        $this->log->setTopicLog($rest, $nick, $text, $now, $logId);
-                        break;
-                }
-            } elseif ($direction === '>') {
-                switch (strtolower($command)) {
-                    case 'privmsg':
-                        $this->log->setPrivmsgLog($rest, $nick, $text, $now, $direction, $logId);
-                        break;
-                    case 'notice':
-                        $this->log->setNoticeLog($rest, $nick, $text, $now, $logId);
-                        break;
-                }
-            }
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
+        return $this->log->setLog($irc, $command, $network, $nick, $rest, $text, $direction);
     }
 
     /**
