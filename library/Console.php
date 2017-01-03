@@ -113,10 +113,10 @@ class Console
                 return $escape ? $this->escape($text) : $text;
             }
             preg_match('/columns\s([0-9]+);/', strtolower(exec('stty -a | grep columns')), $matches);
-            if (isset($matches[1]) === false) {
+            if (isset($matches[1]) === false || intval($matches[1]) <= 0) {
                 return $escape ? $this->escape($text) : $text;
             }
-            $length = $matches[1];
+            $length = intval($matches[1]);
         }
         $length = $length - $offset;
         if ($this->len($text) <= $length) {
