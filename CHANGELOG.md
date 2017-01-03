@@ -6,6 +6,7 @@
 - Event on412
 
 ### Fixed
+- Console prepare: length fix for travis-ci
 
 ### Changed
 - Console wordwrap: cut long words
