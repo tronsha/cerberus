@@ -10,9 +10,9 @@
 
 ### Changed
 - Console wordwrap: cut long words
-- Symfony Console 3.1
-- Symfony Translation 3.1
-- PHPUnit 5.5
+- Symfony Console 3.2
+- Symfony Translation 3.2
+- PHPUnit 5.6
 
 ## [1.6.0]
 
