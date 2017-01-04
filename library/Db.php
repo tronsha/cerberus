@@ -20,7 +20,6 @@
 
 namespace Cerberus;
 
-use Cerberus\Db\DbLog;
 use DateTime;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Version;
@@ -41,7 +40,7 @@ class Db
     protected $irc = null;
     protected $conn = null;
     protected $botId = null;
-    protected $log = null;
+    protected $classes = [];
 
     /**
      * @param array $config
@@ -51,13 +50,12 @@ class Db
     {
         $this->irc = $irc;
         $this->config = $config;
-        $this->log = new DbLog($this);
     }
 
     /**
      * @return \Doctrine\DBAL\Connection
      */
-    public function getConn()
+    public function getConnection()
     {
         return $this->conn;
     }
@@ -68,6 +66,60 @@ class Db
     public function getBotId()
     {
         return $this->botId;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setBotId($id)
+    {
+        $this->botId = $id;
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getConfig($key)
+    {
+        return $this->config[$key];
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setConfig($key, $value)
+    {
+        $this->config[$key] = $value;
+    }
+
+    /**
+     * @param string $name
+     * @return false|object
+     */
+    public function getClass($name)
+    {
+        $name = strtolower($name);
+        if (array_key_exists($name, $this->classes) === false) {
+            $this->loadClass($name);
+        }
+        $class = $this->classes[$name];
+        $className = '\Cerberus\Db\Db' . ucfirst($name);
+        if (is_a($class, $className) === false) {
+            return false;
+        }
+        return $class;
+    }
+
+    /**
+     * @param string $name
+     */
+    protected function loadClass($name)
+    {
+        $name = strtolower($name);
+        $className = '\Cerberus\Db\Db' . ucfirst($name);
+        $this->classes[$name] = new $className($this);
     }
 
     /**
@@ -84,7 +136,7 @@ class Db
      */
     public function close()
     {
-        return $this->conn->close();
+        return $this->getConnection()->close();
     }
 
     /**
@@ -109,7 +161,7 @@ class Db
      */
     public function ping()
     {
-        return Version::compare('2.5') >= 0 ? $this->conn->ping() : true;
+        return Version::compare('2.5') >= 0 ? $this->getConnection()->ping() : true;
     }
 
     /**
@@ -119,9 +171,9 @@ class Db
      */
     public function lastInsertId($dbName = null)
     {
-        $lastInsertId = $this->conn->lastInsertId();
+        $lastInsertId = $this->getConnection()->lastInsertId();
         if ($lastInsertId === false && $dbName !== null) {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('MAX(id) AS id')
                 ->from($dbName)
@@ -133,98 +185,18 @@ class Db
     }
 
     /**
-     * @param int $pid
-     * @param string $nick
-     * @return int|false
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
      */
-    public function createBot($pid, $nick)
+    public function __call($name, $arguments)
     {
-        try {
-            $now = (new DateTime())->format('Y-m-d H:i:s');
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->insert('bot')
-                ->values(
-                    [
-                        'pid' => '?',
-                        'start' => '?',
-                        'nick' => '?'
-                    ]
-                )
-                ->setParameter(0, $pid)
-                ->setParameter(1, $now)
-                ->setParameter(2, $nick)
-                ->execute();
-            $this->botId = $this->lastInsertId('bot');
-            return $this->botId;
-        } catch (Exception $e) {
-            return $this->error($e->getMessage());
-        }
-    }
-
-    /**
-     * @param int|null $botId
-     */
-    public function shutdownBot($botId = null)
-    {
-        try {
-            $now = (new DateTime())->format('Y-m-d H:i:s');
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->update('bot')
-                ->set('stop', '?')
-                ->where('id = ?')
-                ->setParameter(0, $now)
-                ->setParameter(1, ($botId === null ? $this->botId : $botId))
-                ->execute();
-            $this->close();
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
-     * @param int|null $botId
-     * @param array $exclude
-     */
-    public function cleanupBot($botId = null, $exclude = [])
-    {
-        try {
-            if (in_array('send', $exclude, true) === false) {
-                $qb = $this->conn->createQueryBuilder();
-                $qb ->delete('send')
-                    ->where('bot_id = ?')
-                    ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                    ->execute();
-            }
-            if (in_array('channel', $exclude, true) === false) {
-                $qb = $this->conn->createQueryBuilder();
-                $qb->delete('channel')
-                   ->where('bot_id = ?')
-                   ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                   ->execute();
-            }
-            if (in_array('channel_user', $exclude, true) === false) {
-                $qb = $this->conn->createQueryBuilder();
-                $qb->delete('channel_user')
-                   ->where('bot_id = ?')
-                   ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                   ->execute();
-            }
-            if (in_array('control', $exclude, true) === false) {
-                $qb = $this->conn->createQueryBuilder();
-                $qb->delete('control')
-                   ->where('bot_id = ?')
-                   ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                   ->execute();
-            }
-            if (in_array('status', $exclude, true) === false) {
-                $qb = $this->conn->createQueryBuilder();
-                $qb->delete('status')
-                   ->where('bot_id = ?')
-                   ->setParameter(0, ($botId === null ? $this->botId : $botId))
-                   ->execute();
-            }
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
+        preg_match('/[A-Z][a-z]+$/', $name, $match);
+        $className = strtolower($match[0]);
+        if (count($arguments) === 0) {
+            return call_user_func([$this->getClass($className), $name]);
+        } else {
+            return call_user_func_array([$this->getClass($className), $name], $arguments);
         }
     }
 
@@ -234,10 +206,10 @@ class Db
     public function getActiveBotList()
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->select('*')
                 ->from('bot');
-            if ($this->config['driver'] === 'pdo_sqlite') {
+            if ($this->getConfig('driver') === 'pdo_sqlite') {
                 $qb->where('stop = \'NULL\'');
             } else {
                 $qb->where('stop IS NULL');
@@ -257,7 +229,7 @@ class Db
     public function getServerCount($network)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('COUNT(*) AS number')
                 ->from('server', 's')
@@ -278,14 +250,14 @@ class Db
     public function getServerName()
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('network')
                 ->from('network', 'n')
                 ->innerJoin('n', 'server', 's', 's.network_id = n.id')
                 ->innerJoin('s', 'bot', 'b', 'b.server_id = s.id')
                 ->where('b.id = ?')
-                ->setParameter(0, $this->botId)
+                ->setParameter(0, $this->getBotId())
                 ->execute();
             $row = $stmt->fetch();
             return $row['network'];
@@ -306,7 +278,7 @@ class Db
         try {
             $network = strtolower($server['network']);
             $i = (string)$i;
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('s.id', 's.server AS host', 's.port')
                 ->from('server', 's')
@@ -324,12 +296,12 @@ class Db
             } catch (Exception $e) {
                 $this->irc->error($e->getMessage());
             }
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->update('bot')
                 ->set('server_id', '?')
                 ->where('id = ?')
                 ->setParameter(0, $row['id'])
-                ->setParameter(1, $this->botId)
+                ->setParameter(1, $this->getBotId())
                 ->execute();
             return array_merge($server, $row);
         } catch (Exception $e) {
@@ -344,7 +316,7 @@ class Db
     {
         try {
             $sql = 'SELECT VERSION() AS version';
-            $stmt = $this->conn->query($sql);
+            $stmt = $this->getConnection()->query($sql);
             $row = $stmt->fetch();
             return $row['version'];
         } catch (Exception $e) {
@@ -359,7 +331,7 @@ class Db
     public function getPreform($network)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('text, priority')
                 ->from('preform')
@@ -382,7 +354,7 @@ class Db
     public function addWrite($text, $priority = 50)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->insert('send')
                 ->values(
                     [
@@ -393,7 +365,7 @@ class Db
                 )
                 ->setParameter(0, $text)
                 ->setParameter(1, $priority)
-                ->setParameter(2, $this->botId)
+                ->setParameter(2, $this->getBotId())
                 ->execute();
             return $this->lastInsertId('send');
         } catch (Exception $e) {
@@ -407,7 +379,7 @@ class Db
     public function getWrite()
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('id', 'text')
                 ->from('send')
@@ -415,7 +387,7 @@ class Db
                 ->orderBy('priority', 'DESC')
                 ->addOrderBy('id', 'ASC')
                 ->setMaxResults(1)
-                ->setParameter(0, $this->botId)
+                ->setParameter(0, $this->getBotId())
                 ->execute();
             return $stmt->fetch();
         } catch (Exception $e) {
@@ -429,7 +401,7 @@ class Db
     public function removeWrite($id)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->delete('send')
                 ->where('id = ?')
                 ->setParameter(0, $id)
@@ -440,32 +412,18 @@ class Db
     }
 
     /**
-     * @param string $irc
-     * @param string $command
-     * @param string $network
-     * @param string $nick
-     * @param string $rest
-     * @param string $text
-     * @param string $direction
-     */
-    public function setLog($irc, $command, $network, $nick, $rest, $text, $direction)
-    {
-        return $this->log->setLog($irc, $command, $network, $nick, $rest, $text, $direction);
-    }
-
-    /**
      *
      */
     public function setPing()
     {
         try {
             $now = (new DateTime())->format('Y-m-d H:i:s');
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->update('bot')
                 ->set('ping', '?')
                 ->where('id = ?')
                 ->setParameter(0, $now)
-                ->setParameter(1, $this->botId)
+                ->setParameter(1, $this->getBotId())
                 ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
@@ -478,12 +436,12 @@ class Db
     public function setBotNick($nick)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->update('bot')
                 ->set('nick', '?')
                 ->where('id = ?')
                 ->setParameter(0, $nick)
-                ->setParameter(1, $this->botId)
+                ->setParameter(1, $this->getBotId())
                 ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
@@ -497,7 +455,7 @@ class Db
     public function addChannel($channel)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->insert('channel')
                 ->values(
                     [
@@ -506,7 +464,7 @@ class Db
                     ]
                 )
                 ->setParameter(0, $channel)
-                ->setParameter(1, $this->botId)
+                ->setParameter(1, $this->getBotId())
                 ->execute();
             return $this->lastInsertId('channel');
         } catch (Exception $e) {
@@ -520,11 +478,11 @@ class Db
     public function removeChannel($channel)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->delete('channel')
                 ->where('channel = ? AND bot_id = ?')
                 ->setParameter(0, $channel)
-                ->setParameter(1, $this->botId)
+                ->setParameter(1, $this->getBotId())
                 ->execute();
             $this->removeUserFromChannel($channel);
         } catch (Exception $e) {
@@ -556,7 +514,7 @@ class Db
             $mode = [$mode];
         }
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->insert('channel_user')
                 ->values(
                     [
@@ -569,7 +527,7 @@ class Db
                 ->setParameter(0, $user)
                 ->setParameter(1, json_encode($mode))
                 ->setParameter(2, $channel)
-                ->setParameter(3, $this->botId)
+                ->setParameter(3, $this->getBotId())
                 ->execute();
             return $this->lastInsertId('channel_user');
         } catch (Exception $e) {
@@ -585,10 +543,10 @@ class Db
     {
         try {
             $paramCount = 0;
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb->delete('channel_user');
             $qb->where('bot_id = ?');
-            $qb->setParameter($paramCount, $this->botId);
+            $qb->setParameter($paramCount, $this->getBotId());
             if ($channel !== null) {
                 $paramCount++;
                 $qb->andWhere('channel = ?');
@@ -608,17 +566,18 @@ class Db
     /**
      * @param string $channel
      * @param string $user
+     * @return array
      */
     public function getUserInChannel($channel, $user)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb ->select('*')
                 ->from('channel_user')
                 ->where('username = ? AND channel = ? AND bot_id = ?')
                 ->setParameter(0, $user)
                 ->setParameter(1, $channel)
-                ->setParameter(2, $this->botId)
+                ->setParameter(2, $this->getBotId())
                 ->execute();
             $rows = $stmt->fetchAll();
             return $rows;
@@ -634,12 +593,12 @@ class Db
     public function changeNick($old, $new)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->update('channel_user')
                 ->set('username', '?')
                 ->where('bot_id = ? AND username = ?')
                 ->setParameter(0, $new)
-                ->setParameter(1, $this->botId)
+                ->setParameter(1, $this->getBotId())
                 ->setParameter(2, $old)
                 ->execute();
         } catch (Exception $e) {
@@ -654,12 +613,12 @@ class Db
     public function setChannelTopic($channel, $topic)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->update('channel')
                 ->set('topic', '?')
                 ->where('bot_id = ? AND channel = ?')
                 ->setParameter(0, $topic)
-                ->setParameter(1, $this->botId)
+                ->setParameter(1, $this->getBotId())
                 ->setParameter(2, $channel)
                 ->execute();
         } catch (Exception $e) {
@@ -673,12 +632,12 @@ class Db
     public function getJoinedChannels()
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('channel')
                 ->from('channel')
                 ->where('bot_id = ?')
-                ->setParameter(0, $this->botId)
+                ->setParameter(0, $this->getBotId())
                 ->execute();
             $rows = $stmt->fetchAll();
             return $rows;
@@ -695,7 +654,7 @@ class Db
     public function getAuthLevel($network, $auth)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('authlevel')
                 ->from('auth')
@@ -718,7 +677,7 @@ class Db
     public function addControl($command, $data)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->insert('control')
                 ->values(
                     [
@@ -729,7 +688,7 @@ class Db
                 )
                 ->setParameter(0, $command)
                 ->setParameter(1, $data)
-                ->setParameter(2, $this->botId)
+                ->setParameter(2, $this->getBotId())
                 ->execute();
             return $this->lastInsertId('control');
         } catch (Exception $e) {
@@ -743,14 +702,14 @@ class Db
     public function getControl()
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('id', 'command', 'data')
                 ->from('control')
                 ->where('bot_id = ?')
                 ->orderBy('id', 'ASC')
                 ->setMaxResults(1)
-                ->setParameter(0, $this->botId)
+                ->setParameter(0, $this->getBotId())
                 ->execute();
             return $stmt->fetch();
         } catch (Exception $e) {
@@ -764,7 +723,7 @@ class Db
     public function removeControl($id)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->delete('control')
                 ->where('id = ?')
                 ->setParameter(0, $id)
@@ -784,7 +743,7 @@ class Db
     {
         try {
             $now = (new DateTime())->format('Y-m-d H:i:s');
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->insert('status')
                 ->values(
                     [
@@ -799,7 +758,7 @@ class Db
                 ->setParameter(1, $text)
                 ->setParameter(2, json_encode($data))
                 ->setParameter(3, $now)
-                ->setParameter(4, $this->botId)
+                ->setParameter(4, $this->getBotId())
                 ->execute();
             return $this->lastInsertId('status');
         } catch (Exception $e) {
@@ -814,12 +773,12 @@ class Db
     public function getStatus($status = null)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb->select('id', 'status', 'text', 'data')
                ->from('status')
                ->where('bot_id = ?')
                ->setMaxResults(1)
-               ->setParameter(0, $this->botId);
+               ->setParameter(0, $this->getBotId());
             if ($status === null) {
                 $qb->orderBy('id', 'ASC');
             } else {
@@ -854,7 +813,7 @@ class Db
     public function removeStatus($id)
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->delete('status')
                 ->where('id = ?')
                 ->setParameter(0, $id)
@@ -871,52 +830,10 @@ class Db
     {
         try {
             $oneMinuteAgo = (new DateTime())->modify('-1 minute')->format('Y-m-d H:i:s');
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->delete('status')
                 ->where('time <= ?')
                 ->setParameter(0, $oneMinuteAgo)
-                ->execute();
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
-     *
-     */
-    public function cleanupLog()
-    {
-        try {
-            $oneWeekAgo = (new DateTime())->modify('-1 week')->format('Y-m-d H:i:s');
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('log_join')
-                ->where('time <= ?')
-                ->setParameter(0, $oneWeekAgo)
-                ->execute();
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('log_part')
-                ->where('time <= ?')
-                ->setParameter(0, $oneWeekAgo)
-                ->execute();
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('log_quit')
-                ->where('time <= ?')
-                ->setParameter(0, $oneWeekAgo)
-                ->execute();
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('log_kick')
-                ->where('time <= ?')
-                ->setParameter(0, $oneWeekAgo)
-                ->execute();
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('log_nick')
-                ->where('time <= ?')
-                ->setParameter(0, $oneWeekAgo)
-                ->execute();
-            $qb = $this->conn->createQueryBuilder();
-            $qb ->delete('log_topic')
-                ->where('time <= ?')
-                ->setParameter(0, $oneWeekAgo)
                 ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
@@ -928,10 +845,10 @@ class Db
     public function clearChannellist()
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->delete('channellist')
                 ->where('bot_id = ?')
-                ->setParameter(0, $this->botId)
+                ->setParameter(0, $this->getBotId())
                 ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
@@ -949,7 +866,7 @@ class Db
     {
         try {
             $now = (new DateTime())->format('Y-m-d H:i:s');
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $qb ->insert('channellist')
                 ->values(
                     [
@@ -966,7 +883,7 @@ class Db
                 ->setParameter(2, $usercount)
                 ->setParameter(3, $topic)
                 ->setParameter(4, $now)
-                ->setParameter(5, $this->botId)
+                ->setParameter(5, $this->getBotId())
                 ->execute();
             return $this->lastInsertId('channellist');
         } catch (Exception $e) {
@@ -980,13 +897,13 @@ class Db
     public function getChannellist()
     {
         try {
-            $qb = $this->conn->createQueryBuilder();
+            $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('channel', 'topic', 'usercount')
                 ->from('channellist')
                 ->where('bot_id = ?')
                 ->setMaxResults(10000)
-                ->setParameter(0, $this->botId)
+                ->setParameter(0, $this->getBotId())
                 ->orderBy('usercount', 'DESC')
                 ->execute();
             $row = $stmt->fetchAll();
