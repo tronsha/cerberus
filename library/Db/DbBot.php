@@ -24,7 +24,7 @@ use DateTime;
 use Exception;
 
 /**
- * Class DbLog
+ * Class DbBot
  * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
