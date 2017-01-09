@@ -193,10 +193,10 @@ class Db
     {
         preg_match('/[A-Z][a-z]+$/', $name, $match);
         $className = strtolower($match[0]);
-        if (count($arguments) === 0) {
-            return call_user_func([$this->getClass($className), $name]);
-        } else {
+        try {
             return call_user_func_array([$this->getClass($className), $name], $arguments);
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
         }
     }
 
