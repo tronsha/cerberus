@@ -21,7 +21,6 @@
 namespace Cerberus\Db;
 
 use DateTime;
-use Exception;
 
 /**
  * Class DbStatus
