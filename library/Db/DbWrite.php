@@ -20,8 +20,6 @@
 
 namespace Cerberus\Db;
 
-use Exception;
-
 /**
  * Class DbWrite
  * @package Cerberus
@@ -50,24 +48,20 @@ class DbWrite
      */
     public function addWrite($text, $priority = 50)
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb ->insert('send')
-                ->values(
-                    [
-                        'text' => '?',
-                        'priority' => '?',
-                        'bot_id' => '?'
-                    ]
-                )
-                ->setParameter(0, $text)
-                ->setParameter(1, $priority)
-                ->setParameter(2, $this->db->getBotId())
-                ->execute();
-            return $this->db->lastInsertId('send');
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->insert('send')
+            ->values(
+                [
+                    'text' => '?',
+                    'priority' => '?',
+                    'bot_id' => '?'
+                ]
+            )
+            ->setParameter(0, $text)
+            ->setParameter(1, $priority)
+            ->setParameter(2, $this->db->getBotId())
+            ->execute();
+        return $this->db->lastInsertId('send');
     }
 
     /**
@@ -75,21 +69,17 @@ class DbWrite
      */
     public function getWrite()
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $stmt = $qb
-                ->select('id', 'text')
-                ->from('send')
-                ->where('bot_id = ?')
-                ->orderBy('priority', 'DESC')
-                ->addOrderBy('id', 'ASC')
-                ->setMaxResults(1)
-                ->setParameter(0, $this->db->getBotId())
-                ->execute();
-            return $stmt->fetch();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $stmt = $qb
+            ->select('id', 'text')
+            ->from('send')
+            ->where('bot_id = ?')
+            ->orderBy('priority', 'DESC')
+            ->addOrderBy('id', 'ASC')
+            ->setMaxResults(1)
+            ->setParameter(0, $this->db->getBotId())
+            ->execute();
+        return $stmt->fetch();
     }
 
     /**
@@ -97,14 +87,10 @@ class DbWrite
      */
     public function removeWrite($id)
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb ->delete('send')
-                ->where('id = ?')
-                ->setParameter(0, $id)
-                ->execute();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->delete('send')
+            ->where('id = ?')
+            ->setParameter(0, $id)
+            ->execute();
     }
 }

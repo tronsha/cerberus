@@ -52,29 +52,25 @@ class DbStatus
      */
     public function addStatus($status, $text, $data)
     {
-        try {
-            $now = (new DateTime())->format('Y-m-d H:i:s');
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb ->insert('status')
-                ->values(
-                    [
-                        'status' => '?',
-                        'text' => '?',
-                        'data' => '?',
-                        'time' => '?',
-                        'bot_id' => '?'
-                    ]
-                )
-                ->setParameter(0, $status)
-                ->setParameter(1, $text)
-                ->setParameter(2, json_encode($data))
-                ->setParameter(3, $now)
-                ->setParameter(4, $this->db->getBotId())
-                ->execute();
-            return $this->db->lastInsertId('status');
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $now = (new DateTime())->format('Y-m-d H:i:s');
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->insert('status')
+            ->values(
+                [
+                    'status' => '?',
+                    'text' => '?',
+                    'data' => '?',
+                    'time' => '?',
+                    'bot_id' => '?'
+                ]
+            )
+            ->setParameter(0, $status)
+            ->setParameter(1, $text)
+            ->setParameter(2, json_encode($data))
+            ->setParameter(3, $now)
+            ->setParameter(4, $this->db->getBotId())
+            ->execute();
+        return $this->db->lastInsertId('status');
     }
 
     /**
@@ -83,39 +79,35 @@ class DbStatus
      */
     public function getStatus($status = null)
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb->select('id', 'status', 'text', 'data')
-               ->from('status')
-               ->where('bot_id = ?')
-               ->setMaxResults(1)
-               ->setParameter(0, $this->db->getBotId());
-            if ($status === null) {
-                $qb->orderBy('id', 'ASC');
-            } else {
-                $qb->orderBy('id', 'DESC');
-                if (is_array($status) === true) {
-                    foreach ($status as &$value) {
-                        $value =  '\'' . $value . '\'';
-                    }
-                    $qb->andWhere($qb->expr()->in('status', $status));
-                } else {
-                    $qb->andWhere('status = ?');
-                    $qb->setParameter(1, $status);
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->select('id', 'status', 'text', 'data')
+            ->from('status')
+            ->where('bot_id = ?')
+            ->setMaxResults(1)
+            ->setParameter(0, $this->db->getBotId());
+        if ($status === null) {
+            $qb->orderBy('id', 'ASC');
+        } else {
+            $qb->orderBy('id', 'DESC');
+            if (is_array($status) === true) {
+                foreach ($status as &$value) {
+                    $value =  '\'' . $value . '\'';
                 }
+                $qb->andWhere($qb->expr()->in('status', $status));
+            } else {
+                $qb->andWhere('status = ?');
+                $qb->setParameter(1, $status);
             }
-            $stmt = $qb->execute();
-            $result = $stmt->fetch();
-            if (empty($result) === true) {
-                return null;
-            }
-            $result['data'] = json_decode($result['data']);
-            $result['type'] = 'status';
-            $this->removeStatus($result['id']);
-            return $result;
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
         }
+        $stmt = $qb->execute();
+        $result = $stmt->fetch();
+        if (empty($result) === true) {
+            return null;
+        }
+        $result['data'] = json_decode($result['data']);
+        $result['type'] = 'status';
+        $this->removeStatus($result['id']);
+        return $result;
     }
 
     /**
@@ -123,15 +115,11 @@ class DbStatus
      */
     public function removeStatus($id)
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb ->delete('status')
-                ->where('id = ?')
-                ->setParameter(0, $id)
-                ->execute();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->delete('status')
+            ->where('id = ?')
+            ->setParameter(0, $id)
+            ->execute();
     }
 
     /**
@@ -139,15 +127,11 @@ class DbStatus
      */
     public function cleanupStatus()
     {
-        try {
-            $oneMinuteAgo = (new DateTime())->modify('-1 minute')->format('Y-m-d H:i:s');
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb ->delete('status')
-                ->where('time <= ?')
-                ->setParameter(0, $oneMinuteAgo)
-                ->execute();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $oneMinuteAgo = (new DateTime())->modify('-1 minute')->format('Y-m-d H:i:s');
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->delete('status')
+            ->where('time <= ?')
+            ->setParameter(0, $oneMinuteAgo)
+            ->execute();
     }
 }

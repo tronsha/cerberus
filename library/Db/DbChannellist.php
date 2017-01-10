@@ -21,7 +21,6 @@
 namespace Cerberus\Db;
 
 use DateTime;
-use Exception;
 
 /**
  * Class DbChannellist
@@ -48,15 +47,11 @@ class DbChannellist
      */
     public function clearChannellist()
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb ->delete('channellist')
-                ->where('bot_id = ?')
-                ->setParameter(0, $this->db->getBotId())
-                ->execute();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->delete('channellist')
+            ->where('bot_id = ?')
+            ->setParameter(0, $this->db->getBotId())
+            ->execute();
     }
 
     /**
@@ -68,31 +63,27 @@ class DbChannellist
      */
     public function addChannelToChannellist($network, $channel, $usercount, $topic)
     {
-        try {
-            $now = (new DateTime())->format('Y-m-d H:i:s');
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb ->insert('channellist')
-                ->values(
-                    [
-                        'network' => '?',
-                        'channel' => '?',
-                        'usercount' => '?',
-                        'topic' => '?',
-                        'time' => '?',
-                        'bot_id' => '?'
-                    ]
-                )
-                ->setParameter(0, $network)
-                ->setParameter(1, $channel)
-                ->setParameter(2, $usercount)
-                ->setParameter(3, $topic)
-                ->setParameter(4, $now)
-                ->setParameter(5, $this->db->getBotId())
-                ->execute();
-            return $this->db->lastInsertId('channellist');
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $now = (new DateTime())->format('Y-m-d H:i:s');
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->insert('channellist')
+            ->values(
+                [
+                    'network' => '?',
+                    'channel' => '?',
+                    'usercount' => '?',
+                    'topic' => '?',
+                    'time' => '?',
+                    'bot_id' => '?'
+                ]
+            )
+            ->setParameter(0, $network)
+            ->setParameter(1, $channel)
+            ->setParameter(2, $usercount)
+            ->setParameter(3, $topic)
+            ->setParameter(4, $now)
+            ->setParameter(5, $this->db->getBotId())
+            ->execute();
+        return $this->db->lastInsertId('channellist');
     }
 
     /**
@@ -100,20 +91,16 @@ class DbChannellist
      */
     public function getChannellist()
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $stmt = $qb
-                ->select('channel', 'topic', 'usercount')
-                ->from('channellist')
-                ->where('bot_id = ?')
-                ->setMaxResults(10000)
-                ->setParameter(0, $this->db->getBotId())
-                ->orderBy('usercount', 'DESC')
-                ->execute();
-            $row = $stmt->fetchAll();
-            return $row;
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $stmt = $qb
+            ->select('channel', 'topic', 'usercount')
+            ->from('channellist')
+            ->where('bot_id = ?')
+            ->setMaxResults(10000)
+            ->setParameter(0, $this->db->getBotId())
+            ->orderBy('usercount', 'DESC')
+            ->execute();
+        $row = $stmt->fetchAll();
+        return $row;
     }
 }

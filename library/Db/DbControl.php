@@ -20,8 +20,6 @@
 
 namespace Cerberus\Db;
 
-use Exception;
-
 /**
  * Class DbControl
  * @package Cerberus
@@ -50,24 +48,20 @@ class DbControl
      */
     public function addControl($command, $data)
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb ->insert('control')
-                ->values(
-                    [
-                        'command' => '?',
-                        'data' => '?',
-                        'bot_id' => '?'
-                    ]
-                )
-                ->setParameter(0, $command)
-                ->setParameter(1, $data)
-                ->setParameter(2, $this->db->getBotId())
-                ->execute();
-            return $this->db->lastInsertId('control');
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->insert('control')
+            ->values(
+                [
+                    'command' => '?',
+                    'data' => '?',
+                    'bot_id' => '?'
+                ]
+            )
+            ->setParameter(0, $command)
+            ->setParameter(1, $data)
+            ->setParameter(2, $this->db->getBotId())
+            ->execute();
+        return $this->db->lastInsertId('control');
     }
 
     /**
@@ -75,20 +69,16 @@ class DbControl
      */
     public function getControl()
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $stmt = $qb
-                ->select('id', 'command', 'data')
-                ->from('control')
-                ->where('bot_id = ?')
-                ->orderBy('id', 'ASC')
-                ->setMaxResults(1)
-                ->setParameter(0, $this->db->getBotId())
-                ->execute();
-            return $stmt->fetch();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $stmt = $qb
+            ->select('id', 'command', 'data')
+            ->from('control')
+            ->where('bot_id = ?')
+            ->orderBy('id', 'ASC')
+            ->setMaxResults(1)
+            ->setParameter(0, $this->db->getBotId())
+            ->execute();
+        return $stmt->fetch();
     }
 
     /**
@@ -96,14 +86,10 @@ class DbControl
      */
     public function removeControl($id)
     {
-        try {
-            $qb = $this->db->getConnection()->createQueryBuilder();
-            $qb ->delete('control')
-                ->where('id = ?')
-                ->setParameter(0, $id)
-                ->execute();
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb ->delete('control')
+            ->where('id = ?')
+            ->setParameter(0, $id)
+            ->execute();
     }
 }
