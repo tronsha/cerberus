@@ -20,8 +20,10 @@
 
 namespace Cerberus;
 
+use Exception;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\PhpFileLoader;
+use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
 
 /**
@@ -37,7 +39,7 @@ use Symfony\Component\Translation\Translator;
 
 class Translate
 {
-    protected $translator;
+    protected $translator = null;
     protected $language;
 
     /**
@@ -46,15 +48,15 @@ class Translate
      */
     public function __construct($language = null)
     {
-        if ($language !== null) {
-            $this->language = $language;
-        } else {
-            $this->language = 'en';
+        if ($language === null) {
+            $language = 'en';
         }
-        $this->translator = new Translator($this->language);
+        $this->translator = new Translator($language);
         $this->translator->addLoader('array', new ArrayLoader());
-        $this->translator->addLoader('file', new PhpFileLoader());
-        $this->loadTranslationFile('status');
+        $this->translator->addLoader('php_file', new PhpFileLoader());
+        $this->translator->addLoader('po_file', new PoFileLoader());
+        $this->setLanguage($language);
+        $this->loadTranslationFile('status', $language);
     }
 
     /**
@@ -73,7 +75,7 @@ class Translate
         }
         $text = $this->translator->trans($text, $array);
         if ($language !== null) {
-            $this->translator->setLocale($this->language);
+            $this->translator->setLocale($this->getLanguage());
         }
         return $text;
     }
@@ -91,12 +93,17 @@ class Translate
 
     /**
      * @param string $language
+     * @throws Exception
      */
     public function setLanguage($language)
     {
         if (empty($language) === false) {
             $this->language = $language;
-            $this->translator->setLocale($language);
+            if ($this->translator === null) {
+                throw new Exception('wait... something is wrong... the translator is not setted.');
+            } else {
+                $this->translator->setLocale($language);
+            }
         }
     }
 
@@ -148,12 +155,20 @@ class Translate
 
     /**
      * @param string $file
+     * @param string|null $language
      */
-    public function loadTranslationFile($file)
+    public function loadTranslationFile($file, $language = null)
     {
-        $translationsFileStatus = Cerberus::getPath() . '/resources/translations/' . $this->language . '/' . $file . '.php';
-        if (file_exists($translationsFileStatus) === true) {
-            $this->addResource('file', $translationsFileStatus, $this->language);
+        if ($language === null) {
+            $language = $this->getLanguage();
+        }
+        $translationsPhpFileStatus = Cerberus::getPath() . '/resources/translations/' . $language . '/' . $file . '.php';
+        if (file_exists($translationsPhpFileStatus) === true) {
+            $this->addResource('php_file', $translationsPhpFileStatus, $language);
+        }
+        $translationsPoFileStatus = Cerberus::getPath() . '/resources/translations/' . $language . '/' . $file . '.po';
+        if (file_exists($translationsPoFileStatus) === true) {
+            $this->addResource('po_file', $translationsPoFileStatus, $language);
         }
     }
 }
