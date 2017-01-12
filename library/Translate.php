@@ -20,6 +20,7 @@
 
 namespace Cerberus;
 
+use DirectoryIterator;
 use Exception;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\PhpFileLoader;
@@ -56,7 +57,7 @@ class Translate
         $this->translator->addLoader('php_file', new PhpFileLoader());
         $this->translator->addLoader('po_file', new PoFileLoader());
         $this->setLanguage($language);
-        $this->loadTranslationFile('status', $language);
+        $this->loadTranslationFile('status');
     }
 
     /**
@@ -154,21 +155,23 @@ class Translate
     }
 
     /**
-     * @param string $file
-     * @param string|null $language
+     * @param string $resource
      */
-    public function loadTranslationFile($file, $language = null)
+    public function loadTranslationFile($resource)
     {
-        if ($language === null) {
-            $language = $this->getLanguage();
-        }
-        $translationsPhpFileStatus = Cerberus::getPath() . '/resources/translations/' . $language . '/' . $file . '.php';
-        if (file_exists($translationsPhpFileStatus) === true) {
-            $this->addResource('php_file', $translationsPhpFileStatus, $language);
-        }
-        $translationsPoFileStatus = Cerberus::getPath() . '/resources/translations/' . $language . '/' . $file . '.po';
-        if (file_exists($translationsPoFileStatus) === true) {
-            $this->addResource('po_file', $translationsPoFileStatus, $language);
+        $languagesPath = Cerberus::getPath() . '/languages/';
+        $languagesDirectory = new DirectoryIterator($languagesPath);
+        foreach ($languagesDirectory as $languageDirectory) {
+            if ($languageDirectory->isDir() === true && $languageDirectory->isDot() === false) {
+                $language = $languageDirectory->getFilename();
+                $path = $languageDirectory->getPathname();
+                if (file_exists($path . '/' . $resource . '.php') === true) {
+                    $this->addResource('php_file', $path . '/' . $resource . '.php', $language);
+                }
+                if (file_exists($path . '/' . $resource . '.po') === true) {
+                    $this->addResource('po_file', $path . '/' . $resource . '.po', $language);
+                }
+            }
         }
     }
 }
