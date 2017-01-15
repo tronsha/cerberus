@@ -384,18 +384,6 @@ class Db
     }
 
     /**
-     * @param string $user
-     */
-    public function removeUser($user)
-    {
-        try {
-            $this->removeUserFromChannel(null, $user);
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
      * @param string $old
      * @param string $new
      */
