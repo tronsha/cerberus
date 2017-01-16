@@ -46,10 +46,6 @@ class DbUser
      */
     public function removeUser($user)
     {
-        try {
-            $this->db->removeUserFromChannel(null, $user);
-        } catch (Exception $e) {
-            $this->db->error($e->getMessage());
-        }
+        $this->db->removeUserFromChannel(null, $user);
     }
 }
