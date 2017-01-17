@@ -404,26 +404,6 @@ class Db
     }
 
     /**
-     * @param string $channel
-     * @param string $topic
-     */
-    public function setChannelTopic($channel, $topic)
-    {
-        try {
-            $qb = $this->getConnection()->createQueryBuilder();
-            $qb ->update('channel')
-                ->set('topic', '?')
-                ->where('bot_id = ? AND channel = ?')
-                ->setParameter(0, $topic)
-                ->setParameter(1, $this->getBotId())
-                ->setParameter(2, $channel)
-                ->execute();
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
      * @return array
      */
     public function getJoinedChannels()
