@@ -56,4 +56,36 @@ class DbTopic
             ->setParameter(2, $channel)
             ->execute();
     }
+
+    /**
+     * @param string $channel
+     * @return string
+     */
+    public function getChannelTopic($channel)
+    {
+        $qb = $this->db->getConnection()->createQueryBuilder();
+        $stmt = $qb ->select('topic')
+                    ->from('channel')
+                    ->where('channel = ? AND bot_id = ?')
+                    ->setParameter(0, $channel)
+                    ->setParameter(1, $this->db->getBotId())
+                    ->execute();
+        $topic = $stmt->fetch();
+        if ($topic === false) {
+            $qb = $this->db->getConnection()->createQueryBuilder();
+            $stmt = $qb ->select('topic')
+                        ->from('channellist')
+                        ->where('channel = ? AND bot_id = ?')
+                        ->setParameter(0, $channel)
+                        ->setParameter(1, $this->db->getBotId())
+                        ->execute();
+            $topic = $stmt->fetch();
+        }
+        if ($topic === false) {
+            $topic = '';
+        } else {
+            $topic = $topic['topic'];
+        }
+        return $topic;
+    }
 }

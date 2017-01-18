@@ -192,4 +192,15 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $db->cleanupBot();
         $this->assertFalse($db->getWrite());
     }
+
+    public function testChannelTopic()
+    {
+        $db = $this->irc->getDb();
+        $db->addChannel('#foo');
+        $db->setChannelTopic('#foo', 'foo');
+        $this->assertSame('foo', $db->getChannelTopic('#foo'));
+        $db->addChannelToChannellist('', '#bar', '0', 'bar');
+        $this->assertSame('bar', $db->getChannelTopic('#bar'));
+        $this->assertSame('', $db->getChannelTopic('#baz'));
+    }
 }
