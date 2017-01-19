@@ -100,7 +100,10 @@ class DbChannellist
             ->setParameter(0, $this->db->getBotId())
             ->orderBy('usercount', 'DESC')
             ->execute();
-        $row = $stmt->fetchAll();
-        return $row;
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$row) {
+            $row['usercount'] = intval($row['usercount']);
+        }
+        return $rows;
     }
 }
