@@ -203,4 +203,17 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('bar', $db->getChannelTopic('#bar'));
         $this->assertSame('', $db->getChannelTopic('#baz'));
     }
+
+    public function testChannellist()
+    {
+        $db = $this->irc->getDb();
+        $db->addChannelToChannellist('', '#foo', '42', 'topic1');
+        $db->addChannelToChannellist('', '#bar', '1337', 'topic2');
+        $db->addChannelToChannellist('', '#baz', '23', 'topic3');
+        $this->assertSame([
+            ['channel' => "#bar", 'topic' => "topic2", 'usercount' => "1337"],
+            ['channel' => "#foo", 'topic' => "topic1", 'usercount' => "42"],
+            ['channel' => "#baz", 'topic' => "topic3", 'usercount' => "23"]
+        ], $db->getChannellist());
+    }
 }
