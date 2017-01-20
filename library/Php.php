@@ -44,6 +44,6 @@ class Php
      */
     public static function random_bytes($length)
     {
-        return mcrypt_create_iv($length, MCRYPT_RAND);
+        return openssl_random_pseudo_bytes($length);
     }
 }
