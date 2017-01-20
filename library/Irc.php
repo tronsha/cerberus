@@ -63,7 +63,7 @@ class Irc extends Cerberus
      */
     public function __construct($config = null)
     {
-        $this->time['script_start'] = $this->getMicrotime();
+        $this->time['script_start'] = microtime(true);
         $this->bot['pid'] = getmypid();
         $this->bot['nick'] = null;
         $this->server['network'] = null;
@@ -104,7 +104,7 @@ class Irc extends Cerberus
             $this->getDb()->cleanupBot();
             $this->getDb()->shutdownBot();
         }
-        $output = vsprintf('Execute time: %.5fs', $this->getMicrotime() - $this->time['script_start']);
+        $output = vsprintf('Execute time: %.5fs', microtime(true) - $this->time['script_start']);
         $this->getConsole()->writeln();
         $this->getConsole()->writeln('<info>' . $output . '</info>');
         $this->getConsole()->writeln();
@@ -331,7 +331,7 @@ class Irc extends Cerberus
                 return false;
             }
         }
-        $this->time['irc_connect'] = $this->getMicrotime();
+        $this->time['irc_connect'] = microtime(true);
         if ($this->server['password'] !== null) {
             $this->write('PASS ' . $this->server['password']);
         }
@@ -467,7 +467,7 @@ class Irc extends Cerberus
     protected function send()
     {
         static $lastSend;
-        if (($this->getMicrotime() - $lastSend) < 2.0) {
+        if ((microtime(true) - $lastSend) < 2.0) {
             return;
         }
         $send = $this->getDb()->getWrite();
@@ -499,7 +499,7 @@ class Irc extends Cerberus
                 $text,
                 '>'
             );
-            $lastSend = $this->getMicrotime();
+            $lastSend = microtime(true);
         }
     }
 
@@ -528,7 +528,7 @@ class Irc extends Cerberus
                 }
             }
             $this->getEvents()->onTick();
-            if ($this->nowrite === false && floor($this->getMicrotime() - $this->time['irc_connect']) > 10) {
+            if ($this->nowrite === false && floor(microtime(true) - $this->time['irc_connect']) > 10) {
                 $this->send();
             }
             unset($input);

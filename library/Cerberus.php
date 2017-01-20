@@ -123,32 +123,6 @@ class Cerberus
     }
 
     /**
-     * @return float
-     */
-    public static function getMicrotime()
-    {
-        if (version_compare(phpversion(), '5.0', '<') === true) {
-            try {
-                list($usec, $sec) = explode(' ', microtime());
-                return ((float)$usec + (float)$sec);
-            } catch (Exception $e) {
-                self::error($e->getMessage());
-            }
-        } else {
-            return microtime(true);
-        }
-    }
-
-    /**
-     * @param mixed $var
-     * @return bool
-     */
-    public static function boolval($var)
-    {
-        return (bool)$var;
-    }
-
-    /**
      * @param int $milliSeconds
      */
     public static function msleep($milliSeconds)
@@ -181,6 +155,13 @@ class Cerberus
 if (function_exists('boolval') === false) {
     function boolval($var)
     {
-        return Cerberus::boolval($var);
+        return Php::boolval($var);
+    }
+}
+
+if (function_exists('random_bytes') === false) {
+    function random_bytes($length)
+    {
+        return Php::random_bytes($length);
     }
 }

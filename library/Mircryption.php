@@ -69,7 +69,7 @@ class Mircryption
      */
     public static function encode($text, $key)
     {
-        $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC), MCRYPT_RAND);
+        $iv = random_bytes(8);
         $encodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, $text, MCRYPT_MODE_CBC, $iv);
         $encodedTextIv = $iv . $encodedText;
         $decodedTextBaseIv64 = base64_encode($encodedTextIv);

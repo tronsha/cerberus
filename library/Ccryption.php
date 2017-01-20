@@ -54,7 +54,7 @@ class Ccryption
      */
     public static function encode($plaintext, $key)
     {
-        $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_CBC), MCRYPT_RAND);
+        $iv = random_bytes(8);
         $crc = hash('crc32b', $plaintext);
         $hash = hash('sha256', $key, true);
         $compressedText = gzcompress($plaintext, 9);

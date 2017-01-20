@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Support for PHP 7.1
 - Event on412
 
 ### Fixed
@@ -13,6 +14,9 @@
 - Symfony Console 3.2
 - Symfony Translation 3.2
 - PHPUnit 5.6
+
+### Removed
+- Cerberus getMicrotime
 
 ## [1.6.0]
 
