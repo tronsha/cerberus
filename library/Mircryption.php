@@ -49,6 +49,21 @@ class Mircryption
      * @param string $text
      * @param string $key
      * @return string
+     * @link http://php.net/manual/en/function.mcrypt-encrypt.php
+     */
+    public static function encode($text, $key)
+    {
+        $iv = random_bytes(8);
+        $encodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, $text, MCRYPT_MODE_CBC, $iv);
+        $encodedTextIv = $iv . $encodedText;
+        $decodedTextBaseIv64 = base64_encode($encodedTextIv);
+        return '*' . $decodedTextBaseIv64;
+    }
+
+    /**
+     * @param string $text
+     * @param string $key
+     * @return string
      * @link http://php.net/manual/en/function.mcrypt-decrypt.php
      */
     public static function decode($text, $key)
@@ -59,20 +74,5 @@ class Mircryption
         $encodedText = substr($encodedTextIv, 8);
         $plaintext = mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv);
         return trim($plaintext);
-    }
-
-    /**
-     * @param string $text
-     * @param string $key
-     * @return string
-     * @link http://php.net/manual/en/function.mcrypt-encrypt.php
-     */
-    public static function encode($text, $key)
-    {
-        $iv = random_bytes(8);
-        $encodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, $text, MCRYPT_MODE_CBC, $iv);
-        $encodedTextIv = $iv . $encodedText;
-        $decodedTextBaseIv64 = base64_encode($encodedTextIv);
-        return '*' . $decodedTextBaseIv64;
     }
 }
