@@ -39,8 +39,8 @@ class Ccryption
      */
     public function __construct()
     {
-        if (extension_loaded('mcrypt') === false) {
-            throw new Exception('The mcrypt extension is not available.');
+        if (extension_loaded('openssl') === false) {
+            throw new Exception('The openssl extension is not available.');
         }
     }
 
@@ -48,7 +48,7 @@ class Ccryption
      * @param string $plaintext
      * @param string $key
      * @return string
-     * @link http://php.net/manual/en/function.mcrypt-encrypt.php
+     * @link http://php.net/manual/en/function.openssl-encrypt.php
      * @link http://php.net/manual/en/function.gzcompress.php
      * @link http://php.net/manual/en/function.crc32.php
      */
@@ -58,7 +58,7 @@ class Ccryption
         $crc = hash('crc32b', $plaintext);
         $hash = hash('sha256', $key, true);
         $compressedText = gzcompress($plaintext, 9);
-        $compressedEncodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $hash, $compressedText, MCRYPT_MODE_CBC, $iv);
+        $compressedEncodedText = openssl_encrypt($compressedText, 'bf-cbc', $hash, OPENSSL_RAW_DATA, $iv);
         $compressedEncodedTextIvCrc = $iv . $compressedEncodedText . $crc;
         $compressedEncodedTextIvCrc64 = base64_encode($compressedEncodedTextIvCrc);
         return $compressedEncodedTextIvCrc64;
@@ -68,7 +68,7 @@ class Ccryption
      * @param string $compressedEncodedTextIvCrc64
      * @param string $key
      * @return string|null
-     * @link http://php.net/manual/en/function.mcrypt-decrypt.php
+     * @link http://php.net/manual/en/function.openssl-decrypt.php
      * @link http://php.net/manual/en/function.gzuncompress.php
      * @link http://php.net/manual/en/function.crc32.php
      */
@@ -79,7 +79,7 @@ class Ccryption
         $iv = substr($compressedEncodedTextIvCrc, 0, 8);
         $checkValue = substr($compressedEncodedTextIvCrc, -8);
         $compressedEncodedText = substr($compressedEncodedTextIvCrc, 8, -8);
-        $compressedText = mcrypt_decrypt(MCRYPT_BLOWFISH, $hash, $compressedEncodedText, MCRYPT_MODE_CBC, $iv);
+        $compressedText = openssl_decrypt($compressedEncodedText, 'bf-cbc', $hash, OPENSSL_RAW_DATA, $iv);
         $plaintext = gzuncompress($compressedText);
         $crc = hash('crc32b', $plaintext);
         return ($checkValue === $crc) ? $plaintext : null;
