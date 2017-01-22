@@ -3,13 +3,13 @@
 ## [Unreleased]
 
 ### Added
-- Support for PHP 7.1
 - Event on412
 
 ### Fixed
 - Console prepare: length fix for travis-ci
 
 ### Changed
+- Ccryption
 - Console wordwrap: cut long words
 - Symfony Console 3.2
 - Symfony Translation 3.2
