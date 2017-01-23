@@ -366,44 +366,6 @@ class Db
     }
 
     /**
-     * @param string $nick
-     */
-    public function setBotNick($nick)
-    {
-        try {
-            $qb = $this->getConnection()->createQueryBuilder();
-            $qb ->update('bot')
-                ->set('nick', '?')
-                ->where('id = ?')
-                ->setParameter(0, $nick)
-                ->setParameter(1, $this->getBotId())
-                ->execute();
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
-     * @param string $old
-     * @param string $new
-     */
-    public function changeNick($old, $new)
-    {
-        try {
-            $qb = $this->getConnection()->createQueryBuilder();
-            $qb ->update('channel_user')
-                ->set('username', '?')
-                ->where('bot_id = ? AND username = ?')
-                ->setParameter(0, $new)
-                ->setParameter(1, $this->getBotId())
-                ->setParameter(2, $old)
-                ->execute();
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
      * @return array
      */
     public function getJoinedChannels()
