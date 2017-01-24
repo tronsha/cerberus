@@ -46,6 +46,18 @@ class Mircryption
     }
 
     /**
+     * @param string $str
+     * @return string
+     */
+    public static function pkcs7_pad($str)
+    {
+        $len = mb_strlen($str, '8bit');
+        $c = 16 - ($len % 16);
+        $str .= str_repeat(chr($c), $c);
+        return $str;
+    }
+
+    /**
      * @param string $text
      * @param string $key
      * @return string
@@ -54,7 +66,7 @@ class Mircryption
     public static function encode($text, $key)
     {
         $iv = random_bytes(8);
-        $encodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, $text, MCRYPT_MODE_CBC, $iv);
+        $encodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, self::pkcs7_pad($text), MCRYPT_MODE_CBC, $iv);
         $encodedTextIv = $iv . $encodedText;
         $decodedTextBaseIv64 = base64_encode($encodedTextIv);
         return '*' . $decodedTextBaseIv64;
@@ -73,6 +85,37 @@ class Mircryption
         $iv = substr($encodedTextIv, 0, 8);
         $encodedText = substr($encodedTextIv, 8);
         $plaintext = mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv);
+        return trim($plaintext);
+    }
+
+    /**
+     * @param string $text
+     * @param string $key
+     * @return string
+     * @link http://php.net/manual/en/function.openssl-encrypt.php
+     */
+    public static function _encode($text, $key)
+    {
+        $iv = random_bytes(8);
+        $encodedText = openssl_encrypt($text, 'bf-cbc', $key, OPENSSL_RAW_DATA, $iv);
+        $encodedTextIv = $iv . $encodedText;
+        $decodedTextBaseIv64 = base64_encode($encodedTextIv);
+        return '*' . $decodedTextBaseIv64;
+    }
+
+    /**
+     * @param string $text
+     * @param string $key
+     * @return string
+     * @link http://php.net/manual/en/function.openssl-decrypt.php
+     */
+    public static function _decode($text, $key)
+    {
+        $encodedTextIvBase64 = str_replace('*', '', $text);
+        $encodedTextIv = base64_decode($encodedTextIvBase64, true);
+        $iv = substr($encodedTextIv, 0, 8);
+        $encodedText = substr($encodedTextIv, 8);
+        $plaintext = openssl_decrypt($encodedText, 'bf-cbc', $key, OPENSSL_RAW_DATA, $iv);
         return trim($plaintext);
     }
 }
