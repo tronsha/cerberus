@@ -46,15 +46,32 @@ class Mircryption
     }
 
     /**
-     * @param string $str
+     * @param string $text
      * @return string
      */
-    public static function pkcs7_pad($str)
+    public static function padPKCS7($text)
     {
-        $len = mb_strlen($str, '8bit');
-        $c = 16 - ($len % 16);
-        $str .= str_repeat(chr($c), $c);
-        return $str;
+        $length = mb_strlen($text, '8bit');
+        $mod = $length % 8;
+        if ($mod !== 0) {
+            $padding = 8 - $mod;
+            $text .= str_repeat(chr($padding), $padding);
+        }
+        return $text;
+    }
+
+    /**
+     * @param string $text
+     * @return string
+     */
+    public static function unpadPKCS7($text)
+    {
+        $last = substr($text, -1);
+        $padding = ord($last);
+        if ($padding > 0 && $padding < 8) {
+            $text = substr($text, 0, -$padding);
+        }
+        return $text;
     }
 
     /**
@@ -66,7 +83,7 @@ class Mircryption
     public static function encode($text, $key)
     {
         $iv = random_bytes(8);
-        $encodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, self::pkcs7_pad($text), MCRYPT_MODE_CBC, $iv);
+        $encodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, self::padPKCS7($text), MCRYPT_MODE_CBC, $iv);
         $encodedTextIv = $iv . $encodedText;
         $decodedTextBaseIv64 = base64_encode($encodedTextIv);
         return '*' . $decodedTextBaseIv64;
@@ -84,7 +101,7 @@ class Mircryption
         $encodedTextIv = base64_decode($encodedTextIvBase64, true);
         $iv = substr($encodedTextIv, 0, 8);
         $encodedText = substr($encodedTextIv, 8);
-        $plaintext = mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv);
+        $plaintext = self::unpadPKCS7(mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv));
         return trim($plaintext);
     }
 
