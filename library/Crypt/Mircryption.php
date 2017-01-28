@@ -20,8 +20,8 @@
 
 namespace Cerberus\Crypt;
 
+use Cerberus\Php;
 use Exception;
-use function Cerberus\random_bytes;
 
 /**
  * Class Mircryption
@@ -54,7 +54,7 @@ class Mircryption
      */
     public static function encode($text, $key)
     {
-        $iv = random_bytes(8);
+        $iv = Php::random_bytes(8);
         $encodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, Pkcs7::pad($text), MCRYPT_MODE_CBC, $iv);
         $encodedTextIv = $iv . $encodedText;
         $decodedTextBaseIv64 = base64_encode($encodedTextIv);
@@ -85,7 +85,7 @@ class Mircryption
      */
     public static function _encode($text, $key)
     {
-        $iv = random_bytes(8);
+        $iv = Php::random_bytes(8);
         $encodedText = openssl_encrypt($text, 'bf-cbc', $key, OPENSSL_RAW_DATA, $iv);
         $encodedTextIv = $iv . $encodedText;
         $decodedTextBaseIv64 = base64_encode($encodedTextIv);

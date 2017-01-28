@@ -20,8 +20,8 @@
 
 namespace Cerberus\Crypt;
 
+use Cerberus\Php;
 use Exception;
-use function Cerberus\random_bytes;
 
 /**
  * Class Ccryption
@@ -55,7 +55,7 @@ class Ccryption
      */
     public static function encode($plaintext, $key)
     {
-        $iv = random_bytes(8);
+        $iv = Php::random_bytes(8);
         $crc = hash('crc32b', $plaintext);
         $hash = hash('sha256', $key, true);
         $compressedText = gzcompress($plaintext, 9);

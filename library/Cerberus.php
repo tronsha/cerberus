@@ -158,10 +158,3 @@ if (function_exists('boolval') === false) {
         return Php::boolval($var);
     }
 }
-
-if (function_exists('random_bytes') === false) {
-    function random_bytes($length)
-    {
-        return Php::random_bytes($length);
-    }
-}

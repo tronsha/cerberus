@@ -44,6 +44,11 @@ class Php
      */
     public static function random_bytes($length)
     {
-        return openssl_random_pseudo_bytes($length);
+        if (function_exists('random_bytes') === true) {
+            return random_bytes($length);
+        } elseif (function_exists('openssl_random_pseudo_bytes') === true) {
+            return openssl_random_pseudo_bytes($length);
+        }
+        return false;
     }
 }
