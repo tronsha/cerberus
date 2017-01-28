@@ -20,6 +20,9 @@
 
 namespace Cerberus;
 
+use Cerberus\Crypt\Ccryption;
+use Cerberus\Crypt\Mircryption;
+
 class MircryptionTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()

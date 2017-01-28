@@ -20,7 +20,7 @@
 
 namespace Cerberus\Plugins;
 
-use Cerberus\Mircryption;
+use Cerberus\Crypt\Mircryption;
 use Cerberus\Plugin;
 
 /**
