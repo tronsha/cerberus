@@ -37,12 +37,34 @@ use Exception;
 class Mircryption
 {
     /**
-     * @throws Exception
+     * @param string $text
+     * @param string $key
+     * @return string
      */
-    public function __construct()
+    public static function encode($text, $key)
     {
-        if (extension_loaded('mcrypt') === false) {
-            throw new Exception('The mcrypt extension is not available.');
+        if (extension_loaded('mcrypt') === true) {
+            return self::_mcrypt_encrypt($text, $key);
+        } elseif (extension_loaded('openssl') === true) {
+            return self::_openssl_encrypt($text, $key);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param string $text
+     * @param string $key
+     * @return string
+     */
+    public static function decode($text, $key)
+    {
+        if (extension_loaded('mcrypt') === true) {
+            return self::_mcrypt_decrypt($text, $key);
+        } elseif (extension_loaded('openssl') === true) {
+            return self::_openssl_decrypt($text, $key);
+        } else {
+            return false;
         }
     }
 
@@ -52,7 +74,7 @@ class Mircryption
      * @return string
      * @link http://php.net/manual/en/function.mcrypt-encrypt.php
      */
-    public static function encode($text, $key)
+    private static function _mcrypt_encrypt($text, $key)
     {
         $iv = Php::random_bytes(8);
         $encodedText = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, Pkcs7::pad($text), MCRYPT_MODE_CBC, $iv);
@@ -67,7 +89,7 @@ class Mircryption
      * @return string
      * @link http://php.net/manual/en/function.mcrypt-decrypt.php
      */
-    public static function decode($text, $key)
+    private static function _mcrypt_decrypt($text, $key)
     {
         $encodedTextIvBase64 = str_replace('*', '', $text);
         $encodedTextIv = base64_decode($encodedTextIvBase64, true);
@@ -83,7 +105,7 @@ class Mircryption
      * @return string
      * @link http://php.net/manual/en/function.openssl-encrypt.php
      */
-    public static function _encode($text, $key)
+    private static function _openssl_encrypt($text, $key)
     {
         $iv = Php::random_bytes(8);
         $encodedText = openssl_encrypt($text, 'bf-cbc', $key, OPENSSL_RAW_DATA, $iv);
@@ -98,7 +120,7 @@ class Mircryption
      * @return string
      * @link http://php.net/manual/en/function.openssl-decrypt.php
      */
-    public static function _decode($text, $key)
+    private static function _openssl_decrypt($text, $key)
     {
         $encodedTextIvBase64 = str_replace('*', '', $text);
         $encodedTextIv = base64_decode($encodedTextIvBase64, true);
