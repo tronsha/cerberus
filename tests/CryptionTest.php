@@ -39,7 +39,6 @@ class MircryptionTest extends \PHPUnit_Framework_TestCase
         $encoded = Mircryption::encode($text, $key);
         $decoded = Mircryption::decode($encoded, $key);
         $this->assertSame($text, $decoded);
-        $this->assertSame('test', Mircryption::decode('*W8yZidGQfym4MCpf/aG2bA==', '123456'));
         $this->assertSame('test', Mircryption::decode('*QFVVPU8S0JsPxi3yqpM4Tg==', '1234567890123456'));
         $this->assertSame('Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', Mircryption::decode('*/8pfMC8Y7d2I/5GqPEodgOTZDuGXpiX+lbUgELDQ1O3aztX3o3lerNXxTUJMRSIbVpYMoXERcgJFALzk4hNg0EXU4itsCr3FKIzInWM0ct87RWqxQCFBop9SDUnU2z9hZKIROpDUM31NbYVqr0kWUcnqDhPmQQKv+nOL1x+GW/i2i16/iTji4iFFDp2mexS3x1yyO04hNUgpyModfVapw94njUCLUrZH', '1234567890123456'));
     }
