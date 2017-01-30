@@ -55,4 +55,24 @@ class MircryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('test', Ccryption::decode('pDD+su6N5kTljhLbaRSQf4hQQ8mCdOfEZDg3ZjdlMGM=', '123456'));
         $this->assertSame('Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', Ccryption::decode('sf9CYtWGEDw+u6Xs2sRzoVTthAm+byYKXrZiOEKEuwf62+rgH4ICOyngliQHLtnwRZCnXH3FyvXHptIUT5OZdCrZ7yfynBAsGvKniBQGW/Mr2P/Zbomo9zBb8Mztfk5OMqNlb++szT55Lf9WZiPIRSTUWkmOkk0XTgHUV2qJz4NlZmVkZWU4Yw==', '123456'));
     }
+
+    public function testCryptMircryption()
+    {
+        $crypt = new Crypt;
+        $text = 'foo';
+        $key = 'bar';
+        $encoded = $crypt->encode('mircryption', $text, $key);
+        $decoded = $crypt->decode('mircryption', $encoded, $key);
+        $this->assertSame($text, $decoded);
+    }
+
+    public function testCryptCcryption()
+    {
+        $crypt = new Crypt;
+        $text = 'foo';
+        $key = 'bar';
+        $encoded = $crypt->encode('ccryption', $text, $key);
+        $decoded = $crypt->decode('ccryption', $encoded, $key);
+        $this->assertSame($text, $decoded);
+    }
 }

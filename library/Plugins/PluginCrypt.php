@@ -20,7 +20,7 @@
 
 namespace Cerberus\Plugins;
 
-use Cerberus\Crypt\Mircryption;
+use Cerberus\Crypt;
 use Cerberus\Plugin;
 
 /**
@@ -35,19 +35,15 @@ use Cerberus\Plugin;
 class PluginCrypt extends Plugin
 {
     private $cryptkey = [];
-    private $mircryption = null;
+    private $crypt = null;
 
     /**
      *
      */
     protected function init()
     {
-        if (extension_loaded('mcrypt')) {
-            $this->mircryption = new Mircryption;
-            $this->addEvent('onPrivmsg', null, 10);
-        } else {
-            $this->sysinfo('The mcrypt extension is not available.');
-        }
+        $this->addEvent('onPrivmsg', null, 10);
+        $this->crypt = new Crypt;
     }
 
     /**
@@ -87,7 +83,7 @@ class PluginCrypt extends Plugin
      */
     protected function decodeMircryption($text, $key = '123456')
     {
-        return $this->mircryption->decode($text, $key);
+        return $this->crypt->decode('mircryption', $text, $key);
     }
 
     /**
@@ -97,6 +93,6 @@ class PluginCrypt extends Plugin
      */
     protected function encodeMircryption($text, $key = '123456')
     {
-        return '+OK ' . $this->mircryption->encode($text, $key);
+        return '+OK ' . $this->crypt->encode('mircryption', $text, $key);
     }
 }

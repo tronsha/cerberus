@@ -20,6 +20,9 @@
 
 namespace Cerberus;
 
+use Cerberus\Crypt\Ccryption;
+use Cerberus\Crypt\Mircryption;
+
 /**
  * Class Crypt
  * @package Cerberus
@@ -31,4 +34,70 @@ namespace Cerberus;
  */
 class Crypt
 {
+    private $ccryption = null;
+    private $mircryption = null;
+
+    /**
+     * @param string $cryption
+     * @param string $text
+     * @param string $key
+     *
+     * @return string
+     */
+    public function encode($cryption, $text, $key)
+    {
+        return $this->getCryption($cryption)->encode($text, $key);
+    }
+
+    /**
+     * @param string $cryption
+     * @param string $text
+     * @param string $key
+     *
+     * @return null|string
+     */
+    public function decode($cryption, $text, $key)
+    {
+        return $this->getCryption($cryption)->decode($text, $key);
+    }
+
+    /**
+     * @param string $cryption
+     *
+     * @return bool|Ccryption|Mircryption|null
+     */
+    public function getCryption($cryption)
+    {
+        switch ($cryption) {
+            case 'ccryption':
+                return $this->getCcryption();
+                break;
+            case 'mircryption':
+                return $this->getMircryption();
+                break;
+        }
+        return false;
+    }
+
+    /**
+     * @return Ccryption|null
+     */
+    public function getCcryption()
+    {
+        if ($this->ccryption === null) {
+            $this->ccryption = new Ccryption;
+        }
+        return $this->ccryption;
+    }
+
+    /**
+     * @return Mircryption|null
+     */
+    public function getMircryption()
+    {
+        if ($this->mircryption === null) {
+            $this->mircryption = new Mircryption;
+        }
+        return $this->mircryption;
+    }
 }
