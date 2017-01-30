@@ -21,7 +21,6 @@
 namespace Cerberus\Crypt;
 
 use Cerberus\Php;
-use Exception;
 
 /**
  * Class Mircryption
