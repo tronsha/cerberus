@@ -34,28 +34,28 @@ class Pkcs7
 {
     /**
      * @param string $text
+     * @param int $block
      * @return string
      */
-    public static function pad($text)
+    public static function pad($text, $block = 8)
     {
         $length = mb_strlen($text, '8bit');
-        $mod = $length % 8;
-        if ($mod !== 0) {
-            $padding = 8 - $mod;
-            $text .= str_repeat(chr($padding), $padding);
-        }
+        $mod = $length % $block;
+        $padding = $block - $mod;
+        $text .= str_repeat(chr($padding), $padding);
         return $text;
     }
 
     /**
      * @param string $text
+     * @param int $block
      * @return string
      */
-    public static function unpad($text)
+    public static function unpad($text, $block = 8)
     {
         $last = substr($text, -1);
         $padding = ord($last);
-        if ($padding > 0 && $padding < 8) {
+        if ($padding > 0 && $padding <= $block) {
             $text = substr($text, 0, -$padding);
         }
         return $text;
