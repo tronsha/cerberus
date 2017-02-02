@@ -42,7 +42,7 @@ class Php
      * @param int $length
      * @return string
      */
-    public static function random_bytes($length)
+    public static function randombytes($length)
     {
         if (function_exists('random_bytes') === true) {
             return random_bytes($length);
