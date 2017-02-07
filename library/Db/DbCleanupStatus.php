@@ -20,21 +20,28 @@
 
 namespace Cerberus\Db;
 
+use DateTime;
+
 /**
- * Class DbUser
+ * Class DbCleanupStatus
  * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbUser extends Db
+class DbCleanupStatus extends Db
 {
     /**
-     * @param string $user
+     *
      */
-    public function removeUser($user)
+    public function cleanupStatus()
     {
-        $this->getDb()->removeUserFromChannel(null, $user);
+        $oneMinuteAgo = (new DateTime())->modify('-1 minute')->format('Y-m-d H:i:s');
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
+        $qb ->delete('status')
+            ->where('time <= ?')
+            ->setParameter(0, $oneMinuteAgo)
+            ->execute();
     }
 }

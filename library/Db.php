@@ -100,11 +100,11 @@ class Db
      */
     public function getClass($name)
     {
-        $name = strtolower($name);
-        if (array_key_exists($name, $this->classes) === false) {
+        $key = strtolower($name);
+        if (array_key_exists($key, $this->classes) === false) {
             $this->loadClass($name);
         }
-        $class = $this->classes[$name];
+        $class = $this->classes[$key];
         $className = '\Cerberus\Db\Db' . ucfirst($name);
         if (is_a($class, $className) === false) {
             return false;
@@ -117,9 +117,9 @@ class Db
      */
     protected function loadClass($name)
     {
-        $name = strtolower($name);
+        $key = strtolower($name);
         $className = '\Cerberus\Db\Db' . ucfirst($name);
-        $this->classes[$name] = new $className($this);
+        $this->classes[$key] = new $className($this);
     }
 
     /**
@@ -191,10 +191,8 @@ class Db
      */
     public function __call($name, $arguments)
     {
-        preg_match('/[A-Z][a-z]+$/', $name, $match);
-        $className = strtolower($match[0]);
         try {
-            return call_user_func_array([$this->getClass($className), $name], $arguments);
+            return call_user_func_array([$this->getClass($name), $name], $arguments);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }

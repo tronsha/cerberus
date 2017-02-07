@@ -23,14 +23,14 @@ namespace Cerberus\Db;
 use DateTime;
 
 /**
- * Class DbLog
+ * Class DbSetLog
  * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbLog extends Db
+class DbSetLog extends Db
 {
     /**
      * @param string $irc
