@@ -30,19 +30,8 @@ use DateTime;
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbLog
+class DbLog extends Db
 {
-    protected $db = null;
-
-    /**
-     * Log constructor.
-     * @param \Cerberus\Db $db
-     */
-    public function __construct($db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * @param string $irc
      * @param string $command
@@ -55,7 +44,7 @@ class DbLog
     public function setLog($irc, $command, $network, $nick, $rest, $text, $direction)
     {
         $now = (new DateTime())->format('Y-m-d H:i:s');
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('log')
             ->values(
                 [
@@ -67,14 +56,14 @@ class DbLog
                     'direction' => '?'
                 ]
             )
-            ->setParameter(0, $this->db->getBotId())
+            ->setParameter(0, $this->getDb()->getBotId())
             ->setParameter(1, $network)
             ->setParameter(2, $command)
             ->setParameter(3, $irc)
             ->setParameter(4, $now)
             ->setParameter(5, $direction)
             ->execute();
-        $logId = $this->db->lastInsertId('log');
+        $logId = $this->getDb()->lastInsertId('log');
         if ($direction === '<') {
             switch (strtolower($command)) {
                 case 'privmsg':
@@ -126,7 +115,7 @@ class DbLog
      */
     public function setPrivmsgLog($channel, $nick, $text, $time, $direction, $logId = null, $botId = null)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('log_privmsg')
             ->values(
                 [
@@ -140,7 +129,7 @@ class DbLog
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $text)
@@ -159,7 +148,7 @@ class DbLog
      */
     public function setNoticeLog($target, $nick, $text, $time, $logId = null, $botId = null)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('log_notice')
             ->values(
                 [
@@ -172,7 +161,7 @@ class DbLog
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $target)
             ->setParameter(3, $nick)
             ->setParameter(4, $text)
@@ -189,7 +178,7 @@ class DbLog
      */
     public function setJoinLog($channel, $nick, $time, $logId = null, $botId = null)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('log_join')
             ->values(
                 [
@@ -201,7 +190,7 @@ class DbLog
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $time)
@@ -218,7 +207,7 @@ class DbLog
      */
     public function setPartLog($channel, $nick, $text, $time, $logId = null, $botId = null)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('log_part')
             ->values(
                 [
@@ -231,7 +220,7 @@ class DbLog
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $text)
@@ -248,7 +237,7 @@ class DbLog
      */
     public function setQuitLog($nick, $text, $time, $logId = null, $botId = null)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('log_quit')
             ->values(
                 [
@@ -260,7 +249,7 @@ class DbLog
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $nick)
             ->setParameter(3, $text)
             ->setParameter(4, $time)
@@ -278,7 +267,7 @@ class DbLog
      */
     public function setKickLog($channel, $nick, $kicked, $text, $time, $logId = null, $botId = null)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('log_kick')
             ->values(
                 [
@@ -292,7 +281,7 @@ class DbLog
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $kicked)
@@ -310,7 +299,7 @@ class DbLog
      */
     public function setNickLog($oldNick, $newNick, $time, $logId = null, $botId = null)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('log_nick')
             ->values(
                 [
@@ -322,7 +311,7 @@ class DbLog
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $oldNick)
             ->setParameter(3, $newNick)
             ->setParameter(4, $time)
@@ -339,7 +328,7 @@ class DbLog
      */
     public function setTopicLog($channel, $nick, $topic, $time, $logId = null, $botId = null)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('log_topic')
             ->values(
                 [
@@ -352,7 +341,7 @@ class DbLog
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->db->getBotId() : $botId))
+            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $topic)
@@ -366,32 +355,32 @@ class DbLog
     public function cleanupLog()
     {
         $oneWeekAgo = (new DateTime())->modify('-1 week')->format('Y-m-d H:i:s');
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('log_join')
             ->where('time <= ?')
             ->setParameter(0, $oneWeekAgo)
             ->execute();
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('log_part')
             ->where('time <= ?')
             ->setParameter(0, $oneWeekAgo)
             ->execute();
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('log_quit')
             ->where('time <= ?')
             ->setParameter(0, $oneWeekAgo)
             ->execute();
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('log_kick')
             ->where('time <= ?')
             ->setParameter(0, $oneWeekAgo)
             ->execute();
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('log_nick')
             ->where('time <= ?')
             ->setParameter(0, $oneWeekAgo)
             ->execute();
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('log_topic')
             ->where('time <= ?')
             ->setParameter(0, $oneWeekAgo)

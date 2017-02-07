@@ -28,30 +28,19 @@ namespace Cerberus\Db;
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbNick
+class DbNick extends Db
 {
-    protected $db = null;
-
-    /**
-     * Log constructor.
-     * @param \Cerberus\Db $db
-     */
-    public function __construct($db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * @param string $nick
      */
     public function setBotNick($nick)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->update('bot')
             ->set('nick', '?')
             ->where('id = ?')
             ->setParameter(0, $nick)
-            ->setParameter(1, $this->db->getBotId())
+            ->setParameter(1, $this->getDb()->getBotId())
             ->execute();
     }
 
@@ -61,12 +50,12 @@ class DbNick
      */
     public function changeNick($old, $new)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->update('channel_user')
             ->set('username', '?')
             ->where('bot_id = ? AND username = ?')
             ->setParameter(0, $new)
-            ->setParameter(1, $this->db->getBotId())
+            ->setParameter(1, $this->getDb()->getBotId())
             ->setParameter(2, $old)
             ->execute();
     }

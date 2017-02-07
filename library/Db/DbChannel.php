@@ -28,26 +28,15 @@ namespace Cerberus\Db;
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbChannel
+class DbChannel extends Db
 {
-    protected $db = null;
-
-    /**
-     * Log constructor.
-     * @param \Cerberus\Db $db
-     */
-    public function __construct($db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * @param string $channel
      * @return int
      */
     public function addChannel($channel)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('channel')
             ->values(
                 [
@@ -56,9 +45,9 @@ class DbChannel
                 ]
             )
             ->setParameter(0, $channel)
-            ->setParameter(1, $this->db->getBotId())
+            ->setParameter(1, $this->getDb()->getBotId())
             ->execute();
-        return $this->db->lastInsertId('channel');
+        return $this->getDb()->lastInsertId('channel');
     }
 
     /**
@@ -66,11 +55,11 @@ class DbChannel
      */
     public function removeChannel($channel)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('channel')
             ->where('channel = ? AND bot_id = ?')
             ->setParameter(0, $channel)
-            ->setParameter(1, $this->db->getBotId())
+            ->setParameter(1, $this->getDb()->getBotId())
             ->execute();
         $this->removeUserFromChannel($channel);
     }
@@ -86,7 +75,7 @@ class DbChannel
         if (is_array($mode) === false) {
             $mode = [$mode];
         }
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('channel_user')
             ->values(
                 [
@@ -99,9 +88,9 @@ class DbChannel
             ->setParameter(0, $user)
             ->setParameter(1, json_encode($mode))
             ->setParameter(2, $channel)
-            ->setParameter(3, $this->db->getBotId())
+            ->setParameter(3, $this->getDb()->getBotId())
             ->execute();
-        return $this->db->lastInsertId('channel_user');
+        return $this->getDb()->lastInsertId('channel_user');
     }
 
     /**
@@ -111,10 +100,10 @@ class DbChannel
     public function removeUserFromChannel($channel, $user = null)
     {
         $paramCount = 0;
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb->delete('channel_user');
         $qb->where('bot_id = ?');
-        $qb->setParameter($paramCount, $this->db->getBotId());
+        $qb->setParameter($paramCount, $this->getDb()->getBotId());
         if ($channel !== null) {
             $paramCount++;
             $qb->andWhere('channel = ?');
@@ -135,13 +124,13 @@ class DbChannel
      */
     public function getUserInChannel($channel, $user)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $stmt = $qb ->select('*')
             ->from('channel_user')
             ->where('username = ? AND channel = ? AND bot_id = ?')
             ->setParameter(0, $user)
             ->setParameter(1, $channel)
-            ->setParameter(2, $this->db->getBotId())
+            ->setParameter(2, $this->getDb()->getBotId())
             ->execute();
         $rows = $stmt->fetchAll();
         return $rows;

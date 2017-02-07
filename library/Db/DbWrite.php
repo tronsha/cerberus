@@ -28,19 +28,8 @@ namespace Cerberus\Db;
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbWrite
+class DbWrite extends Db
 {
-    protected $db = null;
-
-    /**
-     * Log constructor.
-     * @param \Cerberus\Db $db
-     */
-    public function __construct($db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * @param string $text
      * @param int $priority
@@ -48,7 +37,7 @@ class DbWrite
      */
     public function addWrite($text, $priority = 50)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('send')
             ->values(
                 [
@@ -59,9 +48,9 @@ class DbWrite
             )
             ->setParameter(0, $text)
             ->setParameter(1, $priority)
-            ->setParameter(2, $this->db->getBotId())
+            ->setParameter(2, $this->getDb()->getBotId())
             ->execute();
-        return $this->db->lastInsertId('send');
+        return $this->getDb()->lastInsertId('send');
     }
 
     /**
@@ -69,7 +58,7 @@ class DbWrite
      */
     public function getWrite()
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $stmt = $qb
             ->select('id', 'text')
             ->from('send')
@@ -77,7 +66,7 @@ class DbWrite
             ->orderBy('priority', 'DESC')
             ->addOrderBy('id', 'ASC')
             ->setMaxResults(1)
-            ->setParameter(0, $this->db->getBotId())
+            ->setParameter(0, $this->getDb()->getBotId())
             ->execute();
         return $stmt->fetch();
     }
@@ -87,7 +76,7 @@ class DbWrite
      */
     public function removeWrite($id)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('send')
             ->where('id = ?')
             ->setParameter(0, $id)

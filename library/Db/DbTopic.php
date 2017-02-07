@@ -28,31 +28,20 @@ namespace Cerberus\Db;
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbTopic
+class DbTopic extends Db
 {
-    protected $db = null;
-
-    /**
-     * Log constructor.
-     * @param \Cerberus\Db $db
-     */
-    public function __construct($db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * @param string $channel
      * @param string $topic
      */
     public function setChannelTopic($channel, $topic)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->update('channel')
             ->set('topic', '?')
             ->where('bot_id = ? AND channel = ?')
             ->setParameter(0, $topic)
-            ->setParameter(1, $this->db->getBotId())
+            ->setParameter(1, $this->getDb()->getBotId())
             ->setParameter(2, $channel)
             ->execute();
     }
@@ -63,21 +52,21 @@ class DbTopic
      */
     public function getChannelTopic($channel)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $stmt = $qb ->select('topic')
                     ->from('channel')
                     ->where('channel = ? AND bot_id = ?')
                     ->setParameter(0, $channel)
-                    ->setParameter(1, $this->db->getBotId())
+                    ->setParameter(1, $this->getDb()->getBotId())
                     ->execute();
         $topic = $stmt->fetch();
         if ($topic === false) {
-            $qb = $this->db->getConnection()->createQueryBuilder();
+            $qb = $this->getDb()->getConnection()->createQueryBuilder();
             $stmt = $qb ->select('topic')
                         ->from('channellist')
                         ->where('channel = ? AND bot_id = ?')
                         ->setParameter(0, $channel)
-                        ->setParameter(1, $this->db->getBotId())
+                        ->setParameter(1, $this->getDb()->getBotId())
                         ->execute();
             $topic = $stmt->fetch();
         }

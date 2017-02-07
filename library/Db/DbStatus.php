@@ -30,19 +30,8 @@ use DateTime;
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbStatus
+class DbStatus extends Db
 {
-    protected $db = null;
-
-    /**
-     * Log constructor.
-     * @param \Cerberus\Db $db
-     */
-    public function __construct($db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * @param string $status
      * @param string $text
@@ -52,7 +41,7 @@ class DbStatus
     public function addStatus($status, $text, $data)
     {
         $now = (new DateTime())->format('Y-m-d H:i:s');
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('status')
             ->values(
                 [
@@ -67,9 +56,9 @@ class DbStatus
             ->setParameter(1, $text)
             ->setParameter(2, json_encode($data))
             ->setParameter(3, $now)
-            ->setParameter(4, $this->db->getBotId())
+            ->setParameter(4, $this->getDb()->getBotId())
             ->execute();
-        return $this->db->lastInsertId('status');
+        return $this->getDb()->lastInsertId('status');
     }
 
     /**
@@ -78,12 +67,12 @@ class DbStatus
      */
     public function getStatus($status = null)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->select('id', 'status', 'text', 'data')
             ->from('status')
             ->where('bot_id = ?')
             ->setMaxResults(1)
-            ->setParameter(0, $this->db->getBotId());
+            ->setParameter(0, $this->getDb()->getBotId());
         if ($status === null) {
             $qb->orderBy('id', 'ASC');
         } else {
@@ -114,7 +103,7 @@ class DbStatus
      */
     public function removeStatus($id)
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('status')
             ->where('id = ?')
             ->setParameter(0, $id)
@@ -127,7 +116,7 @@ class DbStatus
     public function cleanupStatus()
     {
         $oneMinuteAgo = (new DateTime())->modify('-1 minute')->format('Y-m-d H:i:s');
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('status')
             ->where('time <= ?')
             ->setParameter(0, $oneMinuteAgo)

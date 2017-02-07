@@ -30,27 +30,16 @@ use DateTime;
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbChannellist
+class DbChannellist extends Db
 {
-    protected $db = null;
-
-    /**
-     * Log constructor.
-     * @param \Cerberus\Db $db
-     */
-    public function __construct($db)
-    {
-        $this->db = $db;
-    }
-
     /**
      */
     public function clearChannellist()
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->delete('channellist')
             ->where('bot_id = ?')
-            ->setParameter(0, $this->db->getBotId())
+            ->setParameter(0, $this->getDb()->getBotId())
             ->execute();
     }
 
@@ -64,7 +53,7 @@ class DbChannellist
     public function addChannelToChannellist($network, $channel, $usercount, $topic)
     {
         $now = (new DateTime())->format('Y-m-d H:i:s');
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->insert('channellist')
             ->values(
                 [
@@ -81,9 +70,9 @@ class DbChannellist
             ->setParameter(2, $usercount)
             ->setParameter(3, $topic)
             ->setParameter(4, $now)
-            ->setParameter(5, $this->db->getBotId())
+            ->setParameter(5, $this->getDb()->getBotId())
             ->execute();
-        return $this->db->lastInsertId('channellist');
+        return $this->getDb()->lastInsertId('channellist');
     }
 
     /**
@@ -91,13 +80,13 @@ class DbChannellist
      */
     public function getChannellist()
     {
-        $qb = $this->db->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $stmt = $qb
             ->select('channel', 'topic', 'usercount')
             ->from('channellist')
             ->where('bot_id = ?')
             ->setMaxResults(10000)
-            ->setParameter(0, $this->db->getBotId())
+            ->setParameter(0, $this->getDb()->getBotId())
             ->orderBy('usercount', 'DESC')
             ->execute();
         $rows = $stmt->fetchAll();

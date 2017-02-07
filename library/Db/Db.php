@@ -21,20 +21,39 @@
 namespace Cerberus\Db;
 
 /**
- * Class DbUser
+ * Class Db
  * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbUser extends Db
+abstract class Db
 {
+    protected $db = null;
+
     /**
-     * @param string $user
+     * Log constructor.
+     * @param \Cerberus\Db $db
      */
-    public function removeUser($user)
+    public function __construct($db)
     {
-        $this->getDb()->removeUserFromChannel(null, $user);
+        $this->setDb($db);
+    }
+
+    /**
+     * @return \Cerberus\Db|null
+     */
+    public function getDb()
+    {
+        return $this->db;
+    }
+
+    /**
+     * @param \Cerberus\Db $db
+     */
+    public function setDb($db)
+    {
+        $this->db = $db;
     }
 }
