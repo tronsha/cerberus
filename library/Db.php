@@ -364,26 +364,6 @@ class Db
     }
 
     /**
-     * @return array
-     */
-    public function getJoinedChannels()
-    {
-        try {
-            $qb = $this->getConnection()->createQueryBuilder();
-            $stmt = $qb
-                ->select('channel')
-                ->from('channel')
-                ->where('bot_id = ?')
-                ->setParameter(0, $this->getBotId())
-                ->execute();
-            $rows = $stmt->fetchAll();
-            return $rows;
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
      * @param string $network
      * @param string $auth
      * @return string
