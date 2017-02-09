@@ -22,16 +22,28 @@ namespace Cerberus;
 
 use Cerberus\Crypt\Ccryption;
 use Cerberus\Crypt\Mircryption;
+use Cerberus\Crypt\Pkcs7;
 
 class CryptTest extends \PHPUnit_Framework_TestCase
 {
-    public function textPkcs7()
+    public function testPkcs7()
     {
         $pkcs7 = new Pkcs7;
-        $this->assertSame("test\x2\x2", $pkcs7->pad('test'));
-        $this->assertSame("foo\x3\x3\x3", $pkcs7->pad('foo'));
-        $this->assertSame("foobar\x8\x8\x8\x8\x8\x8\x8\x8", $pkcs7->pad('foobar'));
-        $this->assertSame("foobarbaz\x3\x3\x3", $pkcs7->pad('foobarbaz'));
+        $this->assertSame("*\x7\x7\x7\x7\x7\x7\x7", $pkcs7->pad('*'));
+        $this->assertSame("**\x6\x6\x6\x6\x6\x6", $pkcs7->pad('**'));
+        $this->assertSame("***\x5\x5\x5\x5\x5", $pkcs7->pad('***'));
+        $this->assertSame("****\x4\x4\x4\x4", $pkcs7->pad('****'));
+        $this->assertSame("*****\x3\x3\x3", $pkcs7->pad('*****'));
+        $this->assertSame("******\x2\x2", $pkcs7->pad('******'));
+        $this->assertSame("*******\x1", $pkcs7->pad('*******'));
+        $this->assertSame("********\x8\x8\x8\x8\x8\x8\x8\x8", $pkcs7->pad('********'));
+        $this->assertSame("*********\x7\x7\x7\x7\x7\x7\x7", $pkcs7->pad('*********'));
+        $this->assertSame("**********\x6\x6\x6\x6\x6\x6", $pkcs7->pad('**********'));
+        $this->assertSame("***********\x5\x5\x5\x5\x5", $pkcs7->pad('***********'));
+        $this->assertSame("************\x4\x4\x4\x4", $pkcs7->pad('************'));
+        $this->assertSame("*************\x3\x3\x3", $pkcs7->pad('*************'));
+        $this->assertSame("**************\x2\x2", $pkcs7->pad('**************'));
+        $this->assertSame("***************\x1", $pkcs7->pad('***************'));
     }
 
     public function testMircryption()
