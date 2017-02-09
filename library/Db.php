@@ -362,27 +362,4 @@ class Db
             $this->error($e->getMessage());
         }
     }
-
-    /**
-     * @param string $network
-     * @param string $auth
-     * @return string
-     */
-    public function getAuthLevel($network, $auth)
-    {
-        try {
-            $qb = $this->getConnection()->createQueryBuilder();
-            $stmt = $qb
-                ->select('authlevel')
-                ->from('auth')
-                ->where('network = ? AND authname = ?')
-                ->setParameter(0, $network)
-                ->setParameter(1, strtolower($auth))
-                ->execute();
-            $row = $stmt->fetch();
-            return $row['authlevel'];
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
 }
