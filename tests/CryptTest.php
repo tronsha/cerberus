@@ -23,13 +23,15 @@ namespace Cerberus;
 use Cerberus\Crypt\Ccryption;
 use Cerberus\Crypt\Mircryption;
 
-class MircryptionTest extends \PHPUnit_Framework_TestCase
+class CryptTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public function textPkcs7()
     {
-        if (extension_loaded('mcrypt') === false) {
-            $this->markTestSkipped('The mcrypt extension is not available.');
-        }
+        $pkcs7 = new Pkcs7;
+        $this->assertSame("test\x2\x2", $pkcs7->pad('test'));
+        $this->assertSame("foo\x3\x3\x3", $pkcs7->pad('foo'));
+        $this->assertSame("foobar\x8\x8\x8\x8\x8\x8\x8\x8", $pkcs7->pad('foobar'));
+        $this->assertSame("foobarbaz\x3\x3\x3", $pkcs7->pad('foobarbaz'));
     }
 
     public function testMircryption()
