@@ -199,28 +199,6 @@ class Db
     }
 
     /**
-     * @return array
-     */
-    public function getActiveBotList()
-    {
-        try {
-            $qb = $this->getConnection()->createQueryBuilder();
-            $qb ->select('*')
-                ->from('bot');
-            if ($this->getConfig('driver') === 'pdo_sqlite') {
-                $qb->where('stop = \'NULL\'');
-            } else {
-                $qb->where('stop IS NULL');
-            }
-            $stmt = $qb->execute();
-            $rows = $stmt->fetchAll();
-            return $rows;
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
      * @param string $network
      * @return int
      */
