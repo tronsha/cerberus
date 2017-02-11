@@ -199,28 +199,6 @@ class Db
     }
 
     /**
-     * @param string $network
-     * @return int
-     */
-    public function getServerCount($network)
-    {
-        try {
-            $qb = $this->getConnection()->createQueryBuilder();
-            $stmt = $qb
-                ->select('COUNT(*) AS number')
-                ->from('server', 's')
-                ->innerJoin('s', 'network', 'n', 's.network_id = n.id')
-                ->where('n.network = ?')
-                ->setParameter(0, $network)
-                ->execute();
-            $row = $stmt->fetch();
-            return $row['number'];
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
      * @return string
      */
     public function getServerName()
