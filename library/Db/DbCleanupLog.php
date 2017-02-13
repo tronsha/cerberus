@@ -20,6 +20,8 @@
 
 namespace Cerberus\Db;
 
+use DateTime;
+
 /**
  * Class DbCleanupLog
  * @package Cerberus
