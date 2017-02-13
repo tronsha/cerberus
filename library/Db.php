@@ -199,49 +199,6 @@ class Db
     }
 
     /**
-     * @link https://freenode.net/irc_servers.shtml
-     * @link https://www.quakenet.org/servers
-     * @param array $server
-     * @param int $i
-     * @return array
-     */
-    public function getServerData($server, $i = 0)
-    {
-        try {
-            $network = strtolower($server['network']);
-            $i = (string)$i;
-            $qb = $this->getConnection()->createQueryBuilder();
-            $stmt = $qb
-                ->select('s.id', 's.server AS host', 's.port')
-                ->from('server', 's')
-                ->innerJoin('s', 'network', 'n', 's.network_id = n.id')
-                ->where('n.network = ?')
-                ->orderBy('s.id', 'ASC')
-                ->addOrderBy('s.port', 'ASC')
-                ->setFirstResult($i)
-                ->setMaxResults(1)
-                ->setParameter(0, $network)
-                ->execute();
-            $row = $stmt->fetch();
-            try {
-                $row['ip'] = gethostbyname($row['host']);
-            } catch (Exception $e) {
-                $this->irc->error($e->getMessage());
-            }
-            $qb = $this->getConnection()->createQueryBuilder();
-            $qb ->update('bot')
-                ->set('server_id', '?')
-                ->where('id = ?')
-                ->setParameter(0, $row['id'])
-                ->setParameter(1, $this->getBotId())
-                ->execute();
-            return array_merge($server, $row);
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
      * @return string
      */
     public function getDbVersion()
