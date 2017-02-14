@@ -214,28 +214,6 @@ class Db
     }
 
     /**
-     * @param string $network
-     * @return array
-     */
-    public function getPreform($network)
-    {
-        try {
-            $qb = $this->getConnection()->createQueryBuilder();
-            $stmt = $qb
-                ->select('text, priority')
-                ->from('preform')
-                ->where('network = ?')
-                ->orderBy('priority', 'DESC')
-                ->setParameter(0, $network)
-                ->execute();
-            $rows = $stmt->fetchAll();
-            return $rows;
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
      *
      */
     public function setPing()
