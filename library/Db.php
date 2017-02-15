@@ -20,7 +20,6 @@
 
 namespace Cerberus;
 
-use DateTime;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Version;
 use Exception;
@@ -208,25 +207,6 @@ class Db
             $stmt = $this->getConnection()->query($sql);
             $row = $stmt->fetch();
             return $row['version'];
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
-
-    /**
-     *
-     */
-    public function setPing()
-    {
-        try {
-            $now = (new DateTime())->format('Y-m-d H:i:s');
-            $qb = $this->getConnection()->createQueryBuilder();
-            $qb ->update('bot')
-                ->set('ping', '?')
-                ->where('id = ?')
-                ->setParameter(0, $now)
-                ->setParameter(1, $this->getBotId())
-                ->execute();
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
