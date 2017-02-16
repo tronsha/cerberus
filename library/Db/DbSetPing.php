@@ -38,12 +38,12 @@ class DbSetPing extends Db
     public function setPing()
     {
         $now = (new DateTime())->format('Y-m-d H:i:s');
-        $qb = $this->getConnection()->createQueryBuilder();
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->update('bot')
             ->set('ping', '?')
             ->where('id = ?')
             ->setParameter(0, $now)
-            ->setParameter(1, $this->getBotId())
+            ->setParameter(1, $this->getDb()->getBotId())
             ->execute();
     }
 }
