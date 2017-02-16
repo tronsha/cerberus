@@ -48,7 +48,26 @@ class Db
     public function __construct($config, Irc $irc = null)
     {
         $this->irc = $irc;
-        $this->config = $config;
+        foreach ($config as $key => $value) {
+            $this->setConfig($key, $value);
+        }
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     * @return \Doctrine\DBAL\Connection
+     */
+    public function connect()
+    {
+        return $this->conn = DriverManager::getConnection($this->config);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function close()
+    {
+        return $this->getConnection()->close();
     }
 
     /**
@@ -57,6 +76,24 @@ class Db
     public function getConnection()
     {
         return $this->conn;
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getConfig($key)
+    {
+        return $this->config[$key];
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setConfig($key, $value)
+    {
+        $this->config[$key] = $value;
     }
 
     /**
@@ -76,21 +113,17 @@ class Db
     }
 
     /**
-     * @param string $key
+     * @param string $name
+     * @param array $arguments
      * @return mixed
      */
-    public function getConfig($key)
+    public function __call($name, $arguments)
     {
-        return $this->config[$key];
-    }
-
-    /**
-     * @param string $key
-     * @param mixed $value
-     */
-    public function setConfig($key, $value)
-    {
-        $this->config[$key] = $value;
+        try {
+            return call_user_func_array([$this->getClass($name), $name], $arguments);
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+        }
     }
 
     /**
@@ -119,23 +152,6 @@ class Db
         $key = strtolower($name);
         $className = '\Cerberus\Db\Db' . ucfirst($name);
         $this->classes[$key] = new $className($this);
-    }
-
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @return \Doctrine\DBAL\Connection
-     */
-    public function connect()
-    {
-        return $this->conn = DriverManager::getConnection($this->config);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function close()
-    {
-        return $this->getConnection()->close();
     }
 
     /**
@@ -181,20 +197,6 @@ class Db
             $lastInsertId = $row['id'];
         }
         return intval($lastInsertId);
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
-    public function __call($name, $arguments)
-    {
-        try {
-            return call_user_func_array([$this->getClass($name), $name], $arguments);
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
     }
 
     /**
