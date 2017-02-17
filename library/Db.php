@@ -198,19 +198,4 @@ class Db
         }
         return intval($lastInsertId);
     }
-
-    /**
-     * @return string
-     */
-    public function getDbVersion()
-    {
-        try {
-            $sql = 'SELECT VERSION() AS version';
-            $stmt = $this->getConnection()->query($sql);
-            $row = $stmt->fetch();
-            return $row['version'];
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
-        }
-    }
 }
