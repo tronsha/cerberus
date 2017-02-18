@@ -216,4 +216,8 @@ class DbTest extends \PHPUnit_Framework_TestCase
             ['channel' => '#bar', 'topic' => 'topic2', 'usercount' => 23]
         ], $db->getChannellist());
     }
+
+    public function testSetPing()
+    {
+    }
 }
