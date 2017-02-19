@@ -20,6 +20,7 @@
 
 namespace Cerberus;
 
+use DateTime;
 use Doctrine\DBAL\DriverManager;
 
 class DbTest extends \PHPUnit_Framework_TestCase
@@ -219,5 +220,13 @@ class DbTest extends \PHPUnit_Framework_TestCase
 
     public function testSetPing()
     {
+        $db = $this->irc->getDb();
+        $time1 = (new DateTime())->format('Y-m-d H:i:s');
+        $db->setPing();
+        $time2 = (new DateTime())->format('Y-m-d H:i:s');
+        $sql = 'SELECT count(*) AS x FROM bot WHERE ping BETWEEN "' . $time1 . '" AND "' . $time2 . '";';
+        $conn = $db->getConnection();
+        $result= $conn->query($sql)->fetch();
+        $this->assertSame(['x' => '1'], $result);
     }
 }
