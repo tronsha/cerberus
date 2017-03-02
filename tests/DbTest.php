@@ -224,7 +224,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $time1 = (new DateTime())->format('Y-m-d H:i:s');
         $db->setPing();
         $time2 = (new DateTime())->format('Y-m-d H:i:s');
-        $sql = 'SELECT count(*) AS x FROM bot WHERE ping >= "' . $time1 . '" AND ping <= "' . $time2 . '";';
+        $sql = "SELECT count(*) AS x FROM bot WHERE ping >= '" . $time1 . "' AND ping <= '" . $time2 . "';";
         $conn = $db->getConnection();
         $result= $conn->query($sql)->fetch();
         $this->assertSame(['x' => '1'], $result);
