@@ -227,6 +227,6 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $sql = "SELECT count(*) AS x FROM bot WHERE ping >= '" . $time1 . "' AND ping <= '" . $time2 . "';";
         $conn = $db->getConnection();
         $result= $conn->query($sql)->fetch();
-        $this->assertSame(['x' => '1'], $result);
+        $this->assertSame(1, intval($result['x']));
     }
 }
