@@ -48,6 +48,8 @@ class Php
             return random_bytes($length);
         } elseif (function_exists('openssl_random_pseudo_bytes') === true) {
             return openssl_random_pseudo_bytes($length);
+        } elseif (function_exists('mcrypt_create_iv') === true) {
+            return mcrypt_create_iv($length);
         }
         return false;
     }
