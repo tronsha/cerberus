@@ -33,7 +33,7 @@ use Exception;
  * @link http://www.doctrine-project.org/projects/dbal.html Database Abstraction Layer
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class Db
+class Db extends Helper
 {
     protected $config = [];
     protected $irc = null;
@@ -47,7 +47,8 @@ class Db
      */
     public function __construct($config, Irc $irc = null)
     {
-        $this->irc = $irc;
+        parent::__construct($irc);
+        $this->setNamespace('\Cerberus\Db\Db');
         foreach ($config as $key => $value) {
             $this->setConfig($key, $value);
         }
@@ -120,38 +121,10 @@ class Db
     public function __call($name, $arguments)
     {
         try {
-            return call_user_func_array([$this->getClass($name), $name], $arguments);
+            return parent::__call($name, $arguments);
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
-    }
-
-    /**
-     * @param string $name
-     * @return false|object
-     */
-    public function getClass($name)
-    {
-        $key = strtolower($name);
-        if (array_key_exists($key, $this->classes) === false) {
-            $this->loadClass($name);
-        }
-        $class = $this->classes[$key];
-        $className = '\Cerberus\Db\Db' . ucfirst($name);
-        if (is_a($class, $className) === false) {
-            return false;
-        }
-        return $class;
-    }
-
-    /**
-     * @param string $name
-     */
-    protected function loadClass($name)
-    {
-        $key = strtolower($name);
-        $className = '\Cerberus\Db\Db' . ucfirst($name);
-        $this->classes[$key] = new $className($this);
     }
 
     /**
