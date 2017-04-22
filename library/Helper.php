@@ -37,7 +37,7 @@ class Helper
      * Event constructor.
      * @param Irc $irc
      */
-    public function __construct(Irc $irc)
+    public function __construct(Irc $irc = null)
     {
         $this->irc = $irc;
     }
