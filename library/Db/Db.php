@@ -33,7 +33,6 @@ abstract class Db
     protected $db = null;
 
     /**
-     * Log constructor.
      * @param \Cerberus\Db $db
      */
     public function __construct($db)
