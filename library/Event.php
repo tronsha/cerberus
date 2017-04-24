@@ -32,7 +32,7 @@ use DateTime;
  * @link https://github.com/tronsha/Cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class Event
+class Event extends Helper
 {
     protected $irc;
     protected $list = null;
@@ -51,7 +51,8 @@ class Event
      */
     public function __construct(Irc $irc)
     {
-        $this->irc = $irc;
+        parent::__construct($irc);
+        $this->setNamespace('\Cerberus\Events\Event');
         $this->vars = $this->irc->getVars();
         $this->minute = (int)(new DateTime())->format('i');
         $this->hour = (int)(new DateTime())->format('G');

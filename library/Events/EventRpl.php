@@ -25,7 +25,7 @@ use Cerberus\Irc;
 
 /**
  * Class EventRpl
- * @package Cerberus\Plugins
+ * @package Cerberus\Events
  * @author Stefan Hüsges
  * @link http://tools.ietf.org/html/rfc2812
  */
