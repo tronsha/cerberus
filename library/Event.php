@@ -34,7 +34,7 @@ use DateTime;
  */
 class Event extends Helper
 {
-    protected $irc;
+    protected $irc = null;
     protected $list = null;
     protected $rpl = null;
     protected $err = null;
@@ -512,24 +512,5 @@ class Event extends Helper
     {
         $params = explode(' ', $rest);
         $this->runPluginEvent(__FUNCTION__, ['channel' => $params[0], 'mode' => isset($params[1]) ? $params[1] : null, 'param' => isset($params[2]) ? $params[2] : null, 'text' => empty($text) ? null : $text]);
-    }
-
-    /**
-     * @param string $user
-     * @param string $nick
-     * @param string $channel
-     */
-    public function onInvite($user, $nick, $channel)
-    {
-        $this->getDb()->addStatus('INVITE', 'User ' . $user . ' inviting you to channel ' . $channel, ['channel' => $channel, 'user' => $user, 'nick' => $nick]);
-        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'user' => $user, 'nick' => $nick]);
-    }
-
-    /**
-     *
-     */
-    public function onTest()
-    {
-        $this->runPluginEvent(__FUNCTION__, []);
     }
 }

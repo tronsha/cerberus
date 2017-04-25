@@ -32,6 +32,7 @@ class Helper
 {
     protected $irc = null;
     protected $namespace = null;
+    protected $classes = [];
 
     /**
      * Event constructor.

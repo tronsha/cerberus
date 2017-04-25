@@ -39,7 +39,6 @@ class Db extends Helper
     protected $irc = null;
     protected $conn = null;
     protected $botId = null;
-    protected $classes = [];
 
     /**
      * @param array $config
