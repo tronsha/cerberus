@@ -55,4 +55,21 @@ abstract class Event
     {
         $this->event = $event;
     }
+
+    /**
+     * @return \Cerberus\Db|null
+     */
+    public function getDb()
+    {
+        return $this->getEvent()->getDb();
+    }
+
+    /**
+     * @param string $event
+     * @param array $data
+     */
+    public function runPluginEvent($event, $data)
+    {
+        return $this->getEvent()->runPluginEvent($event, $data);
+    }
 }

@@ -35,6 +35,6 @@ class EventOnTest extends Event
      */
     public function onTest()
     {
-        $this->getEvent()->runPluginEvent(__FUNCTION__, []);
+        $this->runPluginEvent(__FUNCTION__, []);
     }
 }
