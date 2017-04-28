@@ -43,7 +43,7 @@ abstract class Event
     /**
      * @return \Cerberus\Event|null
      */
-    public function getEvent()
+    protected function getEvent()
     {
         return $this->event;
     }
@@ -51,7 +51,7 @@ abstract class Event
     /**
      * @param \Cerberus\Event $event
      */
-    public function setEvent($event)
+    protected function setEvent($event)
     {
         $this->event = $event;
     }
@@ -59,7 +59,7 @@ abstract class Event
     /**
      * @return \Cerberus\Db|null
      */
-    public function getDb()
+    protected function getDb()
     {
         return $this->getEvent()->getDb();
     }
@@ -68,7 +68,7 @@ abstract class Event
      * @param string $event
      * @param array $data
      */
-    public function runPluginEvent($event, $data)
+    protected function runPluginEvent($event, $data)
     {
         return $this->getEvent()->runPluginEvent($event, $data);
     }

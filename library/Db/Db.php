@@ -43,7 +43,7 @@ abstract class Db
     /**
      * @return \Cerberus\Db|null
      */
-    public function getDb()
+    protected function getDb()
     {
         return $this->db;
     }
@@ -51,8 +51,33 @@ abstract class Db
     /**
      * @param \Cerberus\Db $db
      */
-    public function setDb($db)
+    protected function setDb($db)
     {
         $this->db = $db;
+    }
+
+    /**
+     * @return \Doctrine\DBAL\Query\QueryBuilder
+     */
+    protected function createQueryBuilder()
+    {
+        return $this->getDb()->getConnection()->createQueryBuilder();
+    }
+
+    /**
+     * @return int
+     */
+    protected function getBotId()
+    {
+        return $this->getDb()->getBotId();
+    }
+
+    /**
+     * @param string|null $name
+     * @return int
+     */
+    protected function lastInsertId($name = null)
+    {
+        return $this->getDb()->lastInsertId($name);
     }
 }
