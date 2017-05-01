@@ -494,13 +494,4 @@ class Event extends Helper
             $this->getDb()->removeUserFromChannel($channel, $nick);
         }
     }
-
-    /**
-     * @param string $nick
-     */
-    public function onQuit($nick)
-    {
-        $this->runPluginEvent(__FUNCTION__, ['nick' => $nick]);
-        $this->getDb()->removeUser($nick);
-    }
 }
