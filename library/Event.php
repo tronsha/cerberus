@@ -478,20 +478,4 @@ class Event extends Helper
             $this->getDb()->removeUserFromChannel($channel, $nick);
         }
     }
-
-    /**
-     * @param string $nick
-     * @param string $channel
-     */
-    public function onPart($nick, $channel)
-    {
-        $this->vars = $this->irc->getVars();
-        $me = ($nick === $this->vars['var']['me']) ? true : false;
-        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick]);
-        if ($me === true) {
-            $this->getDb()->removeChannel($channel);
-        } else {
-            $this->getDb()->removeUserFromChannel($channel, $nick);
-        }
-    }
 }
