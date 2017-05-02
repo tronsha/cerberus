@@ -94,6 +94,14 @@ class Event extends Helper
     /**
      * @return array
      */
+    public function getVars()
+    {
+        return $this->irc->getVars();
+    }
+
+    /**
+     * @return array
+     */
     public function getEventList()
     {
         if ($this->list !== null) {

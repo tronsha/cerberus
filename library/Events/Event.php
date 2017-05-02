@@ -65,6 +65,14 @@ abstract class Event
     }
 
     /**
+     * @return array
+     */
+    protected function getVars()
+    {
+        return $this->getEvent()->getVars();
+    }
+
+    /**
      * @param string $event
      * @param array $data
      */

@@ -36,8 +36,8 @@ class EventOnPart extends Event
      */
     public function onPart($nick, $channel)
     {
-        $this->vars = $this->irc->getVars();
-        $me = ($nick === $this->vars['var']['me']) ? true : false;
+        $vars = $this->getVars();
+        $me = ($nick === $vars['var']['me']) ? true : false;
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick]);
         if ($me === true) {
             $this->getDb()->removeChannel($channel);
