@@ -92,11 +92,27 @@ class Event extends Helper
     }
 
     /**
+     * @return Config|null
+     */
+    public function getConfig()
+    {
+        return $this->irc->getConfig();
+    }
+
+    /**
      * @return array
      */
     public function getVars()
     {
         return $this->irc->getVars();
+    }
+
+    /**
+     * @return action|null
+     */
+    public function getActions()
+    {
+        return $this->irc->getActions();
     }
 
     /**
@@ -463,27 +479,5 @@ class Event extends Helper
             $this->getDb()->addUserToChannel($channel, $nick);
         }
         $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'channel' => $channel]);
-    }
-
-    /**
-     * @param string $bouncer
-     * @param string $rest
-     * @param string $text
-     */
-    public function onKick($bouncer, $rest, $text)
-    {
-        $this->vars = $this->irc->getVars();
-        list($channel, $nick) = explode(' ', $rest);
-        $me = ($nick === $this->vars['var']['me']) ? true : false;
-        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer, 'comment' => $text]);
-        if ($me === true) {
-            $this->getDb()->removeChannel($channel);
-            $this->getDb()->addStatus('KICK', 'User ' . $bouncer . ' kicked you from channel ' . $channel . ' (' . $text . ')', ['channel' => $channel, 'nick' => $nick]);
-            if ($this->irc->getConfig()->getAutorejoin() === true) {
-                $this->irc->getActions()->join($channel);
-            }
-        } else {
-            $this->getDb()->removeUserFromChannel($channel, $nick);
-        }
     }
 }

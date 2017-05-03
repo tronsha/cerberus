@@ -65,11 +65,27 @@ abstract class Event
     }
 
     /**
+     * @return Config|null
+     */
+    public function getConfig()
+    {
+        return $this->getEvent()->getConfig();
+    }
+
+    /**
      * @return array
      */
     protected function getVars()
     {
         return $this->getEvent()->getVars();
+    }
+
+    /**
+     * @return action|null
+     */
+    public function getActions()
+    {
+        return $this->getEvent()->getActions();
     }
 
     /**
