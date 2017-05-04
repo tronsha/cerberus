@@ -464,20 +464,4 @@ class Event extends Helper
         $this->getDb()->setChannelTopic($channel, $topic);
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'topic' => $topic]);
     }
-
-    /**
-     * @param string $nick
-     * @param string $channel
-     */
-    public function onJoin($nick, $channel)
-    {
-        $this->vars = $this->irc->getVars();
-        if ($nick === $this->vars['var']['me']) {
-            $this->getDb()->addChannel($channel);
-            $this->irc->getActions()->mode($channel);
-        } else {
-            $this->getDb()->addUserToChannel($channel, $nick);
-        }
-        $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'channel' => $channel]);
-    }
 }
