@@ -46,19 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_AWAY
-     * <nick> :<away message>
-     * @param string $rest
-     * @param string $text
-     */
-    public function on301($rest, $text)
-    {
-        list($me, $user) = explode(' ', $rest);
-        unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['user' => $user, 'text' => $text]);
-    }
-
-    /**
      * RPL_UNAWAY
      * :You are no longer marked as being away
      * @param string $rest
