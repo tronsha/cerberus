@@ -46,18 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_UNAWAY
-     * :You are no longer marked as being away
-     * @param string $rest
-     * @param string $text
-     */
-    public function on305($rest, $text)
-    {
-        unset($rest);
-        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
-    }
-
-    /**
      * RPL_NOWAWAY
      * :You have been marked as being away
      * @param string $rest
