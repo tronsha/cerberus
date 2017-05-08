@@ -772,7 +772,7 @@ class Irc extends Cerberus
      */
     public function addPluginEvent($event, $object, $method = null, $priority = 5)
     {
-        if (in_array($event, $this->getEvents()->getEventList(), true) === false && file_exists(__DIR__ . '/Events/Event' . ucfirst($event) . '.php') === false) {
+        if (in_array($event, $this->getEvents()->getEventList(), true) === false) {
             throw new Exception('The event ' . $event . ' not exists.');
         }
         $method = ($method === null ? $event : $method);

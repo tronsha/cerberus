@@ -123,10 +123,16 @@ class Event extends Helper
         if ($this->list !== null) {
             return $this->list;
         }
+        $listClasses = [];
+        $dir = Cerberus::getPath() . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'Events' . DIRECTORY_SEPARATOR;
+        $files = glob($dir . 'EventOn*.php');
+        foreach ($files as $file) {
+            $listClasses[] = lcfirst(str_replace([$dir . 'Event' , '.php'], '', $file));
+        }
         $listThis = get_class_methods($this);
         $listRpl = get_class_methods($this->getRpl());
         $listErr = get_class_methods($this->getErr());
-        $list = array_merge($listThis, $listRpl, $listErr);
+        $list = array_merge($listClasses, $listThis, $listRpl, $listErr);
         foreach ($list as $key => $value) {
             if (substr($value, 0, 2) !== 'on') {
                 unset($list[$key]);
