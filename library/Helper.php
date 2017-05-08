@@ -66,7 +66,10 @@ class Helper
      */
     public function __call($name, $arguments)
     {
-        return call_user_func_array([$this->getClass($name), $name], $arguments);
+        $class = $this->getClass($name);
+        if ($class !== false) {
+            return call_user_func_array([$class, $name], $arguments);
+        }
     }
 
     /**
@@ -77,7 +80,7 @@ class Helper
     {
         $key = strtolower($name);
         if (array_key_exists($key, $this->classes) === false) {
-            $this->loadClass($name);
+            return $this->loadClass($name);
         }
         $class = $this->classes[$key];
         $className = $this->getNamespace() . ucfirst($name);
@@ -89,11 +92,13 @@ class Helper
 
     /**
      * @param string $name
+     * @return mixed
      */
     protected function loadClass($name)
     {
         $key = strtolower($name);
         $className = $this->getNamespace() . ucfirst($name);
         $this->classes[$key] = new $className($this);
+        return $this->classes[$key];
     }
 }

@@ -62,6 +62,18 @@ class Event extends Helper
     }
 
     /**
+     * @param string $name
+     * @return mixed
+     */
+    protected function loadClass($name)
+    {
+        if (in_array($name, $this->getEventList(), true) === false) {
+            return false;
+        }
+        return parent::loadClass($name);
+    }
+
+    /**
      * @return EventRpl|null
      */
     public function getRpl()
