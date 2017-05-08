@@ -46,18 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_NOWAWAY
-     * :You have been marked as being away
-     * @param string $rest
-     * @param string $text
-     */
-    public function on306($rest, $text)
-    {
-        unset($rest);
-        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
-    }
-
-    /**
      * RPL_WHOISUSER
      * <nick> <user> <host> * :<real name>
      * @param string $rest
