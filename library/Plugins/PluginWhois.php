@@ -109,13 +109,13 @@ class PluginWhois extends Plugin
     {
         $nick = strtolower($data['nick']);
         if (isset($this->cache[$nick][401]) === false) {
-            $output = 'Nick: ' . $data['nick'] . '<br>' . PHP_EOL;
+            $output = 'Nick: ' . $data['nick'] . PHP_EOL;
             if (isset($this->cache[$nick][311]['realname']) === true) {
-                $output .= 'Realname: ' . $this->cache[$nick][311]['realname'] . '<br>' . PHP_EOL;
+                $output .= 'Realname: ' . $this->cache[$nick][311]['realname'] . PHP_EOL;
             }
             if (isset($this->cache[$nick][311]['host']) === true) {
                 $hostArray = explode('@', $this->cache[$nick][311]['host']);
-                $output .= 'Host: ' . $hostArray[1] . '<br>' . PHP_EOL;
+                $output .= 'Host: ' . $hostArray[1] . PHP_EOL;
             }
             if (isset($this->cache[$nick][317]['idle']) === true) {
                 $time = $this->cache[$nick][317]['idle'];
@@ -123,13 +123,13 @@ class PluginWhois extends Plugin
                 $h = (($time-($time%3600))%86400)/3600;
                 $m = (($time-($time%60))%3600)/60;
                 $s = $time%60;
-                $output .= 'Idle: ' . $d . 'd ' . $h . 'h ' . $m . 'm ' . $s . 's' . '<br>' . PHP_EOL;
+                $output .= 'Idle: ' . $d . 'd ' . $h . 'h ' . $m . 'm ' . $s . 's' . PHP_EOL;
             }
             if (isset($this->cache[$nick][317]['signon']) === true) {
-                $output .= 'Signon: ' . date('H:i:s Y-m-d', $this->cache[$nick][317]['signon']) . '<br>' . PHP_EOL;
+                $output .= 'Signon: ' . date('H:i:s Y-m-d', $this->cache[$nick][317]['signon']) . PHP_EOL;
             }
             if (isset($this->cache[$nick][319]['channel']) === true) {
-                $output .= 'Channel: ' . $this->cache[$nick][319]['channel'] . '<br>' . PHP_EOL;
+                $output .= 'Channel: ' . $this->cache[$nick][319]['channel'] . PHP_EOL;
             }
             $this->getDb()->addStatus('WHOIS', $output, []);
         }
