@@ -46,19 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_WHOISUSER
-     * <nick> <user> <host> * :<real name>
-     * @param string $rest
-     * @param string $text
-     */
-    public function on311($rest, $text)
-    {
-        list($me, $nick, $user, $host) = explode(' ', $rest);
-        unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'host' => $user . '@' . $host, 'realname' => $text]);
-    }
-
-    /**
      * RPL_WHOISSERVER
      * <nick> <server> :<server info>
      * @param string $rest
