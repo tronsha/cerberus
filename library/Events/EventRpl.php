@@ -46,24 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_WHOISIDLE
-     * <nick> <integer> :seconds idle
-     * @param string $rest
-     * @param string $text
-     */
-    public function on317($rest, $text)
-    {
-        $keys = explode(',', $text);
-        $values = explode(' ', $rest);
-        array_shift($values);
-        $nick = array_shift($values);
-        $keys = array_map('trim', $keys);
-        $values = array_map('trim', $values);
-        $data = array_combine($keys, $values);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'list' => $data]);
-    }
-
-    /**
      * RPL_ENDOFWHOIS
      * <nick> :End of WHOIS list
      * @param string $rest
