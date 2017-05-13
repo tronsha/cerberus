@@ -46,19 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_ENDOFWHOIS
-     * <nick> :End of WHOIS list
-     * @param string $rest
-     * @param string $text
-     */
-    public function on318($rest, $text)
-    {
-        list($me, $nick) = explode(' ', $rest);
-        unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
-    }
-
-    /**
      * RPL_WHOISCHANNELS
      * <nick> :{[@|+]<channel><space>}
      * @param string $rest
