@@ -46,19 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_WHOISCHANNELS
-     * <nick> :{[@|+]<channel><space>}
-     * @param string $rest
-     * @param string $text
-     */
-    public function on319($rest, $text)
-    {
-        list($me, $nick) = explode(' ', $rest);
-        unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
-    }
-
-    /**
      * RPL_LISTSTART
      * Channel :Users  Name
      * @param string $rest
