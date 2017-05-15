@@ -171,9 +171,6 @@ class Event extends Helper
     public function rpl($command, $rest, $text)
     {
         switch ($command) {
-            case '321':
-                $this->getRpl()->on321($rest, $text);
-                break;
             case '322':
                 $this->getRpl()->on322($rest, $text);
                 break;
