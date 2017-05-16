@@ -46,19 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_LIST
-     * <channel> <# visible> :<topic>
-     * @param string $rest
-     * @param string $text
-     */
-    public function on322($rest, $text)
-    {
-        list($me, $channel, $usercount) = explode(' ', $rest);
-        unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'usercount' => $usercount, 'topic' => $text]);
-    }
-
-    /**
      * RPL_LISTEND
      * :End of LIST
      * @param string $rest
