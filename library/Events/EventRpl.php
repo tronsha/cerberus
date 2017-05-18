@@ -46,18 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_LISTEND
-     * :End of LIST
-     * @param string $rest
-     * @param string $text
-     */
-    public function on323($rest, $text)
-    {
-        unset($rest);
-        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
-    }
-
-    /**
      * RPL_CHANNELMODEIS
      * <channel> <mode> <mode params>
      * @param string $rest
