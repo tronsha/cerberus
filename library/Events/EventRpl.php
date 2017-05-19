@@ -46,22 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_CHANNELMODEIS
-     * <channel> <mode> <mode params>
-     * @param string $rest
-     * @param string $text
-     */
-    public function on324($rest, $text)
-    {
-        unset($text);
-        $list = explode(' ', $rest, 4);
-        $channel = empty($list[1]) === false ? $list[1] : '';
-        $mode = empty($list[2]) === false ? $list[2] : '';
-        $params = empty($list[3]) === false ? explode(' ', $list[3]) : [];
-        $this->event->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'mode' => $mode, 'params' => $params]);
-    }
-
-    /**
      * RPL_WHOISACCOUNT
      * :is logged in as
      * @param string $rest
