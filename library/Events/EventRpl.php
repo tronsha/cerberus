@@ -46,19 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_WHOISACCOUNT
-     * :is logged in as
-     * @param string $rest
-     * @param string $text
-     */
-    public function on330($rest, $text)
-    {
-        list($me, $nick, $auth) = explode(' ', $rest);
-        unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'auth' => $auth, 'text' => $text]);
-    }
-
-    /**
      * RPL_TOPIC
      * <channel> :<topic>
      * @param string $rest
