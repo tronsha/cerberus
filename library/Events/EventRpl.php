@@ -46,23 +46,6 @@ class EventRpl
     }
 
     /**
-     * RPL_NAMREPLY
-     * @param string $rest
-     * @param string $text
-     */
-    public function on353($rest, $text)
-    {
-        list($me, $dummy, $channel) = explode(' ', $rest);
-        unset($me, $dummy);
-        $user_array = explode(' ', $text);
-        foreach ($user_array as $user) {
-            preg_match("/^([\+\@])?([^\+\@]+)$/i", $user, $matches);
-            $this->event->getDb()->addUserToChannel($channel, $matches[2], $matches[1]);
-        }
-        $this->event->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'user' => $user_array]);
-    }
-
-    /**
      * @param string $rest
      * @param string $text
      */
