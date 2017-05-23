@@ -20,36 +20,21 @@
 
 namespace Cerberus\Events;
 
-use Cerberus\Event;
-use Cerberus\Irc;
-
 /**
- * Class EventRpl
- * @package Cerberus\Events
+ * Class EventOn378
+ * @package Cerberus
  * @author Stefan Hüsges
- * @link http://tools.ietf.org/html/rfc2812
+ * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
+ * @link https://github.com/tronsha/cerberus Project on GitHub
+ * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class EventRpl
+class EventOn378 extends Event
 {
-    protected $irc = null;
-    protected $event = null;
-
-    /**
-     * EventRpl constructor.
-     * @param Irc $irc
-     * @param Event $event
-     */
-    public function __construct(Irc $irc, Event $event)
-    {
-        $this->irc = $irc;
-        $this->event = $event;
-    }
-
     /**
      * @param string $rest
      * @param string $text
      */
-    public function on671($rest, $text)
+    public function on378($rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);
