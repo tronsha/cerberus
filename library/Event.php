@@ -21,7 +21,6 @@
 namespace Cerberus;
 
 use Cerberus\Events\EventErr;
-use Cerberus\Events\EventRpl;
 use DateTime;
 
 /**
@@ -36,7 +35,6 @@ class Event extends Helper
 {
     protected $irc = null;
     protected $list = null;
-    protected $rpl = null;
     protected $err = null;
     protected $vars;
     protected $minute = '';
@@ -71,17 +69,6 @@ class Event extends Helper
             return false;
         }
         return parent::loadClass($name);
-    }
-
-    /**
-     * @return EventRpl|null
-     */
-    public function getRpl()
-    {
-        if ($this->rpl === null) {
-            $this->rpl = new EventRpl($this->irc, $this);
-        }
-        return $this->rpl;
     }
 
     /**
@@ -142,9 +129,8 @@ class Event extends Helper
             $listClasses[] = lcfirst(str_replace([$dir . 'Event' , '.php'], '', $file));
         }
         $listThis = get_class_methods($this);
-        $listRpl = get_class_methods($this->getRpl());
         $listErr = get_class_methods($this->getErr());
-        $list = array_merge($listClasses, $listThis, $listRpl, $listErr);
+        $list = array_merge($listClasses, $listThis, $listErr);
         foreach ($list as $key => $value) {
             if (substr($value, 0, 2) !== 'on') {
                 unset($list[$key]);
@@ -161,17 +147,6 @@ class Event extends Helper
     public function runPluginEvent($event, $data)
     {
         $this->irc->runPluginEvent($event, $data);
-    }
-
-    /**
-     * @param string $command
-     * @param string $rest
-     * @param string $text
-     */
-    public function rpl($command, $rest, $text)
-    {
-        $eventName = 'on' . $command;
-        $this->$eventName($rest, $text);
     }
 
     /**
