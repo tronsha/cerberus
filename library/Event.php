@@ -170,14 +170,8 @@ class Event extends Helper
      */
     public function rpl($command, $rest, $text)
     {
-        switch ($command) {
-            case '671':
-                $this->getRpl()->on671($rest, $text);
-                break;
-            default:
-                $eventName = 'on' . $command;
-                $this->$eventName($rest, $text);
-        }
+        $eventName = 'on' . $command;
+        $this->$eventName($rest, $text);
     }
 
     /**
