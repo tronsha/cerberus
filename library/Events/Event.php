@@ -96,4 +96,16 @@ abstract class Event
     {
         return $this->getEvent()->runPluginEvent($event, $data);
     }
+
+    /**
+     * @param string $text
+     * @param array $array
+     * @param mixed $lang
+     * @return string
+     */
+    protected function __($text, $array = [], $lang = null)
+    {
+        return $this->getEvent()->__($text, $array, $lang);
+    }
+
 }

@@ -46,21 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_NOSUCHNICK
-     * <nickname> :No such nick/channel
-     * @param string $rest
-     * @param string $text
-     */
-    public function on401($rest, $text)
-    {
-        list($me, $nick) = explode(' ', $rest);
-        unset($me);
-        $data = ['nick' => $nick, 'text' => $text];
-        $this->event->getDb()->addStatus('401', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * ERR_NOSUCHCHANNEL
      * <channel name> :No such channel
      * @param string $rest

@@ -107,6 +107,18 @@ class Event extends Helper
     }
 
     /**
+     * @param string $text
+     * @param array $array
+     * @param mixed $lang
+     * @return string
+     */
+    public function __($text, $array = [], $lang = null)
+    {
+        return $this->irc->__($text, $array, $lang);
+    }
+
+
+    /**
      * @return action|null
      */
     public function getActions()
@@ -157,9 +169,6 @@ class Event extends Helper
     public function err($command, $rest, $text)
     {
         switch ($command) {
-            case '401':
-                $this->getErr()->on401($rest, $text);
-                break;
             case '403':
                 $this->getErr()->on403($rest, $text);
                 break;
