@@ -41,6 +41,6 @@ class EventOn321 extends Event
     public function on321($rest, $text)
     {
         unset($rest);
-        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
+        $this->runPluginEvent(__FUNCTION__, ['text' => $text]);
     }
 }

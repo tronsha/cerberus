@@ -42,7 +42,7 @@ class EventOn332 extends Event
     {
         list($me, $channel) = explode(' ', $rest);
         unset($me);
-        $this->event->getDb()->setChannelTopic($channel, $topic);
-        $this->event->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'topic' => $topic]);
+        $this->getDb()->setChannelTopic($channel, $topic);
+        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'topic' => $topic]);
     }
 }

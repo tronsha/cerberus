@@ -42,6 +42,6 @@ class EventOn318 extends Event
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
+        $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
     }
 }

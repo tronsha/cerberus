@@ -40,6 +40,6 @@ class EventOn330 extends Event
     {
         list($me, $nick, $auth) = explode(' ', $rest);
         unset($me);
-        $this->event->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'auth' => $auth, 'text' => $text]);
+        $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'auth' => $auth, 'text' => $text]);
     }
 }

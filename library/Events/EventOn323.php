@@ -41,6 +41,6 @@ class EventOn323 extends Event
     public function on323($rest, $text)
     {
         unset($rest);
-        $this->event->runPluginEvent(__FUNCTION__, ['text' => $text]);
+        $this->runPluginEvent(__FUNCTION__, ['text' => $text]);
     }
 }
