@@ -107,5 +107,4 @@ abstract class Event
     {
         return $this->getEvent()->__($text, $array, $lang);
     }
-
 }

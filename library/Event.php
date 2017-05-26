@@ -117,7 +117,6 @@ class Event extends Helper
         return $this->irc->__($text, $array, $lang);
     }
 
-
     /**
      * @return action|null
      */
@@ -169,9 +168,6 @@ class Event extends Helper
     public function err($command, $rest, $text)
     {
         switch ($command) {
-            case '403':
-                $this->getErr()->on403($rest, $text);
-                break;
             case '404':
                 $this->getErr()->on404($rest, $text);
                 break;

@@ -46,21 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_NOSUCHCHANNEL
-     * <channel name> :No such channel
-     * @param string $rest
-     * @param string $text
-     */
-    public function on403($rest, $text)
-    {
-        list($me, $channel) = explode(' ', $rest);
-        unset($me);
-        $data = ['channel' => $channel, 'text' => $text];
-        $this->event->getDb()->addStatus('403', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * ERR_CANNOTSENDTOCHAN
      * <channel name> :Cannot send to channel
      * @param string $rest
