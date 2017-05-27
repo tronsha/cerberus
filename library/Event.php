@@ -168,9 +168,6 @@ class Event extends Helper
     public function err($command, $rest, $text)
     {
         switch ($command) {
-            case '404':
-                $this->getErr()->on404($rest, $text);
-                break;
             case '412':
                 $this->getErr()->on412($rest, $text);
                 break;
