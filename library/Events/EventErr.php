@@ -46,20 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_NOTEXTTOSEND
-     * :No text to send
-     * @param string $rest
-     * @param string $text
-     */
-    public function on412($rest, $text)
-    {
-        unset($rest);
-        $data = ['text' => $text];
-        $this->event->getDb()->addStatus('412', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * ERR_NONICKNAMEGIVEN
      * :No nickname given
      * @param string $rest
