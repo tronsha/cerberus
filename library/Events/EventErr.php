@@ -46,20 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_NONICKNAMEGIVEN
-     * :No nickname given
-     * @param string $rest
-     * @param string $text
-     */
-    public function on431($rest, $text)
-    {
-        unset($rest);
-        $data = ['text' => $text];
-        $this->event->getDb()->addStatus('431', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * ERR_ERRONEUSNICKNAME
      * <nick> :Erroneous nickname
      * @param string $rest
