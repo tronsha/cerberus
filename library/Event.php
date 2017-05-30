@@ -83,6 +83,14 @@ class Event extends Helper
     }
 
     /**
+     * @return Irc|null
+     */
+    public function getIrc()
+    {
+        return $this->irc;
+    }
+
+    /**
      * @return Db
      */
     public function getDb()
@@ -168,9 +176,6 @@ class Event extends Helper
     public function err($command, $rest, $text)
     {
         switch ($command) {
-            case '432':
-                $this->getErr()->on432($rest, $text);
-                break;
             case '433':
                 $this->getErr()->on433($rest, $text);
                 break;

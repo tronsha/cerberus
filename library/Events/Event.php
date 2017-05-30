@@ -57,6 +57,14 @@ abstract class Event
     }
 
     /**
+     * @return \Cerberus\Irc|null
+     */
+    protected function getIrc()
+    {
+        return $this->getEvent()->getIrc();
+    }
+
+    /**
      * @return \Cerberus\Db|null
      */
     protected function getDb()
