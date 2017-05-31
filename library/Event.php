@@ -95,7 +95,7 @@ class Event extends Helper
      */
     public function getDb()
     {
-        return $this->irc->getDb();
+        return $this->getIrc()->getDb();
     }
 
     /**
@@ -103,7 +103,7 @@ class Event extends Helper
      */
     public function getConfig()
     {
-        return $this->irc->getConfig();
+        return $this->getIrc()->getConfig();
     }
 
     /**
@@ -111,7 +111,7 @@ class Event extends Helper
      */
     public function getVars()
     {
-        return $this->irc->getVars();
+        return $this->getIrc()->getVars();
     }
 
     /**
@@ -122,7 +122,7 @@ class Event extends Helper
      */
     public function __($text, $array = [], $lang = null)
     {
-        return $this->irc->__($text, $array, $lang);
+        return $this->getIrc()->__($text, $array, $lang);
     }
 
     /**
@@ -130,7 +130,15 @@ class Event extends Helper
      */
     public function getActions()
     {
-        return $this->irc->getActions();
+        return $this->getIrc()->getActions();
+    }
+
+    /**
+     *
+     */
+    public function otherNick()
+    {
+        return $this->getIrc()->otherNick();
     }
 
     /**
@@ -165,7 +173,7 @@ class Event extends Helper
      */
     public function runPluginEvent($event, $data)
     {
-        $this->irc->runPluginEvent($event, $data);
+        $this->getIrc()->runPluginEvent($event, $data);
     }
 
     /**
@@ -176,9 +184,6 @@ class Event extends Helper
     public function err($command, $rest, $text)
     {
         switch ($command) {
-            case '433':
-                $this->getErr()->on433($rest, $text);
-                break;
             case '437':
                 $this->getErr()->on437();
                 break;
@@ -281,7 +286,7 @@ class Event extends Helper
     public function onMinute()
     {
         $this->runPluginEvent(__FUNCTION__, []);
-        $this->irc->runCron($this->minute, $this->hour, $this->day_of_month, $this->month, $this->day_of_week);
+        $this->getIrc()->runCron($this->minute, $this->hour, $this->day_of_month, $this->month, $this->day_of_week);
     }
 
     /**
@@ -312,9 +317,9 @@ class Event extends Helper
      */
     public function onPrivmsg($nick, $host, $channel, $text)
     {
-        $this->vars = $this->irc->getVars();
+        $this->vars = $this->getIrc()->getVars();
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
-            if ($this->irc->getConfig()->getCtcp() === false) {
+            if ($this->getIrc()->getConfig()->getCtcp() === false) {
                 return null;
             }
             $send = '';
@@ -328,14 +333,14 @@ class Event extends Helper
                     $send = 'PING' . (isset($matches[2]) ? $matches[2] : '');
                     break;
                 case 'VERSION':
-                    $send = 'VERSION ' . $this->irc->getConfig()->getVersion('bot');
+                    $send = 'VERSION ' . $this->getIrc()->getConfig()->getVersion('bot');
                     break;
                 case 'TIME':
                     $send = 'TIME ' . date('D M d H:i:s Y T');
                     break;
                 case 'FINGER':
-                    $botName = $this->irc->getConfig()->getName();
-                    $botHomepage = $this->irc->getConfig()->getHomepage();
+                    $botName = $this->getIrc()->getConfig()->getName();
+                    $botHomepage = $this->getIrc()->getConfig()->getHomepage();
                     $send = 'FINGER ' . $botName . (empty($botHomepage) === false ? ' (' . $botHomepage . ')' : '') . ' Idle ' . (isset($this->vars['time']['irc_connect']) ? round(microtime(true) - $this->vars['time']['irc_connect']) : 0) . ' seconds';
                     break;
                 case 'SOURCE':
@@ -345,16 +350,16 @@ class Event extends Helper
                     return null;
             }
             if (empty($send) === false) {
-                $this->irc->getActions()->notice($nick, "\x01" . $send . "\x01");
+                $this->getIrc()->getActions()->notice($nick, "\x01" . $send . "\x01");
             }
         } else {
             $splitText = explode(' ', $text);
             switch ($splitText[0]) {
                 case '!load':
                     if (empty($splitText[1]) === false) {
-                        if ($this->irc->isAdmin($nick, $host) === true) {
+                        if ($this->getIrc()->isAdmin($nick, $host) === true) {
                             if (preg_match('/^[a-z]+$/i', $splitText[1]) > 0) {
-                                $this->irc->loadPlugin(
+                                $this->getIrc()->loadPlugin(
                                     $splitText[1],
                                     ['nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text]
                                 );
@@ -390,9 +395,9 @@ class Event extends Helper
      */
     public function onNick($nick, $text)
     {
-        $this->vars = $this->irc->getVars();
+        $this->vars = $this->getIrc()->getVars();
         if ($nick === $this->vars['var']['me']) {
-            $this->irc->setNick($text);
+            $this->getIrc()->setNick($text);
         }
         $this->getDb()->changeNick($nick, $text);
         $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);

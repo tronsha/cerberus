@@ -21,30 +21,30 @@
 namespace Cerberus\Events;
 
 /**
- * Class EventOn432
+ * Class EventOn433
  * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
  * @link https://github.com/tronsha/cerberus Project on GitHub
- * @link https://tools.ietf.org/html/rfc1459#page-45 Error Replies 432 - RFC1459
- * @link https://tools.ietf.org/html/rfc2812#page-55 Error Replies 432 - RFC2812
+ * @link https://tools.ietf.org/html/rfc1459#page-45 Error Replies 433 - RFC1459
+ * @link https://tools.ietf.org/html/rfc2812#page-55 Error Replies 433 - RFC2812
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class EventOn432 extends Event
+class EventOn433 extends Event
 {
     /**
-     * ERR_ERRONEUSNICKNAME
-     * <nick> :Erroneous nickname
+     * ERR_NICKNAMEINUSE
+     * <nick> :Nickname is already in use
      * @param string $rest
      * @param string $text
      */
-    public function on432($rest, $text)
+    public function on433($rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);
         $data = ['nick' => $nick, 'text' => $text];
         $this->otherNick();
-        $this->getDb()->addStatus('432', $this->__($text), $data);
+        $this->getDb()->addStatus('433', $this->__($text), $data);
         $this->runPluginEvent(__FUNCTION__, $data);
     }
 }

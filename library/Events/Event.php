@@ -41,6 +41,14 @@ abstract class Event
     }
 
     /**
+     * @return \Cerberus\Irc|null
+     */
+    protected function getIrc()
+    {
+        return $this->getEvent()->getIrc();
+    }
+
+    /**
      * @return \Cerberus\Event|null
      */
     protected function getEvent()
@@ -57,14 +65,6 @@ abstract class Event
     }
 
     /**
-     * @return \Cerberus\Irc|null
-     */
-    protected function getIrc()
-    {
-        return $this->getEvent()->getIrc();
-    }
-
-    /**
      * @return \Cerberus\Db|null
      */
     protected function getDb()
@@ -75,7 +75,7 @@ abstract class Event
     /**
      * @return Config|null
      */
-    public function getConfig()
+    protected function getConfig()
     {
         return $this->getEvent()->getConfig();
     }
@@ -91,9 +91,17 @@ abstract class Event
     /**
      * @return action|null
      */
-    public function getActions()
+    protected function getActions()
     {
         return $this->getEvent()->getActions();
+    }
+
+    /**
+     *
+     */
+    public function otherNick()
+    {
+        return $this->getEvent()->otherNick();
     }
 
     /**

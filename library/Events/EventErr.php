@@ -46,22 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_NICKNAMEINUSE
-     * <nick> :Nickname is already in use
-     * @param string $rest
-     * @param string $text
-     */
-    public function on433($rest, $text)
-    {
-        list($me, $nick) = explode(' ', $rest);
-        unset($me);
-        $data = ['nick' => $nick, 'text' => $text];
-        $this->irc->otherNick();
-        $this->event->getDb()->addStatus('433', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * ERR_UNAVAILRESOURCE
      * <nick/channel> :Nick/channel is temporarily unavailable
      */
