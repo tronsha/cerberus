@@ -46,16 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_UNAVAILRESOURCE
-     * <nick/channel> :Nick/channel is temporarily unavailable
-     */
-    public function on437()
-    {
-        $this->irc->otherNick();
-        $this->event->runPluginEvent(__FUNCTION__, []);
-    }
-
-    /**
      * ERR_NOTONCHANNEL
      * <channel> :You're not on that channel
      * @param string $rest
