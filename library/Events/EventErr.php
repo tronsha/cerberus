@@ -46,20 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_USERONCHANNEL
-     * <user> <channel> :is already on channel
-     * @param string $rest
-     * @param string $text
-     */
-    public function on443($rest, $text)
-    {
-        list($nick, $user, $channel) = explode(' ', $rest);
-        $data = ['channel' => $channel, 'nick' => $nick, 'user' => $user, 'text' => $text];
-        $this->event->getDb()->addStatus('443', $this->irc->__('%user% ' . $text, ['%user%' => $user]), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * ERR_INVALIDUSERNAME
      * <user> :<text>
      * @param string $rest
