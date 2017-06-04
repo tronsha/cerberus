@@ -46,18 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_INVALIDUSERNAME
-     * <user> :<text>
-     * @param string $rest
-     * @param string $text
-     */
-    public function on468($rest, $text)
-    {
-        $data = ['user' => $rest, 'text' => $text];
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * <channel> <forwarding> :Forwarding to another channel
      * @param string $rest
      * @param string $text
