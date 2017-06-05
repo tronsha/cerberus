@@ -46,20 +46,6 @@ class EventErr
     }
 
     /**
-     * <channel> <forwarding> :Forwarding to another channel
-     * @param string $rest
-     * @param string $text
-     */
-    public function on470($rest, $text)
-    {
-        list($me, $channel, $forwarding) = explode(' ', $rest);
-        unset($me);
-        $data = ['channel' => $channel, 'forwarding' => $forwarding, 'text' => $text];
-        $this->event->getDb()->addStatus('470', $this->irc->__($text . ': %channel%', ['%channel%' => $forwarding]), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * ERR_CHANNELISFULL
      * <channel> :Cannot join channel (+l)
      * @param string $rest
