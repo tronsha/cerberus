@@ -73,7 +73,7 @@ abstract class Event
     }
 
     /**
-     * @return Config|null
+     * @return \Cerberus\Config|null
      */
     protected function getConfig()
     {
@@ -89,7 +89,7 @@ abstract class Event
     }
 
     /**
-     * @return action|null
+     * @return \Cerberus\Action|null
      */
     protected function getActions()
     {
@@ -99,7 +99,7 @@ abstract class Event
     /**
      *
      */
-    public function otherNick()
+    protected function otherNick()
     {
         return $this->getEvent()->otherNick();
     }

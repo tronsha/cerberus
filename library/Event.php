@@ -126,7 +126,7 @@ class Event extends Helper
     }
 
     /**
-     * @return action|null
+     * @return Action|null
      */
     public function getActions()
     {
