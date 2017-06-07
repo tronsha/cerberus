@@ -46,20 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_INVITEONLYCHAN
-     * <channel> :Cannot join channel (+i)
-     * @param string $rest
-     * @param string $text
-     */
-    public function on473($rest, $text)
-    {
-        list($nick, $channel) = explode(' ', $rest);
-        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
-        $this->event->getDb()->addStatus('473', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * ERR_BANNEDFROMCHAN
      * <channel> :Cannot join channel (+b)
      * @param string $rest
