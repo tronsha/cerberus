@@ -46,20 +46,6 @@ class EventErr
     }
 
     /**
-     * ERR_BADCHANNELKEY
-     * <channel> :Cannot join channel (+k)
-     * @param string $rest
-     * @param string $text
-     */
-    public function on475($rest, $text)
-    {
-        list($nick, $channel) = explode(' ', $rest);
-        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
-        $this->event->getDb()->addStatus('475', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * <channel> :Cannot join channel (+r) - you need to be identified with services
      * @param string $rest
      * @param string $text
