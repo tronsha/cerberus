@@ -46,19 +46,6 @@ class EventErr
     }
 
     /**
-     * <channel> :Cannot join channel (+r) - you need to be identified with services
-     * @param string $rest
-     * @param string $text
-     */
-    public function on477($rest, $text)
-    {
-        list($nick, $channel) = explode(' ', $rest);
-        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
-        $this->event->getDb()->addStatus('477', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
-
-    /**
      * <channel> :Illegal channel name
      * @param string $rest
      * @param string $text
