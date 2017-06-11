@@ -20,42 +20,26 @@
 
 namespace Cerberus\Events;
 
-use Cerberus\Event;
-use Cerberus\Irc;
-
 /**
- * Class EventErr
- * @package Cerberus\Events
+ * Class EventOn479
+ * @package Cerberus
  * @author Stefan Hüsges
- * @link http://tools.ietf.org/html/rfc2812
+ * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
+ * @link https://github.com/tronsha/cerberus Project on GitHub
+ * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class EventErr
+class EventOn479 extends Event
 {
-    protected $irc = null;
-    protected $event = null;
-
     /**
-     * EventErr constructor.
-     * @param Irc $irc
-     * @param Event $event
-     */
-    public function __construct(Irc $irc, Event $event)
-    {
-        $this->irc = $irc;
-        $this->event = $event;
-    }
-
-    /**
-     * ERR_CHANOPRIVSNEEDED
-     * <channel> :You're not channel operator
+     * <channel> :Illegal channel name
      * @param string $rest
      * @param string $text
      */
-    public function on482($rest, $text)
+    public function on479($rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
-        $this->event->getDb()->addStatus('482', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
+        $this->getDb()->addStatus('479', $this->__($text), $data);
+        $this->runPluginEvent(__FUNCTION__, $data);
     }
 }
