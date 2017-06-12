@@ -20,7 +20,6 @@
 
 namespace Cerberus;
 
-use Cerberus\Events\EventErr;
 use DateTime;
 
 /**
@@ -35,7 +34,6 @@ class Event extends Helper
 {
     protected $irc = null;
     protected $list = null;
-    protected $err = null;
     protected $vars;
     protected $minute = '';
     protected $hour = '';
@@ -69,17 +67,6 @@ class Event extends Helper
             return false;
         }
         return parent::loadClass($name);
-    }
-
-    /**
-     * @return EventErr|null
-     */
-    public function getErr()
-    {
-        if ($this->err === null) {
-            $this->err = new EventErr($this->irc, $this);
-        }
-        return $this->err;
     }
 
     /**
@@ -156,8 +143,7 @@ class Event extends Helper
             $listClasses[] = lcfirst(str_replace([$dir . 'Event' , '.php'], '', $file));
         }
         $listThis = get_class_methods($this);
-        $listErr = get_class_methods($this->getErr());
-        $list = array_merge($listClasses, $listThis, $listErr);
+        $list = array_merge($listClasses, $listThis);
         foreach ($list as $key => $value) {
             if (substr($value, 0, 2) !== 'on') {
                 unset($list[$key]);
@@ -174,20 +160,6 @@ class Event extends Helper
     public function runPluginEvent($event, $data)
     {
         $this->getIrc()->runPluginEvent($event, $data);
-    }
-
-    /**
-     * @param string $command
-     * @param string $rest
-     * @param string $text
-     */
-    public function err($command, $rest, $text)
-    {
-        switch ($command) {
-            default:
-                $eventName = 'on' . $command;
-                $this->$eventName($rest, $text);
-        }
     }
 
     /**
