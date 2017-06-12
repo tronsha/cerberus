@@ -44,18 +44,4 @@ class EventErr
         $this->irc = $irc;
         $this->event = $event;
     }
-
-    /**
-     * ERR_CHANOPRIVSNEEDED
-     * <channel> :You're not channel operator
-     * @param string $rest
-     * @param string $text
-     */
-    public function on482($rest, $text)
-    {
-        list($nick, $channel) = explode(' ', $rest);
-        $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];
-        $this->event->getDb()->addStatus('482', $this->irc->__($text), $data);
-        $this->event->runPluginEvent(__FUNCTION__, $data);
-    }
 }
