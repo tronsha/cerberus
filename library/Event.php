@@ -338,14 +338,4 @@ class Event extends Helper
         $this->getDb()->changeNick($nick, $text);
         $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
     }
-
-    /**
-     * @param string $channel
-     * @param string $topic
-     */
-    public function onTopic($channel, $topic)
-    {
-        $this->getDb()->setChannelTopic($channel, $topic);
-        $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'topic' => $topic]);
-    }
 }
