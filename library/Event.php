@@ -324,18 +324,4 @@ class Event extends Helper
         $this->getDb()->addStatus($nick, $text, $data);
         $this->runPluginEvent(__FUNCTION__, $data);
     }
-
-    /**
-     * @param string $nick
-     * @param string $text
-     */
-    public function onNick($nick, $text)
-    {
-        $this->vars = $this->getIrc()->getVars();
-        if ($nick === $this->vars['var']['me']) {
-            $this->getIrc()->setNick($text);
-        }
-        $this->getDb()->changeNick($nick, $text);
-        $this->runPluginEvent(__FUNCTION__, ['nick' => $nick, 'text' => $text]);
-    }
 }
