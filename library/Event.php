@@ -312,16 +312,4 @@ class Event extends Helper
             }
         }
     }
-
-    /**
-     * @param string $nick
-     * @param string $text
-     */
-    public function onNotice($nick, $text)
-    {
-        $nick = (empty($nick) === true)? '*' : $nick;
-        $data = ['nick' => $nick, 'text' => $text];
-        $this->getDb()->addStatus($nick, $text, $data);
-        $this->runPluginEvent(__FUNCTION__, $data);
-    }
 }
