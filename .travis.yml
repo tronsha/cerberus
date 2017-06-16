@@ -19,6 +19,8 @@ cache:
 
 before_install:
   - composer self-update
+  - mysql -e 'CREATE DATABASE cerberus_test;'
+  - psql -c 'create database cerberus_test;' -U postgres
 
 install:
   - composer install
