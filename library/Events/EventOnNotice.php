@@ -32,9 +32,11 @@ class EventOnNotice extends Event
 {
     /**
      * @param string $nick
+     * @param string $host
+     * @param string $rest
      * @param string $text
      */
-    public function onNotice($nick, $text)
+    public function onNotice($nick, $host, $rest, $text)
     {
         $nick = (empty($nick) === true)? '*' : $nick;
         $data = ['nick' => $nick, 'text' => $text];

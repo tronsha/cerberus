@@ -32,10 +32,11 @@ class EventOnKick extends Event
 {
     /**
      * @param string $bouncer
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function onKick($bouncer, $rest, $text)
+    public function onKick($bouncer, $host, $rest, $text)
     {
         $vars = $this->getVars();
         list($channel, $nick) = explode(' ', $rest);

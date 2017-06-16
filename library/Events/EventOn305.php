@@ -35,10 +35,12 @@ class EventOn305 extends Event
     /**
      * RPL_UNAWAY
      * :You are no longer marked as being away
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on305($rest, $text)
+    public function on305($nick, $host, $rest, $text)
     {
         unset($rest);
         $this->runPluginEvent(__FUNCTION__, ['text' => $text]);

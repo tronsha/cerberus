@@ -34,8 +34,12 @@ class EventOn437 extends Event
     /**
      * ERR_UNAVAILRESOURCE
      * <nick/channel> :Nick/channel is temporarily unavailable
+     * @param string $nick
+     * @param string $host
+     * @param string $rest
+     * @param string $text
      */
-    public function on437()
+    public function on437($nick, $host, $rest, $text)
     {
         $this->otherNick();
         $this->runPluginEvent(__FUNCTION__, []);

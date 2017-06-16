@@ -35,10 +35,12 @@ class EventOn401 extends Event
     /**
      * ERR_NOSUCHNICK
      * <nickname> :No such nick/channel
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on401($rest, $text)
+    public function on401($nick, $host, $rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);

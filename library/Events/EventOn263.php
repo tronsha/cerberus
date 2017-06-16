@@ -33,10 +33,12 @@ class EventOn263 extends Event
     /**
      * RPL_TRYAGAIN
      * LIST :This command could not be completed because it has been used recently, and is rate-limited.
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on263($rest, $text)
+    public function on263($nick, $host, $rest, $text)
     {
         list($me, $command) = explode(' ', $rest);
         unset($me);

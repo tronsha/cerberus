@@ -31,10 +31,12 @@ namespace Cerberus\Events;
 class EventOn378 extends Event
 {
     /**
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on378($rest, $text)
+    public function on378($nick, $host, $rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);

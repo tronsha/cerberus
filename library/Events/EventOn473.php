@@ -35,10 +35,12 @@ class EventOn473 extends Event
     /**
      * ERR_INVITEONLYCHAN
      * <channel> :Cannot join channel (+i)
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on473($rest, $text)
+    public function on473($nick, $host, $rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];

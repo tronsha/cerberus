@@ -35,10 +35,12 @@ class EventOn432 extends Event
     /**
      * ERR_ERRONEUSNICKNAME
      * <nick> :Erroneous nickname
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on432($rest, $text)
+    public function on432($nick, $host, $rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);

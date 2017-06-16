@@ -35,10 +35,12 @@ class EventOn317 extends Event
     /**
      * RPL_WHOISIDLE
      * <nick> <integer> :seconds idle
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on317($rest, $text)
+    public function on317($nick, $host, $rest, $text)
     {
         $keys = explode(',', $text);
         $values = explode(' ', $rest);

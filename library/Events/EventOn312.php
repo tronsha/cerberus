@@ -35,10 +35,12 @@ class EventOn312 extends Event
     /**
      * RPL_WHOISSERVER
      * <nick> <server> :<server info>
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on312($rest, $text)
+    public function on312($nick, $host, $rest, $text)
     {
         list($me, $nick, $server) = explode(' ', $rest);
         unset($me);

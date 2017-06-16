@@ -32,9 +32,11 @@ class EventOnPart extends Event
 {
     /**
      * @param string $nick
+     * @param string $host
      * @param string $channel
+     * @param string $text
      */
-    public function onPart($nick, $channel)
+    public function onPart($nick, $host, $channel, $text)
     {
         $vars = $this->getVars();
         $me = ($nick === $vars['var']['me']) ? true : false;

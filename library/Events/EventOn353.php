@@ -34,10 +34,12 @@ class EventOn353 extends Event
 {
     /**
      * RPL_NAMREPLY
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on353($rest, $text)
+    public function on353($nick, $host, $rest, $text)
     {
         list($me, $dummy, $channel) = explode(' ', $rest);
         unset($me, $dummy);

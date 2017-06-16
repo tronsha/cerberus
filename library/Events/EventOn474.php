@@ -35,10 +35,12 @@ class EventOn474 extends Event
     /**
      * ERR_BANNEDFROMCHAN
      * <channel> :Cannot join channel (+b)
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on474($rest, $text)
+    public function on474($nick, $host, $rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];

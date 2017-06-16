@@ -31,9 +31,12 @@ namespace Cerberus\Events;
 class EventOnTest extends Event
 {
     /**
-     *
+     * @param string $nick
+     * @param string $host
+     * @param string $rest
+     * @param string $text
      */
-    public function onTest()
+    public function onTest($nick, $host, $rest, $text)
     {
         $this->runPluginEvent(__FUNCTION__, []);
     }

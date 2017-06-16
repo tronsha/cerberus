@@ -35,10 +35,12 @@ class EventOn433 extends Event
     /**
      * ERR_NICKNAMEINUSE
      * <nick> :Nickname is already in use
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on433($rest, $text)
+    public function on433($nick, $host, $rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);

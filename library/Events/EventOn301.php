@@ -33,10 +33,12 @@ class EventOn301 extends Event
     /**
      * RPL_AWAY
      * <nick> :<away message>
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on301($rest, $text)
+    public function on301($nick, $host, $rest, $text)
     {
         list($me, $user) = explode(' ', $rest);
         unset($me);

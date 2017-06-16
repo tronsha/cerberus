@@ -35,10 +35,12 @@ class EventOn431 extends Event
     /**
      * ERR_NONICKNAMEGIVEN
      * :No nickname given
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on431($rest, $text)
+    public function on431($nick, $host, $rest, $text)
     {
         unset($rest);
         $data = ['text' => $text];

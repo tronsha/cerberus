@@ -31,10 +31,12 @@ namespace Cerberus\Events;
 class EventOn671 extends Event
 {
     /**
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on671($rest, $text)
+    public function on671($nick, $host, $rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);

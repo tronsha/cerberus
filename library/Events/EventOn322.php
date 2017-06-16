@@ -35,10 +35,12 @@ class EventOn322 extends Event
     /**
      * RPL_LIST
      * <channel> <# visible> :<topic>
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on322($rest, $text)
+    public function on322($nick, $host, $rest, $text)
     {
         list($me, $channel, $usercount) = explode(' ', $rest);
         unset($me);

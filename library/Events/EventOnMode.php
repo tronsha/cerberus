@@ -34,7 +34,7 @@ class EventOnMode extends Event
      * @param string $rest
      * @param string $text
      */
-    public function onMode($rest, $text)
+    public function onMode($nick, $host, $rest, $text)
     {
         $params = explode(' ', $rest);
         $this->runPluginEvent(__FUNCTION__, ['channel' => $params[0], 'mode' => isset($params[1]) ? $params[1] : null, 'param' => isset($params[2]) ? $params[2] : null, 'text' => empty($text) ? null : $text]);

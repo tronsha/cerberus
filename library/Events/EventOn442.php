@@ -35,10 +35,12 @@ class EventOn442 extends Event
     /**
      * ERR_NOTONCHANNEL
      * <channel> :You're not on that channel
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on442($rest, $text)
+    public function on442($nick, $host, $rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];

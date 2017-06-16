@@ -35,10 +35,12 @@ class EventOn306 extends Event
     /**
      * RPL_NOWAWAY
      * :You have been marked as being away
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on306($rest, $text)
+    public function on306($nick, $host, $rest, $text)
     {
         unset($rest);
         $this->runPluginEvent(__FUNCTION__, ['text' => $text]);

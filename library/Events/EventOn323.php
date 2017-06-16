@@ -35,10 +35,12 @@ class EventOn323 extends Event
     /**
      * RPL_LISTEND
      * :End of LIST
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on323($rest, $text)
+    public function on323($nick, $host, $rest, $text)
     {
         unset($rest);
         $this->runPluginEvent(__FUNCTION__, ['text' => $text]);

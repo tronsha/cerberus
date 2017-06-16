@@ -33,10 +33,12 @@ class EventOn468 extends Event
     /**
      * ERR_INVALIDUSERNAME
      * <user> :<text>
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on468($rest, $text)
+    public function on468($nick, $host, $rest, $text)
     {
         $data = ['user' => $rest, 'text' => $text];
         $this->runPluginEvent(__FUNCTION__, $data);

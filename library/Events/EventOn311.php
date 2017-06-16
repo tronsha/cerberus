@@ -35,10 +35,12 @@ class EventOn311 extends Event
     /**
      * RPL_WHOISUSER
      * <nick> <user> <host> * :<real name>
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on311($rest, $text)
+    public function on311($nick, $host, $rest, $text)
     {
         list($me, $nick, $user, $host) = explode(' ', $rest);
         unset($me);

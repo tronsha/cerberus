@@ -33,10 +33,12 @@ class EventOn477 extends Event
     /**
      * ERR_NEEDREGGEDNICK
      * <channel> :Cannot join channel (+r) - you need to be identified with services
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on477($rest, $text)
+    public function on477($nick, $host, $rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];

@@ -32,8 +32,11 @@ class EventOnQuit extends Event
 {
     /**
      * @param string $nick
+     * @param string $host
+     * @param string $rest
+     * @param string $text
      */
-    public function onQuit($nick)
+    public function onQuit($nick, $host, $rest, $text)
     {
         $this->runPluginEvent(__FUNCTION__, ['nick' => $nick]);
         $this->getDb()->removeUser($nick);

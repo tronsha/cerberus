@@ -32,10 +32,12 @@ class EventOn470 extends Event
 {
     /**
      * <channel> <forwarding> :Forwarding to another channel
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on470($rest, $text)
+    public function on470($nick, $host, $rest, $text)
     {
         list($me, $channel, $forwarding) = explode(' ', $rest);
         unset($me);

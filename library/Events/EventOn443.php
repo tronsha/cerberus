@@ -35,10 +35,12 @@ class EventOn443 extends Event
     /**
      * ERR_USERONCHANNEL
      * <user> <channel> :is already on channel
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on443($rest, $text)
+    public function on443($nick, $host, $rest, $text)
     {
         list($nick, $user, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'user' => $user, 'text' => $text];

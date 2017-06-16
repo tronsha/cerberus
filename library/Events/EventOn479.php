@@ -32,10 +32,12 @@ class EventOn479 extends Event
 {
     /**
      * <channel> :Illegal channel name
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on479($rest, $text)
+    public function on479($nick, $host, $rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];

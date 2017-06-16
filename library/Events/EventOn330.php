@@ -33,10 +33,12 @@ class EventOn330 extends Event
     /**
      * RPL_WHOISACCOUNT
      * :is logged in as
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on330($rest, $text)
+    public function on330($nick, $host, $rest, $text)
     {
         list($me, $nick, $auth) = explode(' ', $rest);
         unset($me);

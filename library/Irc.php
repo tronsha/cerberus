@@ -561,46 +561,11 @@ class Irc extends Cerberus
         $command = isset($matches[3]) ? $matches[3] : '';
         $rest = isset($matches[4]) ? $matches[4] : '';
         $text = isset($matches[5]) ? $matches[5] : '';
-        if (preg_match('/^([23456])[0-9][0-9]$/', $command, $matches)) {
-            $eventName = 'on' . $command;
-            $this->getEvents()->$eventName($rest, $text);
-        } else {
-            switch ($command) {
-                case '001':
-                    $this->nowrite = false;
-                    break;
-                case 'PRIVMSG':
-                    $this->getEvents()->onPrivmsg($nick, $host, $rest, $text);
-                    break;
-                case 'NOTICE':
-                    $this->getEvents()->onNotice($nick, $text);
-                    break;
-                case 'JOIN':
-                    $this->getEvents()->onJoin($nick, ($rest !== '' ? $rest : $text));
-                    break;
-                case 'PART':
-                    $this->getEvents()->onPart($nick, $rest);
-                    break;
-                case 'QUIT':
-                    $this->getEvents()->onQuit($nick);
-                    break;
-                case 'KICK':
-                    $this->getEvents()->onKick($nick, $rest, $text);
-                    break;
-                case 'NICK':
-                    $this->getEvents()->onNick($nick, $text);
-                    break;
-                case 'MODE':
-                    $this->getEvents()->onMode($rest, $text);
-                    break;
-                case 'TOPIC':
-                    $this->getEvents()->onTopic($rest, $text);
-                    break;
-                case 'INVITE':
-                    $this->getEvents()->onInvite($nick, $rest, $text);
-                    break;
-            }
+        if ($command === '001') {
+            $this->nowrite = false;
         }
+        $eventName = 'on' . ucfirst(strtolower($command));
+        $this->getEvents()->$eventName($nick, $host, $rest, $text);
         $this->getDb()->setLog($all, $command, $this->getNetwork(), $nick, $rest, $text, '<');
     }
 

@@ -35,10 +35,12 @@ class EventOn482 extends Event
     /**
      * ERR_CHANOPRIVSNEEDED
      * <channel> :You're not channel operator
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on482($rest, $text)
+    public function on482($nick, $host, $rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];

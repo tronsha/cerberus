@@ -35,10 +35,12 @@ class EventOn471 extends Event
     /**
      * ERR_CHANNELISFULL
      * <channel> :Cannot join channel (+l)
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on471($rest, $text)
+    public function on471($nick, $host, $rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];

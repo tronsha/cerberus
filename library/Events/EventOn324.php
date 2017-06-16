@@ -35,10 +35,12 @@ class EventOn324 extends Event
     /**
      * RPL_CHANNELMODEIS
      * <channel> <mode> <mode params>
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on324($rest, $text)
+    public function on324($nick, $host, $rest, $text)
     {
         unset($text);
         $list = explode(' ', $rest, 4);

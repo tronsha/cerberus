@@ -35,10 +35,12 @@ class EventOn318 extends Event
     /**
      * RPL_ENDOFWHOIS
      * <nick> :End of WHOIS list
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on318($rest, $text)
+    public function on318($nick, $host, $rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);

@@ -32,9 +32,11 @@ class EventOnNick extends Event
 {
     /**
      * @param string $nick
+     * @param string $host
+     * @param string $rest
      * @param string $text
      */
-    public function onNick($nick, $text)
+    public function onNick($nick, $host, $rest, $text)
     {
         $vars = $this->getVars();
         if ($nick === $vars['var']['me']) {

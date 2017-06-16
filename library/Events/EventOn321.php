@@ -35,10 +35,12 @@ class EventOn321 extends Event
     /**
      * RPL_LISTSTART
      * Channel :Users  Name
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on321($rest, $text)
+    public function on321($nick, $host, $rest, $text)
     {
         unset($rest);
         $this->runPluginEvent(__FUNCTION__, ['text' => $text]);

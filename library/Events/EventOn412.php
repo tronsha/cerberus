@@ -35,10 +35,12 @@ class EventOn412 extends Event
     /**
      * ERR_NOTEXTTOSEND
      * :No text to send
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on412($rest, $text)
+    public function on412($nick, $host, $rest, $text)
     {
         unset($rest);
         $data = ['text' => $text];

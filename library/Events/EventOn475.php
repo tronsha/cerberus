@@ -35,10 +35,12 @@ class EventOn475 extends Event
     /**
      * ERR_BADCHANNELKEY
      * <channel> :Cannot join channel (+k)
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on475($rest, $text)
+    public function on475($nick, $host, $rest, $text)
     {
         list($nick, $channel) = explode(' ', $rest);
         $data = ['channel' => $channel, 'nick' => $nick, 'text' => $text];

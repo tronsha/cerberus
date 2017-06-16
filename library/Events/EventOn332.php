@@ -35,10 +35,12 @@ class EventOn332 extends Event
     /**
      * RPL_TOPIC
      * <channel> :<topic>
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $topic
      */
-    public function on332($rest, $topic)
+    public function on332($nick, $host, $rest, $topic)
     {
         list($me, $channel) = explode(' ', $rest);
         unset($me);

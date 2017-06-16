@@ -31,10 +31,12 @@ namespace Cerberus\Events;
 class EventOnTopic extends Event
 {
     /**
+     * @param string $nick
+     * @param string $host
      * @param string $channel
      * @param string $topic
      */
-    public function onTopic($channel, $topic)
+    public function onTopic($nick, $host, $channel, $topic)
     {
         $this->getDb()->setChannelTopic($channel, $topic);
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'topic' => $topic]);

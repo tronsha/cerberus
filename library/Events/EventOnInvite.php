@@ -32,10 +32,11 @@ class EventOnInvite extends Event
 {
     /**
      * @param string $user
+     * @param string $host
      * @param string $nick
      * @param string $channel
      */
-    public function onInvite($user, $nick, $channel)
+    public function onInvite($user, $host, $nick, $channel)
     {
         $this->getDb()->addStatus('INVITE', 'User ' . $user . ' inviting you to channel ' . $channel, ['channel' => $channel, 'user' => $user, 'nick' => $nick]);
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'user' => $user, 'nick' => $nick]);

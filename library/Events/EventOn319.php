@@ -35,10 +35,12 @@ class EventOn319 extends Event
     /**
      * RPL_WHOISCHANNELS
      * <nick> :{[@|+]<channel><space>}
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on319($rest, $text)
+    public function on319($nick, $host, $rest, $text)
     {
         list($me, $nick) = explode(' ', $rest);
         unset($me);

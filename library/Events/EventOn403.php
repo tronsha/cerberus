@@ -35,10 +35,12 @@ class EventOn403 extends Event
     /**
      * ERR_NOSUCHCHANNEL
      * <channel name> :No such channel
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on403($rest, $text)
+    public function on403($nick, $host, $rest, $text)
     {
         list($me, $channel) = explode(' ', $rest);
         unset($me);

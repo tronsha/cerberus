@@ -35,10 +35,12 @@ class EventOn404 extends Event
     /**
      * ERR_CANNOTSENDTOCHAN
      * <channel name> :Cannot send to channel
+     * @param string $nick
+     * @param string $host
      * @param string $rest
      * @param string $text
      */
-    public function on404($rest, $text)
+    public function on404($nick, $host, $rest, $text)
     {
         list($me, $channel) = explode(' ', $rest);
         unset($me);
