@@ -4,18 +4,16 @@ php:
   - 5.6
   - 7.0
   - 7.1
+  - nightly
   - hhvm
+
+env:
+  - DB=mysql
+  - DB=pgsql
 
 services:
   - mysql
   - postgresql
-
-dist: trusty
-
-cache:
-  directories:
-      - "$HOME/.composer/cache"
-      - "$HOME/.php-cs-fixer"
 
 before_install:
   - composer self-update
@@ -31,4 +29,52 @@ before_script:
 script:
   - if [[ $TRAVIS_PHP_VERSION != hhvm ]]; then vendor/bin/php-cs-fixer fix --cache-file "$HOME/.php-cs-fixer/.php_cs.cache" --dry-run --diff --verbose; fi;
   - cat config.travis.mysql.ini > config.ini; vendor/bin/phpunit;
-  - if [[ $TRAVIS_PHP_VERSION != hhvm ]]; then cat config.travis.pgsql.ini > config.ini; vendor/bin/phpunit; fi;
+  - cat config.travis.pgsql.ini > config.ini; vendor/bin/phpunit;
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.0
+      env: DB=mariadb
+      addons:
+        mariadb: 10.1
+    - php: 7.1
+      env: DB=mariadb
+      addons:
+        mariadb: 10.1
+    - php: hhvm
+      sudo: true
+      dist: trusty
+      group: edge
+      addons:
+        mariadb: 10.1
+      env: DB=mariadb
+    - php: hhvm
+      sudo: true
+      dist: trusty
+      group: edge
+      addons:
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      services:
+        - mysql
+      env: DB=mysql
+    - php: hhvm
+      sudo: true
+      dist: trusty
+      group: edge
+      services:
+        - postgresql
+      env: DB=pgsql
+
+  allow_failures:
+    - php: nightly
+    - php: hhvm
+
+cache:
+  directories:
+      - "$HOME/.composer/cache"
+      - "$HOME/.php-cs-fixer"
