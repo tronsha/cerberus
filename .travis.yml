@@ -4,8 +4,6 @@ php:
   - 5.6
   - 7.0
   - 7.1
-  - nightly
-  - hhvm
 
 env:
   - DB=mysql
@@ -22,11 +20,10 @@ before_script:
   - cat config.travis.$DB.ini > config.ini
 
 script:
-  - if [[ $TRAVIS_PHP_VERSION != hhvm ]]; then vendor/bin/php-cs-fixer fix --cache-file "$HOME/.php-cs-fixer/.php_cs.cache" --dry-run --diff --verbose; fi;
+  - vendor/bin/php-cs-fixer fix --cache-file "$HOME/.php-cs-fixer/.php_cs.cache" --dry-run --diff --verbose
   - vendor/bin/phpunit
 
 matrix:
-  fast_finish: true
   include:
     - php: 5.6
       env: DB=mariadb
@@ -62,7 +59,6 @@ matrix:
       env: DB=pgsql
 
   allow_failures:
-    - php: nightly
     - php: hhvm
 
 cache:
