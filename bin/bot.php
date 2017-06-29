@@ -19,7 +19,7 @@
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-if (version_compare(phpversion(), '5.4.0', '<') === true) {
+if (true === version_compare(phpversion(), '5.4.0', '<')) {
     echo 'Your version of PHP is ' . phpversion() . PHP_EOL;
     echo 'PHP 5.4.0 or higher is required' . PHP_EOL;
     exit;
@@ -35,7 +35,7 @@ set_error_handler(
 );
 
 chdir(__DIR__);
-if (file_exists('../vendor/autoload.php')) {
+if (true === file_exists('../vendor/autoload.php')) {
     require_once '../vendor/autoload.php';
 } else {
     echo 'You must set up the project dependencies, run the following commands:' . PHP_EOL;

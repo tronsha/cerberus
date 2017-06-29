@@ -23,7 +23,7 @@
 # */1   *       *       *       *       php -f /home/user/projects/cerberus/bin/autostart.php >/dev/null
 
 chdir(__DIR__);
-if (file_exists('../vendor/autoload.php')) {
+if (true === file_exists('../vendor/autoload.php')) {
     require_once '../vendor/autoload.php';
 } else {
     echo 'You must set up the project dependencies, run the following commands:' . PHP_EOL;
@@ -35,12 +35,12 @@ if (file_exists('../vendor/autoload.php')) {
 use Cerberus\Cerberus;
 use Cerberus\Db;
 
-if (Cerberus::isExecAvailable() === false) {
+if (false === Cerberus::isExecAvailable()) {
     echo 'Can\'t run the bot, because "exec" is disabled' . PHP_EOL;
     exit;
 }
 
-if (is_dir('../.git') === true) {
+if (true === is_dir('../.git')) {
     chdir(dirname(__DIR__));
     exec('git pull', $output);
     $console = Cerberus::getConsole();
@@ -52,19 +52,19 @@ if (is_dir('../.git') === true) {
     chdir(__DIR__);
 }
 
-if (file_exists('../vendor/bin/phpunit') === true) {
+if (true === file_exists('../vendor/bin/phpunit')) {
     chdir(dirname(__DIR__));
     exec('./vendor/bin/phpunit', $output);
     $console = Cerberus::getConsole();
     foreach ($output as $line) {
-        if ($line === 'FAILURES!') {
+        if ('FAILURES!' === $line) {
             $console->writeln('<error>' . $line . '</error>');
         } else {
             $console->writeln($line);
         }
     }
     end($output);
-    if (prev($output) === 'FAILURES!') {
+    if ('FAILURES!' === prev($output)) {
         exit;
     }
     unset($output);
@@ -73,22 +73,22 @@ if (file_exists('../vendor/bin/phpunit') === true) {
 
 $config = Cerberus::loadConfig();
 
-if ($config['bot']['autostart']) {
+if ('1' === $config['bot']['autostart']) {
     $db = new Db($config['db']);
     $db->connect();
     $bots = $db->getActiveBotList();
     $botCount = 0;
-    if ($bots) {
+    if (0 < count($bots)) {
         exec('ps -e | grep php', $output);
         $pidList = [];
         foreach ($output as $line) {
             $data = explode(' ', trim(preg_replace('/[ ]+/', ' ', $line)));
-            if ($data[3] === 'php') {
+            if ('php' === $data[3]) {
                 $pidList[] = $data[0];
             }
         }
         foreach ($bots as $bot) {
-            if (in_array($bot['pid'], $pidList, true) === true) {
+            if (true === in_array($bot['pid'], $pidList, true)) {
                 $botCount++;
                 Cerberus::sysinfo('Bot ' . $bot['id'] . ' is running. PID: ' . $bot['pid']);
             } else {
@@ -98,10 +98,10 @@ if ($config['bot']['autostart']) {
             }
         }
     }
-    if ($botCount === 0) {
+    if (0 === $botCount) {
         Cerberus::sysinfo('start a new bot.');
         $logDirectory = rtrim(trim($config['log']['directory']), '/');
-        if (is_dir($logDirectory) === false) {
+        if (false === is_dir($logDirectory)) {
             mkdir($logDirectory);
         }
         exec(Cerberus::getPath() . '/bin/bot.php -noconsole > ' . $logDirectory . '/log.txt 2>&1 &');
