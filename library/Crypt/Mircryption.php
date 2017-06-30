@@ -42,9 +42,9 @@ class Mircryption
      */
     public static function encode($text, $key)
     {
-        if (extension_loaded('mcrypt') === true && version_compare(PHP_VERSION, '7.1', '<') === true) {
+        if (true === extension_loaded('mcrypt') && true === version_compare(PHP_VERSION, '7.1', '<')) {
             return self::mcryptEncrypt($text, $key);
-        } elseif (extension_loaded('openssl') === true) {
+        } elseif (true === extension_loaded('openssl')) {
             return self::opensslEncrypt($text, $key);
         } else {
             return false;
@@ -58,9 +58,9 @@ class Mircryption
      */
     public static function decode($text, $key)
     {
-        if (extension_loaded('mcrypt') === true && version_compare(PHP_VERSION, '7.1', '<') === true) {
+        if (true === extension_loaded('mcrypt') && true === version_compare(PHP_VERSION, '7.1', '<')) {
             return self::mcryptDecrypt($text, $key);
-        } elseif (extension_loaded('openssl') === true) {
+        } elseif (true === extension_loaded('openssl')) {
             return self::opensslDecrypt($text, $key);
         } else {
             return false;

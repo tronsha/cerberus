@@ -40,7 +40,7 @@ class Ccryption
      */
     public function __construct()
     {
-        if (extension_loaded('openssl') === false) {
+        if (false === extension_loaded('openssl')) {
             throw new Exception('The openssl extension is not available.');
         }
     }

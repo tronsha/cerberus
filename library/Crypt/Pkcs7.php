@@ -55,7 +55,7 @@ class Pkcs7
     {
         $last = substr($text, -1);
         $padding = ord($last);
-        if ($padding > 0 && $padding <= $block) {
+        if (0 < $padding && $padding <= $block) {
             $text = substr($text, 0, -$padding);
         }
         return $text;
