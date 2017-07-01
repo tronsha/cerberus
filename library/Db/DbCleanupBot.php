@@ -36,39 +36,39 @@ class DbCleanupBot extends Db
      */
     public function cleanupBot($botId = null, $exclude = [])
     {
-        if (in_array('send', $exclude, true) === false) {
+        if (false === in_array('send', $exclude, true)) {
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
             $qb ->delete('send')
                 ->where('bot_id = ?')
-                ->setParameter(0, ($botId === null ? $this->getDb()->getBotId() : $botId))
+                ->setParameter(0, (null === $botId ? $this->getDb()->getBotId() : $botId))
                 ->execute();
         }
-        if (in_array('channel', $exclude, true) === false) {
+        if (false === in_array('channel', $exclude, true)) {
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
             $qb ->delete('channel')
                 ->where('bot_id = ?')
-                ->setParameter(0, ($botId === null ? $this->getDb()->getBotId() : $botId))
+                ->setParameter(0, (null === $botId ? $this->getDb()->getBotId() : $botId))
                 ->execute();
         }
-        if (in_array('channel_user', $exclude, true) === false) {
+        if (false === in_array('channel_user', $exclude, true)) {
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
             $qb ->delete('channel_user')
                 ->where('bot_id = ?')
-                ->setParameter(0, ($botId === null ? $this->getDb()->getBotId() : $botId))
+                ->setParameter(0, (null === $botId ? $this->getDb()->getBotId() : $botId))
                 ->execute();
         }
-        if (in_array('control', $exclude, true) === false) {
+        if (false === in_array('control', $exclude, true)) {
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
             $qb ->delete('control')
                 ->where('bot_id = ?')
-                ->setParameter(0, ($botId === null ? $this->getDb()->getBotId() : $botId))
+                ->setParameter(0, (null === $botId ? $this->getDb()->getBotId() : $botId))
                 ->execute();
         }
-        if (in_array('status', $exclude, true) === false) {
+        if (false === in_array('status', $exclude, true)) {
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
             $qb ->delete('status')
                 ->where('bot_id = ?')
-                ->setParameter(0, ($botId === null ? $this->getDb()->getBotId() : $botId))
+                ->setParameter(0, (null === $botId ? $this->getDb()->getBotId() : $botId))
                 ->execute();
         }
     }

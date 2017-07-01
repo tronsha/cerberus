@@ -41,12 +41,12 @@ class DbRemoveUserFromChannel extends Db
         $qb->delete('channel_user');
         $qb->where('bot_id = ?');
         $qb->setParameter($paramCount, $this->getDb()->getBotId());
-        if ($channel !== null) {
+        if (null !== $channel) {
             $paramCount++;
             $qb->andWhere('channel = ?');
             $qb->setParameter($paramCount, $channel);
         }
-        if ($user !== null) {
+        if (null !== $user) {
             $paramCount++;
             $qb->andWhere('username = ?');
             $qb->setParameter($paramCount, $user);

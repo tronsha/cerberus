@@ -43,7 +43,7 @@ class DbShutdownBot extends Db
             ->set('stop', '?')
             ->where('id = ?')
             ->setParameter(0, $now)
-            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
+            ->setParameter(1, (null === $botId ? $this->getDb()->getBotId() : $botId))
             ->execute();
         $this->getDb()->close();
     }

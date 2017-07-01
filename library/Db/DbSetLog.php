@@ -64,7 +64,7 @@ class DbSetLog extends Db
             ->setParameter(5, $direction)
             ->execute();
         $logId = $this->getDb()->lastInsertId('log');
-        if ($direction === '<') {
+        if ('<' === $direction) {
             switch (strtolower($command)) {
                 case 'privmsg':
                     $this->setPrivmsgLog($rest, $nick, $text, $now, $direction, $logId);
@@ -92,7 +92,7 @@ class DbSetLog extends Db
                     $this->setTopicLog($rest, $nick, $text, $now, $logId);
                     break;
             }
-        } elseif ($direction === '>') {
+        } elseif ('>' === $direction) {
             switch (strtolower($command)) {
                 case 'privmsg':
                     $this->setPrivmsgLog($rest, $nick, $text, $now, $direction, $logId);
@@ -129,7 +129,7 @@ class DbSetLog extends Db
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
+            ->setParameter(1, (null === $botId ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $text)
@@ -161,7 +161,7 @@ class DbSetLog extends Db
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
+            ->setParameter(1, (null === $botId ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $target)
             ->setParameter(3, $nick)
             ->setParameter(4, $text)
@@ -190,7 +190,7 @@ class DbSetLog extends Db
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
+            ->setParameter(1, (null === $botId ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $time)
@@ -220,7 +220,7 @@ class DbSetLog extends Db
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
+            ->setParameter(1, (null === $botId ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $text)
@@ -249,7 +249,7 @@ class DbSetLog extends Db
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
+            ->setParameter(1, (null === $botId ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $nick)
             ->setParameter(3, $text)
             ->setParameter(4, $time)
@@ -281,7 +281,7 @@ class DbSetLog extends Db
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
+            ->setParameter(1, (null === $botId ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $kicked)
@@ -311,7 +311,7 @@ class DbSetLog extends Db
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
+            ->setParameter(1, (null === $botId ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $oldNick)
             ->setParameter(3, $newNick)
             ->setParameter(4, $time)
@@ -341,7 +341,7 @@ class DbSetLog extends Db
                 ]
             )
             ->setParameter(0, $logId)
-            ->setParameter(1, ($botId === null ? $this->getDb()->getBotId() : $botId))
+            ->setParameter(1, (null === $botId ? $this->getDb()->getBotId() : $botId))
             ->setParameter(2, $channel)
             ->setParameter(3, $nick)
             ->setParameter(4, $topic)

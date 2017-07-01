@@ -38,7 +38,7 @@ class DbGetActiveBotList extends Db
         $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $qb ->select('*')
             ->from('bot');
-        if ($this->getDb()->getConfig('driver') === 'pdo_sqlite') {
+        if ('pdo_sqlite' === $this->getDb()->getConfig('driver')) {
             $qb->where('stop = \'NULL\'');
         } else {
             $qb->where('stop IS NULL');

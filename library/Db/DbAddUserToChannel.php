@@ -38,7 +38,7 @@ class DbAddUserToChannel extends Db
      */
     public function addUserToChannel($channel, $user, $mode = '')
     {
-        if (is_array($mode) === false) {
+        if (false === is_array($mode)) {
             $mode = [$mode];
         }
         $qb = $this->getDb()->getConnection()->createQueryBuilder();

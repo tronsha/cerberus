@@ -44,7 +44,7 @@ class DbGetChannelTopic extends Db
                     ->setParameter(1, $this->getDb()->getBotId())
                     ->execute();
         $topic = $stmt->fetch();
-        if ($topic === false) {
+        if (false === $topic) {
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
             $stmt = $qb ->select('topic')
                         ->from('channellist')
@@ -54,7 +54,7 @@ class DbGetChannelTopic extends Db
                         ->execute();
             $topic = $stmt->fetch();
         }
-        if ($topic === false) {
+        if (false === $topic) {
             $topic = '';
         } else {
             $topic = $topic['topic'];

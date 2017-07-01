@@ -42,11 +42,11 @@ class DbGetStatus extends Db
             ->where('bot_id = ?')
             ->setMaxResults(1)
             ->setParameter(0, $this->getDb()->getBotId());
-        if ($status === null) {
+        if (null === $status) {
             $qb->orderBy('id', 'ASC');
         } else {
             $qb->orderBy('id', 'DESC');
-            if (is_array($status) === true) {
+            if (true === is_array($status)) {
                 foreach ($status as &$value) {
                     $value =  '\'' . $value . '\'';
                 }
@@ -58,7 +58,7 @@ class DbGetStatus extends Db
         }
         $stmt = $qb->execute();
         $result = $stmt->fetch();
-        if (empty($result) === true) {
+        if (true === empty($result)) {
             return null;
         }
         $result['data'] = json_decode($result['data']);
