@@ -42,7 +42,7 @@ class EventOnPrivmsg extends Event
     {
         $vars = $this->getVars();
         if (preg_match("/\x01([A-Z]+)( [0-9\.]+)?\x01/i", $text, $matches)) {
-            if ($this->getConfig()->getCtcp() === false) {
+            if (false === $this->getConfig()->getCtcp()) {
                 return null;
             }
             $send = '';
@@ -64,7 +64,7 @@ class EventOnPrivmsg extends Event
                 case 'FINGER':
                     $botName = $this->getConfig()->getName();
                     $botHomepage = $this->getConfig()->getHomepage();
-                    $send = 'FINGER ' . $botName . (empty($botHomepage) === false ? ' (' . $botHomepage . ')' : '') . ' Idle ' . (isset($vars['time']['irc_connect']) ? round(microtime(true) - $vars['time']['irc_connect']) : 0) . ' seconds';
+                    $send = 'FINGER ' . $botName . (false === empty($botHomepage) ? ' (' . $botHomepage . ')' : '') . ' Idle ' . (true === isset($vars['time']['irc_connect']) ? round(microtime(true) - $vars['time']['irc_connect']) : 0) . ' seconds';
                     break;
                 case 'SOURCE':
                     $send = 'SOURCE https://github.com/tronsha/cerberus';
@@ -72,15 +72,15 @@ class EventOnPrivmsg extends Event
                 default:
                     return null;
             }
-            if (empty($send) === false) {
+            if (false === empty($send)) {
                 $this->getActions()->notice($nick, "\x01" . $send . "\x01");
             }
         } else {
             $splitText = explode(' ', $text);
             switch ($splitText[0]) {
                 case '!load':
-                    if (empty($splitText[1]) === false) {
-                        if ($this->getIrc()->isAdmin($nick, $host) === true) {
+                    if (false === empty($splitText[1])) {
+                        if (true === $this->getIrc()->isAdmin($nick, $host)) {
                             if (preg_match('/^[a-z]+$/i', $splitText[1]) > 0) {
                                 $this->getIrc()->loadPlugin(
                                     $splitText[1],

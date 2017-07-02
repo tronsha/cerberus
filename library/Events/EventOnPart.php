@@ -41,7 +41,7 @@ class EventOnPart extends Event
         $vars = $this->getVars();
         $me = ($nick === $vars['var']['me']) ? true : false;
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick]);
-        if ($me === true) {
+        if (true === $me) {
             $this->getDb()->removeChannel($channel);
         } else {
             $this->getDb()->removeUserFromChannel($channel, $nick);

@@ -38,7 +38,7 @@ class EventOnNotice extends Event
      */
     public function onNotice($nick, $host, $rest, $text)
     {
-        $nick = (empty($nick) === true)? '*' : $nick;
+        $nick = (true === empty($nick))? '*' : $nick;
         $data = ['nick' => $nick, 'text' => $text];
         $this->getDb()->addStatus($nick, $text, $data);
         $this->runPluginEvent(__FUNCTION__, $data);

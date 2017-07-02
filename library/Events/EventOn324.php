@@ -44,9 +44,9 @@ class EventOn324 extends Event
     {
         unset($text);
         $list = explode(' ', $rest, 4);
-        $channel = empty($list[1]) === false ? $list[1] : '';
-        $mode = empty($list[2]) === false ? $list[2] : '';
-        $params = empty($list[3]) === false ? explode(' ', $list[3]) : [];
+        $channel = false === empty($list[1]) ? $list[1] : '';
+        $mode = false === empty($list[2]) ? $list[2] : '';
+        $params = false === empty($list[3]) ? explode(' ', $list[3]) : [];
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'mode' => $mode, 'params' => $params]);
     }
 }

@@ -38,7 +38,7 @@ class EventOnJoin extends Event
      */
     public function onJoin($nick, $host, $rest, $text)
     {
-        $channel = ($rest !== '' ? $rest : $text);
+        $channel = ('' !== $rest ? $rest : $text);
         $vars = $this->getVars();
         if ($nick === $vars['var']['me']) {
             $this->getDb()->addChannel($channel);

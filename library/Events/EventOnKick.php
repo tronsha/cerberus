@@ -42,10 +42,10 @@ class EventOnKick extends Event
         list($channel, $nick) = explode(' ', $rest);
         $me = ($nick === $vars['var']['me']) ? true : false;
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer, 'comment' => $text]);
-        if ($me === true) {
+        if (true === $me) {
             $this->getDb()->removeChannel($channel);
             $this->getDb()->addStatus('KICK', 'User ' . $bouncer . ' kicked you from channel ' . $channel . ' (' . $text . ')', ['channel' => $channel, 'nick' => $nick]);
-            if ($this->getConfig()->getAutorejoin() === true) {
+            if (true === $this->getConfig()->getAutorejoin()) {
                 $this->getActions()->join($channel);
             }
         } else {
