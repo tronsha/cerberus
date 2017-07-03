@@ -74,9 +74,9 @@ class FormatterConsole extends Formatter
     protected function getColor($fontColor = null, $backgroundColor = null)
     {
         $colorArray = [];
-        if ($fontColor !== null) {
+        if (null !== $fontColor) {
             $colorArray[] = '38;5;' . $this->matchColor($fontColor);
-            if ($backgroundColor !== null) {
+            if (null !== $backgroundColor) {
                 $colorArray[] = '48;5;' . $this->matchColor($backgroundColor);
             }
 

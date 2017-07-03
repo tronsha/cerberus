@@ -47,7 +47,7 @@ abstract class Formatter
         $output = array_shift($formatArray);
         $open = false;
         foreach ($formatArray as $part) {
-            if ($open === false) {
+            if (false === $open) {
                 $output .= $start;
                 $open = true;
             } else {
@@ -56,7 +56,7 @@ abstract class Formatter
             }
             $output .= $part;
         }
-        if ($open) {
+        if (true === $open) {
             $output .= $stop;
         }
 
@@ -70,33 +70,33 @@ abstract class Formatter
      */
     public function color($output)
     {
-        if ($this->type !== 'HTML' && $this->type !== 'CONSOLE') {
+        if ('HTML' !== $this->type && 'CONSOLE' !== $this->type) {
             throw new Exception('Type must be HTML or Console.');
         }
         $coloredOutput = '';
         $colorType = $fontColor = $backgroundColor = '';
         $reset = false;
         foreach (str_split($output) as $char) {
-            if ($char === "\x03") {
+            if ("\x03" === $char) {
                 $colorType = 'font';
-            } elseif ($colorType === 'font' && (strlen($fontColor) === 0 || strlen($fontColor) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+            } elseif ('font' === $colorType && (0 === strlen($fontColor) || 1 === strlen($fontColor)) && 48 <= ord($char) && 57 >= ord($char)) {
                 $fontColor .= $char;
-            } elseif ($colorType === 'font' && (strlen($fontColor) === 1 || strlen($fontColor) === 2) && $char === ',') {
+            } elseif ('font' === $colorType && (1 === strlen($fontColor) || 2 === strlen($fontColor)) && ',' === $char) {
                 $colorType = 'background';
-            } elseif ($colorType === 'background' && (strlen($backgroundColor) === 0 || strlen($backgroundColor) === 1) && ord($char) >= 48 && ord($char) <= 57) {
+            } elseif ('background' === $colorType && (0 === strlen($backgroundColor) || 1 === strlen($backgroundColor)) && 48 <= ord($char) && 57 >= ord($char)) {
                 $backgroundColor .= $char;
-            } elseif ($colorType === 'font' || $colorType === 'background') {
-                if ($backgroundColor !== '') {
+            } elseif ('font' === $colorType || 'background' === $colorType) {
+                if ('' !== $backgroundColor) {
                     $coloredOutput .= $this->getColor($fontColor, $backgroundColor);
                     $reset = true;
-                } elseif ($fontColor !== '') {
+                } elseif ('' !== $fontColor) {
                     $coloredOutput .= $this->getColor($fontColor);
                     $reset = true;
                 } else {
                     $coloredOutput .= $this->getColor();
                     $reset = false;
                 }
-                if ($colorType === 'background' && $backgroundColor === '') {
+                if ('background' === $colorType && '' === $backgroundColor) {
                     $coloredOutput .= ',';
                 }
                 $colorType = $fontColor = $backgroundColor = '';
@@ -105,7 +105,7 @@ abstract class Formatter
                 $coloredOutput .= $char;
             }
         }
-        if ($reset === true) {
+        if (true === $reset) {
             $coloredOutput .= $this->getColor();
         }
 

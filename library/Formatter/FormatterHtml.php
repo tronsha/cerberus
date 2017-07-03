@@ -78,21 +78,21 @@ class FormatterHtml extends Formatter
     protected function getColor($fontColor = null, $backgroundColor = null)
     {
         $colorArray = [];
-        if ($fontColor !== null) {
+        if (null !== $fontColor) {
             $colorArray[] = 'color: ' . $this->matchColor($fontColor);
-            if ($backgroundColor !== null) {
+            if (null !== $backgroundColor) {
                 $this->bg = $backgroundColor;
             }
-            if ($this->bg !== '') {
+            if ('' !== $this->bg) {
                 $colorArray[] = 'background-color: ' . $this->matchColor($this->bg);
             }
-            if ($this->open === true) {
+            if (true === $this->open) {
                 return '</span><span style="' . implode('; ', $colorArray) . ';">';
             }
             $this->open = true;
             return '<span style="' . implode('; ', $colorArray) . ';">';
         }
-        if ($this->open === true) {
+        if (true === $this->open) {
             $this->bg = '';
             $this->open = false;
             return '</span>';
