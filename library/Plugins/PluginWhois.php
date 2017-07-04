@@ -55,7 +55,7 @@ class PluginWhois extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
-        if ($data !== null) {
+        if (null !== $data) {
         }
         return $returnValue;
     }
@@ -93,10 +93,10 @@ class PluginWhois extends Plugin
      */
     public function on317($data)
     {
-        if (isset($data['list']['seconds idle']) === true) {
+        if (true === isset($data['list']['seconds idle'])) {
             $this->cache[strtolower($data['nick'])][317]['idle'] = $data['list']['seconds idle'];
         }
-        if (isset($data['list']['seconds idle']) === true) {
+        if (true === isset($data['list']['seconds idle'])) {
             $this->cache[strtolower($data['nick'])][317]['signon'] = $data['list']['signon time'];
         }
     }
@@ -108,16 +108,16 @@ class PluginWhois extends Plugin
     public function on318($data)
     {
         $nick = strtolower($data['nick']);
-        if (isset($this->cache[$nick][401]) === false) {
+        if (false === isset($this->cache[$nick][401])) {
             $output = 'Nick: ' . $data['nick'] . PHP_EOL;
-            if (isset($this->cache[$nick][311]['realname']) === true) {
+            if (true === isset($this->cache[$nick][311]['realname'])) {
                 $output .= 'Realname: ' . $this->cache[$nick][311]['realname'] . PHP_EOL;
             }
-            if (isset($this->cache[$nick][311]['host']) === true) {
+            if (true === isset($this->cache[$nick][311]['host'])) {
                 $hostArray = explode('@', $this->cache[$nick][311]['host']);
                 $output .= 'Host: ' . $hostArray[1] . PHP_EOL;
             }
-            if (isset($this->cache[$nick][317]['idle']) === true) {
+            if (true === isset($this->cache[$nick][317]['idle'])) {
                 $time = $this->cache[$nick][317]['idle'];
                 $d = ($time-($time%86400))/86400;
                 $h = (($time-($time%3600))%86400)/3600;
@@ -125,10 +125,10 @@ class PluginWhois extends Plugin
                 $s = $time%60;
                 $output .= 'Idle: ' . $d . 'd ' . $h . 'h ' . $m . 'm ' . $s . 's' . PHP_EOL;
             }
-            if (isset($this->cache[$nick][317]['signon']) === true) {
+            if (true === isset($this->cache[$nick][317]['signon'])) {
                 $output .= 'Signon: ' . date('H:i:s Y-m-d', $this->cache[$nick][317]['signon']) . PHP_EOL;
             }
-            if (isset($this->cache[$nick][319]['channel']) === true) {
+            if (true === isset($this->cache[$nick][319]['channel'])) {
                 $output .= 'Channel: ' . $this->cache[$nick][319]['channel'] . PHP_EOL;
             }
             $this->getDb()->addStatus('WHOIS', $output, []);

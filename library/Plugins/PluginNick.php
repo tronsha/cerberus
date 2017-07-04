@@ -44,7 +44,7 @@ class PluginNick extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
-        if ($data !== null) {
+        if (null !== $data) {
             $this->getActions()->notice($data['nick'], 'New Command: !nick [name]');
         }
         return $returnValue;
@@ -56,12 +56,12 @@ class PluginNick extends Plugin
      */
     public function onPrivmsg($data)
     {
-        if ($this->isAdmin($data['nick'], $data['host']) === false) {
+        if (false === $this->isAdmin($data['nick'], $data['host'])) {
             return false;
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command === '!nick') {
+        if ('!nick' === $command) {
             $nick = trim(array_shift($splitText));
             return $this->getActions()->nick($nick);
         }

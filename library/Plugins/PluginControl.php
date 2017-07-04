@@ -44,7 +44,7 @@ class PluginControl extends Plugin
     {
         $result = $this->getDb()->getControl();
         $this->getDb()->removeControl($result['id']);
-        if (empty($result) === false) {
+        if (false === empty($result)) {
             $data = json_decode($result['data'], true);
             $this->getEvents()->onControl($result['command'], $data);
             switch ($result['command']) {

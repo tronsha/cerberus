@@ -44,7 +44,7 @@ class PluginQuit extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
-        if ($data !== null) {
+        if (null !== $data) {
             $this->getActions()->notice($data['nick'], 'New Command: !die');
         }
         return $returnValue;
@@ -56,12 +56,12 @@ class PluginQuit extends Plugin
      */
     public function onPrivmsg($data)
     {
-        if ($this->isAdmin($data['nick'], $data['host']) === false) {
+        if (false === $this->isAdmin($data['nick'], $data['host'])) {
             return false;
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command === '!die') {
+        if ('!die' === $command) {
             return $this->getActions()->quit('Client Quit');
         }
     }

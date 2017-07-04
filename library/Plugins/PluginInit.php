@@ -45,7 +45,7 @@ class PluginInit extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
-        if ($data !== null) {
+        if (null !== $data) {
         }
         return $returnValue;
     }
@@ -55,9 +55,9 @@ class PluginInit extends Plugin
      */
     public function onConnect($data)
     {
-        if ($this->getConfig()->getFrontendUrl() !== null) {
+        if (null !== $this->getConfig()->getFrontendUrl()) {
             $url = trim($this->getConfig()->getFrontendUrl(), " \t\n\r\0\x0B/") . '/sethost.php';
-            if ($this->getConfig()->getFrontendPassword() !== null) {
+            if (null !== $this->getConfig()->getFrontendPassword()) {
                 $url .= '?pw=' . md5($this->getConfig()->getFrontendPassword());
             }
             try {

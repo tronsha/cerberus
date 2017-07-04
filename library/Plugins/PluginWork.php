@@ -74,7 +74,7 @@ class PluginWork extends Plugin
     public function goodmorning()
     {
         $channel = self::CHANNEL;
-        if (empty($channel) === false && $this->inChannel($channel)) {
+        if (false === empty($channel) && true === $this->inChannel($channel)) {
             $this->getActions()->privmsg($channel, $this->__('Good morning'));
         }
     }
@@ -85,7 +85,7 @@ class PluginWork extends Plugin
     public function niceevening()
     {
         $channel = self::CHANNEL;
-        if (empty($channel) === false && $this->inChannel($channel)) {
+        if (false === empty($channel) && true === $this->inChannel($channel)) {
             $this->getActions()->privmsg($channel, $this->__('Have a nice evening'));
         }
     }
@@ -96,7 +96,7 @@ class PluginWork extends Plugin
     public function niceweekend()
     {
         $channel = self::CHANNEL;
-        if (empty($channel) === false && $this->inChannel($channel)) {
+        if (false === empty($channel) && true === $this->inChannel($channel)) {
             $this->getActions()->privmsg($channel, $this->__('Nice weekend'));
         }
     }

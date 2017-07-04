@@ -44,7 +44,7 @@ class PluginPart extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
-        if ($data !== null) {
+        if (null !== $data) {
             $this->getActions()->notice($data['nick'], 'New Command: !part [#channel]');
         }
         return $returnValue;
@@ -56,14 +56,14 @@ class PluginPart extends Plugin
      */
     public function onPrivmsg($data)
     {
-        if ($this->isAdmin($data['nick'], $data['host']) === false) {
+        if (false === $this->isAdmin($data['nick'], $data['host'])) {
             return false;
         }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command === '!part') {
+        if ('!part' === $command) {
             $channel = trim(array_shift($splitText));
-            if (empty($channel) === true) {
+            if (true === empty($channel)) {
                 $channel = $data['channel'];
                 $this->getActions()->part($channel);
             } else {

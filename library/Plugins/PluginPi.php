@@ -62,7 +62,7 @@ class PluginPi extends Plugin
             exec('gpio -v', $outputArray);
             $output = implode(' ', $outputArray);
             $pos = strpos($output, 'Raspberry Pi');
-            if ($pos !== false) {
+            if (false !== $pos) {
                 $info = substr($output, $pos);
                 preg_match_all('/Type:\s*([^,:]+),\s*Revision:\s*([^,:]+),\s*Memory:\s*([^,:]+),\s*Maker:\s*([^,:]+)\s*$/i', $info, $matches, PREG_SET_ORDER);
                 $this->info['type'] = $matches[0][1];
@@ -100,7 +100,7 @@ class PluginPi extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
-        if ($data !== null) {
+        if (null !== $data) {
         }
         return $returnValue;
     }
@@ -220,7 +220,7 @@ class PluginPi extends Plugin
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command === '!temp' && $data['channel'] === $this->getConfig()->getChannel()) {
+        if ('!temp' === $command && $this->getConfig()->getChannel() === $data['channel']) {
             $this->privmsgTemp($data['channel']);
         }
         $this->blink(self::LED_BLUE);
@@ -255,7 +255,7 @@ class PluginPi extends Plugin
      */
     public function privmsgCpuTemp($channel = null)
     {
-        $channel = $channel === null ? $this->getConfig()->getChannel() : $channel;
+        $channel = null === $channel ? $this->getConfig()->getChannel() : $channel;
         $this->getActions()->privmsg($channel, $this->getCpuTempCelsius());
     }
 
@@ -264,7 +264,7 @@ class PluginPi extends Plugin
      */
     public function privmsgTemp($channel = null)
     {
-        $channel = $channel === null ? $this->getConfig()->getChannel() : $channel;
+        $channel = null === $channel ? $this->getConfig()->getChannel() : $channel;
         $this->getActions()->privmsg($channel, $this->getTempCelsius());
     }
 
@@ -274,7 +274,7 @@ class PluginPi extends Plugin
     public function onControl($data)
     {
         $param = explode(' ', $data['param']);
-        if ($data['command'] === 'pi') {
+        if ('pi' === $data['command']) {
             switch ($param[0]) {
                 case 'temp':
                     $this->getActions()->privmsg($data['channel'], $this->getTempCelsius());

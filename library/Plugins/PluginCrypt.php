@@ -53,7 +53,7 @@ class PluginCrypt extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
-        if ($data !== null) {
+        if (null !== $data) {
             $this->getActions()->notice($data['nick'], 'New Command: !cryptkey [#channel] [key]');
         }
         return $returnValue;
@@ -66,10 +66,10 @@ class PluginCrypt extends Plugin
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command === '+OK') {
+        if ('+OK' === $command) {
             $key = empty($this->cryptkey[$data['channel']]) ? '123456' : $this->cryptkey[$data['channel']];
             $data['text'] = $this->decodeMircryption(array_shift($splitText), $key);
-        } elseif (strtolower($command) === '!cryptkey' && $this->isAdmin($data['nick'], $data['host'])) {
+        } elseif ('!cryptkey' === strtolower($command) && true === $this->isAdmin($data['nick'], $data['host'])) {
             $channel = array_shift($splitText);
             $key = array_shift($splitText);
             $this->cryptkey[$channel] = $key;

@@ -91,7 +91,7 @@ class PluginTest extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
-        if ($data !== null) {
+        if (null !== $data) {
         }
         return $returnValue;
     }

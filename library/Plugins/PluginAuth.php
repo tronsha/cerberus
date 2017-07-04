@@ -64,9 +64,9 @@ class PluginAuth extends Plugin
      */
     public function isAdmin($nick, $host)
     {
-        if (isset($this->auth[$nick]) === true) {
-            if (isset($this->auth[$nick]['host']) === true && $this->auth[$nick]['host'] === $host) {
-                if (isset($this->auth[$nick]['level']) === true && $this->auth[$nick]['level'] >= self::AUTH_ADMIN) {
+        if (true === isset($this->auth[$nick])) {
+            if (true === isset($this->auth[$nick]['host']) && $this->auth[$nick]['host'] === $host) {
+                if (true === isset($this->auth[$nick]['level']) && self::AUTH_ADMIN <= $this->auth[$nick]['level']) {
                     return true;
                 }
             }
@@ -81,9 +81,9 @@ class PluginAuth extends Plugin
      */
     public function isMember($nick, $host)
     {
-        if (isset($this->auth[$nick]) === true) {
-            if (isset($this->auth[$nick]['host']) === true && $this->auth[$nick]['host'] === $host) {
-                if (isset($this->auth[$nick]['level']) === true && $this->auth[$nick]['level'] >= self::AUTH_MEMBER) {
+        if (true === isset($this->auth[$nick])) {
+            if (true === isset($this->auth[$nick]['host']) && $this->auth[$nick]['host'] === $host) {
+                if (true === isset($this->auth[$nick]['level']) && self::AUTH_MEMBER <= $this->auth[$nick]['level']) {
                     return true;
                 }
             }
@@ -99,10 +99,10 @@ class PluginAuth extends Plugin
     {
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
-        if ($command === '!auth') {
+        if ('!auth' === $command) {
             return $this->getActions()->whois($data['nick']);
         }
-        if ($command === '!debug') {
+        if ('!debug' === $command) {
             return print_r($this, true);
         }
     }
@@ -112,7 +112,7 @@ class PluginAuth extends Plugin
      */
     public function onNick($data)
     {
-        if (array_key_exists($data['nick'], $this->auth) === true) {
+        if (true === array_key_exists($data['nick'], $this->auth)) {
             $this->auth[$data['text']] = $this->auth[$data['nick']];
         }
         unset($this->auth[$data['nick']]);
@@ -140,9 +140,9 @@ class PluginAuth extends Plugin
     public function on330($data)
     {
         $authLevel = $this->getAuthLevel($data['auth']);
-        if ($authLevel === 'admin') {
+        if ('admin' === $authLevel) {
             $this->auth[$data['nick']]['level'] = self::AUTH_ADMIN;
-        } elseif ($authLevel === 'user') {
+        } elseif ('user' === $authLevel) {
             $this->auth[$data['nick']]['level'] = self::AUTH_MEMBER;
         }
     }
