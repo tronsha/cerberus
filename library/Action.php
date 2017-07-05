@@ -54,9 +54,9 @@ class Action
      */
     protected function getDb()
     {
-        if ($this->irc !== null && $this->irc->getDb() instanceof Db) {
+        if (null !== $this->irc && $this->irc->getDb() instanceof Db) {
             return $this->irc->getDb();
-        } elseif ($this->db !== null && $this->db instanceof Db) {
+        } elseif (null !== $this->db && $this->db instanceof Db) {
             return $this->db;
         } else {
             throw new Exception('database is not set');
@@ -68,7 +68,7 @@ class Action
      */
     public function load($pluginName)
     {
-        if ($this->irc !== null) {
+        if (null !== $this->irc) {
             $this->irc->loadPlugin($pluginName);
         }
     }
@@ -132,7 +132,7 @@ class Action
      */
     public function mode($text = null)
     {
-        $this->getDb()->addWrite('MODE' . ($text === null ? '' : ' ' . $text));
+        $this->getDb()->addWrite('MODE' . (null === $text ? '' : ' ' . $text));
         return ['action' => 'mode', 'text' => $text];
     }
 
@@ -143,15 +143,15 @@ class Action
      */
     public function join($channel, $key = null)
     {
-        $channel = is_array($channel) === true ? implode(',', $channel) : $channel;
-        if ($key !== null) {
-            $key = is_array($key) === true ? implode(',', $key) : $key;
+        $channel = true === is_array($channel) ? implode(',', $channel) : $channel;
+        if (null !== $key) {
+            $key = true === is_array($key) ? implode(',', $key) : $key;
             $channel = $channel . ' ' . $key;
         }
         $this->getDb()->addWrite('JOIN ' . $channel);
         $exploded = explode(' ', trim($channel));
         $channel = explode(',', $exploded[0]);
-        $key = isset($exploded[1]) === true ? explode(',', $exploded[1]) : [];
+        $key = true === isset($exploded[1]) ? explode(',', $exploded[1]) : [];
         return ['action' => 'join', 'channel' => $channel, 'key' => $key];
     }
 
@@ -182,7 +182,7 @@ class Action
      */
     public function nick($nick)
     {
-        if ($this->irc !== null) {
+        if (null !== $this->irc) {
             $this->irc->setNick($nick);
         }
         $this->getDb()->addWrite('NICK :' . $nick);
@@ -219,12 +219,12 @@ class Action
      */
     public function op($channel, $nick = null)
     {
-        if ($this->getDb()->getServerName() === 'quakenet') {
+        if ('quakenet' === $this->getDb()->getServerName()) {
             $master = 'Q';
         } else {
             $master = 'chanserv';
         }
-        if ($nick === null) {
+        if (null === $nick) {
             $this->privmsg($master, 'OP ' . $channel);
         } else {
             $this->mode($channel . ' +o ' . $nick);
