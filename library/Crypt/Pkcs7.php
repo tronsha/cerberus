@@ -20,6 +20,8 @@
 
 namespace Cerberus\Crypt;
 
+use Cerberus\Php;
+
 /**
  * Class Pkcs7
  * @package Cerberus
@@ -39,7 +41,7 @@ class Pkcs7
      */
     public static function pad($text, $block = 8)
     {
-        $length = mb_strlen($text, '8bit');
+        $length = Php::strlen($text);
         $mod = $length % $block;
         $padding = $block - $mod;
         $text .= str_repeat(chr($padding), $padding);

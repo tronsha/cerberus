@@ -44,13 +44,26 @@ class Php
      */
     public static function randombytes($length)
     {
-        if (function_exists('random_bytes') === true) {
+        if (true === function_exists('random_bytes')) {
             return random_bytes($length);
-        } elseif (function_exists('openssl_random_pseudo_bytes') === true) {
+        } elseif (true === extension_loaded('openssl') && true === function_exists('openssl_random_pseudo_bytes')) {
             return openssl_random_pseudo_bytes($length);
-        } elseif (function_exists('mcrypt_create_iv') === true) {
+        } elseif (true === extension_loaded('mcrypt') && true === function_exists('mcrypt_create_iv')) {
             return mcrypt_create_iv($length);
         }
         return false;
+    }
+
+    /**
+     * @param string $str
+     * @return int
+     */
+    public static function strlen($str)
+    {
+        if (true === extension_loaded('mbstring')) {
+            return mb_strlen($str, '8bit');
+        } else {
+            return strlen($str);
+        }
     }
 }
