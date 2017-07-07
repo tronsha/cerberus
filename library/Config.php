@@ -47,50 +47,50 @@ class Config
     public function __construct($config)
     {
         $this->logfiledirectory = Cerberus::getPath() . '/log/';
-        if (is_array($config)) {
-            if (!empty($config['info']['version'])) {
+        if (true === is_array($config)) {
+            if (false === empty($config['info']['version'])) {
                 $this->setVersion('bot', $config['info']['version']);
             }
-            if (!empty($config['info']['name'])) {
+            if (false === empty($config['info']['name'])) {
                 $this->setName($config['info']['name']);
             }
-            if (!empty($config['info']['homepage'])) {
+            if (false === empty($config['info']['homepage'])) {
                 $this->setHomepage($config['info']['homepage']);
             }
-            if (!empty($config['bot']['channel'])) {
+            if (false === empty($config['bot']['channel'])) {
                 $this->setChannel('#' . $config['bot']['channel']);
             }
-            if (isset($config['bot']['autorejoin'])) {
-                $this->setAutorejoin(intval($config['bot']['autorejoin']) === 1 ? true : false);
+            if (true === isset($config['bot']['autorejoin'])) {
+                $this->setAutorejoin(1 === intval($config['bot']['autorejoin']) ? true : false);
             }
-            if (isset($config['bot']['ctcp'])) {
-                $this->setCtcp(intval($config['bot']['ctcp']) === 1 ? true : false);
+            if (true === isset($config['bot']['ctcp'])) {
+                $this->setCtcp(1 === intval($config['bot']['ctcp']) ? true : false);
             }
-            if (!empty($config['log']['directory'])) {
+            if (false === empty($config['log']['directory'])) {
                 $this->setLogfiledirectory($config['log']['directory']);
             }
-            if (isset($config['log']['error'])) {
-                $this->setLogfile('error', intval($config['log']['error']) === 1 ? true : false);
+            if (true === isset($config['log']['error'])) {
+                $this->setLogfile('error', 1 === intval($config['log']['error']) ? true : false);
             }
-            if (isset($config['log']['socket'])) {
-                $this->setLogfile('socket', intval($config['log']['socket']) === 1 ? true : false);
+            if (true === isset($config['log']['socket'])) {
+                $this->setLogfile('socket', 1 === intval($config['log']['socket']) ? true : false);
             }
-            if (isset($config['log']['sql'])) {
-                $this->setLogfile('sql', intval($config['log']['sql']) === 1 ? true : false);
+            if (true === isset($config['log']['sql'])) {
+                $this->setLogfile('sql', 1 === intval($config['log']['sql']) ? true : false);
             }
-            if (isset($config['log']['dailylogfile'])) {
-                $this->setDailylogfile(intval($config['log']['dailylogfile']) === 1 ? true : false);
+            if (true === isset($config['log']['dailylogfile'])) {
+                $this->setDailylogfile(1 === intval($config['log']['dailylogfile']) ? true : false);
             }
-            if (isset($config['plugins']['autoload'])) {
+            if (true === isset($config['plugins']['autoload'])) {
                 $this->setPluginsAutoload($config['plugins']['autoload']);
             }
-            if (isset($config['frontend']['url'])) {
+            if (true === isset($config['frontend']['url'])) {
                 $this->setFrontendUrl($config['frontend']['url']);
             }
-            if (isset($config['frontend']['password'])) {
+            if (true === isset($config['frontend']['password'])) {
                 $this->setFrontendPassword($config['frontend']['password']);
             }
-            if (isset($config['bot']['lang'])) {
+            if (true === isset($config['bot']['lang'])) {
                 $this->setLanguage($config['bot']['lang']);
             }
         }
@@ -103,7 +103,7 @@ class Config
 
     public function getVersion($var = null)
     {
-        return $var === null ? $this->version : $this->version[$var];
+        return null === $var ? $this->version : $this->version[$var];
     }
 
     public function setName($name)
@@ -178,7 +178,7 @@ class Config
 
     public function setPluginsAutoload($data)
     {
-        if (is_array($data)) {
+        if (true === is_array($data)) {
             $this->plugins['autoload'] = $data;
         } else {
             $this->plugins['autoload'] = explode(',', $data);
@@ -207,12 +207,12 @@ class Config
 
     public function getLogfile($var)
     {
-        return $var === null ? $this->logfile : $this->logfile[$var];
+        return null === $var ? $this->logfile : $this->logfile[$var];
     }
 
     public function setLogfiledirectory($directory)
     {
-        if (is_dir($directory) === true) {
+        if (true === is_dir($directory)) {
             $this->logfiledirectory = realpath($directory);
         }
     }
@@ -234,6 +234,6 @@ class Config
 
     public function getDbms($dbms = null)
     {
-        return $dbms === null ? $this->dbms : $this->dbms[$dbms];
+        return null === $dbms ? $this->dbms : $this->dbms[$dbms];
     }
 }
