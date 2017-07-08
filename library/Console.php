@@ -66,7 +66,7 @@ class Console
      */
     public function writeln($output = '')
     {
-        if ($this->return === true) {
+        if (true === $this->return) {
             return $output;
         }
         $this->output->writeln($output);
@@ -94,8 +94,8 @@ class Console
      */
     public function prepare($text, $escape = true, $length = null, $break = true, $wordwrap = true, $offset = 0)
     {
-        if (isset($this->param) && is_array($this->param) && in_array('-noconsole', $this->param, true)) {
-            return $escape ? $this->escape($text) : $text;
+        if (true === isset($this->param) && true === is_array($this->param) && true === in_array('-noconsole', $this->param, true)) {
+            return true === $escape ? $this->escape($text) : $text;
         }
 
         $formatter = FormatterFactory::console();
@@ -103,30 +103,30 @@ class Console
         $text = $formatter->underline($text);
         $text = $formatter->color($text);
 
-        if ($length === false) {
-            $text .= (substr($text, -1) === '\\') ? ' ' : '';
+        if (false === $length) {
+            $text .= ('\\' === substr($text, -1)) ? ' ' : '';
 
-            return $escape ? $this->escape($text) : $text;
+            return true === $escape ? $this->escape($text) : $text;
         }
-        if ($length === null) {
-            if (Cerberus::isExecAvailable() === false) {
-                return $escape ? $this->escape($text) : $text;
+        if (null === $length) {
+            if (false === Cerberus::isExecAvailable()) {
+                return true === $escape ? $this->escape($text) : $text;
             }
             preg_match('/columns\s([0-9]+);/', strtolower(exec('stty -a | grep columns')), $matches);
-            if (isset($matches[1]) === false || intval($matches[1]) <= 0) {
-                return $escape ? $this->escape($text) : $text;
+            if (false === isset($matches[1]) || 0 >= intval($matches[1])) {
+                return true === $escape ? $this->escape($text) : $text;
             }
             $length = intval($matches[1]);
         }
         $length = $length - $offset;
         if ($this->len($text) <= $length) {
-            $text .= (substr($text, -1) === '\\') ? ' ' : '';
+            $text .= ('\\' === substr($text, -1)) ? ' ' : '';
 
-            return $escape ? $this->escape($text) : $text;
+            return true === $escape ? $this->escape($text) : $text;
         }
         $text = utf8_decode($text);
-        if ($break === true) {
-            if ($wordwrap === true) {
+        if (true === $break) {
+            if (true === $wordwrap) {
                 $text = $this->wordwrap($text, $length);
             } else {
                 $text = $this->split($text, $length, PHP_EOL);
@@ -134,14 +134,14 @@ class Console
             $text = str_replace(PHP_EOL, PHP_EOL . str_repeat(' ', $offset), $text);
         } else {
             $text = $this->cut($text, $length - 3) . '...';
-            if (strpos($text, "\033") !== false) {
+            if (false !== strpos($text, "\033")) {
                 $text .= "\033[0m";
             }
         }
         $text = utf8_encode($text);
-        $text .= (substr($text, -1) === '\\') ? ' ' : '';
+        $text .= ('\\' === substr($text, -1)) ? ' ' : '';
 
-        return $escape ? $this->escape($text) : $text;
+        return true === $escape ? $this->escape($text) : $text;
     }
 
     /**
@@ -165,7 +165,7 @@ class Console
      */
     protected function wordwrap($text, $length = 80, $break = PHP_EOL, $cut = true)
     {
-        if ($length < 1) {
+        if (1 > $length) {
             throw new Exception('Length cannot be negative or null.');
         }
         $textArray = explode(' ', $text);
@@ -178,7 +178,7 @@ class Console
             if (($count + $wordLength) <= $length) {
                 $count += $wordLength + 1;
                 $output[$lineCount] .= $word . ' ';
-            } elseif ($cut === true && $wordLength > $length) {
+            } elseif (true === $cut && $wordLength > $length) {
                 $wordArray = explode(' ', $this->split($word, $length, ' '));
                 foreach ($wordArray as $word) {
                     $wordLength = $this->len($word);
@@ -207,7 +207,7 @@ class Console
      */
     protected function split($text, $length = 80, $end = PHP_EOL)
     {
-        if ($length < 1) {
+        if (1 > $length) {
             throw new Exception('Length cannot be negative or null.');
         }
         $output = '';
@@ -233,7 +233,7 @@ class Console
      */
     protected function cut($text, $length)
     {
-        if ($length < 1) {
+        if (1 > $length) {
             throw new Exception('Length cannot be negative or null.');
         }
         $output = '';
@@ -258,13 +258,13 @@ class Console
      */
     protected function count($char, &$count, &$ignore)
     {
-        if ($char === "\033") {
+        if ("\033" === $char) {
             $ignore = true;
         }
-        if ($ignore === false) {
+        if (false === $ignore) {
             $count++;
         }
-        if ($ignore === true && $char === 'm') {
+        if (true === $ignore && 'm' === $char) {
             $ignore = false;
         }
 
