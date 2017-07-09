@@ -64,7 +64,7 @@ class Cron
      */
     public function remove($id)
     {
-        if (array_key_exists($id, $this->cronjobs)) {
+        if (true === array_key_exists($id, $this->cronjobs)) {
             unset($this->cronjobs[$id]);
             return true;
         }
@@ -81,7 +81,7 @@ class Cron
     public function run($minute, $hour, $day_of_month, $month, $day_of_week)
     {
         foreach ($this->cronjobs as $cron) {
-            if ($this->compare($cron['cron'], $minute, $hour, $day_of_month, $month, $day_of_week) === true) {
+            if (true === $this->compare($cron['cron'], $minute, $hour, $day_of_month, $month, $day_of_week)) {
                 $cron['object']->{$cron['method']}();
             }
         }
@@ -101,42 +101,42 @@ class Cron
     {
         $cronString = trim($cronString);
         $cronArray = explode(' ', $cronString);
-        if (count($cronArray) !== 5) {
+        if (5 !== count($cronArray)) {
             throw new Exception('a cron has an error');
         }
         list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = $cronArray;
         $cronDayOfWeek = $this->dowNameToNumber($cronDayOfWeek);
         $cronMonth = $this->monthNameToNumber($cronMonth);
-        $cronDayOfWeek = intval($cronDayOfWeek) === 7 ? 0 : $cronDayOfWeek;
-        $cronMinute = $cronMinute !== '*' ? $this->prepare($cronMinute, 0, 59) : $cronMinute;
-        $cronHour = $cronHour !== '*' ? $this->prepare($cronHour, 0, 23) : $cronHour;
-        $cronDayOfMonth = $cronDayOfMonth !== '*' ? $this->prepare($cronDayOfMonth, 1, 31) : $cronDayOfMonth;
-        $cronMonth = $cronMonth !== '*' ? $this->prepare($cronMonth, 1, 12) : $cronMonth;
-        $cronDayOfWeek = $cronDayOfWeek !== '*' ? $this->prepare($cronDayOfWeek, 0, 6) : $cronDayOfWeek;
+        $cronDayOfWeek = (7 === intval($cronDayOfWeek) ? 0 : $cronDayOfWeek);
+        $cronMinute = ('*' !== $cronMinute ? $this->prepare($cronMinute, 0, 59) : $cronMinute);
+        $cronHour = ('*' !== $cronHour ? $this->prepare($cronHour, 0, 23) : $cronHour);
+        $cronDayOfMonth = ('*' !== $cronDayOfMonth ? $this->prepare($cronDayOfMonth, 1, 31) : $cronDayOfMonth);
+        $cronMonth = ('*' !== $cronMonth ? $this->prepare($cronMonth, 1, 12) : $cronMonth);
+        $cronDayOfWeek = ('*' !== $cronDayOfWeek ? $this->prepare($cronDayOfWeek, 0, 6) : $cronDayOfWeek);
         if (
             (
-                $cronMinute === '*' || in_array($minute, $cronMinute, true) === true
+                '*' === $cronMinute  || true === in_array($minute, $cronMinute, true)
             ) && (
-                $cronHour === '*' || in_array($hour, $cronHour, true) === true
+                '*' === $cronHour || true === in_array($hour, $cronHour, true)
             ) && (
-                $cronMonth === '*' || in_array($month, $cronMonth, true) === true
+                '*' === $cronMonth || true === in_array($month, $cronMonth, true)
             ) && (
                 (
                     (
-                        $cronDayOfMonth === '*' || in_array($day_of_month, $cronDayOfMonth, true) === true
+                        '*' === $cronDayOfMonth || true === in_array($day_of_month, $cronDayOfMonth, true)
                     ) && (
-                        $cronDayOfWeek === '*' || in_array($day_of_week, $cronDayOfWeek, true) === true
+                        '*' === $cronDayOfWeek || true === in_array($day_of_week, $cronDayOfWeek, true)
                     )
                 ) || (
                     (
-                        $cronDayOfMonth !== '*'
+                        '*' !== $cronDayOfMonth
                     ) && (
-                        $cronDayOfWeek !== '*'
+                        '*' !== $cronDayOfWeek
                     ) && (
                         (
-                            in_array($day_of_month, $cronDayOfMonth, true) === true
+                            true === in_array($day_of_month, $cronDayOfMonth, true)
                         ) || (
-                            in_array($day_of_week, $cronDayOfWeek, true) === true
+                            true === in_array($day_of_week, $cronDayOfWeek, true)
                         )
                     )
                 )
@@ -156,7 +156,7 @@ class Cron
     public function prepare($string, $a, $b)
     {
         $values = [];
-        if (strpos($string, ',') !== false) {
+        if (false !== strpos($string, ',')) {
             $values = explode(',', $string);
         } else {
             $values[] = $string;
@@ -164,23 +164,23 @@ class Cron
         $array = [];
         foreach ($values as $value) {
             $steps = 1;
-            if (strpos($string, '/') !== false) {
+            if (false !== strpos($string, '/')) {
                 list($value, $steps) = explode('/', $string);
             }
-            if ($value === '*') {
+            if ('*' === $value) {
                 $value = $a . '-' . $b;
             }
-            if (strpos($value, '-') !== false) {
+            if (false !== strpos($value, '-')) {
                 list($min, $max) = explode('-', $value);
-                $min = (int)$min;
-                $max = (int)$max;
+                $min = intval($min);
+                $max = intval($max);
                 for ($i = $min, $j = 0; $i <= $max; $i++, $j++) {
-                    if ($j % $steps === 0) {
+                    if (0 === ($j % $steps)) {
                         $array[] = $i;
                     }
                 }
             } else {
-                $array[] = (int)$value;
+                $array[] = intval($value);
             }
         }
         return $array;
