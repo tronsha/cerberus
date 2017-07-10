@@ -84,7 +84,7 @@ class Crypt
      */
     public function getCcryption()
     {
-        if ($this->ccryption === null) {
+        if (null === $this->ccryption) {
             $this->ccryption = new Ccryption;
         }
         return $this->ccryption;
@@ -95,7 +95,7 @@ class Crypt
      */
     public function getMircryption()
     {
-        if ($this->mircryption === null) {
+        if (null === $this->mircryption) {
             $this->mircryption = new Mircryption;
         }
         return $this->mircryption;
