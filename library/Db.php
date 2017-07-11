@@ -132,7 +132,7 @@ class Db extends Helper
      */
     public function error($error)
     {
-        if ($this->irc !== null) {
+        if (null !== $this->irc) {
             $this->irc->sqlError($error);
         } else {
             echo $error;
@@ -148,7 +148,7 @@ class Db extends Helper
      */
     public function ping()
     {
-        return Version::compare('2.5') >= 0 ? $this->getConnection()->ping() : true;
+        return 0 <= Version::compare('2.5') ? $this->getConnection()->ping() : true;
     }
 
     /**
@@ -159,7 +159,7 @@ class Db extends Helper
     public function lastInsertId($dbName = null)
     {
         $lastInsertId = $this->getConnection()->lastInsertId();
-        if ($lastInsertId === false && $dbName !== null) {
+        if (false === $lastInsertId && null !== $dbName) {
             $qb = $this->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('MAX(id) AS id')
