@@ -50,11 +50,11 @@ class Event extends Helper
         parent::__construct($irc);
         $this->setNamespace('\Cerberus\Events\Event');
         $this->vars = $this->irc->getVars();
-        $this->minute = (int)(new DateTime())->format('i');
-        $this->hour = (int)(new DateTime())->format('G');
-        $this->day_of_month = (int)(new DateTime())->format('j');
-        $this->month = (int)(new DateTime())->format('n');
-        $this->day_of_week = (int)(new DateTime())->format('w');
+        $this->minute = intval((new DateTime())->format('i'));
+        $this->hour = intval((new DateTime())->format('G'));
+        $this->day_of_month = intval((new DateTime())->format('j'));
+        $this->month = intval((new DateTime())->format('n'));
+        $this->day_of_week = intval((new DateTime())->format('w'));
     }
 
     /**
@@ -63,7 +63,7 @@ class Event extends Helper
      */
     protected function loadClass($name)
     {
-        if (in_array($name, $this->getEventList(), true) === false) {
+        if (false === in_array($name, $this->getEventList(), true)) {
             return false;
         }
         return parent::loadClass($name);
@@ -133,7 +133,7 @@ class Event extends Helper
      */
     public function getEventList()
     {
-        if ($this->list !== null) {
+        if (null !== $this->list) {
             return $this->list;
         }
         $listClasses = [];
@@ -145,7 +145,7 @@ class Event extends Helper
         $listThis = get_class_methods($this);
         $list = array_merge($listClasses, $listThis);
         foreach ($list as $key => $value) {
-            if (substr($value, 0, 2) !== 'on') {
+            if ('on' !== substr($value, 0, 2)) {
                 unset($list[$key]);
             }
         }
@@ -192,11 +192,11 @@ class Event extends Helper
     public function onTick()
     {
         $this->runPluginEvent(__FUNCTION__, []);
-        $minute = (int)(new DateTime())->format('i');
-        $hour = (int)(new DateTime())->format('G');
-        $day_of_month = (int)(new DateTime())->format('j');
-        $month = (int)(new DateTime())->format('n');
-        $day_of_week = (int)(new DateTime())->format('w');
+        $minute = intval((new DateTime())->format('i'));
+        $hour = intval((new DateTime())->format('G'));
+        $day_of_month = intval((new DateTime())->format('j'));
+        $month = intval((new DateTime())->format('n'));
+        $day_of_week = intval((new DateTime())->format('w'));
         if ($day_of_week !== $this->day_of_week) {
             $this->day_of_week = $day_of_week;
         }
