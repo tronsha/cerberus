@@ -67,7 +67,7 @@ class Helper
     public function __call($name, $arguments)
     {
         $class = $this->getClass($name);
-        if ($class !== false) {
+        if (false !== $class) {
             return call_user_func_array([$class, $name], $arguments);
         }
     }
@@ -79,12 +79,12 @@ class Helper
     public function getClass($name)
     {
         $key = strtolower($name);
-        if (array_key_exists($key, $this->classes) === false) {
+        if (false === array_key_exists($key, $this->classes)) {
             return $this->loadClass($name);
         }
         $class = $this->classes[$key];
         $className = $this->getNamespace() . ucfirst($name);
-        if (is_a($class, $className) === false) {
+        if (false === is_a($class, $className)) {
             return false;
         }
         return $class;
