@@ -60,11 +60,11 @@ class Installer
         $io = $event->getIO();
         $io->write('<info>Setup config file</info>');
         $update = 'n';
-        if (file_exists(Cerberus::getPath() . '/config.ini') === true) {
+        if (true === file_exists(Cerberus::getPath() . '/config.ini')) {
             $io->write('<comment>The config file exists.</comment>');
             $update = $io->ask('<question>Create a new config? (y/n):</question> ');
         }
-        if ($update === 'y' || file_exists(Cerberus::getPath() . '/config.ini') === false) {
+        if ('y' === $update || false === file_exists(Cerberus::getPath() . '/config.ini')) {
             $config = file_get_contents(Cerberus::getPath() . '/config.sample.ini');
             $io->write('<options=bold>IRC</options=bold>');
             $botname = $io->ask('Nickname: ');
@@ -73,28 +73,28 @@ class Installer
             $config = str_replace('{botchannel}', $botchannel ? trim($botchannel, " \t\n\r\0\x0B#") : 'cerberbot', $config);
             $io->write('<options=bold>Database</options=bold>');
             $driver = $io->ask('<fg=red>M</fg=red>ySQL or <fg=red>P</fg=red>ostgreSQL: ');
-            $driver = strtolower($driver) === 'p' ? 'pdo_pgsql' : 'pdo_mysql';
+            $driver = 'p' === strtolower($driver) ? 'pdo_pgsql' : 'pdo_mysql';
             $config = str_replace('{driver}', $driver, $config);
             $dbhost = $io->ask('Host (<fg=cyan>localhost</fg=cyan>): ');
-            $config = str_replace('{dbhost}', $dbhost ? $dbhost : 'localhost', $config);
-            if ($driver === 'pdo_pgsql') {
+            $config = str_replace('{dbhost}', false === empty($dbhost) ? $dbhost : 'localhost', $config);
+            if ('pdo_pgsql' === $driver) {
                 $dbport = $io->ask('Port (<fg=cyan>5432</fg=cyan>): ');
-                $config = str_replace('{dbport}', $dbport ? $dbport : '5432', $config);
+                $config = str_replace('{dbport}', false === empty($dbport) ? $dbport : '5432', $config);
             } else {
                 $dbport = $io->ask('Port (<fg=cyan>3306</fg=cyan>): ');
-                $config = str_replace('{dbport}', $dbport ? $dbport : '3306', $config);
+                $config = str_replace('{dbport}', false === empty($dbport) ? $dbport : '3306', $config);
             }
             $dbname = $io->ask('Name (<fg=cyan>cerberus</fg=cyan>): ');
-            $config = str_replace('{dbname}', $dbname ? $dbname : 'cerberus', $config);
-            if ($driver === 'pdo_pgsql') {
+            $config = str_replace('{dbname}', false === empty($dbname) ? $dbname : 'cerberus', $config);
+            if ('pdo_pgsql' === $driver) {
                 $dbuser = $io->ask('User (<fg=cyan>postgres</fg=cyan>): ');
-                $config = str_replace('{dbuser}', $dbuser ? $dbuser : 'postgres', $config);
+                $config = str_replace('{dbuser}', false === empty($dbuser) ? $dbuser : 'postgres', $config);
             } else {
                 $dbuser = $io->ask('User (<fg=cyan>root</fg=cyan>): ');
-                $config = str_replace('{dbuser}', $dbuser ? $dbuser : 'root', $config);
+                $config = str_replace('{dbuser}', false === empty($dbuser) ? $dbuser : 'root', $config);
             }
             $dbpass = $io->ask('Password: ');
-            $config = str_replace('{dbpassword}', $dbpass ? $dbpass : '', $config);
+            $config = str_replace('{dbpassword}', false === empty($dbpass) ? $dbpass : '', $config);
             $io->write('<info>Writing config file</info>');
             file_put_contents(Cerberus::getPath() . '/config.ini', $config);
         }
@@ -113,7 +113,7 @@ class Installer
             $db = DriverManager::getConnection($config['db']);
             $sm = $db->getSchemaManager();
             $list = $sm->listDatabases();
-            if (in_array($dbname, $list, true) === false) {
+            if (false === in_array($dbname, $list, true)) {
                 $io->write('<info>Create database</info>');
                 $sm->createDatabase($dbname);
             }
@@ -126,7 +126,7 @@ class Installer
             $sqlArray = explode(';', $sqlFile);
             foreach ($sqlArray as $sqlCommand) {
                 $sqlCommand = trim($sqlCommand);
-                if (empty($sqlCommand) === false) {
+                if (false === empty($sqlCommand)) {
                     $db->query($sqlCommand . ';');
                 }
             }
@@ -142,9 +142,9 @@ class Installer
     protected static function runPhpUnit(Event $event)
     {
         $io = $event->getIO();
-        if (file_exists(Cerberus::getPath() . '/vendor/bin/phpunit') === false) {
+        if (false === file_exists(Cerberus::getPath() . '/vendor/bin/phpunit')) {
             $io->write('<error>Can\'t find "PHPUnit".</error>');
-        } elseif (Cerberus::isExecAvailable() === false) {
+        } elseif (false === Cerberus::isExecAvailable()) {
             $io->write('<error>Can\'t run "PHPUnit", because "exec" is disabled.</error>');
         } else {
             $output = [];
