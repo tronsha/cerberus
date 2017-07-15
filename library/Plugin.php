@@ -65,7 +65,7 @@ abstract class Plugin extends Cerberus
      */
     public function onLoad($data)
     {
-        if (isset($data) === true) {
+        if (true === isset($data)) {
             $this->getActions()->notice($data['nick'], 'Load: ' . get_called_class());
         }
         $this->irc->setTranslations($this->translations());
@@ -146,8 +146,8 @@ abstract class Plugin extends Cerberus
     protected function addEvent($event, $method = null, $priority = 5)
     {
         try {
-            $method = ($method === null ? $event : $method);
-            if (in_array($method, get_class_methods($this), true) === false) {
+            $method = (null === $method ? $event : $method);
+            if (false === in_array($method, get_class_methods($this), true)) {
                 throw new Exception('The method ' . $method . ' not exists in the class.');
             }
             $this->irc->addPluginEvent($event, $this, $method, $priority);
