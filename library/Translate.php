@@ -49,7 +49,7 @@ class Translate
      */
     public function __construct($language = null)
     {
-        if ($language === null) {
+        if (null === $language) {
             $language = 'en';
         }
         $this->translator = new Translator($language);
@@ -68,14 +68,14 @@ class Translate
      */
     public function __($text, $array = [], $language = null)
     {
-        if (empty($array) === true) {
+        if (true === empty($array)) {
             $array = [];
         }
-        if ($language !== null) {
+        if (null !== $language) {
             $this->translator->setLocale($language);
         }
         $text = $this->translator->trans($text, $array);
-        if ($language !== null) {
+        if (null !== $language) {
             $this->translator->setLocale($this->getLanguage());
         }
         return $text;
@@ -98,9 +98,9 @@ class Translate
      */
     public function setLanguage($language)
     {
-        if (empty($language) === false) {
+        if (false === empty($language)) {
             $this->language = $language;
-            if ($this->translator === null) {
+            if (null === $this->translator) {
                 throw new Exception('wait... something is wrong... the translator is not setted.');
             } else {
                 $this->translator->setLocale($language);
@@ -162,13 +162,13 @@ class Translate
         $languagesPath = Cerberus::getPath() . '/languages/';
         $languagesDirectory = new DirectoryIterator($languagesPath);
         foreach ($languagesDirectory as $languageDirectory) {
-            if ($languageDirectory->isDir() === true && $languageDirectory->isDot() === false) {
+            if (true === $languageDirectory->isDir() && false === $languageDirectory->isDot()) {
                 $language = $languageDirectory->getFilename();
                 $path = $languageDirectory->getPathname();
-                if (file_exists($path . '/' . $resource . '.php') === true) {
+                if (true === file_exists($path . '/' . $resource . '.php')) {
                     $this->addResource('php_file', $path . '/' . $resource . '.php', $language);
                 }
-                if (file_exists($path . '/' . $resource . '.po') === true) {
+                if (true === file_exists($path . '/' . $resource . '.po')) {
                     $this->addResource('po_file', $path . '/' . $resource . '.po', $language);
                 }
             }
