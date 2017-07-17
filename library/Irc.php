@@ -71,17 +71,17 @@ class Irc extends Cerberus
         $this->reconnect['channel'] = [];
         $this->loaded['classes'] = [];
         $this->config = new Config($config);
-        if (is_array($config)) {
-            if (!empty($config['bot']['nick'])) {
+        if (true === is_array($config)) {
+            if (false === empty($config['bot']['nick'])) {
                 $this->setNick($config['bot']['nick']);
             }
-            if (!empty($config['irc']['network'])) {
+            if (false === empty($config['irc']['network'])) {
                 $this->setNetwork($config['irc']['network']);
             }
-            if (!empty($config['irc']['password'])) {
+            if (false === empty($config['irc']['password'])) {
                 $this->setPassword($config['irc']['password']);
             }
-            if (isset($config['db'])) {
+            if (true === isset($config['db'])) {
                 $this->setDB($config['db']);
             }
         }
