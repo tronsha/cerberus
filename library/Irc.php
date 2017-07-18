@@ -96,9 +96,9 @@ class Irc extends Cerberus
      */
     public function __destruct()
     {
-        if ($this->init === true) {
+        if (true === $this->init) {
             $this->getEvents()->onShutdown();
-            if (is_resource($this->fp) === true) {
+            if (true === is_resource($this->fp)) {
                 fclose($this->fp);
             }
             $this->getDb()->cleanupBot();
