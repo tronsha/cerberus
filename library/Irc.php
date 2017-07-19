@@ -151,7 +151,7 @@ class Irc extends Cerberus
      */
     public function getNetwork()
     {
-        if (isset($this->server['network']) === false) {
+        if (false === isset($this->server['network'])) {
             return null;
         }
         return $this->server['network'];
