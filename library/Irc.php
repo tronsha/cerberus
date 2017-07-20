@@ -218,12 +218,12 @@ class Irc extends Cerberus
      */
     public function setNick($nick = null)
     {
-        if ($nick === null) {
+        if (null === $nick) {
             $nick = $this->randomNick();
         }
         $this->bot['nick'] = $nick;
         $this->var['me'] = $nick;
-        if ($this->init === true) {
+        if (true === $this->init) {
             $this->getDb()->setBotNick($nick);
         }
         return $nick;
