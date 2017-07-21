@@ -234,7 +234,7 @@ class Irc extends Cerberus
      */
     public function getNick()
     {
-        if (isset($this->bot['nick']) === false) {
+        if (false === isset($this->bot['nick'])) {
             return null;
         }
         return $this->bot['nick'];
