@@ -245,25 +245,25 @@ class Irc extends Cerberus
      */
     public function init()
     {
-        if ($this->getNetwork() === null || $this->db === null) {
+        if (null === $this->getNetwork() || null === $this->db) {
             return false;
         }
         $this->dbConnect();
         $this->getDb()->createBot($this->bot['pid'], $this->getNick());
-        if ($this->getConfig()->getVersion('bot') === null) {
+        if (null === $this->getConfig()->getVersion('bot')) {
             $this->getConfig()->setVersion('php', phpversion());
             $this->getConfig()->setVersion('os', php_uname('s') . ' ' . php_uname('r'));
             $this->getConfig()->setVersion('bot', 'PHP ' . $this->getConfig()->getVersion('php') . ' - ' . $this->getConfig()->getVersion('os'));
-            if ($this->dbms === 'mysql' || $this->dbms === 'pg') {
+            if ('mysql' === $this->dbms || 'pg' === $this->dbms) {
                 $this->getConfig()->setVersion('sql', $this->getDb()->getDbVersion());
                 $this->getConfig()->setVersion('bot', $this->getConfig()->getVersion('bot') . ' - ' . $this->getConfig()->getDbms($this->dbms) . ' ' . $this->getConfig()->getVersion('sql'));
-            } elseif ($this->dbms === 'sqlite') {
+            } elseif ('sqlite' === $this->dbms) {
                 $version = SQLite3::version();
                 $this->getConfig()->setVersion('sql', $version['versionString']);
                 $this->getConfig()->setVersion('bot', $this->getConfig()->getVersion('bot') . ' - ' . $this->getConfig()->getDbms($this->dbms) . ' ' . $this->getConfig()->getVersion('sql'));
             }
         }
-        if (is_array($this->getConfig()->getPluginsAutoload()) === true) {
+        if (true === is_array($this->getConfig()->getPluginsAutoload())) {
             $this->autoloadPlugins();
         }
         $this->init = true;
