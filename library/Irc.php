@@ -297,15 +297,15 @@ class Irc extends Cerberus
      */
     public function connect()
     {
-        if ($this->init === false) {
-            if ($this->init() === false) {
+        if (false === $this->init) {
+            if (false === $this->init()) {
                 return false;
             }
         }
         $n = intval($this->getDb()->getServerCount($this->getNetwork()));
         $i = 0;
         $repeat = true;
-        if ($n === 0) {
+        if (0 === $n) {
             $this->sysinfo('No ' . $this->getNetwork() . ' server');
             return false;
         }
@@ -317,7 +317,7 @@ class Irc extends Cerberus
             } catch (Exception $e) {
                 $this->error($e->getMessage());
             }
-            if ($this->fp === false) {
+            if (false === $this->fp) {
                 $this->error($errstr);
                 $this->log('socket: ' . $errstr, 'error');
                 $this->sysinfo('Connection failed');
@@ -332,10 +332,10 @@ class Irc extends Cerberus
             }
         }
         $this->time['irc_connect'] = microtime(true);
-        if ($this->server['password'] !== null) {
+        if (null !== $this->server['password']) {
             $this->write('PASS ' . $this->server['password']);
         }
-        if ($this->getNick() === null) {
+        if (null === $this->getNick()) {
             $this->setNick();
         }
         $this->write('USER cerberus * * :' . $this->getConfig()->getName());
