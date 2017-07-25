@@ -400,18 +400,18 @@ class Irc extends Cerberus
      */
     protected function log($text, $type)
     {
-        if ($this->getConfig()->getLogfile($type) !== true) {
+        if (true !== $this->getConfig()->getLogfile($type)) {
             return null;
         }
 
-        if ($this->getConfig()->getDailylogfile() === true) {
+        if (true === $this->getConfig()->getDailylogfile()) {
             $file = $type . '_log_' . date('Ymd', time()) . '.txt';
         } else {
             $file = $type . '_log.txt';
         }
 
         $handle = @fopen(realpath($this->getConfig()->getLogfiledirectory()) . '/' . $file, 'a+');
-        if ($handle !== false) {
+        if (false !== $handle) {
             fwrite($handle, date('d.m.Y H:i:s', time()) . ' >>>> ' . $text . PHP_EOL);
             fflush($handle);
             fclose($handle);
