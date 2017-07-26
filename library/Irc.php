@@ -424,17 +424,17 @@ class Irc extends Cerberus
     protected function write($text)
     {
         $output = trim($text);
-        if (substr($output, -1) === '\\') {
+        if ('\\' === substr($output, -1)) {
             $output .= ' ';
         }
-        $outputConsole = strpos($output, 'PRIVMSG NickServ :IDENTIFY') === 0 ? preg_replace('/\S/', '*', $output) : $output;
+        $outputConsole = 0 === strpos($output, 'PRIVMSG NickServ :IDENTIFY') ? preg_replace('/\S/', '*', $output) : $output;
         $this->getConsole()->writeln($this->getConsole()->prepare($outputConsole, true, null, true, true, 0));
-        if (is_resource($this->fp) === true) {
+        if (true === is_resource($this->fp)) {
             fwrite($this->fp, $output . PHP_EOL);
         }
         preg_match('/^([^ ]+).*?$/i', $text, $matches);
         $command = isset($matches[1]) ? $matches[1] : '';
-        if (strtolower($command) === 'quit') {
+        if ('quit' === strtolower($command)) {
             $this->run = false;
         }
     }
