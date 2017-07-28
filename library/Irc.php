@@ -451,8 +451,8 @@ class Irc extends Cerberus
             $this->error($e->getMessage());
         }
         $text = trim($input);
-        if ($text !== '') {
-            if (substr($text, -1) === '\\') {
+        if ('' !== $text) {
+            if ('\\' === substr($text, -1)) {
                 $text .= ' ';
             }
             $this->log($text, 'socket');
