@@ -467,15 +467,15 @@ class Irc extends Cerberus
     protected function send()
     {
         static $lastSend;
-        if ((microtime(true) - $lastSend) < 2.0) {
+        if (2.0 > (microtime(true) - $lastSend)) {
             return;
         }
         $send = $this->getDb()->getWrite();
-        if ($send !== false) {
-            if ($send['text'] !== '') {
+        if (false !== $send) {
+            if ('' !== $send['text']) {
                 preg_match_all("/\%([a-z0-9_]*)/i", $send['text'], $array, PREG_PATTERN_ORDER);
                 foreach ($array[1] as $value) {
-                    if (array_key_exists($value, $this->var)) {
+                    if (true === array_key_exists($value, $this->var)) {
                         $send['text'] = preg_replace(
                             '/%' . $value . '(\s|$)/i',
                             $this->var[$value] . '\\1',
@@ -487,9 +487,9 @@ class Irc extends Cerberus
             }
             $this->getDb()->removeWrite($send['id']);
             preg_match("/^([^\ ]+)(?:\ ([^\:].*?))?(?:\ \:(.*?))?(?:\r)?$/i", $send['text'], $matches);
-            $command = isset($matches[1]) ? $matches[1] : '';
-            $rest = isset($matches[2]) ? $matches[2] : '';
-            $text = isset($matches[3]) ? $matches[3] : '';
+            $command = (true === isset($matches[1]) ? $matches[1] : '');
+            $rest = (true === isset($matches[2]) ? $matches[2] : '');
+            $text = (true === isset($matches[3]) ? $matches[3] : '');
             $this->getDb()->setLog(
                 $send['text'],
                 $command,
