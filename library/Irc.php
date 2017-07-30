@@ -510,13 +510,13 @@ class Irc extends Cerberus
     {
         while (!feof($this->fp)) {
             $input = $this->read();
-            if (trim($input) !== '') {
-                if ($this->getDb()->ping() === false) {
+            if ('' !== trim($input)) {
+                if (false === $this->getDb()->ping()) {
                     $this->getDb()->close();
                     $this->getDb()->connect();
                 }
-                if ($input{0} !== ':') {
-                    if (strpos(strtoupper($input), 'PING') !== false) {
+                if (':' !== $input{0}) {
+                    if (false !== strpos(strtoupper($input), 'PING')) {
                         $this->lastping = time();
                         $output = str_replace('PING', 'PONG', $input);
                         $this->write($output);
@@ -528,15 +528,15 @@ class Irc extends Cerberus
                 }
             }
             $this->getEvents()->onTick();
-            if ($this->nowrite === false && floor(microtime(true) - $this->time['irc_connect']) > 10) {
+            if (false === $this->nowrite && 10 < (floor(microtime(true) - $this->time['irc_connect']))) {
                 $this->send();
             }
             unset($input);
             $this->msleep(8);
-            if ((time() - $this->lastping) > 600) {
+            if (600 < (time() - $this->lastping)) {
                 break;
             }
-            if ($this->run === false) {
+            if (false === $this->run) {
                 return true;
             }
         }
