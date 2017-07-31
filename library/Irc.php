@@ -561,7 +561,7 @@ class Irc extends Cerberus
         $command = isset($matches[3]) ? $matches[3] : '';
         $rest = isset($matches[4]) ? $matches[4] : '';
         $text = isset($matches[5]) ? $matches[5] : '';
-        if ($command === '001') {
+        if ('001' === $command) {
             $this->nowrite = false;
         }
         $eventName = 'on' . ucfirst(strtolower($command));
