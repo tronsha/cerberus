@@ -574,7 +574,7 @@ class Irc extends Cerberus
      */
     public function otherNick()
     {
-        if ($this->nowrite === false) {
+        if (false === $this->nowrite) {
             return;
         }
         $nick = $this->setNick(null);
