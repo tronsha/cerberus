@@ -586,7 +586,7 @@ class Irc extends Cerberus
      */
     public function channelList()
     {
-        if ($this->loadPlugin('list') === true) {
+        if (true === $this->loadPlugin('list')) {
             $this->getActions()->channelList();
             return true;
         }
