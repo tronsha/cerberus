@@ -600,15 +600,15 @@ class Irc extends Cerberus
      */
     public function inChannel($channel, $user = null)
     {
-        if ($user === null) {
+        if (null === $user) {
             foreach ($this->getDb()->getJoinedChannels() as $value) {
                 if ($value['channel'] === $channel) {
                     return true;
                 }
             }
             return false;
-        } elseif (empty($channel) === false && empty($user) === false) {
-            if (count($this->getDb()->getUserInChannel($channel, $user)) > 0) {
+        } elseif (false === empty($channel) && false === empty($user)) {
+            if (0 < count($this->getDb()->getUserInChannel($channel, $user))) {
                 return true;
             }
             return false;
