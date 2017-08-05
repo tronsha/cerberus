@@ -653,7 +653,7 @@ class Irc extends Cerberus
      */
     public function isMember($nick, $host)
     {
-        if ($this->auth !== null && is_a($this->auth, 'Cerberus\Plugins\PluginAuth')) {
+        if (null !== $this->auth && true === is_a($this->auth, 'Cerberus\Plugins\PluginAuth')) {
             return $this->auth->isMember($nick, $host);
         }
         return false;
