@@ -679,10 +679,10 @@ class Irc extends Cerberus
     {
         $pluginClass = 'Cerberus\\Plugins\\Plugin' . ucfirst($name);
 
-        if (class_exists($pluginClass) === true) {
-            if (array_key_exists($pluginClass, $this->loaded['classes']) === false) {
+        if (true === class_exists($pluginClass)) {
+            if (false === array_key_exists($pluginClass, $this->loaded['classes'])) {
                 $plugin = new $pluginClass($this);
-                if (is_subclass_of($pluginClass, 'Cerberus\\Plugin') === true) {
+                if (true === is_subclass_of($pluginClass, 'Cerberus\\Plugin')) {
                     $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
                     $this->sysinfo('Load Plugin: ' . $name);
                     return true;
