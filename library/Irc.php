@@ -707,13 +707,13 @@ class Irc extends Cerberus
      */
     public function runPluginEvent($event, $data)
     {
-        if (array_key_exists($event, $this->pluginevents)) {
+        if (true === array_key_exists($event, $this->pluginevents)) {
             for ($priority = 10; $priority > 0; $priority--) {
-                if (array_key_exists($priority, $this->pluginevents[$event])) {
+                if (true === array_key_exists($priority, $this->pluginevents[$event])) {
                     foreach ($this->pluginevents[$event][$priority] as $pluginArray) {
                         $pluginObject = $pluginArray['object'];
                         $pluginMethod = $pluginArray['method'];
-                        if (method_exists($pluginObject, $pluginMethod) === true) {
+                        if (true === method_exists($pluginObject, $pluginMethod)) {
                             $pluginObject->$pluginMethod($data);
                         } else {
                             throw new Exception('The Class ' . get_class($pluginObject) . ' has not the method ' . $pluginMethod . '.');
