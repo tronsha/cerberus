@@ -750,7 +750,7 @@ class Irc extends Cerberus
     {
         $count = 0;
         $className = get_class($object);
-        if (array_key_exists($event, $this->pluginevents)) {
+        if (true === array_key_exists($event, $this->pluginevents)) {
             foreach ($this->pluginevents[$event] as $priorityKey => $priorityValue) {
                 foreach ($priorityValue as $key => $pluginArray) {
                     if (get_class($pluginArray['object']) === $className) {
