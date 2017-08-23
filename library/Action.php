@@ -172,7 +172,7 @@ class Action
      */
     public function whois($nick)
     {
-        $this->irc->loadPlugin('whois');
+        $this->load('whois');
         $this->getDb()->addWrite('WHOIS :' . $nick);
         return ['action' => 'whois', 'nick' => $nick];
     }

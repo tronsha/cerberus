@@ -123,4 +123,14 @@ abstract class Event
     {
         return $this->getEvent()->__($text, $array, $lang);
     }
+
+    /**
+     * @param string $pluginName
+     */
+    public function load($pluginName)
+    {
+        if (null !== $this->getIrc()) {
+            $this->getIrc()->loadPlugin($pluginName);
+        }
+    }
 }

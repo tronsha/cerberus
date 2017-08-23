@@ -42,6 +42,8 @@ class EventOn322 extends Event
      */
     public function on322($nick, $host, $rest, $text)
     {
+        unset($nick);
+        unset($host);
         list($me, $channel, $usercount) = explode(' ', $rest);
         unset($me);
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'usercount' => $usercount, 'topic' => $text]);
