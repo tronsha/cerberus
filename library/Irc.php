@@ -677,6 +677,7 @@ class Irc extends Cerberus
      */
     public function loadPlugin($name, $data = null)
     {
+        $name = strtolower($name);
         $pluginClass = 'Cerberus\\Plugins\\Plugin' . ucfirst($name);
 
         if (true === class_exists($pluginClass)) {

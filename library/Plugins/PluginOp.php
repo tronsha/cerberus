@@ -46,6 +46,7 @@ class PluginOp extends Plugin
         $returnValue = parent::onLoad($data);
         if (null !== $data) {
             $this->getActions()->notice($data['nick'], 'New Command: !op');
+            $this->getActions()->notice($data['nick'], 'New Command: !deop');
         }
         return $returnValue;
     }
@@ -63,6 +64,10 @@ class PluginOp extends Plugin
         $command = array_shift($splitText);
         if ('!op' === $command) {
             $this->getActions()->op($data['channel'], $data['nick']);
+            return true;
+        }
+        if ('!deop' === $command) {
+            $this->getActions()->deop($data['channel'], $data['nick']);
             return true;
         }
     }
