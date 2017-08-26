@@ -42,9 +42,9 @@ class EventOn321 extends Event
      */
     public function on321($nick, $host, $rest, $text)
     {
-        unset($nick);
-        unset($host);
-        unset($rest);
+        unset($nick, $host, $rest);
+        
+        
         $this->load('list');
         $this->runPluginEvent(__FUNCTION__, ['text' => $text]);
     }
