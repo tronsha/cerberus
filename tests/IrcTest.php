@@ -131,7 +131,7 @@ class IrcTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadPlugin()
     {
-        $this->assertFalse($this->irc->loadPlugin('join'));
+        $this->assertTrue($this->irc->loadPlugin('join'));
         $this->assertFalse($this->irc->loadPlugin('foo'));
     }
 

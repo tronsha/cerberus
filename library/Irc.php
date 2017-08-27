@@ -679,26 +679,23 @@ class Irc extends Cerberus
     {
         $name = strtolower($name);
         $pluginClass = 'Cerberus\\Plugins\\Plugin' . ucfirst($name);
-
-        if (true === class_exists($pluginClass)) {
-            if (false === array_key_exists($pluginClass, $this->loaded['classes'])) {
-                $plugin = new $pluginClass($this);
-                if (true === is_subclass_of($pluginClass, 'Cerberus\\Plugin')) {
-                    $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
-                    $this->sysinfo('Load Plugin: ' . $name);
-                    return true;
-                } else {
-                    $this->sysinfo($name . ' isn\'t a PluginClass.');
-                    return false;
-                }
-            } else {
-                $this->sysinfo('Plugin "' . $name . '" is already loaded.');
-                return false;
-            }
-        } else {
+        if (true === array_key_exists($pluginClass, $this->loaded['classes'])) {
+            $this->sysinfo('Plugin "' . $name . '" is already loaded.');
+            return true;
+        }
+        if (false === class_exists($pluginClass)) {
             $this->sysinfo($name . ' don\'t exists.');
             return false;
         }
+        $plugin = new $pluginClass($this);
+        if (false === is_subclass_of($pluginClass, 'Cerberus\\Plugin')) {
+            unset($plugin);
+            $this->sysinfo($name . ' isn\'t a PluginClass.');
+            return false;
+        }
+        $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
+        $this->sysinfo('Load Plugin: ' . $name);
+        return true;
     }
 
     /**
