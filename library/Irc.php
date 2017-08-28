@@ -683,6 +683,11 @@ class Irc extends Cerberus
             $this->sysinfo('Plugin "' . $name . '" is already loaded.');
             return true;
         }
+        $pluginFile = __DIR__ . DIRECTORY_SEPARATOR . 'Plugins' . DIRECTORY_SEPARATOR . 'Plugin' . ucfirst($name) . '.php';
+        if (false === file_exists($pluginFile)) {
+            $this->sysinfo('The file "' . $pluginFile . '" don\'t exists.');
+            return false;
+        }
         if (false === class_exists($pluginClass)) {
             $this->sysinfo($name . ' don\'t exists.');
             return false;
