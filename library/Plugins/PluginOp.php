@@ -35,6 +35,7 @@ class PluginOp extends Plugin
     protected function init()
     {
         $this->addEvent('onPrivmsg');
+        $this->addEvent('onJoin');
     }
 
     /**
@@ -70,5 +71,12 @@ class PluginOp extends Plugin
             $this->getActions()->deop($data['channel'], $data['nick']);
             return true;
         }
+    }
+
+    /**
+     * @param array $data
+     */
+    public function onJoin($data)
+    {
     }
 }
