@@ -75,8 +75,15 @@ class PluginOp extends Plugin
 
     /**
      * @param array $data
+     * @return bool
      */
     public function onJoin($data)
     {
+        $channel = $this->getConfig()->getChannel();
+        if ($data['channel'] === $channel) {
+            $this->getActions()->op($channel);
+            return true;
+        }
+        return false;
     }
 }
