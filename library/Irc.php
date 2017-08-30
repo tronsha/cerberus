@@ -427,7 +427,7 @@ class Irc extends Cerberus
         if ('\\' === substr($output, -1)) {
             $output .= ' ';
         }
-        $outputConsole = (0 === strpos($output, 'PRIVMSG NickServ :IDENTIFY') ? preg_replace('/\S/', '*', $output) : $output);
+        $outputConsole = (0 === strpos(strtolower($output), 'privmsg nickserv :identify') ? preg_replace('/\S/', '*', $output) : $output);
         $this->getConsole()->writeln($this->getConsole()->prepare($outputConsole, true, null, true, true, 0));
         if (true === is_resource($this->fp)) {
             fwrite($this->fp, $output . PHP_EOL);
