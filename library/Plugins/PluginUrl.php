@@ -55,5 +55,16 @@ class PluginOp extends Plugin
      */
     public function onPrivmsg($data)
     {
+        $urls = null;
+        if (null !== $urls) {
+            $handle = @fopen(realpath($this->getConfig()->getLogfiledirectory()) . '/url.txt', 'a+');
+            if (false !== $handle) {
+                foreach ($urls as $url) {
+                    fwrite($handle, $url . PHP_EOL);
+                    fflush($handle);
+                }
+                fclose($handle);
+            }
+        }
     }
 }
