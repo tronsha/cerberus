@@ -144,6 +144,8 @@ class PluginAuth extends Plugin
             $this->auth[$data['nick']]['level'] = self::AUTH_ADMIN;
         } elseif ('user' === $authLevel) {
             $this->auth[$data['nick']]['level'] = self::AUTH_MEMBER;
+        } else {
+            $this->auth[$data['nick']]['level'] = self::AUTH_NONE;
         }
     }
 }
