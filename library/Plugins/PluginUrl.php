@@ -23,18 +23,21 @@ namespace Cerberus\Plugins;
 use Cerberus\Plugin;
 
 /**
- * Class PluginOp
+ * Class PluginUrl
  * @package Cerberus\Plugins
  * @author Stefan Hüsges
  */
-class PluginOp extends Plugin
+class PluginUrl extends Plugin
 {
+    private $file = null;
+
     /**
      *
      */
     protected function init()
     {
         $this->addEvent('onPrivmsg');
+        $this->file = realpath($this->getConfig()->getLogfiledirectory()) . '/url.txt';
     }
 
     /**
@@ -55,12 +58,41 @@ class PluginOp extends Plugin
      */
     public function onPrivmsg($data)
     {
-        $urls = null;
+        $urls = $this->parseUrls($data['text']);
+        $this->writeToFile($urls);
+    }
+
+    /**
+     * @param string $text
+     * @return array
+     */
+    protected function parseUrls($text)
+    {
+        $urls = [];
+        preg_match_all('/(?:^|\s)([^\s\w])?([a-zA-Z]+:\/\/\S+)(?:\s|$)/si', $text, $matches, PREG_SET_ORDER);
+        foreach ($matches as $matche) {
+            $trim = " \t\n\r\0\x0B";
+            if (false === empty($matche[1])) {
+                $trim .= $matche[1];
+                if ('(' === $matche[1]) {
+                    $trim .= ')';
+                }
+            }
+            $urls[] = trim($matche[2], $trim);
+        }
+        return $urls;
+    }
+
+    /**
+     * @param array|null $urls
+     */
+    protected function writeToFile($urls = null)
+    {
         if (null !== $urls) {
-            $handle = @fopen(realpath($this->getConfig()->getLogfiledirectory()) . '/url.txt', 'a+');
+            $handle = @fopen($this->file, 'a+');
             if (false !== $handle) {
                 foreach ($urls as $url) {
-                    fwrite($handle, $url . PHP_EOL);
+                    fwrite($handle, $url . "\n");
                     fflush($handle);
                 }
                 fclose($handle);
