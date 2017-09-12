@@ -70,9 +70,9 @@ class PluginUrl extends Plugin
     {
         $urls = [];
         $pairs = ['(' => ')', '<' => '>', '[' => ']'];
-        preg_match_all('/(?:^|\s)([^\s\w])?([a-zA-Z]+:\/\/\S+)(?:\s|$)/si', $text, $matches, PREG_SET_ORDER);
+        preg_match_all('/(?:^|\s)([^\s\w])?\s*([a-zA-Z]+:\/\/\S+)(?:\s|$)/si', $text, $matches, PREG_SET_ORDER);
         foreach ($matches as $matche) {
-            $trim = " \t\n\r\0\x0B“”,.";
+            $trim = " \t\n\r\0\x0B\x0F,.“”";
             if (false === empty($matche[1])) {
                 $trim .= $matche[1];
                 if (true === array_key_exists($matche[1], $pairs)) {
