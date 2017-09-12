@@ -102,7 +102,7 @@ class PluginUrl extends Plugin
             $url = trim($url, $charList);
             $lastChar = substr($url, -1);
             if (true === array_key_exists($lastChar, $lastCharPairs)) {
-                if (false === strpos($url, $lastCharPairs[$lastChar])) {
+                if (false === strpos(substr($url, 0, -1), $lastCharPairs[$lastChar])) {
                     if (false !== strpos(substr($text, 0, strpos($text, $url)), $lastCharPairs[$lastChar])) {
                         $url = substr($url, 0, -1);
                     }
