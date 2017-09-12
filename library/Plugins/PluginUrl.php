@@ -69,17 +69,22 @@ class PluginUrl extends Plugin
     protected function parseUrls($text)
     {
         $urls = [];
-        $pairs = ['(' => ')', '<' => '>', '[' => ']'];
+        $pairs = ['(' => ')', '<' => '>', '[' => ']', '{' => '}'];
         preg_match_all('/(?:^|\s)([^\s\w])?\s*([a-zA-Z]+:\/\/\S+)(?:\s|$)/si', $text, $matches, PREG_SET_ORDER);
-        foreach ($matches as $matche) {
-            $trim = " \t\n\r\0\x0B\x0F,.“”";
-            if (false === empty($matche[1])) {
-                $trim .= $matche[1];
-                if (true === array_key_exists($matche[1], $pairs)) {
-                    $trim .= $pairs[$matche[1]];
+        foreach ($matches as $match) {
+            $charlist = " \t\n\r\0\x0B\x0F,.“”";
+            $delimiter = $match[1];
+            $url = $match[2];
+            if (false === empty($delimiter)) {
+                $charlist .= $delimiter;
+                if (true === array_key_exists($delimiter, $pairs)) {
+                    $charlist .= $pairs[$delimiter];
+                    $delimiter = $pairs[$delimiter];
                 }
+                $parts = explode($delimiter, strrev($url), 2);
+                $url = strrev($parts[1]);
             }
-            $urls[] = trim($matche[2], $trim);
+            $urls[] = trim($url, $charlist);
         }
         return $urls;
     }
