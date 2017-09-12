@@ -70,7 +70,7 @@ class PluginUrl extends Plugin
     {
         $urls = [];
         $pairs = ['(' => ')', '<' => '>', '[' => ']', '{' => '}'];
-        preg_match_all('/(?:^|\s)([^\s\w])?\s*([a-zA-Z]+:\/\/\S+)(?:\s|$)/si', $text, $matches, PREG_SET_ORDER);
+        preg_match_all('/(?:^|\s)([\"\'\(\<\[\{])?\s*([a-zA-Z]+:\/\/\S+)(?:\s|$)/si', $text, $matches, PREG_SET_ORDER);
         foreach ($matches as $match) {
             $charlist = " \t\n\r\0\x0B\x0F,.“”";
             $delimiter = $match[1];
@@ -81,8 +81,10 @@ class PluginUrl extends Plugin
                     $charlist .= $pairs[$delimiter];
                     $delimiter = $pairs[$delimiter];
                 }
-                $parts = explode($delimiter, strrev($url), 2);
-                $url = strrev($parts[1]);
+                if (false !== strpos($url, $delimiter)) {
+                    $parts = explode($delimiter, strrev($url), 2);
+                    $url = strrev($parts[1]);
+                }
             }
             $urls[] = trim($url, $charlist);
         }
