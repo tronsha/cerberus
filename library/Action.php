@@ -28,6 +28,7 @@ use Exception;
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/cerberus/ Project Homepage
  * @link https://github.com/tronsha/Cerberus Project on GitHub
+ * @link https://en.wikipedia.org/wiki/List_of_Internet_Relay_Chat_commands List of Internet Relay Chat commands
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
 
