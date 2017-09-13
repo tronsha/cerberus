@@ -64,10 +64,10 @@ class PluginUrl extends Plugin
         if (false === $schema->tablesExist('plugin_url')) {
             $table = new Table('plugin_url');
             $schema->createTable($table);
-            $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
-            $table->setPrimaryKey(array('id'));
-            $table->addColumn('url', 'string', array('length' => 255));
-            $table->addUniqueIndex(array('url'));
+            $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+            $table->setPrimaryKey(['id']);
+            $table->addColumn('url', 'string', ['length' => 255]);
+            $table->addUniqueIndex(['url']);
         }
     }
 
