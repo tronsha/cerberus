@@ -21,6 +21,7 @@
 namespace Cerberus\Plugins;
 
 use Cerberus\Plugin;
+use Doctrine\DBAL\Schema\Table;
 
 /**
  * Class PluginUrl
@@ -51,6 +52,23 @@ class PluginUrl extends Plugin
         if (null !== $data) {
         }
         return $returnValue;
+    }
+
+    /**
+     * @param Db $db
+     */
+    public static function install($db)
+    {
+//        $db = $this->getDb();
+        $schema = $db->getSchemaManager();
+        if (false === $schema->tablesExist('plugin_url')) {
+            $table = new Table('plugin_url');
+            $schema->createTable($table);
+            $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
+            $table->setPrimaryKey(array('id'));
+            $table->addColumn('url', 'string', array('length' => 255));
+            $table->addUniqueIndex(array('url'));
+        }
     }
 
     /**
@@ -101,12 +119,8 @@ class PluginUrl extends Plugin
             }
             $url = trim($url, $charList);
             $lastChar = substr($url, -1);
-            if (true === array_key_exists($lastChar, $lastCharPairs)) {
-                if (false === strpos(substr($url, 0, -1), $lastCharPairs[$lastChar])) {
-                    if (false !== strpos(substr($text, 0, strpos($text, $url)), $lastCharPairs[$lastChar])) {
-                        $url = substr($url, 0, -1);
-                    }
-                }
+            if (true === array_key_exists($lastChar, $lastCharPairs) && false === strpos(substr($url, 0, -1), $lastCharPairs[$lastChar]) && false !== strpos(substr($text, 0, strpos($text, $url)), $lastCharPairs[$lastChar])) {
+                $url = substr($url, 0, -1);
             }
             $urls[] = $url;
         }
