@@ -69,7 +69,7 @@ class Irc extends Cerberus
         $this->server['network'] = null;
         $this->server['password'] = null;
         $this->reconnect['channel'] = [];
-        $this->loaded['classes'] = [];
+        $this->loaded['plugins'] = [];
         $this->config = new Config($config);
         if (true === is_array($config)) {
             if (false === empty($config['bot']['nick'])) {
@@ -678,27 +678,40 @@ class Irc extends Cerberus
     public function loadPlugin($name, $data = null)
     {
         $name = strtolower($name);
-        $pluginClass = 'Cerberus\\Plugins\\Plugin' . ucfirst($name);
-        if (true === array_key_exists($pluginClass, $this->loaded['classes'])) {
+        $className = 'Plugin' . ucfirst($name);
+        $pluginClass = 'Cerberus\\Plugins\\' . $className;
+        if (true === array_key_exists($pluginClass, $this->loaded['plugins'])) {
             $this->sysinfo('Plugin "' . $name . '" is already loaded.');
             return true;
         }
-        $pluginFile = __DIR__ . DIRECTORY_SEPARATOR . 'Plugins' . DIRECTORY_SEPARATOR . 'Plugin' . ucfirst($name) . '.php';
+        $pluginPath = Cerberus::getPath() . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'Plugins' . DIRECTORY_SEPARATOR;
+        $pluginFile = $pluginPath . $className . '.php';
         if (false === file_exists($pluginFile)) {
             $this->sysinfo('The file "' . $pluginFile . '" don\'t exists.');
             return false;
         }
-        if (false === class_exists($pluginClass)) {
+        $tmpClassName = $className . '_' . md5(uniqid($name, true));
+        $tmpPluginClass = 'Cerberus\\Plugins\\' . $tmpClassName;
+        $tmpPluginFile = $pluginPath . $tmpClassName . '.php';
+        $filePutContentsReturn = file_put_contents($tmpPluginFile, str_replace(['class ' . $className , 'extends Plugin'], ['class ' . $tmpClassName, 'extends ' . $className], file_get_contents($pluginFile)));
+        if (false === $filePutContentsReturn || false === file_exists($tmpPluginFile)) {
+            $tmpPluginClass = $pluginClass;
+        }
+        if (false === class_exists($tmpPluginClass)) {
             $this->sysinfo($name . ' don\'t exists.');
             return false;
         }
-        $plugin = new $pluginClass($this);
-        if (false === is_subclass_of($pluginClass, 'Cerberus\\Plugin')) {
+        $plugin = new $tmpPluginClass($this);
+        if (true === file_exists($tmpPluginFile)) {
+            unlink($tmpPluginFile);
+        }
+        if (false === is_subclass_of($tmpPluginClass, 'Cerberus\\Plugin')) {
             unset($plugin);
             $this->sysinfo($name . ' isn\'t a PluginClass.');
             return false;
         }
-        $this->loaded['classes'][$pluginClass] = $plugin->onLoad($data);
+        $this->loaded['plugins'][$pluginClass]['class'] = $plugin;
+        $this->loaded['plugins'][$pluginClass]['onload'] = $plugin->onLoad($data);
         $this->sysinfo('Load Plugin: ' . $name);
         return true;
     }
