@@ -700,8 +700,12 @@ class Irc extends Cerberus
         $tmpClassName = $className . '_' . md5(uniqid($name, true));
         $tmpPluginClass = 'Cerberus\\Plugins\\' . $tmpClassName;
         $tmpPluginFile = $pluginPath . $tmpClassName . '.php';
-        $filePutContentsReturn = file_put_contents($tmpPluginFile, str_replace(['class ' . $className , 'extends Plugin'], ['class ' . $tmpClassName, 'extends ' . $className], file_get_contents($pluginFile)));
-        if (false === $filePutContentsReturn || false === file_exists($tmpPluginFile)) {
+        if (true === is_writable($pluginPath)) {
+            $filePutContentsReturn = file_put_contents($tmpPluginFile, str_replace(['class ' . $className , 'extends Plugin'], ['class ' . $tmpClassName, 'extends ' . $className], file_get_contents($pluginFile)));
+            if (false === $filePutContentsReturn || false === file_exists($tmpPluginFile)) {
+                $tmpPluginClass = $pluginClass;
+            }
+        } else {
             $tmpPluginClass = $pluginClass;
         }
         if (false === class_exists($tmpPluginClass)) {
