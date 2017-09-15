@@ -710,7 +710,7 @@ class Irc extends Cerberus
             $this->sysinfo($name . ' isn\'t a PluginClass.');
             return false;
         }
-        $this->loaded['plugins'][$pluginClass]['class'] = $plugin;
+        $this->loaded['plugins'][$pluginClass]['object'] = $plugin;
         $this->loaded['plugins'][$pluginClass]['onload'] = $plugin->onLoad($data);
         $this->sysinfo('Load Plugin: ' . $name);
         return true;
@@ -777,6 +777,16 @@ class Irc extends Cerberus
             }
         }
         return $count;
+    }
+
+    /**
+     * @param object $object
+     */
+    public function removePluginEventByObject($object)
+    {
+        foreach ($this->pluginevents as $eventKey => $eventValue) {
+            $this->removePluginEvent($eventKey, $object);
+        }
     }
 
     /**
