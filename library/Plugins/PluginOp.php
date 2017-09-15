@@ -45,6 +45,9 @@ class PluginOp extends Plugin
     public function onLoad($data)
     {
         $returnValue = parent::onLoad($data);
+        if (__CLASS__ === get_parent_class($this) && 'Cerberus\Plugin' !== get_parent_class($this)) {
+            return $returnValue;
+        }
         if (null !== $data) {
             $this->getActions()->notice($data['nick'], 'New Command: !op');
             $this->getActions()->notice($data['nick'], 'New Command: !deop');

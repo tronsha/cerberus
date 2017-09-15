@@ -59,16 +59,6 @@ class PluginWork extends Plugin
     }
 
     /**
-     * @param array $data
-     * @return bool
-     */
-    public function onLoad($data)
-    {
-        $returnValue = parent::onLoad($data);
-        return $returnValue;
-    }
-
-    /**
      *
      */
     public function goodmorning()

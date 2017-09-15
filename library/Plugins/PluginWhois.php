@@ -49,18 +49,6 @@ class PluginWhois extends Plugin
     }
 
     /**
-     * @param array $data
-     * @return bool
-     */
-    public function onLoad($data)
-    {
-        $returnValue = parent::onLoad($data);
-        if (null !== $data) {
-        }
-        return $returnValue;
-    }
-
-    /**
      * RPL_AWAY
      * @param array $data
      */

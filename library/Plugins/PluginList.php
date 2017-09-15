@@ -43,16 +43,6 @@ class PluginList extends Plugin
      * @param array $data
      * @return bool
      */
-    public function onLoad($data)
-    {
-        $returnValue = parent::onLoad($data);
-        return $returnValue;
-    }
-
-    /**
-     * @param array $data
-     * @return bool
-     */
     public function on321($data)
     {
         unset($data);

@@ -40,18 +40,6 @@ class PluginInit extends Plugin
 
     /**
      * @param array $data
-     * @return bool
-     */
-    public function onLoad($data)
-    {
-        $returnValue = parent::onLoad($data);
-        if (null !== $data) {
-        }
-        return $returnValue;
-    }
-
-    /**
-     * @param array $data
      */
     public function onConnect($data)
     {
