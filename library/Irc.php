@@ -680,15 +680,22 @@ class Irc extends Cerberus
         $name = strtolower($name);
         $className = 'Plugin' . ucfirst($name);
         $pluginClass = 'Cerberus\\Plugins\\' . $className;
-        if (true === array_key_exists($pluginClass, $this->loaded['plugins'])) {
-            $this->sysinfo('Plugin "' . $name . '" is already loaded.');
-            return true;
-        }
         $pluginPath = Cerberus::getPath() . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'Plugins' . DIRECTORY_SEPARATOR;
         $pluginFile = $pluginPath . $className . '.php';
         if (false === file_exists($pluginFile)) {
             $this->sysinfo('The file "' . $pluginFile . '" don\'t exists.');
             return false;
+        }
+        clearstatcache(true, $pluginFile);
+        $pluginFileDate = filemtime($pluginFile);
+        if (true === array_key_exists($pluginClass, $this->loaded['plugins'])) {
+            if ($pluginFileDate === $this->loaded['plugins'][$pluginClass]['date']) {
+                $this->sysinfo('Plugin "' . $name . '" is already loaded.');
+                return true;
+            } else {
+                $this->removePluginEventByObject($this->loaded['plugins'][$pluginClass]['object']);
+                unset($this->loaded['plugins'][$pluginClass]);
+            }
         }
         $tmpClassName = $className . '_' . md5(uniqid($name, true));
         $tmpPluginClass = 'Cerberus\\Plugins\\' . $tmpClassName;
@@ -712,6 +719,7 @@ class Irc extends Cerberus
         }
         $this->loaded['plugins'][$pluginClass]['object'] = $plugin;
         $this->loaded['plugins'][$pluginClass]['onload'] = $plugin->onLoad($data);
+        $this->loaded['plugins'][$pluginClass]['date'] = $pluginFileDate;
         $this->sysinfo('Load Plugin: ' . $name);
         return true;
     }
