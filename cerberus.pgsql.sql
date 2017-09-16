@@ -277,3 +277,13 @@ CREATE TABLE "status" (
 );
 SELECT setval('"status_id_seq"', 1, true);
 ;
+
+DROP TABLE IF EXISTS "plugins";
+CREATE TABLE "plugins" (
+	"id" serial NOT NULL ,
+	"bot_id" integer NOT NULL ,
+	"plugin" varchar(255) NOT NULL ,
+	PRIMARY KEY ("id")
+);
+SELECT setval('"plugins_id_seq"', 1, true);
+;
