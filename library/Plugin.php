@@ -69,7 +69,6 @@ abstract class Plugin extends Cerberus
             $this->getActions()->notice($data['nick'], 'Load: ' . get_called_class());
         }
         if (true === method_exists($this, 'install')) {
-
         }
         $this->irc->setTranslations($this->translations());
         return true;
