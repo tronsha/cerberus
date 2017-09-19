@@ -48,12 +48,13 @@ class PluginAuth extends Plugin
 
     /**
      * @param array $data
+     * @param bool $hasChild
      * @return bool
      */
-    public function onLoad($data)
+    public function onLoad($data, $hasChild = false)
     {
-        $returnValue = parent::onLoad($data);
-        if (__CLASS__ === get_parent_class($this) && 'Cerberus\Plugin' !== get_parent_class($this)) {
+        $returnValue = parent::onLoad($data, true);
+        if (true === $hasChild) {
             return $returnValue;
         }
         $this->registerAuth($this);

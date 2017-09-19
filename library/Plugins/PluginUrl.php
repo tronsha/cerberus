@@ -47,7 +47,7 @@ class PluginUrl extends Plugin
      */
     public static function install($db)
     {
-//        $db = $this->getDb();
+        //$db = $this->getDb();
         $schema = $db->getSchemaManager();
         if (false === $schema->tablesExist('plugin_url')) {
             $table = new Table('plugin_url');

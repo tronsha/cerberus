@@ -61,9 +61,10 @@ abstract class Plugin extends Cerberus
 
     /**
      * @param array $data
+     * @param bool $hasChild
      * @return bool
      */
-    public function onLoad($data)
+    public function onLoad($data, $hasChild = false)
     {
         if (true === isset($data)) {
             $this->getActions()->notice($data['nick'], 'Load: ' . get_called_class());
