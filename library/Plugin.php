@@ -60,23 +60,19 @@ abstract class Plugin extends Cerberus
     }
 
     /**
-     * method for install logic
-     */
-     protected function install()
-     {
-     }
-
-    /**
      * @param array $data
      * @param bool $hasChild
      * @return bool
      */
     public function onLoad($data, $hasChild = false)
     {
+        $class = get_called_class();
         if (true === isset($data)) {
-            $this->getActions()->notice($data['nick'], 'Load: ' . get_called_class());
+            $this->getActions()->notice($data['nick'], 'Load: ' . $class);
         }
-        $this->install();
+        if (true === method_exists($class, 'install')) {
+            $class::install($this->getDb());
+        }
         $this->irc->setTranslations($this->translations());
         return true;
     }

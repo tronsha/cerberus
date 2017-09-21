@@ -20,6 +20,7 @@
 
 namespace Cerberus\Plugins;
 
+use Cerberus\Db;
 use Cerberus\Plugin;
 use Doctrine\DBAL\Schema\Table;
 
@@ -45,17 +46,16 @@ class PluginUrl extends Plugin
     /**
      * @param Db $db
      */
-    public static function install($db)
+    public static function install(Db $db)
     {
-        //$db = $this->getDb();
-        $schema = $db->getSchemaManager();
+        $schema = $db->getConnection()->getSchemaManager();
         if (false === $schema->tablesExist('plugin_url')) {
-            $table = new Table('plugin_url');
-            $schema->createTable($table);
-            $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
-            $table->setPrimaryKey(['id']);
-            $table->addColumn('url', 'string', ['length' => 255]);
-            $table->addUniqueIndex(['url']);
+//            $table = new Table('plugin_url');
+//            $schema->createTable($table);
+//            $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+//            $table->setPrimaryKey(['id']);
+//            $table->addColumn('url', 'string', ['length' => 255]);
+//            $table->addUniqueIndex(['url']);
         }
     }
 
