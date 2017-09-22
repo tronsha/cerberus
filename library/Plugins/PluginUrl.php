@@ -50,12 +50,23 @@ class PluginUrl extends Plugin
     {
         $schema = $db->getConnection()->getSchemaManager();
         if (false === $schema->tablesExist('plugin_url')) {
-//            $table = new Table('plugin_url');
-//            $schema->createTable($table);
-//            $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
-//            $table->setPrimaryKey(['id']);
-//            $table->addColumn('url', 'string', ['length' => 255]);
-//            $table->addUniqueIndex(['url']);
+            $table = new Table('plugin_url');
+            $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+            $table->setPrimaryKey(['id']);
+            $table->addColumn('url', 'string', ['length' => 255]);
+            $table->addUniqueIndex(['url']);
+            $schema->createTable($table);
+        }
+    }
+
+    /**
+     * @param Db $db
+     */
+    public static function uninstall(Db $db)
+    {
+        $schema = $db->getConnection()->getSchemaManager();
+        if (true === $schema->tablesExist('plugin_url')) {
+            $schema->dropTable('plugin_url');
         }
     }
 
