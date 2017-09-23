@@ -67,8 +67,10 @@ abstract class Plugin extends Cerberus
     public function onLoad($data, $hasChild = false)
     {
         $class = get_called_class();
+        preg_match('/(?:^|\\\\)([^_\\\\]+)(?:_|$)/si', $class, $match);
+        $className = $match[1];
         if (true === isset($data)) {
-            $this->getActions()->notice($data['nick'], 'Load: ' . $class);
+            $this->getActions()->notice($data['nick'], 'Load: ' . $className);
         }
         if (true === method_exists($class, 'install')) {
             $class::install($this->getDb());
