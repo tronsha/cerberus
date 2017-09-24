@@ -281,9 +281,11 @@ SELECT setval('"status_id_seq"', 1, true);
 DROP TABLE IF EXISTS "plugins";
 CREATE TABLE "plugins" (
 	"id" serial NOT NULL ,
-	"bot_id" integer NOT NULL ,
 	"plugin" varchar(255) NOT NULL ,
+	"time" timestamp with time zone NOT NULL ,
 	PRIMARY KEY ("id")
 );
+DROP INDEX IF EXISTS "plugins_plugin";
+CREATE UNIQUE INDEX "plugins_plugin" ON "plugins" ("plugin");
 SELECT setval('"plugins_id_seq"', 1, true);
 ;

@@ -217,7 +217,8 @@ CREATE TABLE IF NOT EXISTS `status` (
 
 CREATE TABLE IF NOT EXISTS `plugins` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `bot_id` int(11) unsigned NOT NULL,
   `plugin` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
+  `time` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `plugin` (`plugin`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
