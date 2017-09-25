@@ -74,6 +74,7 @@ abstract class Plugin extends Cerberus
         }
         if (true === method_exists($class, 'install')) {
             $class::install($this->getDb());
+            $this->getDb()->addPlugin($className);
         }
         $this->irc->setTranslations($this->translations());
         return true;
