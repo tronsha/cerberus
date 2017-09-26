@@ -67,8 +67,7 @@ abstract class Plugin extends Cerberus
     public function onLoad($data, $hasChild = false)
     {
         $class = get_called_class();
-        preg_match('/(?:^|\\\\)([^_\\\\]+)(?:_|$)/si', $class, $match);
-        $className = $match[1];
+        $className = $this->getClassName($class);
         if (true === isset($data)) {
             $this->getActions()->notice($data['nick'], 'Load: ' . $className);
         }
@@ -78,6 +77,16 @@ abstract class Plugin extends Cerberus
         }
         $this->irc->setTranslations($this->translations());
         return true;
+    }
+
+    /**
+     * @param string $class
+     * @return string
+     */
+    protected function getClassName($class)
+    {
+        preg_match('/(?:^|\\\\)([^_\\\\]+)(?:_|$)/si', $class, $match);
+        return $match[1];
     }
 
     /**
