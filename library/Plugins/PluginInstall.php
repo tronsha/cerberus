@@ -46,4 +46,13 @@ class PluginInstall extends Plugin
         if ('!install' === $command && false === empty($plugin)) {
         }
     }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    public function download($url)
+    {
+        return file_get_contents($url);
+    }
 }
