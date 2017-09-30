@@ -55,4 +55,11 @@ class PluginInstall extends Plugin
     {
         return file_get_contents($url);
     }
+
+    /**
+     * @param string $file
+     */
+    public function createFile($file)
+    {
+    }
 }
