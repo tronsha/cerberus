@@ -58,8 +58,12 @@ class PluginInstall extends Plugin
 
     /**
      * @param string $file
+     * @return bool
      */
     public function createFile($file)
     {
+        if (false === is_writable(__DIR__)) {
+            return false;
+        }
     }
 }
