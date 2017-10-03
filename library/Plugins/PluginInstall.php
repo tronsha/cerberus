@@ -44,6 +44,7 @@ class PluginInstall extends Plugin
         $command = array_shift($splitText);
         $plugin = array_shift($splitText);
         if ('!install' === $command && false === empty($plugin)) {
+            $this->createFile($this->download($plugin));
         }
     }
 
