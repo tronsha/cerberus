@@ -66,5 +66,8 @@ class PluginInstall extends Plugin
         if (false === is_writable(__DIR__)) {
             return false;
         }
+        if (1 === preg_match('/class\s+(Plugin[A-Z][a-z]+)\s+extends\s+Plugin/is', $file, $matches)) {
+            var_dump($matches);
+        }
     }
 }
