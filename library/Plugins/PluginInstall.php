@@ -50,10 +50,13 @@ class PluginInstall extends Plugin
 
     /**
      * @param string $url
-     * @return string
+     * @return mixed
      */
     public function download($url)
     {
+        if (false === filter_var($url, FILTER_VALIDATE_URL)) {
+            return false;
+        }
         return file_get_contents($url);
     }
 
@@ -63,11 +66,20 @@ class PluginInstall extends Plugin
      */
     public function createFile($file)
     {
+        if (false === $file) {
+            return false;
+        }
         if (false === is_writable(__DIR__)) {
             return false;
         }
-        if (1 === preg_match('/class\s+(Plugin[A-Z][a-z]+)\s+extends\s+Plugin/is', $file, $matches)) {
-            var_dump($matches);
+        if (1 !== preg_match('/class\s+(Plugin[A-Z][a-z]+)\s+extends\s+Plugin/is', $file, $matches)) {
+            return false;
+        }
+        $pluginName = $matches[1];
+        $fileName = __DIR__ . DIRECTORY_SEPARATOR . $pluginName . '.php';
+        var_dump($fileName);
+        if (true === file_exists($fileName)) {
+            return false;
         }
     }
 }
