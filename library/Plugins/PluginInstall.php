@@ -40,11 +40,16 @@ class PluginInstall extends Plugin
      */
     public function onPrivmsg($data)
     {
+        if (false === $this->isAdmin($data['nick'], $data['host'])) {
+            return false;
+        }
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         $plugin = array_shift($splitText);
         if ('!install' === $command && false === empty($plugin)) {
-            $this->createFile($this->download($plugin));
+            $file = $this->download($plugin);
+            $pluginName = $this->createFile($file);
+            $this->runInstall($pluginName);
         }
     }
 
@@ -57,12 +62,12 @@ class PluginInstall extends Plugin
         if (false === filter_var($url, FILTER_VALIDATE_URL)) {
             return false;
         }
-        return file_get_contents($url);
+        return @file_get_contents($url);
     }
 
     /**
      * @param string $file
-     * @return bool
+     * @return mixed
      */
     public function createFile($file)
     {
@@ -77,9 +82,28 @@ class PluginInstall extends Plugin
         }
         $pluginName = $matches[1];
         $fileName = __DIR__ . DIRECTORY_SEPARATOR . $pluginName . '.php';
-        var_dump($fileName);
         if (true === file_exists($fileName)) {
             return false;
         }
+        file_put_contents($fileName, $file);
+        return $pluginName;
+    }
+    
+    /**
+     * @param string $pluginName
+     * @return bool
+     */
+    public function runInstall($pluginName)
+    {
+        if (false === $pluginName) {
+            return false;
+        }
+        $class = 'Cerberus\\Plugins\\' . $pluginName;
+        if (true === method_exists($class, 'install')) {
+            $class::install($this->getDb());
+            $className = $this->getClassName($class);
+            $this->getDb()->addPlugin($className);
+        }
+        return true;
     }
 }
