@@ -57,6 +57,7 @@ class Irc extends Cerberus
     protected $action = null;
     protected $translate = null;
     protected $cron = null;
+    protected $unittest = false;
 
     /**
      * @param array|null $config
@@ -700,7 +701,7 @@ class Irc extends Cerberus
         $tmpClassName = $className . '_' . md5(uniqid($name, true));
         $tmpPluginClass = 'Cerberus\\Plugins\\' . $tmpClassName;
         $tmpPluginFile = $pluginPath . $tmpClassName . '.php';
-        if (true === is_writable($pluginPath)) {
+        if (false === $this->isUnitTest() && true === is_writable($pluginPath)) {
             $filePutContentsReturn = file_put_contents($tmpPluginFile, str_replace(['class ' . $className , 'extends Plugin'], ['class ' . $tmpClassName, 'extends ' . $className], file_get_contents($pluginFile)));
             if (false === $filePutContentsReturn || false === file_exists($tmpPluginFile)) {
                 $tmpPluginClass = $pluginClass;
@@ -890,5 +891,17 @@ class Irc extends Cerberus
     public function removeCron($id)
     {
         return $this->cron->remove($id);
+    }
+
+    /**
+     * @param null|bool $ut
+     * @return bool
+     */
+    public function isUnitTest($ut = null)
+    {
+        if (null === $ut) {
+            return $this->unittest;
+        }
+        $this->unittest = $ut;
     }
 }

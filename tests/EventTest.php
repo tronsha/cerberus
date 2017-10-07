@@ -57,6 +57,7 @@ class EventTest extends \PHPUnit_Framework_TestCase
         }
         self::$config['db'] = self::$config['testdb'];
         $this->irc = new Irc(self::$config);
+        $this->irc->isUnitTest(true);
         $this->irc->setLanguage('en');
         $this->irc->getConsole()->disableOutput();
         $this->irc->init();
