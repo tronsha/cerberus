@@ -50,6 +50,7 @@ class PluginInstall extends Plugin
             $file = $this->download($plugin);
             $pluginName = $this->createFile($file);
             $this->runInstall($pluginName);
+        } elseif ('!uninstall' === $command && false === empty($plugin)) {
         }
     }
 
