@@ -46,32 +46,24 @@ class PluginInstall extends Plugin
         $splitText = explode(' ', $data['text']);
         $command = array_shift($splitText);
         $plugin = array_shift($splitText);
-        if ('!install' === $command && false === empty($plugin)) {
-            $file = $this->download($plugin);
-            $pluginName = $this->createFile($file);
-            $this->runInstall($pluginName);
-        } elseif ('!uninstall' === $command && false === empty($plugin)) {
+        if (false === empty($plugin)) {
+            if ('!install' === $command) {
+                $this->doInstall($plugin);
+            } elseif ('!uninstall' === $command) {
+                $this->doUninstall($plugin);
+            }
         }
     }
-
+    
     /**
-     * @param string $url
-     * @return mixed
+     *
      */
-    public function download($url)
+    protected function doInstall($url)
     {
         if (false === filter_var($url, FILTER_VALIDATE_URL)) {
             return false;
         }
-        return @file_get_contents($url);
-    }
-
-    /**
-     * @param string $file
-     * @return mixed
-     */
-    public function createFile($file)
-    {
+        $file = @file_get_contents($url);
         if (false === $file) {
             return false;
         }
@@ -87,18 +79,6 @@ class PluginInstall extends Plugin
             return false;
         }
         file_put_contents($fileName, $file);
-        return $pluginName;
-    }
-    
-    /**
-     * @param string $pluginName
-     * @return bool
-     */
-    public function runInstall($pluginName)
-    {
-        if (false === $pluginName) {
-            return false;
-        }
         $class = 'Cerberus\\Plugins\\' . $pluginName;
         if (true === method_exists($class, 'install')) {
             $class::install($this->getDb());
@@ -106,5 +86,18 @@ class PluginInstall extends Plugin
             $this->getDb()->addPlugin($className);
         }
         return true;
+    }
+    
+    /**
+     * @param string $pluginName
+     */
+    protected function doUninstall($pluginName)
+    {
+        $class = 'Cerberus\\Plugins\\' . $pluginName;
+        if (true === method_exists($class, 'uninstall')) {
+            $class::uninstall($this->getDb());
+            $className = $this->getClassName($class);
+            $this->getDb()->removePlugin($className);
+        }
     }
 }
