@@ -33,6 +33,21 @@ class PluginInstall extends Plugin
     {
         $this->addEvent('onPrivmsg');
     }
+    
+    /**
+     * @param array $data
+     * @param bool $hasChild
+     * @return bool
+     */
+    public function onLoad($data, $hasChild = false)
+    {
+        $returnValue = parent::onLoad($data, true);
+        if (true === $hasChild) {
+            return $returnValue;
+        }
+        // @todo autoload plugins
+        return $returnValue;
+    }
 
     /**
      * @param array $data
