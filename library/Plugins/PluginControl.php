@@ -77,6 +77,7 @@ class PluginControl extends Plugin
      */
     protected function channellist()
     {
+        $this->getActions()->channelList();
     }
 
     /**
