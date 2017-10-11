@@ -33,6 +33,14 @@ use Exception;
 abstract class Formatter
 {
     protected $type = null;
+    
+    abstract protected function matchColor($id);
+
+    abstract protected function getColor($fontColor = null, $backgroundColor = null);
+
+    abstract protected function bold($output);
+
+    abstract protected function underline($output);
 
     /**
      * @param string $output
