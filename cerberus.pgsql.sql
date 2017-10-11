@@ -282,6 +282,7 @@ DROP TABLE IF EXISTS "plugins";
 CREATE TABLE "plugins" (
 	"id" serial NOT NULL ,
 	"plugin" varchar(255) NOT NULL ,
+	"autoload" integer NOT NULL ,
 	"time" timestamp with time zone NOT NULL ,
 	PRIMARY KEY ("id")
 );
