@@ -51,9 +51,6 @@ class PluginControl extends Plugin
                 case 'load':
                     $this->load($data['param']);
                     break;
-                case 'list':
-                    $this->channellist();
-                    break;
                 case 'whois':
                     $this->whois($data['param']);
                     break;
@@ -70,14 +67,6 @@ class PluginControl extends Plugin
         foreach ($plugins as $plugin) {
             $this->loadPlugin($plugin);
         }
-    }
-
-    /**
-     *
-     */
-    protected function channellist()
-    {
-        $this->getActions()->channelList();
     }
 
     /**
