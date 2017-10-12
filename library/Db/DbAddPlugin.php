@@ -47,7 +47,7 @@ class DbAddPlugin extends Db
                     'time' => '?'
                 ]
             )
-            ->setParameter(0, $name)
+            ->setParameter(0, strtolower(preg_replace('/^Plugin/', '', $name)))
             ->setParameter(1, $now)
             ->execute();
         return $this->getDb()->lastInsertId('plugins');

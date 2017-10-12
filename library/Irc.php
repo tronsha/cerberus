@@ -665,8 +665,8 @@ class Irc extends Cerberus
      */
     public function autoloadPlugins()
     {
-        $this->loadPlugin('auth');
-        foreach ($this->getConfig()->getPluginsAutoload() as $plugin) {
+        $pluginsAutoloadList = array_unique(array_map('strtolower', array_merge(['auth'], $this->getConfig()->getPluginsAutoload(), $this->getDb()->getPluginsAutoload())));
+        foreach ($pluginsAutoloadList as $plugin) {
             $this->loadPlugin($plugin);
         }
     }
