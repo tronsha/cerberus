@@ -38,18 +38,22 @@ class DbAddPlugin extends Db
      */
     public function addPlugin($name)
     {
-        $now = (new DateTime())->format('Y-m-d H:i:s');
-        $qb = $this->getDb()->getConnection()->createQueryBuilder();
-        $qb ->insert('plugins')
-            ->values(
-                [
-                    'plugin' => '?',
-                    'time' => '?'
-                ]
-            )
-            ->setParameter(0, strtolower(preg_replace('/^Plugin/', '', $name)))
-            ->setParameter(1, $now)
-            ->execute();
-        return $this->getDb()->lastInsertId('plugins');
+        $name = strtolower(preg_replace('/^Plugin/', '', $name));
+        if (false === $this->getDb()->getPlugin($name)) {
+            $now = (new DateTime())->format('Y-m-d H:i:s');
+            $qb = $this->getDb()->getConnection()->createQueryBuilder();
+            $qb ->insert('plugins')
+                ->values(
+                    [
+                        'plugin' => '?',
+                        'time' => '?'
+                    ]
+                )
+                ->setParameter(0, $name)
+                ->setParameter(1, $now)
+                ->execute();
+            return $this->getDb()->lastInsertId('plugins');
+        }
+        return false;
     }
 }

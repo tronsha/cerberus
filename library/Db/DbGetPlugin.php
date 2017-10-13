@@ -21,25 +21,28 @@
 namespace Cerberus\Db;
 
 /**
- * Class DbRemovePlugin
+ * Class DbGetPlugin
  * @package Cerberus
  * @author Stefan Hüsges
  * @link http://www.mpcx.net/projekte/cerberus/ Project Homepage
  * @link https://github.com/tronsha/cerberus Project on GitHub
  * @license http://www.gnu.org/licenses/gpl-3.0 GNU General Public License
  */
-class DbRemovePlugin extends Db
+class DbGetPlugin extends Db
 {
     /**
-     * @param string $name
-     */
-    public function removePlugin($name)
+    * @param string $name
+    * @return array
+    */
+    public function getPlugin($name)
     {
-        $name = strtolower(preg_replace('/^Plugin/', '', $name));
         $qb = $this->getDb()->getConnection()->createQueryBuilder();
-        $qb ->delete('plugins')
-            ->where('name = ?')
+        $stmt = $qb
+            ->select('plugin, autoload')
+            ->from('plugins')
+            ->where('plugin = ?')
             ->setParameter(0, $name)
             ->execute();
+        return $stmt->fetch();
     }
 }

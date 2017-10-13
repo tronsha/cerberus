@@ -35,6 +35,13 @@ class DbGetPluginsAutoload extends Db
     */
     public function getPluginsAutoload()
     {
-        return [];
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
+        $stmt = $qb
+            ->select('plugin')
+            ->from('plugins')
+            ->where('autoload = ?')
+            ->setParameter(0, 1)
+            ->execute();
+        return $stmt->fetch();
     }
 }
