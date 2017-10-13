@@ -78,13 +78,14 @@ class PluginInstall extends Plugin
         if (false === filter_var($url, FILTER_VALIDATE_URL)) {
             return false;
         }
-        $file = @file_get_contents($url);
+        $file = file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
         if (false === $file) {
             return false;
         }
         if (false === is_writable(__DIR__)) {
             return false;
         }
+        $matches = [];
         if (1 !== preg_match('/class\s+(Plugin[A-Z][a-z]+)\s+extends\s+Plugin/is', $file, $matches)) {
             return false;
         }
@@ -97,9 +98,9 @@ class PluginInstall extends Plugin
         $class = 'Cerberus\\Plugins\\' . $pluginName;
         if (true === method_exists($class, 'install')) {
             $class::install($this->getDb());
-            $className = $this->getClassName($class);
-            $this->getDb()->addPlugin($className);
         }
+        $className = $this->getClassName($class);
+        $this->getDb()->addPlugin($className);
         return true;
     }
     
