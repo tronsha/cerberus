@@ -218,6 +218,7 @@ CREATE TABLE IF NOT EXISTS `status` (
 CREATE TABLE IF NOT EXISTS `plugins` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `plugin` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `url` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `autoload` int(11) NOT NULL DEFAULT '0',
   `time` datetime NOT NULL,
   PRIMARY KEY (`id`),

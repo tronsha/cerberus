@@ -36,7 +36,7 @@ class DbAddPlugin extends Db
      * @param string $name
      * @return int
      */
-    public function addPlugin($name)
+    public function addPlugin($name, $url = '')
     {
         $name = strtolower(preg_replace('/^Plugin/', '', $name));
         if (false === $this->getDb()->getPlugin($name)) {
@@ -46,11 +46,13 @@ class DbAddPlugin extends Db
                 ->values(
                     [
                         'plugin' => '?',
+                        'url' => '?',
                         'time' => '?'
                     ]
                 )
                 ->setParameter(0, $name)
-                ->setParameter(1, $now)
+                ->setParameter(1, $url)
+                ->setParameter(2, $now)
                 ->execute();
             return $this->getDb()->lastInsertId('plugins');
         }

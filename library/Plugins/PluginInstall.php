@@ -66,7 +66,7 @@ class PluginInstall extends Plugin
                 $this->doInstall($plugin);
             } elseif ('!uninstall' === $command) {
                 $this->doUninstall($plugin);
-            }  elseif ('!update' === $command) {
+            } elseif ('!update' === $command) {
                 $this->doUpdate($plugin);
             }
         }
@@ -102,7 +102,7 @@ class PluginInstall extends Plugin
             $class::install($this->getDb());
         }
         $className = $this->getClassName($class);
-        $this->getDb()->addPlugin($className);
+        $this->getDb()->addPlugin($className, $url);
         return true;
     }
 
