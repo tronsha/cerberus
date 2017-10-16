@@ -36,9 +36,10 @@ class DbGetPlugin extends Db
     */
     public function getPlugin($name)
     {
+        $name = strtolower(preg_replace('/^Plugin/', '', $name));
         $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $stmt = $qb
-            ->select('plugin, autoload')
+            ->select('plugin, url, autoload')
             ->from('plugins')
             ->where('plugin = ?')
             ->setParameter(0, $name)

@@ -59,14 +59,15 @@ class PluginInstall extends Plugin
             return false;
         }
         $splitText = explode(' ', $data['text']);
+        $key = array_shift($splitText);
         $command = array_shift($splitText);
         $plugin = array_shift($splitText);
-        if (false === empty($plugin)) {
-            if ('!install' === $command) {
+        if ('!plugin' === $key && false === empty($command) && false === empty($plugin)) {
+            if ('install' === $command) {
                 $this->doInstall($plugin);
-            } elseif ('!uninstall' === $command) {
+            } elseif ('uninstall' === $command) {
                 $this->doUninstall($plugin);
-            } elseif ('!update' === $command) {
+            } elseif ('update' === $command) {
                 $this->doUpdate($plugin);
             }
         }
@@ -107,11 +108,13 @@ class PluginInstall extends Plugin
     }
 
     /**
-     * @param string $pluginName
+     * @param string $name
      */
-    protected function doUninstall($pluginName)
+    protected function doUninstall($name)
     {
-        $class = 'Cerberus\\Plugins\\' . $pluginName;
+        $name = strtolower(preg_replace('/^Plugin/', '', $name));
+        $pluginName = 'Plugin' . ucfirst($name);
+        $class = 'Cerberus\\Plugins\\' .$pluginName;
         if (true === method_exists($class, 'uninstall')) {
             $class::uninstall($this->getDb());
             $className = $this->getClassName($class);
@@ -120,9 +123,15 @@ class PluginInstall extends Plugin
     }
 
     /**
-     * @param string $pluginName
+     * @param string $name
      */
-    protected function doUpdate($pluginName)
+    protected function doUpdate($name)
     {
+        $name = strtolower(preg_replace('/^Plugin/', '', $name));
+        $pluginName = 'Plugin' . ucfirst($name);
+        $class = 'Cerberus\\Plugins\\' .$pluginName;
+        $pluginData = $this->getDb()->getPlugin($name);
+        $url = $pluginData['url'];
+        var_dump($url);
     }
 }
