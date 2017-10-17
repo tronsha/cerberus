@@ -114,7 +114,7 @@ class PluginInstall extends Plugin
     {
         $name = strtolower(preg_replace('/^Plugin/', '', $name));
         $pluginName = 'Plugin' . ucfirst($name);
-        $class = 'Cerberus\\Plugins\\' .$pluginName;
+        $class = 'Cerberus\\Plugins\\' . $pluginName;
         if (true === method_exists($class, 'uninstall')) {
             $class::uninstall($this->getDb());
             $className = $this->getClassName($class);
@@ -129,7 +129,7 @@ class PluginInstall extends Plugin
     {
         $name = strtolower(preg_replace('/^Plugin/', '', $name));
         $pluginName = 'Plugin' . ucfirst($name);
-        $class = 'Cerberus\\Plugins\\' .$pluginName;
+        $class = 'Cerberus\\Plugins\\' . $pluginName;
         $pluginData = $this->getDb()->getPlugin($name);
         $url = $pluginData['url'];
         $this->doUninstall($name);
