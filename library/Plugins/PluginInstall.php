@@ -132,6 +132,7 @@ class PluginInstall extends Plugin
         $class = 'Cerberus\\Plugins\\' .$pluginName;
         $pluginData = $this->getDb()->getPlugin($name);
         $url = $pluginData['url'];
-        var_dump($url);
+        $this->doUninstall($name);
+        $this->doInstall($url);
     }
 }
