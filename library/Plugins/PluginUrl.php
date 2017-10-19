@@ -31,7 +31,7 @@ use Doctrine\DBAL\Schema\Table;
  */
 class PluginUrl extends Plugin
 {
-    private $file = null;
+    const dbTable = 'plugin_url';
 
     /**
      *
@@ -40,7 +40,6 @@ class PluginUrl extends Plugin
     {
         $this->addEvent('onPrivmsg');
         $this->addEvent('on322');
-        $this->file = realpath($this->getConfig()->getLogfiledirectory()) . '/url.txt';
     }
 
     /**
@@ -49,8 +48,8 @@ class PluginUrl extends Plugin
     public static function install(Db $db)
     {
         $schema = $db->getConnection()->getSchemaManager();
-        if (false === $schema->tablesExist('plugin_url')) {
-            $table = new Table('plugin_url');
+        if (false === $schema->tablesExist(self::dbTable)) {
+            $table = new Table(self::dbTable);
             $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
             $table->setPrimaryKey(['id']);
             $table->addColumn('url', 'string', ['length' => 255]);
@@ -65,8 +64,8 @@ class PluginUrl extends Plugin
     public static function uninstall(Db $db)
     {
         $schema = $db->getConnection()->getSchemaManager();
-        if (true === $schema->tablesExist('plugin_url')) {
-            $schema->dropTable('plugin_url');
+        if (true === $schema->tablesExist(self::dbTable)) {
+            $schema->dropTable(self::dbTable);
         }
     }
 
@@ -77,7 +76,9 @@ class PluginUrl extends Plugin
     public function onPrivmsg($data)
     {
         $urls = $this->parseUrls($data['text']);
-        $this->writeToFile($urls);
+        foreach ($urls as $url) {
+            $this->addUrl($url);
+        }
     }
 
     /**
@@ -87,7 +88,9 @@ class PluginUrl extends Plugin
     public function on322($data)
     {
         $urls = $this->parseUrls($data['topic']);
-        $this->writeToFile($urls);
+        foreach ($urls as $url) {
+            $this->addUrl($url);
+        }
     }
 
     /**
@@ -127,19 +130,30 @@ class PluginUrl extends Plugin
     }
 
     /**
-     * @param array|null $urls
+     * @param string|null $url
      */
-    protected function writeToFile($urls = null)
+    protected function addUrl($url = null)
     {
-        if (null !== $urls) {
-            $handle = @fopen($this->file, 'a+');
-            if (false !== $handle) {
-                foreach ($urls as $url) {
-                    fwrite($handle, $url . "\n");
-                    fflush($handle);
-                }
-                fclose($handle);
+        if (null !== $url) {
+            $qb = $this->getDb()->getConnection()->createQueryBuilder();
+            $stmt = $qb
+                ->select('url')
+                ->from(self::dbTable)
+                ->where('url = ?')
+                ->setParameter(0, $url)
+                ->execute();
+            if ($stmt->rowCount() > 0) {
+                return false;
             }
+            $qb = $this->getDb()->getConnection()->createQueryBuilder();
+            $qb ->insert(self::dbTable)
+                ->values(
+                    [
+                        'url' => '?'
+                    ]
+                )
+                ->setParameter(0, $url)
+                ->execute();
         }
     }
 }
