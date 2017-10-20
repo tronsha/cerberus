@@ -42,6 +42,11 @@ class DbGetPluginsAutoload extends Db
             ->where('autoload = ?')
             ->setParameter(0, 1)
             ->execute();
-        return $stmt->fetch();
+        $result = $stmt->fetchAll();
+        $plugins = [];
+        foreach ($result as $plugin) {
+            $plugins[] = $plugin['plugin'];
+        }
+        return $plugins;
     }
 }
