@@ -20,7 +20,9 @@
 
 namespace Cerberus\Plugins;
 
+use Cerberus\Db;
 use Cerberus\Plugin;
+use Doctrine\DBAL\Schema\Table;
 
 /**
  * Class PluginHeisenews
@@ -29,7 +31,7 @@ use Cerberus\Plugin;
  */
 class PluginHeisenews extends Plugin
 {
-    private $file = null;
+    const dbTable = 'plugin_heise';
 
     /**
      *
@@ -39,8 +41,37 @@ class PluginHeisenews extends Plugin
         $this->addCron('*/15 * * * *', 'getNews');
     }
 
+    /**
+     * @param Db $db
+     */
+    public static function install(Db $db)
+    {
+        $schema = $db->getConnection()->getSchemaManager();
+        if (false === $schema->tablesExist(self::dbTable)) {
+            $table = new Table(self::dbTable);
+            $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
+            $table->setPrimaryKey(['id']);
+            $table->addColumn('url', 'string', ['length' => 255]);
+            $table->addUniqueIndex(['url']);
+            $schema->createTable($table);
+        }
+    }
+
+    /**
+     * @param Db $db
+     */
+    public static function uninstall(Db $db)
+    {
+        $schema = $db->getConnection()->getSchemaManager();
+        if (true === $schema->tablesExist(self::dbTable)) {
+            $schema->dropTable(self::dbTable);
+        }
+    }
+
     public function getNews()
     {
-        $this->getActions()->privmsg('#cerberbot', 'foo');
+        $url = 'https://www.heise.de/newsticker/heise.rdf';
+        $rdf = file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
+        var_dump($rdf);
     }
 }
