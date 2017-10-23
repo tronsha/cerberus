@@ -29,6 +29,12 @@ abstract class Plugin extends Cerberus
      * @var Irc
      */
     private $irc;
+    
+    /**
+     *
+     * @var array
+     */
+    private $crons = [];
 
     /**
      * @param Irc $irc
@@ -44,6 +50,7 @@ abstract class Plugin extends Cerberus
      */
     public function __destruct()
     {
+        $this->removeCrons();
         $this->shutdown();
     }
 
@@ -187,7 +194,7 @@ abstract class Plugin extends Cerberus
      */
     protected function addCron($cronString, $method)
     {
-        $this->irc->addCron($cronString, $this, $method);
+        $this->crons[] = $this->irc->addCron($cronString, $this, $method);
     }
 
     /**
@@ -195,7 +202,21 @@ abstract class Plugin extends Cerberus
      */
     protected function removeCron($id)
     {
-        $this->irc->removeCron($id);
+        $key = array_search($id, $this->crons, true);
+        if (false !== $key) {
+            $this->irc->removeCron($id);
+            unset($this->crons[$key]);
+        }
+    }
+    
+    /**
+     *
+     */
+    public function removeCrons()
+    {
+        foreach ($this->crons as $cronId) {
+            $this->removeCron($cronId);
+        }
     }
 
     /**

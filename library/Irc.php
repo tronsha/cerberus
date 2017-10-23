@@ -695,7 +695,8 @@ class Irc extends Cerberus
                 return true;
             } else {
                 $this->removePluginEventByObject($this->loaded['plugins'][$pluginClass]['object']);
-                unset($this->loaded['plugins'][$pluginClass]);
+                $this->loaded['plugins'][$pluginClass]['object']->removeCrons();
+                unset($this->loaded['plugins'][$pluginClass]['object'], $this->loaded['plugins'][$pluginClass]);
             }
         }
         $tmpClassName = $className . '_' . md5(uniqid($name, true));

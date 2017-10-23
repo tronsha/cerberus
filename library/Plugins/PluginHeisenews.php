@@ -40,7 +40,7 @@ class PluginHeisenews extends Plugin
     {
         $this->addCron('*/15 * * * *', 'getNews');
     }
-
+    
     /**
      * @param Db $db
      */
@@ -51,6 +51,8 @@ class PluginHeisenews extends Plugin
             $table = new Table(self::dbTable);
             $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
             $table->setPrimaryKey(['id']);
+            $table->addColumn('heise_id', 'string', ['length' => 255]);
+            $table->addColumn('title', 'string', ['length' => 255]);
             $table->addColumn('url', 'string', ['length' => 255]);
             $table->addUniqueIndex(['url']);
             $schema->createTable($table);
@@ -70,8 +72,13 @@ class PluginHeisenews extends Plugin
 
     public function getNews()
     {
+        $match = [];
         $url = 'https://www.heise.de/newsticker/heise.rdf';
         $rdf = file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
-        var_dump($rdf);
+        $xmlObject = new \SimpleXMLElement($rdf);
+        foreach ($xmlObject->item as $item) {
+            preg_match('/\-([\d]+)\.html/', $item->link, $match);
+            $heiseId = $match[1];
+        }
     }
 }
