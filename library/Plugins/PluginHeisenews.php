@@ -38,7 +38,7 @@ class PluginHeisenews extends Plugin
      */
     protected function init()
     {
-        $this->addCron('*/15 * * * *', 'getNews');
+        $this->addCron('*/5 * * * *', 'getNews');
     }
     
     /**
@@ -51,10 +51,10 @@ class PluginHeisenews extends Plugin
             $table = new Table(self::dbTable);
             $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
             $table->setPrimaryKey(['id']);
-            $table->addColumn('heise_id', 'string', ['length' => 255]);
+            $table->addColumn('heise_id', 'integer', ['unsigned' => true]);
+            $table->addUniqueIndex(['heise_id']);
             $table->addColumn('title', 'string', ['length' => 255]);
-            $table->addColumn('url', 'string', ['length' => 255]);
-            $table->addUniqueIndex(['url']);
+            $table->addColumn('link', 'string', ['length' => 255]);
             $schema->createTable($table);
         }
     }
@@ -78,7 +78,28 @@ class PluginHeisenews extends Plugin
         $xmlObject = new \SimpleXMLElement($rdf);
         foreach ($xmlObject->item as $item) {
             preg_match('/\-([\d]+)\.html/', $item->link, $match);
-            $heiseId = $match[1];
+            $heiseId = intval($match[1]);
+            $qb = $this->getDb()->getConnection()->createQueryBuilder();
+            $stmt = $qb
+                ->select('*')
+                ->from(self::dbTable)
+                ->where('heise_id = ?')
+                ->setParameter(0, $heiseId)
+                ->execute();
+            if (false === $stmt->fetch()) {
+                $qb ->insert(self::dbTable)
+                    ->values(
+                        [
+                            'heise_id' => '?',
+                            'title' => '?',
+                            'link' => '?'
+                        ]
+                    )
+                    ->setParameter(0, $heiseId)
+                    ->setParameter(1, $item->title)
+                    ->setParameter(2, $item->link)
+                    ->execute();
+            }
         }
     }
 }
