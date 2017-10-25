@@ -32,6 +32,7 @@ use Doctrine\DBAL\Schema\Table;
 class PluginHeisenews extends Plugin
 {
     const dbTable = 'plugin_heise';
+    const channel = '#cerberbot';
 
     /**
      *
@@ -77,7 +78,9 @@ class PluginHeisenews extends Plugin
         $rdf = file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
         $xmlObject = new \SimpleXMLElement($rdf);
         foreach ($xmlObject->item as $item) {
-            preg_match('/\-([\d]+)\.html/', $item->link, $match);
+            $title = trim($item->title);
+            $link = trim(preg_replace('/\?.*/', '', $item->link));
+            preg_match('/\-([\d]+)\.html/', $link, $match);
             $heiseId = intval($match[1]);
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
             $stmt = $qb
@@ -87,6 +90,8 @@ class PluginHeisenews extends Plugin
                 ->setParameter(0, $heiseId)
                 ->execute();
             if (false === $stmt->fetch()) {
+                $output = $title . ' -> ' . $link;
+                $this->getActions()->privmsg(self::channel, $output);
                 $qb ->insert(self::dbTable)
                     ->values(
                         [
@@ -96,8 +101,8 @@ class PluginHeisenews extends Plugin
                         ]
                     )
                     ->setParameter(0, $heiseId)
-                    ->setParameter(1, $item->title)
-                    ->setParameter(2, $item->link)
+                    ->setParameter(1, $title)
+                    ->setParameter(2, $link)
                     ->execute();
             }
         }
