@@ -56,6 +56,7 @@ class PluginHeisenews extends Plugin
             $table->addUniqueIndex(['heise_id']);
             $table->addColumn('title', 'string', ['length' => 255]);
             $table->addColumn('link', 'string', ['length' => 255]);
+            $table->addColumn('description', 'string', ['length' => 255]);
             $schema->createTable($table);
         }
     }
@@ -74,12 +75,14 @@ class PluginHeisenews extends Plugin
     public function getNews()
     {
         $match = [];
+        $items = [];
         $url = 'https://www.heise.de/newsticker/heise.rdf';
         $rdf = file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
         $xmlObject = new \SimpleXMLElement($rdf);
         foreach ($xmlObject->item as $item) {
             $title = trim($item->title);
             $link = trim(preg_replace('/\?.*/', '', $item->link));
+            $description = trim($item->description);
             preg_match('/\-([\d]+)\.html/', $link, $match);
             $heiseId = intval($match[1]);
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
@@ -90,21 +93,29 @@ class PluginHeisenews extends Plugin
                 ->setParameter(0, $heiseId)
                 ->execute();
             if (false === $stmt->fetch()) {
-                $output = $title . ' -> ' . $link;
-                $this->getActions()->privmsg(self::channel, $output);
-                $qb ->insert(self::dbTable)
-                    ->values(
-                        [
-                            'heise_id' => '?',
-                            'title' => '?',
-                            'link' => '?'
-                        ]
-                    )
-                    ->setParameter(0, $heiseId)
-                    ->setParameter(1, $title)
-                    ->setParameter(2, $link)
-                    ->execute();
+                $items[$heiseId]['title'] = $title;
+                $items[$heiseId]['link'] = $link;
+                $items[$heiseId]['description'] = $description;
             }
+        }
+        ksort($items);
+        foreach ($items as $heiseId => $item) {
+            $output = $item['title'] . ' -> ' . $item['link'];
+            $this->getActions()->privmsg(self::channel, $output);
+            $qb ->insert(self::dbTable)
+                ->values(
+                    [
+                        'heise_id' => '?',
+                        'title' => '?',
+                        'link' => '?',
+                        'description' => '?'
+                    ]
+                )
+                ->setParameter(0, $heiseId)
+                ->setParameter(1, $item['title'])
+                ->setParameter(2, $item['link'])
+                ->setParameter(3, $item['description'])
+                ->execute();
         }
     }
 }
