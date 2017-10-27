@@ -56,7 +56,7 @@ class PluginHeisenews extends Plugin
             $table->addUniqueIndex(['heise_id']);
             $table->addColumn('title', 'string', ['length' => 255]);
             $table->addColumn('link', 'string', ['length' => 255]);
-            $table->addColumn('description', 'string', ['length' => 255]);
+            $table->addColumn('description', 'text');
             $schema->createTable($table);
         }
     }
