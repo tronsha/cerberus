@@ -100,22 +100,29 @@ class PluginHeisenews extends Plugin
         }
         ksort($items);
         foreach ($items as $heiseId => $item) {
+            $item['id'] = $heiseId;
+            $this->saveData($item);
             $output = $item['title'] . ' -> ' . $item['link'];
             $this->getActions()->privmsg(self::channel, $output);
-            $qb ->insert(self::dbTable)
-                ->values(
-                    [
-                        'heise_id' => '?',
-                        'title' => '?',
-                        'link' => '?',
-                        'description' => '?'
-                    ]
-                )
-                ->setParameter(0, $heiseId)
-                ->setParameter(1, $item['title'])
-                ->setParameter(2, $item['link'])
-                ->setParameter(3, $item['description'])
-                ->execute();
         }
+    }
+
+    protected function saveData($item)
+    {
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
+        $qb ->insert(self::dbTable)
+            ->values(
+                [
+                    'heise_id' => '?',
+                    'title' => '?',
+                    'link' => '?',
+                    'description' => '?'
+                ]
+            )
+            ->setParameter(0, $item['id'])
+            ->setParameter(1, $item['title'])
+            ->setParameter(2, $item['link'])
+            ->setParameter(3, $item['description'])
+            ->execute();
     }
 }
