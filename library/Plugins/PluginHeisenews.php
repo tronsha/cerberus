@@ -85,14 +85,7 @@ class PluginHeisenews extends Plugin
             $description = trim($item->description);
             preg_match('/\-([\d]+)\.html/', $link, $match);
             $heiseId = intval($match[1]);
-            $qb = $this->getDb()->getConnection()->createQueryBuilder();
-            $stmt = $qb
-                ->select('*')
-                ->from(self::dbTable)
-                ->where('heise_id = ?')
-                ->setParameter(0, $heiseId)
-                ->execute();
-            if (false === $stmt->fetch()) {
+            if (false === $this->checkData($heiseId)) {
                 $items[$heiseId]['title'] = $title;
                 $items[$heiseId]['link'] = $link;
                 $items[$heiseId]['description'] = $description;
@@ -124,5 +117,17 @@ class PluginHeisenews extends Plugin
             ->setParameter(2, $item['link'])
             ->setParameter(3, $item['description'])
             ->execute();
+    }
+
+    protected function checkData($heiseId)
+    {
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
+        $stmt = $qb
+            ->select('*')
+            ->from(self::dbTable)
+            ->where('heise_id = ?')
+            ->setParameter(0, $heiseId)
+            ->execute();
+        return $stmt->fetch();
     }
 }
