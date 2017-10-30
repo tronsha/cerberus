@@ -80,15 +80,12 @@ class PluginHeisenews extends Plugin
         $rdf = file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
         $xmlObject = new \SimpleXMLElement($rdf);
         foreach ($xmlObject->item as $item) {
-            $title = trim($item->title);
-            $link = trim(preg_replace('/\?.*/', '', $item->link));
-            $description = trim($item->description);
-            preg_match('/\-([\d]+)\.html/', $link, $match);
+            preg_match('/\-([\d]+)\.html/', $item->link, $match);
             $heiseId = intval($match[1]);
             if (false === $this->checkData($heiseId)) {
-                $items[$heiseId]['title'] = $title;
-                $items[$heiseId]['link'] = $link;
-                $items[$heiseId]['description'] = $description;
+                $items[$heiseId]['title'] = trim($item->title);
+                $items[$heiseId]['link'] = trim(preg_replace('/\?.*/', '', $item->link));
+                $items[$heiseId]['description'] = trim($item->description);
             }
         }
         ksort($items);
