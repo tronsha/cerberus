@@ -39,7 +39,7 @@ class PluginHeisenews extends Plugin
      */
     protected function init()
     {
-        $this->addCron('*/5 * * * *', 'getNews');
+        $this->addCron('*/5 * * * *', 'run');
     }
     
     /**
@@ -72,29 +72,34 @@ class PluginHeisenews extends Plugin
         }
     }
 
-    public function getNews()
+    public function run()
     {
-        $match = [];
         $items = [];
-        $url = 'https://www.heise.de/newsticker/heise.rdf';
-        $rdf = file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
+        $rdf = $this->getNews();
         $xmlObject = new \SimpleXMLElement($rdf);
         foreach ($xmlObject->item as $item) {
+            $match = [];
             preg_match('/\-([\d]+)\.html/', $item->link, $match);
-            $heiseId = intval($match[1]);
-            if (false === $this->checkData($heiseId)) {
-                $items[$heiseId]['title'] = trim($item->title);
-                $items[$heiseId]['link'] = trim(preg_replace('/\?.*/', '', $item->link));
-                $items[$heiseId]['description'] = trim($item->description);
+            $id = intval($match[1]);
+            if (false === $this->checkData($id)) {
+                $items[$id]['id'] = $id;
+                $items[$id]['title'] = trim($item->title);
+                $items[$id]['link'] = trim(preg_replace('/\?.*/', '', $item->link));
+                $items[$id]['description'] = trim($item->description);
             }
         }
         ksort($items);
-        foreach ($items as $heiseId => $item) {
-            $item['id'] = $heiseId;
-            $this->saveData($item);
+        foreach ($items as $id => $item) {
             $output = $item['title'] . ' -> ' . $item['link'];
             $this->getActions()->privmsg(self::channel, $output);
+            $this->saveData($item);
         }
+    }
+
+    protected function getNews()
+    {
+        $url = 'https://www.heise.de/newsticker/heise.rdf';
+        return file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
     }
 
     protected function saveData($item)
