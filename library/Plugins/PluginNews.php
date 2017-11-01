@@ -25,13 +25,13 @@ use Cerberus\Plugin;
 use Doctrine\DBAL\Schema\Table;
 
 /**
- * Class PluginHeisenews
+ * Class PluginNews
  * @package Cerberus\Plugins
  * @author Stefan Hüsges
  */
-class PluginHeisenews extends Plugin
+class PluginNews extends Plugin
 {
-    const dbTable = 'plugin_heise';
+    const dbTable = 'plugin_news';
     const channel = '#cerberbot';
 
     /**
@@ -52,8 +52,9 @@ class PluginHeisenews extends Plugin
             $table = new Table(self::dbTable);
             $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
             $table->setPrimaryKey(['id']);
-            $table->addColumn('heise_id', 'integer', ['unsigned' => true]);
-            $table->addUniqueIndex(['heise_id']);
+            $table->addColumn('news_id', 'integer', ['unsigned' => true]);
+            $table->addColumn('site_id', 'string', ['length' => 200]);
+            $table->addUniqueIndex(['news_id', 'site_id']);
             $table->addColumn('title', 'string', ['length' => 255]);
             $table->addColumn('link', 'string', ['length' => 255]);
             $table->addColumn('description', 'text');
@@ -74,31 +75,34 @@ class PluginHeisenews extends Plugin
 
     public function run()
     {
+        $siteId = 'heise';
+        $url = 'https://www.heise.de/newsticker/heise.rdf';
+        $regexId = '/\-([\d]+)\.html/';
         $items = [];
-        $rdf = $this->getNews();
+        $rdf = $this->getNews($url);
         $xmlObject = new \SimpleXMLElement($rdf);
         foreach ($xmlObject->item as $item) {
             $match = [];
-            preg_match('/\-([\d]+)\.html/', $item->link, $match);
-            $id = intval($match[1]);
-            if (false === $this->checkData($id)) {
-                $items[$id]['id'] = $id;
-                $items[$id]['title'] = trim($item->title);
-                $items[$id]['link'] = trim(preg_replace('/\?.*/', '', $item->link));
-                $items[$id]['description'] = trim($item->description);
+            preg_match($regexId, $item->link, $match);
+            $newsId = intval($match[1]);
+            if (false === $this->checkData($newsId)) {
+                $items[$newsId]['newsId'] = $newsId;
+                $items[$newsId]['siteId'] = $siteId;
+                $items[$newsId]['title'] = trim($item->title);
+                $items[$newsId]['link'] = trim(preg_replace('/\?.*/', '', $item->link));
+                $items[$newsId]['description'] = trim($item->description);
             }
         }
         ksort($items);
-        foreach ($items as $id => $item) {
+        foreach ($items as $item) {
             $output = $item['title'] . ' -> ' . $item['link'];
             $this->getActions()->privmsg(self::channel, $output);
             $this->saveData($item);
         }
     }
 
-    protected function getNews()
+    protected function getNews($url)
     {
-        $url = 'https://www.heise.de/newsticker/heise.rdf';
         return file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
     }
 
@@ -108,27 +112,30 @@ class PluginHeisenews extends Plugin
         $qb ->insert(self::dbTable)
             ->values(
                 [
-                    'heise_id' => '?',
+                    'news_id' => '?',
+                    'site_id' => '?',
                     'title' => '?',
                     'link' => '?',
                     'description' => '?'
                 ]
             )
-            ->setParameter(0, $item['id'])
-            ->setParameter(1, $item['title'])
-            ->setParameter(2, $item['link'])
-            ->setParameter(3, $item['description'])
+            ->setParameter(0, $item['newsId'])
+            ->setParameter(1, $item['siteId'])
+            ->setParameter(2, $item['title'])
+            ->setParameter(3, $item['link'])
+            ->setParameter(4, $item['description'])
             ->execute();
     }
 
-    protected function checkData($heiseId)
+    protected function checkData($newsId, $siteId)
     {
         $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $stmt = $qb
             ->select('*')
             ->from(self::dbTable)
-            ->where('heise_id = ?')
-            ->setParameter(0, $heiseId)
+            ->where('news_id = ? AND site_id = ?')
+            ->setParameter(0, $newsId)
+            ->setParameter(1, $siteId)
             ->execute();
         return $stmt->fetch();
     }
