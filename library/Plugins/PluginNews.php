@@ -85,7 +85,7 @@ class PluginNews extends Plugin
             $match = [];
             preg_match($regexId, $item->link, $match);
             $newsId = intval($match[1]);
-            if (false === $this->checkData($newsId)) {
+            if (false === $this->checkData($newsId, $siteId)) {
                 $items[$newsId]['newsId'] = $newsId;
                 $items[$newsId]['siteId'] = $siteId;
                 $items[$newsId]['title'] = trim($item->title);
