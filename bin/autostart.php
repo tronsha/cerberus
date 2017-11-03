@@ -40,9 +40,9 @@ if (false === Cerberus::isExecAvailable()) {
     exit;
 }
 
-function pullGit() 
+function pullGit()
 {
-        if (true === is_dir('../.git')) {
+    if (true === is_dir('../.git')) {
         chdir(dirname(__DIR__));
         exec('git pull', $output);
         $console = Cerberus::getConsole();
@@ -57,7 +57,7 @@ function pullGit()
 
 function runUnittest()
 {
-        if (true === file_exists('../vendor/bin/phpunit')) {
+    if (true === file_exists('../vendor/bin/phpunit')) {
         chdir(dirname(__DIR__));
         exec('./vendor/bin/phpunit', $output);
         $console = Cerberus::getConsole();
