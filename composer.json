@@ -23,7 +23,6 @@
   },
   "require": {
     "php": ">=5.6.0",
-    "ext-mcrypt": "*",
     "doctrine/dbal": "2.5.*",
     "symfony/console": "3.2.*",
     "symfony/translation": "3.2.*"
