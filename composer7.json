@@ -7,11 +7,10 @@
     "ext-openssl": "*",
     "doctrine/dbal": "2.5.*",
     "symfony/console": "3.3.*",
-    "symfony/translation": "3.3.*",
-    "symfony/phpunit-bridge": "3.3.*"
+    "symfony/translation": "3.3.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "6.4.*",
+    "phpunit/phpunit": "5.7.*",
     "friendsofphp/php-cs-fixer": "2.*"
   },
   "autoload": {
