@@ -3,7 +3,7 @@
   "description": "Cerberus IRC Bot",
   "type": "project",
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=5.4",
     "ext-mcrypt": "*",
     "doctrine/dbal": "2.5.*",
     "symfony/console": "2.8.*",
@@ -19,7 +19,6 @@
       "Hades\\": "public/library/"
     }
   },
-  "minimum-stability": "dev",
   "scripts": {
     "post-install-cmd": [
       "Cerberus\\Installer::install"
