@@ -73,31 +73,41 @@ class PluginNews extends Plugin
         }
     }
 
+    protected function getData()
+    {
+        $data = [];
+        $data[0]['url'] = 'https://www.heise.de/newsticker/heise.rdf';
+        $data[0]['regex'] = '/\-([\d]+)\.html/';
+        return $data;
+    }
+    
     public function run()
     {
-        $siteId = 'heise';
-        $url = 'https://www.heise.de/newsticker/heise.rdf';
-        $regexId = '/\-([\d]+)\.html/';
-        $items = [];
-        $rdf = $this->getNews($url);
-        $xmlObject = new \SimpleXMLElement($rdf);
-        foreach ($xmlObject->item as $item) {
-            $match = [];
-            preg_match($regexId, $item->link, $match);
-            $newsId = intval($match[1]);
-            if (false === $this->checkData($newsId, $siteId)) {
-                $items[$newsId]['newsId'] = $newsId;
-                $items[$newsId]['siteId'] = $siteId;
-                $items[$newsId]['title'] = trim($item->title);
-                $items[$newsId]['link'] = trim(preg_replace('/\?.*/', '', $item->link));
-                $items[$newsId]['description'] = trim($item->description);
+        foreach ($this->getData() as $data) {
+            $items = [];
+            $url = trim(strtolower($data['url']));
+            $rdf = $this->getNews($url);
+            $xmlObject = new \SimpleXMLElement($rdf);
+            foreach ($xmlObject->item as $item) {
+                $match = [];
+                preg_match('/https?\:\/\/(?:www\.)?([^\/]+)/i', $url, $match);
+                $siteId = $match[1];
+                preg_match($data['regex'], $item->link, $match);
+                $newsId = intval($match[1]);
+                if (false === $this->checkData($newsId, $siteId)) {
+                    $items[$newsId]['newsId'] = $newsId;
+                    $items[$newsId]['siteId'] = $siteId;
+                    $items[$newsId]['title'] = trim($item->title);
+                    $items[$newsId]['link'] = trim(preg_replace('/\?.*/', '', $item->link));
+                    $items[$newsId]['description'] = trim($item->description);
+                }
             }
-        }
-        ksort($items);
-        foreach ($items as $item) {
-            $output = $item['title'] . ' -> ' . $item['link'];
-            $this->getActions()->privmsg(self::channel, $output);
-            $this->saveData($item);
+            ksort($items);
+            foreach ($items as $item) {
+                $output = $item['title'] . ' -> ' . $item['link'];
+                $this->getActions()->privmsg(self::channel, $output);
+                $this->saveData($item);
+            }   
         }
     }
 
