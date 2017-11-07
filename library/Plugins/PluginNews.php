@@ -77,6 +77,7 @@ class PluginNews extends Plugin
     {
         $data = [];
         $data[0]['url'] = 'https://www.heise.de/newsticker/heise.rdf';
+        $data[0]['path'] = 'item';
         $data[0]['regex'] = '/\-([\d]+)\.html/';
         return $data;
     }
@@ -88,7 +89,11 @@ class PluginNews extends Plugin
             $url = trim(strtolower($data['url']));
             $rdf = $this->getNews($url);
             $xmlObject = new \SimpleXMLElement($rdf);
-            foreach ($xmlObject->item as $item) {
+            $path = explode('/', $data['path']);
+            foreach ($path as $pathPart) {
+                $xmlObject = $xmlObject->$pathPart;
+            }
+            foreach ($xmlObject as $item) {
                 $match = [];
                 preg_match('/https?\:\/\/(?:www\.)?([^\/]+)/i', $url, $match);
                 $siteId = $match[1];
@@ -107,7 +112,7 @@ class PluginNews extends Plugin
                 $output = $item['title'] . ' -> ' . $item['link'];
                 $this->getActions()->privmsg(self::channel, $output);
                 $this->saveData($item);
-            }   
+            }
         }
     }
 
