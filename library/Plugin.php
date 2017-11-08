@@ -191,10 +191,11 @@ abstract class Plugin extends Cerberus
     /**
      * @param string $cronString
      * @param string $method
+     * @param array $param
      */
-    protected function addCron($cronString, $method)
+    protected function addCron($cronString, $method = 'run', $param = null)
     {
-        $this->crons[] = $this->irc->addCron($cronString, $this, $method);
+        $this->crons[] = $this->irc->addCron($cronString, $this, $method, $param);
     }
 
     /**

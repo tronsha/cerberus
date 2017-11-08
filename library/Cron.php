@@ -48,13 +48,14 @@ class Cron
      * @param string $cronString
      * @param string $object
      * @param string $method
+     * @param array $param
      * @return int
      */
-    public function add($cronString, $object, $method)
+    public function add($cronString, $object, $method = 'run', $param = null)
     {
         $this->cronId++;
         $cronString = preg_replace('/\s+/', ' ', $cronString);
-        $this->cronjobs[$this->cronId] = ['cron' => $cronString, 'object' => $object, 'method' => $method];
+        $this->cronjobs[$this->cronId] = ['cron' => $cronString, 'object' => $object, 'method' => $method, 'param' => $param];
         return $this->cronId;
     }
 
@@ -82,7 +83,7 @@ class Cron
     {
         foreach ($this->cronjobs as $cron) {
             if (true === $this->compare($cron['cron'], $minute, $hour, $day_of_month, $month, $day_of_week)) {
-                $cron['object']->{$cron['method']}();
+                $cron['object']->{$cron['method']}($cron['param']);
             }
         }
     }
