@@ -31,8 +31,8 @@ use Doctrine\DBAL\Schema\Table;
  */
 class PluginNews extends Plugin
 {
-    const dbTable = 'plugin_news';
-    const channel = '#cerberbot';
+    const DBTABLE = 'plugin_news';
+    const CHANNEL = '#cerberbot';
 
     /**
      *
@@ -48,8 +48,8 @@ class PluginNews extends Plugin
     public static function install(Db $db)
     {
         $schema = $db->getConnection()->getSchemaManager();
-        if (false === $schema->tablesExist(self::dbTable)) {
-            $table = new Table(self::dbTable);
+        if (false === $schema->tablesExist(self::DBTABLE)) {
+            $table = new Table(self::DBTABLE);
             $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
             $table->setPrimaryKey(['id']);
             $table->addColumn('news_id', 'integer', ['unsigned' => true]);
@@ -68,8 +68,8 @@ class PluginNews extends Plugin
     public static function uninstall(Db $db)
     {
         $schema = $db->getConnection()->getSchemaManager();
-        if (true === $schema->tablesExist(self::dbTable)) {
-            $schema->dropTable(self::dbTable);
+        if (true === $schema->tablesExist(self::DBTABLE)) {
+            $schema->dropTable(self::DBTABLE);
         }
     }
 
@@ -113,7 +113,7 @@ class PluginNews extends Plugin
             ksort($items);
             foreach ($items as $item) {
                 $output = $item['title'] . ' -> ' . $item['link'];
-                $this->getActions()->privmsg(self::channel, $output);
+                $this->getActions()->privmsg(self::CHANNEL, $output);
                 $this->saveData($item);
             }
         }
@@ -127,7 +127,7 @@ class PluginNews extends Plugin
     protected function saveData($item)
     {
         $qb = $this->getDb()->getConnection()->createQueryBuilder();
-        $qb ->insert(self::dbTable)
+        $qb ->insert(self::DBTABLE)
             ->values(
                 [
                     'news_id' => '?',
@@ -150,7 +150,7 @@ class PluginNews extends Plugin
         $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $stmt = $qb
             ->select('*')
-            ->from(self::dbTable)
+            ->from(self::DBTABLE)
             ->where('news_id = ? AND site_id = ?')
             ->setParameter(0, $newsId)
             ->setParameter(1, $siteId)

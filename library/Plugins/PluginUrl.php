@@ -31,7 +31,7 @@ use Doctrine\DBAL\Schema\Table;
  */
 class PluginUrl extends Plugin
 {
-    const dbTable = 'plugin_url';
+    const DBTABLE = 'plugin_url';
 
     /**
      *
@@ -48,8 +48,8 @@ class PluginUrl extends Plugin
     public static function install(Db $db)
     {
         $schema = $db->getConnection()->getSchemaManager();
-        if (false === $schema->tablesExist(self::dbTable)) {
-            $table = new Table(self::dbTable);
+        if (false === $schema->tablesExist(self::DBTABLE)) {
+            $table = new Table(self::DBTABLE);
             $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
             $table->setPrimaryKey(['id']);
             $table->addColumn('url', 'string', ['length' => 255]);
@@ -64,8 +64,8 @@ class PluginUrl extends Plugin
     public static function uninstall(Db $db)
     {
         $schema = $db->getConnection()->getSchemaManager();
-        if (true === $schema->tablesExist(self::dbTable)) {
-            $schema->dropTable(self::dbTable);
+        if (true === $schema->tablesExist(self::DBTABLE)) {
+            $schema->dropTable(self::DBTABLE);
         }
     }
 
@@ -138,7 +138,7 @@ class PluginUrl extends Plugin
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
             $stmt = $qb
                 ->select('url')
-                ->from(self::dbTable)
+                ->from(self::DBTABLE)
                 ->where('url = ?')
                 ->setParameter(0, $url)
                 ->execute();
@@ -146,7 +146,7 @@ class PluginUrl extends Plugin
                 return false;
             }
             $qb = $this->getDb()->getConnection()->createQueryBuilder();
-            $qb ->insert(self::dbTable)
+            $qb ->insert(self::DBTABLE)
                 ->values(
                     [
                         'url' => '?'
