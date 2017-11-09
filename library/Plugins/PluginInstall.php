@@ -127,8 +127,6 @@ class PluginInstall extends Plugin
     protected function doUpdate($name)
     {
         $name = strtolower(preg_replace('/^Plugin/', '', $name));
-        $pluginName = 'Plugin' . ucfirst($name);
-        $class = 'Cerberus\\Plugins\\' . $pluginName;
         $pluginData = $this->getDb()->getPlugin($name);
         $url = $pluginData['url'];
         $this->doUninstall($name);
