@@ -150,6 +150,43 @@ class Cerberus
         }
         return $available;
     }
+
+    public static function pullGit()
+    {
+        if (true === is_dir(self::getPath() . '/.git')) {
+            chdir(self::getPath());
+            $output = [];
+            exec('git pull', $output);
+            $console = self::getConsole();
+            $console->writeln('<comment>git pull</comment>');
+            foreach ($output as $line) {
+                $console->writeln('<info>' . $line . '</info>');
+            }
+            unset($output);
+        }
+    }
+
+    public static function runUnittest()
+    {
+        if (true === file_exists(self::getPath() . '/vendor/bin/phpunit')) {
+            chdir(self::getPath());
+            $output = [];
+            exec('./vendor/bin/phpunit', $output);
+            $console = self::getConsole();
+            foreach ($output as $line) {
+                if ('FAILURES!' === $line) {
+                    $console->writeln('<error>' . $line . '</error>');
+                } else {
+                    $console->writeln($line);
+                }
+            }
+            end($output);
+            if ('FAILURES!' === prev($output)) {
+                exit;
+            }
+            unset($output);
+        }
+    }
 }
 
 if (function_exists('boolval') === false) {

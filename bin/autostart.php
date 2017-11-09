@@ -40,43 +40,6 @@ if (false === Cerberus::isExecAvailable()) {
     exit;
 }
 
-function pullGit()
-{
-    if (true === is_dir('../.git')) {
-        chdir(dirname(__DIR__));
-        exec('git pull', $output);
-        $console = Cerberus::getConsole();
-        $console->writeln('<comment>git pull</comment>');
-        foreach ($output as $line) {
-            $console->writeln('<info>' . $line . '</info>');
-        }
-        unset($output);
-        chdir(__DIR__);
-    }
-}
-
-function runUnittest()
-{
-    if (true === file_exists('../vendor/bin/phpunit')) {
-        chdir(dirname(__DIR__));
-        exec('./vendor/bin/phpunit', $output);
-        $console = Cerberus::getConsole();
-        foreach ($output as $line) {
-            if ('FAILURES!' === $line) {
-                $console->writeln('<error>' . $line . '</error>');
-            } else {
-                $console->writeln($line);
-            }
-        }
-        end($output);
-        if ('FAILURES!' === prev($output)) {
-            exit;
-        }
-        unset($output);
-        chdir(__DIR__);
-    }
-}
-
 $config = Cerberus::loadConfig();
 
 if ('1' === $config['bot']['autostart']) {
@@ -105,8 +68,8 @@ if ('1' === $config['bot']['autostart']) {
         }
     }
     if (0 === $botCount) {
-        pullGit();
-        runUnittest();
+        Cerberus::pullGit();
+        Cerberus::runUnittest();
         Cerberus::sysinfo('start a new bot.');
         $logDirectory = rtrim(trim($config['log']['directory']), '/');
         if (false === is_dir($logDirectory)) {
