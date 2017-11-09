@@ -79,6 +79,9 @@ class PluginNews extends Plugin
         $data[0]['url'] = 'https://www.heise.de/newsticker/heise.rdf';
         $data[0]['path'] = 'item';
         $data[0]['regex'] = '/\-([\d]+)\.html/';
+        $data[1]['url'] = 'https://rss.golem.de/rss.php?feed=RSS2.0';
+        $data[1]['path'] = 'channel/item';
+        $data[1]['regex'] = '/\-([\d]+)\-rss\.html/';
         return $data;
     }
     
@@ -95,7 +98,7 @@ class PluginNews extends Plugin
             }
             foreach ($xmlObject as $item) {
                 $match = [];
-                preg_match('/https?\:\/\/(?:www\.)?([^\/]+)/i', $url, $match);
+                preg_match('/https?\:\/\/(?:www|rss)?\.?([^\/]+)/i', $url, $match);
                 $siteId = $match[1];
                 preg_match($data['regex'], $item->link, $match);
                 $newsId = intval($match[1]);
