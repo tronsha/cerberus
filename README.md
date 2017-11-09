@@ -5,7 +5,7 @@ Cerberus is an IRC bot written for PHP
 
 [![Build Status](https://travis-ci.org/tronsha/cerberus.svg?branch=master)](https://travis-ci.org/tronsha/cerberus)
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/767c2d07-bb9b-4075-9f20-c77fcf424498/mini.png)](https://insight.sensiolabs.com/projects/767c2d07-bb9b-4075-9f20-c77fcf424498)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/cbb41e0b-5a78-43ff-a4f9-45c24ba22ccc/mini.png)](https://insight.sensiolabs.com/projects/cbb41e0b-5a78-43ff-a4f9-45c24ba22ccc)
 
 ## Install
 
@@ -53,8 +53,8 @@ Then, use the `install` command:
 ## Libraries
 
 * [Doctrine Database Abstraction Layer 2.5.*][6]
-* [Symfony Console Component 3.2.*][7]
-* [Symfony Translation Component 3.2.*][11]
+* [Symfony Console Component 3.3*][7]
+* [Symfony Translation Component 3.3.*][11]
 
 ## Creator
 
