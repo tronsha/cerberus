@@ -182,7 +182,7 @@ class Cerberus
             }
             end($output);
             if ('FAILURES!' === prev($output)) {
-                exit;
+                throw new Exception('PHPUnit FAILURES!');
             }
             unset($output);
         }
