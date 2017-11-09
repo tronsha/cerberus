@@ -729,6 +729,21 @@ class Irc extends Cerberus
         $this->sysinfo('Load Plugin: ' . $name);
         return true;
     }
+    
+    /**
+     * @param string $name
+     */
+    public function unloadPlugin($name)
+    {
+        $name = strtolower($name);
+        $className = 'Plugin' . ucfirst($name);
+        $pluginClass = 'Cerberus\\Plugins\\' . $className;
+        if (true === array_key_exists($pluginClass, $this->loaded['plugins'])) {
+            $this->removePluginEventByObject($this->loaded['plugins'][$pluginClass]['object']);
+            $this->loaded['plugins'][$pluginClass]['object']->removeCrons();
+            unset($this->loaded['plugins'][$pluginClass]['object'], $this->loaded['plugins'][$pluginClass]);
+        }
+    }
 
     /**
      * @param string $event
