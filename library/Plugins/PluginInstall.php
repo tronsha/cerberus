@@ -45,7 +45,6 @@ class PluginInstall extends Plugin
         if (true === $hasChild) {
             return $returnValue;
         }
-        // @todo autoload plugins
         return $returnValue;
     }
 
