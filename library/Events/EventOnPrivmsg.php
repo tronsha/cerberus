@@ -90,6 +90,8 @@ class EventOnPrivmsg extends Event
                         }
                     }
                     break;
+                case '!unload':
+                    break;
                 default:
                     $this->runPluginEvent(
                         __FUNCTION__,
