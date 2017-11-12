@@ -694,9 +694,7 @@ class Irc extends Cerberus
                 $this->sysinfo('Plugin "' . $name . '" is already loaded.');
                 return true;
             } else {
-                $this->removePluginEventByObject($this->loaded['plugins'][$pluginClass]['object']);
-                $this->loaded['plugins'][$pluginClass]['object']->removeCrons();
-                unset($this->loaded['plugins'][$pluginClass]['object'], $this->loaded['plugins'][$pluginClass]);
+                $this->unloadPlugin($name);
             }
         }
         $tmpClassName = $className . '_' . md5(uniqid($name, true));
@@ -732,17 +730,22 @@ class Irc extends Cerberus
     
     /**
      * @param string $name
+     * @param array|null $data
+     * @return bool
      */
-    public function unloadPlugin($name)
+    public function unloadPlugin($name, $data = null)
     {
         $name = strtolower($name);
         $className = 'Plugin' . ucfirst($name);
         $pluginClass = 'Cerberus\\Plugins\\' . $className;
         if (true === array_key_exists($pluginClass, $this->loaded['plugins'])) {
+            $this->loaded['plugins'][$pluginClass]['object']->onUnload($data);
             $this->removePluginEventByObject($this->loaded['plugins'][$pluginClass]['object']);
-            $this->loaded['plugins'][$pluginClass]['object']->removeCrons();
             unset($this->loaded['plugins'][$pluginClass]['object'], $this->loaded['plugins'][$pluginClass]);
+            $this->sysinfo('Unload Plugin: ' . $name);
+            return true;
         }
+        return false;
     }
 
     /**

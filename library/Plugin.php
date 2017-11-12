@@ -87,6 +87,21 @@ abstract class Plugin extends Cerberus
     }
 
     /**
+     * @param array $data
+     * @return bool
+     */
+    public function onUnload($data)
+    {
+        $class = get_called_class();
+        $className = $this->getClassName($class);
+        if (true === isset($data)) {
+            $this->getActions()->notice($data['nick'], 'Unload: ' . $className);
+        }
+        $this->removeCrons();
+        return true;
+    }
+
+    /**
      * @param string $class
      * @return string
      */

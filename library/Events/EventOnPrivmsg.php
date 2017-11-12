@@ -91,6 +91,16 @@ class EventOnPrivmsg extends Event
                     }
                     break;
                 case '!unload':
+                    if (false === empty($splitText[1])) {
+                        if (true === $this->getIrc()->isAdmin($nick, $host)) {
+                            if (preg_match('/^[a-z]+$/i', $splitText[1]) > 0) {
+                                $this->getIrc()->unloadPlugin(
+                                    $splitText[1],
+                                    ['nick' => $nick, 'host' => $host, 'channel' => $channel, 'text' => $text]
+                                );
+                            }
+                        }
+                    }
                     break;
                 default:
                     $this->runPluginEvent(
