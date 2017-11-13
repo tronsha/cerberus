@@ -39,7 +39,8 @@ class PluginNews extends Plugin
      */
     protected function init()
     {
-        $this->addCron('*/5 * * * *', 'run');
+        $this->addCron('*/10 * * * *', 'run', ['id' => 0]);
+        $this->addCron('5-59/10 * * * *', 'run', ['id' => 1]);
     }
     
     /**
@@ -73,7 +74,7 @@ class PluginNews extends Plugin
         }
     }
 
-    protected function getData()
+    protected function getData($id = null)
     {
         $data = [];
         $data[0]['url'] = 'https://www.heise.de/newsticker/heise.rdf';
@@ -82,12 +83,13 @@ class PluginNews extends Plugin
         $data[1]['url'] = 'https://rss.golem.de/rss.php?feed=RSS2.0';
         $data[1]['path'] = 'channel/item';
         $data[1]['regex'] = '/\-([\d]+)\-rss\.html/';
-        return $data;
+        return null === $id ? $data : [$data[$id]];
     }
     
-    public function run()
+    public function run($param = null)
     {
-        foreach ($this->getData() as $data) {
+        $dataArray = true === isset($param['id']) ? $this->getData($param['id']) : $this->getData();
+        foreach ($dataArray as $data) {
             $items = [];
             $url = trim(strtolower($data['url']));
             $rdf = $this->getNews($url);
