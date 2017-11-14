@@ -39,8 +39,8 @@ class PluginNews extends Plugin
      */
     protected function init()
     {
-        $this->addCron('*/10 * * * *', 'run', ['id' => 0]);
-        $this->addCron('5-59/10 * * * *', 'run', ['id' => 1]);
+        $this->addCron('0,30 * * * *', 'run', ['id' => 0]);
+        $this->addCron('15,45 * * * *', 'run', ['id' => 1]);
     }
     
     /**
