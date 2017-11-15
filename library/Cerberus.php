@@ -75,7 +75,7 @@ class Cerberus
      */
     public static function loadConfig()
     {
-        if (file_exists(self::getPath() . '/config.ini') === false) {
+        if (false === file_exists(self::getPath() . '/config.ini')) {
             throw new Exception('File Not Found: ' . self::getPath() . '/config.ini');
         }
         return parse_ini_file(self::getPath() . '/config.ini', true);
@@ -86,7 +86,7 @@ class Cerberus
      */
     public static function getPath()
     {
-        if (self::$path === null) {
+        if (null === self::$path) {
             self::$path = realpath(dirname(__FILE__) . '/..');
         }
         return self::$path;
@@ -136,14 +136,14 @@ class Cerberus
     public static function isExecAvailable()
     {
         $available = true;
-        if (ini_get('safe_mode')) {
+        if (false === empty(ini_get('safe_mode'))) {
             $available = false;
         } else {
             $disable = ini_get('disable_functions');
             $blacklist = ini_get('suhosin.executor.func.blacklist');
-            if ($disable . $blacklist) {
+            if (false === empty($disable . $blacklist)) {
                 $array = preg_split('/,\s*/', $disable . ',' . $blacklist);
-                if (in_array('exec', $array, true)) {
+                if (true === in_array('exec', $array, true)) {
                     $available = false;
                 }
             }
