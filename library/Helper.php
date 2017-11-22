@@ -35,7 +35,7 @@ class Helper
     protected $classes = [];
 
     /**
-     * Event constructor.
+     * Helper constructor.
      * @param Irc $irc
      */
     public function __construct(Irc $irc = null)
