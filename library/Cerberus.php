@@ -136,12 +136,14 @@ class Cerberus
     public static function isExecAvailable()
     {
         $available = true;
-        if (false === empty(ini_get('safe_mode'))) {
+        $savemode = ini_get('safe_mode');
+        if (false === empty($savemode)) {
             $available = false;
         } else {
             $disable = ini_get('disable_functions');
             $blacklist = ini_get('suhosin.executor.func.blacklist');
-            if (false === empty($disable . $blacklist)) {
+            $list = $disable . $blacklist;
+            if (false === empty($list)) {
                 $array = preg_split('/,\s*/', $disable . ',' . $blacklist);
                 if (true === in_array('exec', $array, true)) {
                     $available = false;
