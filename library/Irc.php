@@ -641,7 +641,7 @@ class Irc extends Cerberus
      */
     public function isAdmin($nick, $host)
     {
-        if (null !== $this->auth && true === is_a($this->auth, 'Cerberus\Plugins\PluginAuth')) {
+        if (null !== $this->auth && true === is_a($this->auth, 'Cerberus\\Plugins\\PluginAuth')) {
             return $this->auth->isAdmin($nick, $host);
         }
         return false;
@@ -654,7 +654,7 @@ class Irc extends Cerberus
      */
     public function isMember($nick, $host)
     {
-        if (null !== $this->auth && true === is_a($this->auth, 'Cerberus\Plugins\PluginAuth')) {
+        if (null !== $this->auth && true === is_a($this->auth, 'Cerberus\\Plugins\\PluginAuth')) {
             return $this->auth->isMember($nick, $host);
         }
         return false;
