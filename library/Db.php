@@ -47,7 +47,7 @@ class Db extends Helper
     public function __construct($config, Irc $irc = null)
     {
         parent::__construct($irc);
-        $this->setNamespace('\Cerberus\Db\Db');
+        $this->setNamespace('\\Cerberus\\Db\\Db');
         foreach ($config as $key => $value) {
             $this->setConfig($key, $value);
         }
