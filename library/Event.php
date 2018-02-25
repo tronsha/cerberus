@@ -48,7 +48,7 @@ class Event extends Helper
     public function __construct(Irc $irc)
     {
         parent::__construct($irc);
-        $this->setNamespace('\Cerberus\Events\Event');
+        $this->setNamespace('\\Cerberus\\Events\\Event');
         $this->vars = $this->irc->getVars();
         $this->minute = intval((new DateTime())->format('i'));
         $this->hour = intval((new DateTime())->format('G'));
