@@ -690,7 +690,7 @@ class Irc extends Cerberus
         clearstatcache(true, $pluginFile);
         $pluginFileDate = filemtime($pluginFile);
         if (true === array_key_exists($pluginClass, $this->loaded['plugins'])) {
-            if ($pluginFileDate === $this->loaded['plugins'][$pluginClass]['date']) {
+            if ($this->loaded['plugins'][$pluginClass]['date'] === $pluginFileDate) {
                 $this->sysinfo('Plugin "' . $name . '" is already loaded.');
                 return true;
             } else {

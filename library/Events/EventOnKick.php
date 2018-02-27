@@ -40,7 +40,7 @@ class EventOnKick extends Event
     {
         $vars = $this->getVars();
         list($channel, $nick) = explode(' ', $rest);
-        $me = ($nick === $vars['var']['me']) ? true : false;
+        $me = ($vars['var']['me'] === $nick) ? true : false;
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick, 'bouncer' => $bouncer, 'comment' => $text]);
         if (true === $me) {
             $this->getDb()->removeChannel($channel);

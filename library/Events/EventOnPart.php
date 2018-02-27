@@ -39,7 +39,7 @@ class EventOnPart extends Event
     public function onPart($nick, $host, $channel, $text)
     {
         $vars = $this->getVars();
-        $me = ($nick === $vars['var']['me']) ? true : false;
+        $me = ($vars['var']['me'] === $nick) ? true : false;
         $this->runPluginEvent(__FUNCTION__, ['channel' => $channel, 'me' => $me, 'nick' => $nick]);
         if (true === $me) {
             $this->getDb()->removeChannel($channel);

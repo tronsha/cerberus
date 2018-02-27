@@ -97,7 +97,7 @@ class Cerberus
      */
     public static function getConsole()
     {
-        if (self::$console === null) {
+        if (null === self::$console) {
             self::$console = new Console;
             self::$console->setParam(self::$argv);
         }
@@ -191,7 +191,7 @@ class Cerberus
     }
 }
 
-if (function_exists('boolval') === false) {
+if (false === function_exists('boolval')) {
     function boolval($var)
     {
         return Php::boolval($var);
