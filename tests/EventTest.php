@@ -51,7 +51,7 @@ class EventTest extends \PHPUnit_Framework_TestCase
         $sqlArray = explode(';', $sqlFile);
         foreach ($sqlArray as $sqlCommand) {
             $sqlCommand = trim($sqlCommand);
-            if (empty($sqlCommand) === false) {
+            if (false === empty($sqlCommand)) {
                 $this->db->query($sqlCommand . ';');
             }
         }
@@ -67,7 +67,7 @@ class EventTest extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         unset($this->irc);
-        if ($this->db === null) {
+        if (null === $this->db) {
             $this->fail('No connection to database...');
         }
         $sm = $this->db->getSchemaManager();
