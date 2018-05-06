@@ -40,7 +40,7 @@ class EventOnJoin extends Event
     {
         $channel = ('' !== $rest ? $rest : $text);
         $vars = $this->getVars();
-        if ($nick === $vars['var']['me']) {
+        if ($vars['var']['me'] === $nick) {
             $this->getDb()->addChannel($channel);
             $this->getActions()->mode($channel);
         } else {

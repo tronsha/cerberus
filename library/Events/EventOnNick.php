@@ -39,7 +39,7 @@ class EventOnNick extends Event
     public function onNick($nick, $host, $rest, $text)
     {
         $vars = $this->getVars();
-        if ($nick === $vars['var']['me']) {
+        if ($vars['var']['me'] === $nick) {
             $this->getIrc()->setNick($text);
         }
         $this->getDb()->changeNick($nick, $text);
