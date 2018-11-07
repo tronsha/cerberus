@@ -159,16 +159,16 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertSame("foo bar\nbaz", wordwrap('foo bar baz', 10, "\n"));
         $this->assertSame("foo\n\033[1mbar\nbaz", wordwrap("foo \033[1mbar baz", 10, "\n"));
-        $this->assertSame("foo bar\nbaz", $this->invokeMethod($this->console, 'wordwrap', 'foo bar baz', 10));
-        $this->assertSame("foo \033[1mbar\nbaz", $this->invokeMethod($this->console, 'wordwrap', "foo \033[1mbar baz", 10));
+        $this->assertSame("foo bar\nbaz", $this->invokeMethod($this->console, 'wordwrap', 'foo bar baz', 10, "\n"));
+        $this->assertSame("foo \033[1mbar\nbaz", $this->invokeMethod($this->console, 'wordwrap', "foo \033[1mbar baz", 10, "\n"));
     }
 
     public function testSplit()
     {
         $this->assertSame("foo b\nar ba\nz\n", chunk_split('foo bar baz', 5, "\n"));
         $this->assertSame("foo \033\n[1mba\nr baz\n", chunk_split("foo \033[1mbar baz", 5, "\n"));
-        $this->assertSame("foo b\nar ba\nz", $this->invokeMethod($this->console, 'split', 'foo bar baz', 5));
-        $this->assertSame("foo \033[1mb\nar ba\nz", $this->invokeMethod($this->console, 'split', "foo \033[1mbar baz", 5));
+        $this->assertSame("foo b\nar ba\nz", $this->invokeMethod($this->console, 'split', 'foo bar baz', 5, "\n"));
+        $this->assertSame("foo \033[1mb\nar ba\nz", $this->invokeMethod($this->console, 'split', "foo \033[1mbar baz", 5, "\n"));
     }
 
     public function testException()
