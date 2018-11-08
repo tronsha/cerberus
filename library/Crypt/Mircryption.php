@@ -44,6 +44,8 @@ class Mircryption
     {
         if (true === extension_loaded('mcrypt') && true === version_compare(PHP_VERSION, '7.1', '<')) {
             return self::mcryptEncrypt($text, $key);
+        } elseif (true === function_exists('phpseclib_mcrypt_decrypt')) {
+            return self::mcryptCompatEncrypt($text, $key);
         } elseif (true === extension_loaded('openssl')) {
             return self::opensslEncrypt($text, $key);
         } else {
@@ -60,6 +62,8 @@ class Mircryption
     {
         if (true === extension_loaded('mcrypt') && true === version_compare(PHP_VERSION, '7.1', '<')) {
             return self::mcryptDecrypt($text, $key);
+        } elseif (true === function_exists('phpseclib_mcrypt_encrypt')) {
+            return self::mcryptCompatDecrypt($text, $key);
         } elseif (true === extension_loaded('openssl')) {
             return self::opensslDecrypt($text, $key);
         } else {
@@ -126,6 +130,37 @@ class Mircryption
         $iv = substr($encodedTextIv, 0, 8);
         $encodedText = substr($encodedTextIv, 8);
         $plaintext = openssl_decrypt($encodedText, 'bf-cbc', $key, OPENSSL_RAW_DATA, $iv);
+        return trim($plaintext);
+    }
+
+    /**
+     * @param string $text
+     * @param string $key
+     * @return string
+     * @link https://github.com/phpseclib/mcrypt_compat
+     */
+    private static function mcryptCompatEncrypt($text, $key)
+    {
+        $iv = Php::randombytes(8);
+        $encodedText = phpseclib_mcrypt_encrypt(MCRYPT_BLOWFISH, $key, Pkcs7::pad($text), MCRYPT_MODE_CBC, $iv);
+        $encodedTextIv = $iv . $encodedText;
+        $decodedTextBaseIv64 = base64_encode($encodedTextIv);
+        return '*' . $decodedTextBaseIv64;
+    }
+
+    /**
+     * @param string $text
+     * @param string $key
+     * @return string
+     * @link https://github.com/phpseclib/mcrypt_compat
+     */
+    private static function mcryptCompatDecrypt($text, $key)
+    {
+        $encodedTextIvBase64 = str_replace('*', '', $text);
+        $encodedTextIv = base64_decode($encodedTextIvBase64, true);
+        $iv = substr($encodedTextIv, 0, 8);
+        $encodedText = substr($encodedTextIv, 8);
+        $plaintext = Pkcs7::unpad(phpseclib_mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $encodedText, MCRYPT_MODE_CBC, $iv));
         return trim($plaintext);
     }
 }
