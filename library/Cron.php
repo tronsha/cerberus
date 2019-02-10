@@ -20,8 +20,6 @@
 
 namespace Cerberus;
 
-use Exception;
-
 /**
  * Class Cron
  * @package Cerberus
@@ -73,16 +71,12 @@ class Cron
     }
 
     /**
-     * @param int $minute
-     * @param int $hour
-     * @param int $day_of_month
-     * @param int $month
-     * @param int $day_of_week
+     * @param \DateTime $time
      */
-    public function run($minute, $hour, $day_of_month, $month, $day_of_week)
+    public function run($time)
     {
         foreach ($this->cronjobs as $cron) {
-            if (true === $this->compare($cron['cron'], $minute, $hour, $day_of_month, $month, $day_of_week)) {
+            if (true === $this->compare($cron['cron'], $time)) {
                 $cron['object']->{$cron['method']}($cron['param']);
             }
         }
@@ -90,43 +84,35 @@ class Cron
 
     /**
      * @param string $cronString
-     * @param int $minute
-     * @param int $hour
-     * @param int $day_of_month
-     * @param int $month
-     * @param int $day_of_week
-     * @throws Exception
+     * @param \DateTime $time
+     * @throws \Exception
      * @return bool
      */
-    public function compare($cronString, $minute, $hour, $day_of_month, $month, $day_of_week)
+    public function compare(string $cronString, \DateTime $time = null)
     {
-        $cronString = trim($cronString);
-        $cronArray = explode(' ', $cronString);
-        if (5 !== count($cronArray)) {
-            throw new Exception('a cron has an error');
+        if (null === $time) {
+            $time = new \DateTime('now');
         }
-        list($cronMinute, $cronHour, $cronDayOfMonth, $cronMonth, $cronDayOfWeek) = $cronArray;
-        $cronDayOfWeek = $this->dowNameToNumber($cronDayOfWeek);
-        $cronMonth = $this->monthNameToNumber($cronMonth);
-        $cronDayOfWeek = (7 === intval($cronDayOfWeek) ? 0 : $cronDayOfWeek);
-        $cronMinute = ('*' !== $cronMinute ? $this->prepare($cronMinute, 0, 59) : $cronMinute);
-        $cronHour = ('*' !== $cronHour ? $this->prepare($cronHour, 0, 23) : $cronHour);
-        $cronDayOfMonth = ('*' !== $cronDayOfMonth ? $this->prepare($cronDayOfMonth, 1, 31) : $cronDayOfMonth);
-        $cronMonth = ('*' !== $cronMonth ? $this->prepare($cronMonth, 1, 12) : $cronMonth);
-        $cronDayOfWeek = ('*' !== $cronDayOfWeek ? $this->prepare($cronDayOfWeek, 0, 6) : $cronDayOfWeek);
+
+        $cronMinute = $this->getCronMinute($cronString);
+        $cronHour = $this->getCronHour($cronString);
+        $cronDayOfMonth = $this->getCronDayOfMonth($cronString);
+        $cronMonth = $this->getCronMonth($cronString);
+        $cronDayOfWeek = $this->getCronDayOfWeek($cronString);
+
         if (
             (
-                '*' === $cronMinute  || true === in_array($minute, $cronMinute, true)
+                '*' === $cronMinute || true === in_array($this->getMinute($time), $cronMinute, true)
             ) && (
-                '*' === $cronHour || true === in_array($hour, $cronHour, true)
+                '*' === $cronHour || true === in_array($this->getHour($time), $cronHour, true)
             ) && (
-                '*' === $cronMonth || true === in_array($month, $cronMonth, true)
+                '*' === $cronMonth || true === in_array($this->getMonth($time), $cronMonth, true)
             ) && (
                 (
                     (
-                        '*' === $cronDayOfMonth || true === in_array($day_of_month, $cronDayOfMonth, true)
+                        '*' === $cronDayOfMonth || true === in_array($this->getDayOfMonth($time), $cronDayOfMonth, true)
                     ) && (
-                        '*' === $cronDayOfWeek || true === in_array($day_of_week, $cronDayOfWeek, true)
+                        '*' === $cronDayOfWeek || true === in_array($this->getDayOfWeek($time), $cronDayOfWeek, true)
                     )
                 ) || (
                     (
@@ -135,9 +121,9 @@ class Cron
                         '*' !== $cronDayOfWeek
                     ) && (
                         (
-                            true === in_array($day_of_month, $cronDayOfMonth, true)
+                            true === in_array($this->getDayOfMonth($time), $cronDayOfMonth, true)
                         ) || (
-                            true === in_array($day_of_week, $cronDayOfWeek, true)
+                            true === in_array($this->getDayOfWeek($time), $cronDayOfWeek, true)
                         )
                     )
                 )
@@ -149,12 +135,134 @@ class Cron
     }
 
     /**
+     * @param \DateTime $time
+     * @return int
+     */
+    private function getMinute(\DateTime $time)
+    {
+        return (int) $time->format('i');
+    }
+
+    /**
+     * @param \DateTime $time
+     * @return int
+     */
+    private function getHour(\DateTime $time)
+    {
+        return (int) $time->format('G');
+    }
+
+    /**
+     * @param \DateTime $time
+     * @return int
+     */
+    private function getMonth(\DateTime $time)
+    {
+        return (int) $time->format('n');
+    }
+
+    /**
+     * @param \DateTime $time
+     * @return int
+     */
+    private function getDayOfMonth(\DateTime $time)
+    {
+        return (int) $time->format('j');
+    }
+
+    /**
+     * @param \DateTime $time
+     * @return int
+     */
+    private function getDayOfWeek(\DateTime $time)
+    {
+        return (int) $time->format('w');
+    }
+
+    /**
+     * @param string $cronString
+     * @return array
+     */
+    private function explodeCronString(string $cronString)
+    {
+        return explode(' ', trim($cronString));
+    }
+
+    /**
+     * @param string $cronString
+     * @return array|string
+     */
+    private function getCronMinute(string $cronString)
+    {
+        $cronMinute = $this->explodeCronString($cronString)[0];
+        if ('*' === $cronMinute) {
+            return '*';
+        }
+        return $this->prepare((string) $cronMinute, 0, 59);
+    }
+
+    /**
+     * @param string $cronString
+     * @return array|string
+     */
+    private function getCronHour(string $cronString)
+    {
+        $cronHour = $this->explodeCronString($cronString)[1];
+        if ('*' === $cronHour) {
+            return '*';
+        }
+        return $this->prepare((string) $cronHour, 0, 23);
+    }
+
+    /**
+     * @param string $cronString
+     * @return array|string
+     */
+    private function getCronDayOfMonth(string $cronString)
+    {
+        $cronDayOfMonth = $this->explodeCronString($cronString)[2];
+        if ('*' === $cronDayOfMonth) {
+            return '*';
+        }
+        return $this->prepare((string) $cronDayOfMonth, 1, 31);
+    }
+
+    /**
+     * @param string $cronString
+     * @return array|string
+     */
+    private function getCronMonth(string $cronString)
+    {
+        $cronMonth = $this->explodeCronString($cronString)[3];
+        if ('*' === $cronMonth) {
+            return '*';
+        }
+        $cronMonth = $this->monthNameToNumber($cronMonth);
+        return $this->prepare((string) $cronMonth, 1, 12);
+    }
+
+    /**
+     * @param string $cronString
+     * @return array|string
+     */
+    private function getCronDayOfWeek(string $cronString)
+    {
+        $cronDayOfWeek = $this->explodeCronString($cronString)[4];
+        if ('*' === $cronDayOfWeek) {
+            return '*';
+        }
+        $cronDayOfWeek = $this->dowNameToNumber($cronDayOfWeek);
+        $cronDayOfWeek = (7 === (int) $cronDayOfWeek ? 0 : $cronDayOfWeek);
+        return $this->prepare((string) $cronDayOfWeek, 0, 6);
+    }
+
+    /**
      * @param string $string
      * @param int $a
      * @param int $b
      * @return array
      */
-    public function prepare($string, $a, $b)
+    private function prepare(string $string, int $a, int $b)
     {
         $values = [];
         if (false !== strpos($string, ',')) {
@@ -173,15 +281,15 @@ class Cron
             }
             if (false !== strpos($value, '-')) {
                 list($min, $max) = explode('-', $value);
-                $min = intval($min);
-                $max = intval($max);
+                $min = (int) $min;
+                $max = (int) $max;
                 for ($i = $min, $j = 0; $i <= $max; $i++, $j++) {
                     if (0 === ($j % $steps)) {
                         $array[] = $i;
                     }
                 }
             } else {
-                $array[] = intval($value);
+                $array[] = (int) $value;
             }
         }
         return $array;
@@ -191,7 +299,7 @@ class Cron
      * @param string $subject
      * @return string
      */
-    public function monthNameToNumber($subject)
+    private function monthNameToNumber(string $subject)
     {
         $subject = strtolower($subject);
         $search = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
@@ -203,7 +311,7 @@ class Cron
      * @param string $subject
      * @return string
      */
-    public function dowNameToNumber($subject)
+    private function dowNameToNumber(string $subject)
     {
         $subject = strtolower($subject);
         $search = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];

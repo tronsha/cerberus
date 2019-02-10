@@ -881,15 +881,12 @@ class Irc extends Cerberus
     }
 
     /**
-     * @param int $minute
-     * @param int $hour
-     * @param int $day_of_month
-     * @param int $month
-     * @param int $day_of_week
+     * @param \DateTime $time
+
      */
-    public function runCron($minute, $hour, $day_of_month, $month, $day_of_week)
+    public function runCron($time)
     {
-        $this->cron->run($minute, $hour, $day_of_month, $month, $day_of_week);
+        $this->cron->run($time);
     }
 
     /**
