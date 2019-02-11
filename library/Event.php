@@ -224,7 +224,7 @@ class Event extends Helper
     public function onMinute()
     {
         $this->runPluginEvent(__FUNCTION__, []);
-        $this->getIrc()->runCron($this->minute, $this->dateTime);
+        $this->getIrc()->runCron($this->dateTime);
     }
 
     /**
