@@ -40,7 +40,6 @@ class Event extends Helper
     protected $day_of_month = '';
     protected $month = '';
     protected $day_of_week = '';
-    protected $dateTime = null;
 
     /**
      * Event constructor.
@@ -56,7 +55,6 @@ class Event extends Helper
         $this->day_of_month = intval((new DateTime())->format('j'));
         $this->month = intval((new DateTime())->format('n'));
         $this->day_of_week = intval((new DateTime())->format('w'));
-        $this->dateTime = new DateTime();
     }
 
     /**
@@ -224,7 +222,7 @@ class Event extends Helper
     public function onMinute()
     {
         $this->runPluginEvent(__FUNCTION__, []);
-        $this->getIrc()->runCron($this->dateTime);
+        $this->getIrc()->runCron(new \DateTime());
     }
 
     /**
