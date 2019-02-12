@@ -31,16 +31,17 @@ namespace Cerberus\Db;
 class DbGetChannellist extends Db
 {
     /**
-     * @return mixed
+     * @param int $maxResults
+     * @return array
      */
-    public function getChannellist()
+    public function getChannellist($maxResults = 10000)
     {
         $qb = $this->getDb()->getConnection()->createQueryBuilder();
         $stmt = $qb
             ->select('channel', 'topic', 'usercount')
             ->from('channellist')
             ->where('bot_id = ?')
-            ->setMaxResults(10000)
+            ->setMaxResults($maxResults)
             ->setParameter(0, $this->getDb()->getBotId())
             ->orderBy('usercount', 'DESC')
             ->execute();
