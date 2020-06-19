@@ -68,5 +68,11 @@ class DbCleanupLog extends Db
             ->where('time <= ?')
             ->setParameter(0, $oneWeekAgo)
             ->execute();
+        $twoMonthAgo = (new DateTime())->modify('-2 month')->format('Y-m-d H:i:s');
+        $qb = $this->getDb()->getConnection()->createQueryBuilder();
+        $qb ->delete('log')
+            ->where('time <= ?')
+            ->setParameter(0, $twoMonthAgo)
+            ->execute();
     }
 }
