@@ -506,8 +506,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @return bool|Irc
      * @throws DBALException
+     * @return bool|Irc
      */
     public function run()
     {
