@@ -7,16 +7,13 @@ php:
 
 env:
   - DB=mysql
-  - DB=postgres
 
 services:
   - mysql
-  - postgresql
 
 before_install:
   - composer self-update
   - mysql -e 'CREATE DATABASE IF NOT EXISTS cerberus_test;'
-  - psql -c 'create database cerberus_test;' -U postgres
 
 install:
   - composer install
