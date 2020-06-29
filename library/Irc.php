@@ -21,6 +21,7 @@
 namespace Cerberus;
 
 use Cerberus\Plugins\PluginAuth;
+use Doctrine\DBAL\DBALException;
 use Exception;
 use SQLite3;
 
@@ -505,7 +506,8 @@ class Irc extends Cerberus
     }
 
     /**
-     * @return bool|void
+     * @return bool|Irc
+     * @throws DBALException
      */
     public function run()
     {
@@ -516,7 +518,7 @@ class Irc extends Cerberus
                     $this->getDb()->close();
                     $this->getDb()->connect();
                 }
-                if (':' !== $input{0}) {
+                if (':' !== $input[0]) {
                     if (false !== strpos(strtoupper($input), 'PING')) {
                         $this->lastping = time();
                         $output = str_replace('PING', 'PONG', $input);
