@@ -3,8 +3,6 @@ dist: xenial
 language: php
 
 php:
-  - 5.4
-  - 5.5
   - 5.6
 
 env:
@@ -24,22 +22,6 @@ before_script:
 script:
   - vendor/bin/php-cs-fixer fix --cache-file "$HOME/.php-cs-fixer/.php_cs.cache" --dry-run --diff --verbose
   - vendor/bin/phpunit
-
-matrix:
-  include:
-    - php: hhvm
-      sudo: true
-      dist: trusty
-      group: edge
-      addons:
-        apt:
-          packages:
-            - mysql-server-5.6
-            - mysql-client-core-5.6
-            - mysql-client-5.6
-      services:
-        - mysql
-      env: DB=mysql
 
 cache:
   directories:
