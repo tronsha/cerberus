@@ -47,7 +47,6 @@ return PhpCsFixer\Config::create()
         'strict_param' => true,
         'whitespace_after_comma_in_array' => true,
         'concat_space' => ['spacing' => 'one'],
-        'yoda_style' => true,
     ))
     ->setFinder(
         PhpCsFixer\Finder::create()
