@@ -42,7 +42,7 @@ Then, use the `install` command:
     
 ## Require
 
-* PHP 5.6.0 or greater.
+* PHP 7.1.0 or greater.
 * A Database: MySQL
  
 ## Info
