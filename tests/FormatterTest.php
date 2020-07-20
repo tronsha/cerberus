@@ -2,7 +2,7 @@
 
 /*
  * Cerberus IRCBot
- * Copyright (C) 2008 - 2019 Stefan Hüsges
+ * Copyright (C) 2008 - 2020 Stefan Hüsges
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -21,19 +21,20 @@
 namespace Cerberus;
 
 use Cerberus\Formatter\FormatterFactory;
+use PHPUnit\Framework\TestCase;
 
-class FormatterTest extends \PHPUnit_Framework_TestCase
+class FormatterTest extends TestCase
 {
     protected $consoleFormatter;
     protected $htmlFormatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->consoleFormatter = FormatterFactory::console();
         $this->htmlFormatter = FormatterFactory::html();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($this->consoleFormatter, $this->htmlFormatter);
     }

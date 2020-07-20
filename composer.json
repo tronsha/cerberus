@@ -22,21 +22,21 @@
     "issues": "https://github.com/tronsha/cerberus/issues"
   },
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.2",
     "ext-openssl": "*",
-    "doctrine/dbal": "2.5.*",
+    "doctrine/dbal": "2.10.*",
     "symfony/console": "~4.4",
     "symfony/translation": "~4.4",
     "phpseclib/mcrypt_compat": "1.0.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.4",
+    "phpunit/phpunit": "^8",
     "friendsofphp/php-cs-fixer": "^2.13",
-    "phpstan/phpstan": "^0.11.5"
+    "phpstan/phpstan": "^0.12"
   },
   "autoload": {
     "psr-4": {
-      "Cerberus\\": "library/",
+      "Cerberus\\": "src/",
       "Hades\\": "public/library/"
     }
   },

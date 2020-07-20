@@ -2,7 +2,7 @@
 
 /*
  * Cerberus IRCBot
- * Copyright (C) 2008 - 2019 Stefan Hüsges
+ * Copyright (C) 2008 - 2020 Stefan Hüsges
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -20,16 +20,18 @@
 
 namespace Cerberus;
 
-class TranslateTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class TranslateTest extends TestCase
 {
     protected $translate;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->translate = new Translate;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($this->translate);
     }

@@ -2,7 +2,7 @@
 
 /*
  * Cerberus IRCBot
- * Copyright (C) 2008 - 2019 Stefan Hüsges
+ * Copyright (C) 2008 - 2020 Stefan Hüsges
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -20,21 +20,22 @@
 
 namespace Cerberus;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class ConsoleTest extends \PHPUnit_Framework_TestCase
+class ConsoleTest extends TestCase
 {
     protected $stream;
     protected $console;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->console = new Console;
         $this->stream = fopen('php://memory', 'a', false);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($this->console);
         $this->stream = null;

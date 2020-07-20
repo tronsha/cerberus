@@ -42,7 +42,7 @@ Then, use the `install` command:
     
 ## Require
 
-* PHP 7.1.0 or greater.
+* PHP 7.2.0 or greater.
 * A Database: MySQL
  
 ## Info
@@ -52,9 +52,9 @@ Then, use the `install` command:
 
 ## Libraries
 
-* [Doctrine Database Abstraction Layer 2.5][6]
-* [Symfony Console Component 4.4][7]
-* [Symfony Translation Component 4.4][11]
+* [Doctrine Database Abstraction Layer][6]
+* [Symfony Console Component][7]
+* [Symfony Translation Component][11]
 
 ## Creator
 

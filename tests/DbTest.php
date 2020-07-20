@@ -2,7 +2,7 @@
 
 /*
  * Cerberus IRCBot
- * Copyright (C) 2008 - 2019 Stefan Hüsges
+ * Copyright (C) 2008 - 2020 Stefan Hüsges
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -22,15 +22,16 @@ namespace Cerberus;
 
 use DateTime;
 use Doctrine\DBAL\DriverManager;
+use PHPUnit\Framework\TestCase;
 
-class DbTest extends \PHPUnit_Framework_TestCase
+class DbTest extends TestCase
 {
     protected static $config;
     protected static $database;
     protected $db;
     protected $irc;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         ini_set('zend.enable_gc', 0);
         date_default_timezone_set('Europe/Berlin');
@@ -38,7 +39,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
         self::$database = self::$config['testdb']['dbname'];
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         self::$config['testdb']['dbname'] = null;
         $db = DriverManager::getConnection(self::$config['testdb']);
@@ -64,7 +65,7 @@ class DbTest extends \PHPUnit_Framework_TestCase
         $this->invokeMethod($this->irc, 'loadPlugin', 'test');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($this->irc);
         if (null === $this->db) {

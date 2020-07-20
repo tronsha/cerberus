@@ -2,7 +2,7 @@
 
 $header = <<<'EOF'
 Cerberus IRCBot
-Copyright (C) 2008 - 2019 Stefan Hüsges
+Copyright (C) 2008 - 2020 Stefan Hüsges
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the Free
